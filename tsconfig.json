@@ -5,6 +5,7 @@
     "jsx": "react-jsx",
     "outDir": "build",
     "rootDir": "src",
+    "baseUrl": "src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
