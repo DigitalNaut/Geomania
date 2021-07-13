@@ -1,5 +1,10 @@
 export interface Feature {
-  properties: { ADMIN: string; ISO_A3: string };
+  properties: Property;
+}
+
+export interface Property {
+  ADMIN: string;
+  ISO_A3: string;
 }
 
 // interface Data {
