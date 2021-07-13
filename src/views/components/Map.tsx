@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import mapData from "data/countries.json";
+import * as mapData from "data/countries.json";
 
-import { Feature } from "types/map";
+import { getCountryNames } from "model/DataParser";
 
 interface Props {}
 interface State {
@@ -16,9 +16,7 @@ class Map extends Component<Props, State> {
 
   componentDidMount() {
     this.setState({
-      countries: mapData.features.map(
-        (country: Feature) => country.properties.ADMIN
-      ),
+      countries: getCountryNames(mapData.features),
     });
   }
 
@@ -29,7 +27,7 @@ class Map extends Component<Props, State> {
         <ol>
           {this.state.countries.map((country, index) => (
             <li key={index}>
-              {index+1}. {country}
+              {index + 1}. {country}
             </li>
           ))}
         </ol>
