@@ -13,15 +13,13 @@ export function getCountryNames(): Promise<string[]> {
     .catch(() => resolve([""])));
 }
 
-export async function loadData(full: Boolean = false): Promise<GeoJSON> {
+export async function loadData(mock: Boolean = false): Promise<GeoJSON> {
   //@ts-ignore
-  let data: GeoJSON = (full) ?
-    await import("data/countries.json") : await import("data/mock.json");
+  let data: GeoJSON = mock === true ?
+    await import("data/mock.json") : await import("data/countries.json");
 
   return new Promise((resolve, reject) => {
-    if (data)
-      resolve(data);
-    else
-      reject(null);
+    if (data) resolve(data);
+    else reject(null);
   });
 }

@@ -2,7 +2,7 @@ import { loadData } from "./DataParser";
 
 describe('loads GeoJSON file as object with properties', () => {
   it('loads the mock data', async () => {
-    let data = await loadData(false).then(data => data);
+    let data = await loadData(true).then(data => data);
     expect(data).toBeDefined();
     expect(data).not.toBe(null);
     expect(data).not.toBe({});
@@ -11,7 +11,7 @@ describe('loads GeoJSON file as object with properties', () => {
   });
   
   it('loads the full data', async () => {
-    let data = await loadData(true).then(data => data);
+    let data = await loadData().then(data => data);
     expect(data).toBeDefined();
     expect(data).not.toBe(null);
     expect(data).not.toBe({});
