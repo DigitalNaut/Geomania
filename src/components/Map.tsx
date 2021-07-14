@@ -1,9 +1,10 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { MapContainer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { loadData } from "model/DataParser";
+
 import { GeoJSON as GeoJSONType } from "types/map";
-import * as AboutApp from "utils/AppInfo";
+import AboutApp from "utils/AppInfo";
+import { loadData } from "model/DataParser";
 
 interface Props {}
 interface State {
@@ -30,7 +31,11 @@ class Map extends Component<Props, State> {
         className="flex flex-col flex-grow w-full bg-gray-400"
         data-testid="interactive-map"
       >
-        <MapContainer style={{ height: "60vh" }} zoom={2} center={[20, 100]}>
+        <MapContainer
+          style={this.props.styles}
+          zoom={2}
+          center={[25, 0]}
+        >
           <GeoJSON data={this.state.countries?.features}></GeoJSON>
         </MapContainer>
       </div>
