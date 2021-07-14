@@ -1,6 +1,21 @@
-import { getCountryNames } from "./DataParser";
+import { loadData } from "./DataParser";
 
-test('extracts a list of countries from JSON', async () => {
-  let countryNames = await getCountryNames().then(data => data);
-  expect(countryNames.length).toBeGreaterThan(0);
+describe('loads GeoJSON file as object with properties', () => {
+  it('loads the mock data', async () => {
+    let data = await loadData(false).then(data => data);
+    expect(data).toBeDefined();
+    expect(data).not.toBe(null);
+    expect(data).not.toBe({});
+    expect(data.features).toBeDefined();
+    expect(data.features.length).toBe(15);
+  });
+  
+  it('loads the full data', async () => {
+    let data = await loadData(true).then(data => data);
+    expect(data).toBeDefined();
+    expect(data).not.toBe(null);
+    expect(data).not.toBe({});
+    expect(data.features).toBeDefined();
+    expect(data.features.length).toBe(255);
+  });
 });

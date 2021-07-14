@@ -13,7 +13,7 @@ export function getCountryNames(): Promise<string[]> {
     .catch(() => resolve([""])));
 }
 
-async function loadData(): Promise<GeoJSON> {
+export async function loadData(full: Boolean = false): Promise<GeoJSON> {
   //@ts-ignore
   let data: GeoJSON = (full) ?
     await import("data/countries.json") : await import("data/mock.json");
