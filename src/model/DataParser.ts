@@ -1,7 +1,27 @@
-import { Feature } from "types/map";
+import { Feature, GeoJSON } from "types/map";
 
-export function getCountryNames(data: Feature[]): string[] {
-  return data.map(
-    (country: Feature) => country.properties.ADMIN
-  )
+export function getCountryNames(): Promise<string[]> {
+
+  function gotData(geoData: GeoJSON): string[] {
+    return geoData.features.map(
+      (country: Feature) => country.properties.ADMIN
+    )
+  }
+
+  return new Promise((resolve) => loadData()
+    .then(data => resolve(gotData(data)))
+    .catch(() => resolve([""])));
+}
+
+async function loadData(): Promise<GeoJSON> {
+  //@ts-ignore
+  let data: GeoJSON = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ?
+    await import("data/mock.json") : await import("data/countries.json");
+
+  return new Promise((resolve, reject) => {
+    if (data)
+      resolve(data);
+    else
+      reject(null);
+  });
 }
