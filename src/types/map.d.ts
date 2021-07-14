@@ -1,5 +1,12 @@
+export interface GeoJSON {
+  type: string;
+  features: Feature[];
+}
+
 export interface Feature {
+  type: string;
   properties: Property;
+  geometry: Geometry;
 }
 
 export interface Property {
@@ -7,10 +14,7 @@ export interface Property {
   ISO_A3: string;
 }
 
-// interface Data {
-//   features: {
-//     type: string;
-//     properties: { ADMIN: string; ISO_A3: string };
-//     geometry: { type: string; coordinates: number[][][] };
-//   };
-// }
+export interface Geometry {
+  type: string;
+  coordinates: number[][][][] | number[][][];
+}
