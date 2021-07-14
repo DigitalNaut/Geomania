@@ -1,8 +1,16 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render, screen } from "@testing-library/react";
+import App from "./App";
 
-test('renders list of countries', () => {
+describe("rendering the Home page", () => {
   render(<App />);
-  const listElement = screen.getByText(/Total countries: \d/i);
-  expect(listElement).toBeInTheDocument();
+
+  it("adds a title", () => {
+    const titleElement = screen.queryByTestId("app-title");
+    expect(titleElement).toBeInTheDocument();
+  });
+
+  // it("adds an interactive map", () => {
+  //   const mapElement = screen.queryByTestId("interactive-map");
+  //   expect(mapElement).toBeInTheDocument();
+  // });
 });
