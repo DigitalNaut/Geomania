@@ -1,7 +1,7 @@
-import Map from "views/components/Map";
+import Home from "views/Home";
 
 function App() {
-  return <Map />;
+  return <Home />;
 }
 
 export default App;
