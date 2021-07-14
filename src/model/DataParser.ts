@@ -15,8 +15,8 @@ export function getCountryNames(): Promise<string[]> {
 
 async function loadData(): Promise<GeoJSON> {
   //@ts-ignore
-  let data: GeoJSON = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ?
-    await import("data/mock.json") : await import("data/countries.json");
+  let data: GeoJSON = (full) ?
+    await import("data/countries.json") : await import("data/mock.json");
 
   return new Promise((resolve, reject) => {
     if (data)
