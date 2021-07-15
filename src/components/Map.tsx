@@ -6,8 +6,7 @@ import { GeoJSON as GeoJSONType } from "types/map";
 import AboutApp from "utils/AppInfo";
 import { loadData } from "model/DataParser";
 import DevelopmentModeTag from "components/DevelopmentModeTag";
-import Loading from "components/Loading";
-import Error from "components/Error";
+import { Loading, Error } from "components/StatusDisplay";
 
 interface Props {
   styles?: React.CSSProperties;
@@ -43,26 +42,24 @@ class Map extends Component<Props, State> {
   }
 
   render() {
-    if (this.state.loading) return <Loading />;
-    if (this.state.error) return <Error />;
+    if (this.state.loading) return <Loading message="Reading data." />;
+    if (this.state.error) return <Error message="Error loading data." />;
 
-    return (
-      <div
-        className="flex flex-col flex-grow w-full bg-gray-400"
-        data-testid="interactive-map"
-      >
-        <MapContainer
-          style={this.props.styles}
-          zoom={2}
-          center={[25, 0]}
+    if (this.state.countries)
+      return (
+        <div
+          className="flex flex-col flex-grow w-full bg-gray-400 shadow-inner"
+          data-testid="interactive-map"
         >
-          <DevelopmentModeTag
-            text={this.state.countries?.features.length.toString()}
-          />
-          <GeoJSON data={this.state.countries?.features}></GeoJSON>
-        </MapContainer>
-      </div>
-    );
+          <MapContainer style={this.props.styles} zoom={2} center={[25, 0]}>
+            <DevelopmentModeTag
+              text={this.state.countries.features.length.toString()}
+            />
+            <GeoJSON data={this.state.countries.features}></GeoJSON>
+          </MapContainer>
+        </div>
+      );
+    else return <Loading message="Parsing data." />;
   }
 }
 
