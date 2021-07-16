@@ -1,7 +1,11 @@
-import Home from "views/Home";
+import HomeView from "views/HomeView";
 
 function App() {
-  return <Home />;
+  return (
+    <div className="bg-gray-900">
+      <HomeView />
+    </div>
+  );
 }
 
 export default App;

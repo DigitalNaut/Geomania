@@ -3,12 +3,12 @@ import Map from "components/Map";
 import { Component } from "react";
 import Button from "components/Button";
 
-export class Home extends Component {
+export class HomeView extends Component {
   static propTypes = {};
 
   render() {
     return (
-      <div className="flex flex-col w-full h-screen bg-gray-900">
+      <div className="flex flex-col w-full h-screen">
         <Title />
         <Map
           styles={{
@@ -28,4 +28,4 @@ export class Home extends Component {
   }
 }
 
-export default Home;
+export default HomeView;
