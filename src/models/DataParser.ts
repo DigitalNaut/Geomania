@@ -1,4 +1,4 @@
-import { Feature, GeoJSON } from "types/map";
+import { Feature, GeoJSON } from "core/types/map";
 
 export function getCountryNames(): Promise<string[]> {
 
@@ -16,7 +16,7 @@ export function getCountryNames(): Promise<string[]> {
 export async function loadData(mock: Boolean = false): Promise<GeoJSON> {
   //@ts-ignore
   let data: GeoJSON = mock === true ?
-    await import("data/mock.json") : await import("data/countries.json");
+    await import("core/data/mock.json") : await import("core/data/countries.json");
 
   return new Promise((resolve, reject) => {
     if (data) resolve(data);

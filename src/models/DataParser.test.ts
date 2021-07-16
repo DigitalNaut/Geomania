@@ -1,4 +1,4 @@
-import { loadData } from "./DataParser";
+import { loadData } from "models/DataParser";
 
 describe('loads GeoJSON file as object with properties', () => {
   it('loads the mock data', async () => {
