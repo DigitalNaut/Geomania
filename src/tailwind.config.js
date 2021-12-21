@@ -1,8 +1,8 @@
 // cspell:disable
-const colors = require("tailwindcss/colors");
+import colors from "tailwindcss/colors";
 
 /** @type {import("@types/tailwindcss/tailwind-config").TailwindConfig } */
-module.exports = {
+const config = {
   purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   presets: [],
   darkMode: false, // or 'media' or 'class'
@@ -1034,3 +1034,5 @@ module.exports = {
   },
   plugins: [],
 };
+
+export default config;
