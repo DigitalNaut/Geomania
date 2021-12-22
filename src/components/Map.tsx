@@ -10,6 +10,8 @@ import countries from 'src/data/country-markers.json';
 
 Leaflet.Marker.prototype.options.icon = Leaflet.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  iconSize: [25, 41],
+  iconAnchor: [12.5, 41],
 });
 
 const lopLeftCorner = Leaflet.latLng(-90, -200);
