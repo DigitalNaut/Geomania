@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Title from 'src/views/components/Title';
-import Map from 'src/views/components/Map';
-import Button from 'src/views/components/Button';
+import Title from 'src/components/Title';
+import Map from 'src/components/Map';
+import Button from 'src/components/Button';
 
 export default function TestView(): JSX.Element {
   return (
