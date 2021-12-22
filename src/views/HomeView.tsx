@@ -7,7 +7,7 @@ import Button from 'src/views/components/Button';
 
 export default function HomeView(): JSX.Element {
   return (
-      <div className="flex flex-col w-full h-screen">
+    <div className="flex flex-col w-full h-screen">
       <Title />
       <Map
       // zoom={1.75}
