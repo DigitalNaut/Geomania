@@ -1,11 +1,12 @@
-import { render, screen } from "@testing-library/react";
-import App from "./App";
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import App from './App';
 
-describe("rendering the Home page", () => {
+describe('rendering the Home page', () => {
   render(<App />);
 
-  it("adds a title", () => {
-    const titleElement = screen.queryByTestId("app-title");
+  it('adds a title', () => {
+    const titleElement = screen.queryByTestId('app-title');
     expect(titleElement).toBeInTheDocument();
   });
 

@@ -1,22 +1,27 @@
-import React from "react";
-import AppInfo from "utils/AppInfo";
+import React from 'react';
+
+import AppInfo from 'src/utils/AppInfo';
 
 interface Props {
   text?: string;
   callback?: () => void;
 }
 
-const DevelopmentModeTag: React.VFC<Props> = ({ text, callback }) => {
+export default function DevelopmentModeTag({ text, callback }: Props): JSX.Element | null {
   if (AppInfo.isDev())
     return (
-      <div
+      <button
+        type="button"
         onClick={callback}
         className="absolute bottom-0 left-0 italic font-light text-white bg-gray-800 cursor-pointer select-none hover:bg-gray-700"
       >
-        Development Mode {text !== undefined ? `(${text})` : ""}
-      </div>
+        Development Mode {text !== undefined ? `(${text})` : ''}
+      </button>
     );
-  else return <></>;
-};
+  return null;
+}
 
-export default DevelopmentModeTag;
+DevelopmentModeTag.defaultProps = {
+  text: '',
+  callback: () => null,
+};

@@ -1,42 +1,29 @@
-import Title from "views/components/Title";
-import MapDisplay from "views/components/MapDisplay";
-import { Component } from "react";
-import Button from "views/components/Button";
-import MapController from "controllers/components/MapController";
+import React from 'react';
 
-export class HomeView extends Component {
-  static propTypes = {};
+import Title from 'src/views/components/Title';
+import Map from 'src/views/components/MapDisplay';
+import Button from 'src/views/components/Button';
+// import MapController from 'src/controllers/components/MapController';
 
-  render() {
-    return (
+export default function HomeView(): JSX.Element {
+  return (
       <div className="flex flex-col w-full h-screen">
-        <Title />
-        <MapDisplay
-          zoom={1.75}
-          center={[25, 0]}
-          dragging={false}
-          zoomControl={false}
-          doubleClickZoom={false}
-          scrollWheelZoom={false}
-          touchZoom={false}
-          className="flex flex-col flex-grow w-full bg-gray-400"
-          style={{
-            height: "100%",
-            position: "relative",
-          }}
-        >
-          <MapController />
-        </MapDisplay>
-        <Button
-          text="Begin"
-          styles={{
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
-        />
-      </div>
-    );
-  }
+      <Title />
+      <Map
+      // zoom={1.75}
+      // center={[25, 0]}
+      // dragging={false}
+      // zoomControl={false}
+      // doubleClickZoom={false}
+      // scrollWheelZoom={false}
+      // touchZoom={false}
+      // className="flex flex-col flex-grow w-full bg-gray-400"
+      // style={{
+      //   height: '100%',
+      //   position: 'relative',
+      // }}
+      />
+      <Button text="Begin" />
+    </div>
+  );
 }
-
-export default HomeView;

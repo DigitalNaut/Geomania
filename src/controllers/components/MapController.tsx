@@ -1,12 +1,11 @@
-import { useMapEvents } from "react-leaflet";
+import { useMapEvents } from 'react-leaflet';
 
-const MapController = () => {
+export default function MapController() {
   useMapEvents({
-    click: (event) => {
-      console.log("Click");
+    // click: (event) => {
+    click: () => {
+      console.log('Click');
     },
   });
   return null;
-};
-
-export default MapController;
+}

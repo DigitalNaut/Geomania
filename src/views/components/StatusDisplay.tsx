@@ -1,14 +1,16 @@
+import React from 'react';
+
 interface Props {
-  message?: String;
+  message?: string;
 }
 
 interface Children {
-  title: String;
+  title: string;
   children: React.ReactNode;
-  color: "red" | "blue" | "yellow";
+  color: 'red' | 'blue' | 'yellow';
 }
 
-const Wrapper: React.VFC<Children> = ({ title, children, color }) => {
+function Wrapper({ title, children, color }: Children): JSX.Element {
   return (
     <div
       className={`flex flex-col justify-center w-full h-full p-3 text-center text-white bg-${color}-800 text-sm`}
@@ -17,22 +19,30 @@ const Wrapper: React.VFC<Children> = ({ title, children, color }) => {
       {children}
     </div>
   );
-};
+}
 
-const Loading: React.VFC<Props> = ({ message }) => {
+function Loading({ message }: Props): JSX.Element {
   return (
     <Wrapper color="blue" title="Loading...">
       {message && <p>{message}</p>}
     </Wrapper>
   );
+}
+
+Loading.defaultProps = {
+  message: undefined,
 };
 
-const Error: React.VFC<Props> = ({ message }) => {
+function Error({ message }: Props): JSX.Element {
   return (
     <Wrapper color="red" title="Uh oh!">
       {message && <p>{message}</p>}
     </Wrapper>
   );
+}
+
+Error.defaultProps = {
+  message: undefined,
 };
 
 export { Loading, Error };

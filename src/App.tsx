@@ -1,11 +1,11 @@
-import HomeView from "views/HomeView";
+import React from 'react';
 
-function App() {
+import HomeView from 'src/views/HomeView';
+
+export default function App(): JSX.Element {
   return (
     <div className="bg-gray-900">
       <HomeView />
     </div>
   );
 }
-
-export default App;

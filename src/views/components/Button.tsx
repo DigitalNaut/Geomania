@@ -1,19 +1,13 @@
-import React from "react";
+import React from 'react';
 
-const Button: React.VFC<Props> = ({ text, styles }) => {
+interface Props {
+  text: string;
+}
+
+export default function Button({ text }: Props): JSX.Element {
   return (
-    <div
-      className={`w-1/3 p-4 m-9 text-xl font-medium text-center text-white bg-blue-700 rounded-md shadow-md hover:bg-blue-600 hover:shadow-lg cursor-pointer select-none`}
-      style={styles}
-    >
+    <div className="w-1/3 p-4 text-xl font-medium text-center text-white bg-blue-700 rounded-md shadow-md cursor-pointer select-none m-9 hover:bg-blue-600 hover:shadow-lg">
       {text}
     </div>
   );
-};
-
-interface Props {
-  text: String;
-  styles?: React.CSSProperties;
 }
-
-export default Button;

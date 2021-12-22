@@ -1,43 +1,32 @@
-import Title from "views/components/Title";
-import MapDisplay from "views/components/MapDisplay";
-import { Component } from "react";
-import Button from "views/components/Button";
+import React from 'react';
+// import { PathOptions } from 'leaflet';
+// import colors from 'tailwindcss/colors';
 
-import { PathOptions } from "leaflet";
-import fullConfig from "styles/TailwindStyles";
+import Title from 'src/views/components/Title';
+import Map from 'src/views/components/MapDisplay';
+import Button from 'src/views/components/Button';
 
-let mapStyle: PathOptions = {
-  fillColor: fullConfig.theme.colors?.red[600],
-  fillOpacity: 1,
-  color: fullConfig.theme.colors?.gray[300],
-  weight: 0.5,
-  interactive: false,
-};
+// const mapStyle: PathOptions = {
+//   fillColor: colors.red[600],
+//   fillOpacity: 1,
+//   color: colors.gray[300],
+//   weight: 0.5,
+//   interactive: false,
+// };
 
-export class TestView extends Component {
-  static propTypes = {};
-
-  render() {
-    return (
-      <div className="flex flex-col w-full h-screen">
-        <Title />
-        <MapDisplay
-          pathOptions={mapStyle}
-          style={{
-            height: "100%",
-            position: "relative",
-          }}
-        />
-        <Button
-          text="Next"
-          styles={{
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
-        />
-      </div>
-    );
-  }
+export default function TestView(): JSX.Element {
+  return (
+    <div className="flex flex-col w-full h-screen">
+      <Title />
+      <Map
+      //   pathOptions={mapStyle}
+      //   style={{
+      //     height: '100%',
+      //     position: 'relative',
+      //   }}
+      //
+      />
+      <Button text="Next" />
+    </div>
+  );
 }
-
-export default TestView;
