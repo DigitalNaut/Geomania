@@ -1,6 +1,6 @@
 import React from 'react';
 
-import HomeView from 'src/views/HomeView';
+import HomeView from 'src/views/Home';
 
 export default function App(): JSX.Element {
   return (
