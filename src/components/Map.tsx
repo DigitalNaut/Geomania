@@ -27,6 +27,7 @@ export default function Map() {
       layer.bindPopup(popupContent);
     }
   };
+
   return (
     <MapContainer
       style={{ height: '100vh', width: '100vw' }}
@@ -34,6 +35,7 @@ export default function Map() {
       zoom={1.5}
       maxBounds={maxBounds}
       maxBoundsViscosity={1.0}
+      className="shadow-inner"
     >
       <TileLayer
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
