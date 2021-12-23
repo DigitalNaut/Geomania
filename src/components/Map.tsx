@@ -5,7 +5,8 @@ import Leaflet from 'leaflet';
 
 import countries from 'src/data/country-markers.json';
 
-// * https://codesandbox.io/s/react-leaflet-v3-x-geojson-with-typescript-not-rendering-geojson-points-v28ly?file=/src/Map.tsx
+// * Styling layers: https://leafletjs.com/examples/choropleth/
+// * Markers: https://codesandbox.io/s/react-leaflet-v3-x-geojson-with-typescript-not-rendering-geojson-points-v28ly?file=/src/Map.tsx
 
 Leaflet.Marker.prototype.options.icon = Leaflet.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
@@ -41,11 +42,6 @@ export default function Map() {
         attribution="&copy; <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> &copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>"
         url={`https://api.mapbox.com/styles/v1/${process.env.REACT_APP_MAPBOX_USER}/${process.env.REACT_APP_MAPBOX_MAP_STYLE}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_DEV_PK}`}
       />
-      {/* <Marker position={[59.43046, 24.728563]}>
-        <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
-        </Popup>
-      </Marker> */}
       <GeoJSON data={countries as GeoJsonObject} onEachFeature={onEachFeature} />
     </MapContainer>
   );
