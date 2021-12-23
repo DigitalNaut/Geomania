@@ -8,6 +8,7 @@ export default {
     '@storybook/addon-essentials',
     '@storybook/preset-create-react-app',
     {
+      // https://blog.jacobhq.xyz/posts/storybook-tailwind with NextJS
       // https://stackoverflow.com/questions/65495912/storybook-tailwind-how-should-i-add-tailwind-to-storybook
       name: '@storybook/addon-postcss',
       options: {
