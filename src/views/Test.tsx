@@ -9,7 +9,7 @@ export default function TestView(): JSX.Element {
     <div className="flex flex-col w-full h-screen">
       <Title />
       <Map />
-      <Button text="Next" />
+      <Button>Next</Button>
     </div>
   );
 }

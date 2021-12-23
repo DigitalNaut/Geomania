@@ -10,7 +10,7 @@ export default function HomeView(): JSX.Element {
     <div className="flex flex-col w-full h-screen">
       <Title />
       <Map />
-      <Button text="Begin" />
+      <Button>Begin</Button>
     </div>
   );
 }
