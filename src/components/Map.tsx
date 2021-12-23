@@ -2,7 +2,6 @@ import React from 'react';
 import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 import { GeoJsonObject, Feature, Geometry } from 'geojson';
 import Leaflet from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 
 import countries from 'src/data/country-markers.json';
 

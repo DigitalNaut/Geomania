@@ -1,4 +1,5 @@
 import '!style-loader!css-loader!postcss-loader!tailwindcss/tailwind.css';
+import '!style-loader!css-loader!postcss-loader!leaflet/dist/leaflet.css';
 import '!style-loader!css-loader!postcss-loader!../src/index.css';
 
 export const parameters = {
