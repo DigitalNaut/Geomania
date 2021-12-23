@@ -1,11 +1,7 @@
-// cspell:disable
-const colors = require('tailwindcss/colors');
+const colors = require('tailwindcss/colors')
 
-/** @type {import('tailwindcss/tailwind-config').TailwindConfig} */
 module.exports = {
-  purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-  presets: [],
-  darkMode: 'media', // or 'media' or 'class'
+  content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   theme: {
     screens: {
       sm: '640px',
@@ -834,11 +830,11 @@ module.exports = {
     backdropBlur: ['responsive'],
     backdropBrightness: ['responsive'],
     backdropContrast: ['responsive'],
-    backdropDropShadow: ['responsive'],
     backdropFilter: ['responsive'],
     backdropGrayscale: ['responsive'],
     backdropHueRotate: ['responsive'],
     backdropInvert: ['responsive'],
+    backdropOpacity: ['responsive'],
     backdropSaturate: ['responsive'],
     backdropSepia: ['responsive'],
     backgroundAttachment: ['responsive'],
@@ -970,4 +966,4 @@ module.exports = {
     zIndex: ['responsive', 'focus-within', 'focus'],
   },
   plugins: [],
-};
+}

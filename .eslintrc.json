@@ -13,7 +13,8 @@
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended",
     "plugin:css-modules/recommended",
-    "plugin:import/typescript"
+    "plugin:import/typescript",
+    "plugin:storybook/recommended"
   ],
   "env": {
     "browser": true,
@@ -41,12 +42,4 @@
     // We don"t want unused vars
     "@typescript-eslint/no-unused-vars": ["error"]
   }
-  // "overrides": [
-  //   {
-  //     "files": ["**/*.stories.*"],
-  //     "rules": {
-  //       "import/no-anonymous-default-export": "off"
-  //     }
-  //   }
-  // ]
 }
