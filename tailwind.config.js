@@ -237,6 +237,7 @@ module.exports = {
       DEFAULT: '1',
     },
     fontFamily: {
+      playtone: ['"Paytone One"', 'sans-serif'],
       sans: [
         'ui-sans-serif',
         'system-ui',
