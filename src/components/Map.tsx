@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvent } from 'react-leaflet';
 import Leaflet from 'leaflet';
 
 import countries from 'src/data/country-metadata.json';
@@ -44,6 +44,21 @@ const CustomMarker: React.FC<CustomMarkerProps> = ({ position, text }) => {
   return <Marker position={position} icon={icon} />;
 };
 
+function RandomCountryVisitor() {
+  const map = useMapEvent('click', () => {
+    const randomCountryIndex = Math.floor(Math.random() * countries.length);
+    const randomCountry = countries[randomCountryIndex];
+    const countryCoords: Leaflet.LatLngTuple = [
+      Number(randomCountry.latitude),
+      Number(randomCountry.longitude),
+    ];
+
+    map.setZoom(8).flyTo(countryCoords);
+  });
+
+  return null;
+}
+
 export default function Map() {
   const countryMarkers = countries.map((country) => {
     const coordinates: Leaflet.LatLngTuple = [Number(country.latitude), Number(country.longitude)];
@@ -66,6 +81,7 @@ export default function Map() {
         // url={`https://api.mapbox.com/styles/v1/${process.env.REACT_APP_MAPBOX_USER}/${process.env.REACT_APP_MAPBOX_MAP_SATELLITE_STYLE}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_DEV_PK}`}
       />
       {countryMarkers}
+      <RandomCountryVisitor />
     </MapContainer>
   );
 }
