@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import Leaflet from 'leaflet';
 
-import Input from 'src/components/Input';
+import Input from 'src/components/Map/Input';
 import RandomCountryVisitorCtrl, { CountryDataType } from 'src/controllers/MapController';
 
 // * Styling layers: https://leafletjs.com/examples/choropleth/
