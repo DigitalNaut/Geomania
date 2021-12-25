@@ -3,8 +3,8 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import Leaflet from 'leaflet';
 
 import Input from 'src/components/Map/Input';
-import RandomCountryVisitorCtrl, { CountryDataType } from 'src/controllers/MapController';
-import { mapUrlMapbox, mapUrlOSM } from 'src/resources';
+import CountryVisitorCtrl, { CountryDataType } from 'src/controllers/MapController';
+import { MAPBOX_TILEMAP_URL, OSM_TILEMAP_URL } from 'src/resources';
 
 // * Styling layers: https://leafletjs.com/examples/choropleth/
 // * Markers: https://codesandbox.io/s/react-leaflet-v3-x-geojson-with-typescript-not-rendering-geojson-points-v28ly?file=/src/Map.tsx
@@ -32,12 +32,12 @@ export default function Map() {
       <TileLayer
         className=""
         attribution="&copy; <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> &copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>"
-        url={isUseMapbox ? mapUrlMapbox : mapUrlOSM}
+        url={isUseMapbox ? MAPBOX_TILEMAP_URL : OSM_TILEMAP_URL}
       />
       {countryData && (
         <Input position={[countryData.latitude, countryData.longitude]} text={countryData.name} />
       )}
-      <RandomCountryVisitorCtrl callback={setCountryData} />
+      <CountryVisitorCtrl callback={setCountryData} />
     </MapContainer>
   );
 }
