@@ -1,3 +1,4 @@
+import React from 'react';
 import Leaflet from 'leaflet';
 import { useMapEvent } from 'react-leaflet';
 import countries from 'src/data/country-metadata.json';
@@ -10,17 +11,26 @@ type RandomCountryVisitorProps = {
   callback: StateUpdateFn;
 };
 
-export default function RandomCountryVisitorCtrl({ callback }: RandomCountryVisitorProps) {
+export default function CountryVisitorCtrl({ callback }: RandomCountryVisitorProps) {
+  function getCountry(
+    random: boolean,
+    effect?: () => void,
+  ): [CountryDataType, Leaflet.LatLngTuple] {
+    const countryIndex = random ? Math.floor(Math.random() * countries.length) : 0;
+    const country: CountryDataType = countries[countryIndex];
+    const countryCoords: Leaflet.LatLngTuple = [country.latitude, country.longitude];
+
+    if (effect) effect();
+
+    return [country, countryCoords];
+  }
+
   // * Map Controller
 
   const map = useMapEvent('click', () => {
-    const randomCountryIndex = 0; // Predetermined
-    // const randomCountryIndex = Math.floor(Math.random() * countries.length); // Random
-    const randomCountry = countries[randomCountryIndex];
-    const countryCoords: Leaflet.LatLngTuple = [randomCountry.latitude, randomCountry.longitude];
+    const [randomCountry, countryCoords] = getCountry(false);
 
     map.flyTo(countryCoords, 5, { animate: true, duration: 0.1 });
-
     callback(randomCountry);
   });
 
