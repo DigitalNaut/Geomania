@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import Leaflet from 'leaflet';
 
@@ -17,8 +17,11 @@ const maxBounds = Leaflet.latLngBounds(lopLeftCorner, bottomRightCorner);
 const isUseMapbox = false;
 
 // Viewport
+type Props = {
+  children?: ReactElement;
+};
 
-export default function Map() {
+export default function Map({ children }: Props) {
   const [countryData, setCountryData] = useState<CountryDataType>();
 
   return (
@@ -38,6 +41,11 @@ export default function Map() {
         <Input position={[countryData.latitude, countryData.longitude]} text={countryData.name} />
       )}
       <CountryVisitorCtrl callback={setCountryData} />
+      {children}
     </MapContainer>
   );
 }
+
+Map.defaultProps = {
+  children: null,
+};

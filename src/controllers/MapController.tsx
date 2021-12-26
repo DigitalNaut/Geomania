@@ -36,3 +36,7 @@ export default function CountryVisitorCtrl({ callback }: RandomCountryVisitorPro
 
   return null;
 }
+
+CountryVisitorCtrl.defaultProps = {
+  callback: () => null,
+};
