@@ -1,9 +1,9 @@
-import React, { ReactElement, useState } from 'react';
+import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import Leaflet from 'leaflet';
 
-import Input from 'src/components/Map/Input';
-import CountryVisitorCtrl, { CountryDataType } from 'src/controllers/MapController';
+// import Input from 'src/components/Map/Input';
+// import CountryVisitorCtrl, { CountryDataType } from 'src/controllers/MapController';
 import { MAPBOX_TILEMAP_URL, OSM_TILEMAP_URL } from 'src/resources';
 
 // * Styling layers: https://leafletjs.com/examples/choropleth/
@@ -17,13 +17,7 @@ const maxBounds = Leaflet.latLngBounds(lopLeftCorner, bottomRightCorner);
 const isUseMapbox = false;
 
 // Viewport
-type Props = {
-  children?: ReactElement;
-};
-
-export default function Map({ children }: Props) {
-  const [countryData, setCountryData] = useState<CountryDataType>();
-
+const Map: React.FC = ({ children }) => {
   return (
     <MapContainer
       center={maxBounds.getCenter()}
@@ -37,15 +31,9 @@ export default function Map({ children }: Props) {
         attribution="&copy; <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> &copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>"
         url={isUseMapbox ? MAPBOX_TILEMAP_URL : OSM_TILEMAP_URL}
       />
-      {countryData && (
-        <Input position={[countryData.latitude, countryData.longitude]} text={countryData.name} />
-      )}
-      <CountryVisitorCtrl callback={setCountryData} />
       {children}
     </MapContainer>
   );
-}
-
-Map.defaultProps = {
-  children: null,
 };
+
+export default Map;
