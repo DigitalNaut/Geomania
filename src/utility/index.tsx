@@ -2,7 +2,7 @@ const nameExp = /^(.+), (.+)$/;
 const nameQualifierExp = /^.+,.+$/;
 
 export function fixName(text: string) {
-  if (text.length) return 'O'.repeat(text.length);
+  // if (text.length) return 'O'.repeat(text.length);
 
   if (!nameQualifierExp.test(text)) return text;
 
