@@ -7,20 +7,15 @@ import Button from 'src/components/Button';
 import CountryVisitorCtrl, { newRandomCountry } from 'src/controllers/MapController';
 import { markerIcon } from 'src/components/Map/Marker';
 import { useMapContext } from 'src/controllers/MapContext';
-import { LatLngTuple } from 'leaflet';
 import { fixName } from 'src/utility';
 
 export default function Home(): JSX.Element {
-  const { map, countryData, setCountryData } = useMapContext();
+  const { map, countryData, countryCoords, setCountryData } = useMapContext();
   const isActive = useMemo(() => !!(map && setCountryData), [map, setCountryData]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [userInput, setUserInput] = useState('');
-
-  const countryCoords: LatLngTuple | null = useMemo(
-    () => (countryData ? [countryData.latitude, countryData.longitude] : null),
-    [countryData],
-  );
+  const [cheat, setCheat] = useState('');
 
   function focusInput() {
     if (inputRef?.current) inputRef.current.focus();
@@ -63,6 +58,8 @@ export default function Home(): JSX.Element {
       }\nSolution: ${countryName}\nEqual?: ${inputMatches()}`,
     );
 
+    setCheat(inputMatches() ? '' : countryName);
+
     if (map && countryCoords) map.flyTo(countryCoords, 5, { animate: true, duration: 0.1 });
 
     if (!countryData?.name) nextCountry();
@@ -73,7 +70,7 @@ export default function Home(): JSX.Element {
     focusInput();
   };
 
-  const onEnterKey: React.KeyboardEventHandler<HTMLElement> = (event) => {
+  const onKeyDown: React.KeyboardEventHandler<HTMLElement> = (event) => {
     if (event.key === 'Enter') onSubmit();
   };
 
@@ -82,7 +79,9 @@ export default function Home(): JSX.Element {
       <Title />
       <Map>
         {countryData && (
-          <Marker position={[countryData.latitude, countryData.longitude]} icon={markerIcon} />
+          <>
+            <Marker position={[countryData.latitude, countryData.longitude]} icon={markerIcon} />
+          </>
         )}
         <CountryVisitorCtrl onSubmit={onSubmit} />
       </Map>
@@ -95,12 +94,13 @@ export default function Home(): JSX.Element {
               className="p-1 pl-4 text-xl text-black"
               value={userInput}
               onChange={(e) => setUserInput(e.currentTarget.value)}
-              onKeyDown={onEnterKey}
+              onKeyDown={onKeyDown}
             />
             <Button fit disabled={!isActive} onClick={onSubmit}>
               Submit
             </Button>
           </div>
+          <span>{cheat}</span>
         </div>
       ) : (
         <div className="flex justify-center w-full p-6 text-lg text-white">
