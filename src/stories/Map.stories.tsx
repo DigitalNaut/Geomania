@@ -8,6 +8,6 @@ export default {
   component: Map,
 } as ComponentMeta<typeof Map>;
 
-const Template: ComponentStory<typeof Map> = () => <Map />;
+const Template: ComponentStory<typeof Map> = (args) => <Map {...args} />;
 
 export const Primary = Template.bind({});

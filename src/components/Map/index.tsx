@@ -2,12 +2,10 @@ import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import Leaflet from 'leaflet';
 
-// import Input from 'src/components/Map/Input';
-// import CountryVisitorCtrl, { CountryDataType } from 'src/controllers/MapController';
 import { MAPBOX_TILEMAP_URL, OSM_TILEMAP_URL } from 'src/resources';
 
-// * Styling layers: https://leafletjs.com/examples/choropleth/
-// * Markers: https://codesandbox.io/s/react-leaflet-v3-x-geojson-with-typescript-not-rendering-geojson-points-v28ly?file=/src/Map.tsx
+// * On Styling layers: https://leafletjs.com/examples/choropleth/
+// * On Markers: https://codesandbox.io/s/react-leaflet-v3-x-geojson-with-typescript-not-rendering-geojson-points-v28ly?file=/src/Map.tsx
 
 // Properties
 
@@ -17,6 +15,7 @@ const maxBounds = Leaflet.latLngBounds(lopLeftCorner, bottomRightCorner);
 const isUseMapbox = false;
 
 // Viewport
+
 const Map: React.FC = ({ children }) => {
   return (
     <MapContainer

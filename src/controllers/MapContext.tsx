@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import Leaflet from 'leaflet';
 
-import { CountryDataType } from './MapController';
+import { CountryDataType } from 'src/controllers/MapController';
 
 export type MapContextType = {
   map?: Leaflet.Map;
