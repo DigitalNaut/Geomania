@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Marker } from 'react-leaflet';
 
 import Title from 'src/components/Title';
@@ -8,10 +8,12 @@ import CountryVisitorCtrl, { newRandomCountry } from 'src/controllers/MapControl
 import { markerIcon } from 'src/components/Map/Marker';
 import { useMapContext } from 'src/controllers/MapContext';
 import { LatLngTuple } from 'leaflet';
+import { fixName } from 'src/utility';
 
 export default function Home(): JSX.Element {
   const { map, countryData, setCountryData } = useMapContext();
   const isActive = useMemo(() => !!(map && setCountryData), [map, setCountryData]);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [userInput, setUserInput] = useState('');
 
@@ -20,26 +22,55 @@ export default function Home(): JSX.Element {
     [countryData],
   );
 
+  function focusInput() {
+    if (inputRef?.current) inputRef.current.focus();
+  }
+
   const centerMap = useCallback(() => {
     if (map && countryCoords) map.flyTo(countryCoords, 5, { animate: true, duration: 0.1 });
   }, [map, countryCoords]);
+
+  function nextCountry() {
+    if (!setCountryData) return null;
+
+    const newCountry = newRandomCountry();
+    setCountryData(newCountry);
+
+    return newCountry;
+  }
 
   useEffect(() => {
     centerMap();
   }, [centerMap]);
 
-  const onSubmit = () => {
-    if (!setCountryData) return;
+  function getCountryName() {
+    return fixName(countryData?.name || '');
+  }
 
-    console.log('Userinput:', userInput, 'Country Name:', countryData?.name);
+  function getFixedInput() {
+    return userInput.trim();
+  }
+
+  const inputMatches = () => getFixedInput() === getCountryName();
+
+  const onSubmit = () => {
+    const countryName = getCountryName();
+    const stdInput = getFixedInput();
+
+    console.log(
+      `User: ${
+        stdInput || '<<Empty string>>'
+      }\nSolution: ${countryName}\nEqual?: ${inputMatches()}`,
+    );
 
     if (map && countryCoords) map.flyTo(countryCoords, 5, { animate: true, duration: 0.1 });
 
-    if (!countryData?.name) setCountryData(newRandomCountry());
-    if (userInput === countryData?.name) {
-      setCountryData(newRandomCountry());
-      setUserInput('');
+    if (!countryData?.name) nextCountry();
+    if (inputMatches()) {
+      setUserInput(nextCountry()?.name.charAt(0) || '');
     }
+
+    focusInput();
   };
 
   const onEnterKey: React.KeyboardEventHandler<HTMLElement> = (event) => {
@@ -60,12 +91,12 @@ export default function Home(): JSX.Element {
           <p>What country is this?</p>
           <div className="flex justify-center">
             <input
+              ref={inputRef}
               className="p-1 pl-4 text-xl text-black"
               value={userInput}
               onChange={(e) => setUserInput(e.currentTarget.value)}
               onKeyDown={onEnterKey}
             />
-
             <Button fit disabled={!isActive} onClick={onSubmit}>
               Submit
             </Button>
