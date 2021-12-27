@@ -1,16 +1,11 @@
-import React from 'react';
 import Leaflet from 'leaflet';
 import { useMapEvents } from 'react-leaflet';
+
 import countries from 'src/data/country-metadata.json';
 
-export type CountryDataType = typeof countries[number];
+import { useMapContext } from './MapContext';
 
-type SaveCountryFn = React.Dispatch<React.SetStateAction<CountryDataType | undefined>> | undefined;
-type RandomCountryVisitorProps = {
-  countryData?: CountryDataType;
-  saveCountry: SaveCountryFn;
-  setMap?: React.Dispatch<React.SetStateAction<Leaflet.Map | undefined>>;
-};
+export type CountryDataType = typeof countries[number];
 
 export function getNextCountry(
   random: boolean,
@@ -25,20 +20,23 @@ export function getNextCountry(
   return [country, countryCoords];
 }
 
-export function flyToRandomCountry(map: Leaflet.Map) {
-  const [randomCountry, countryCoords] = getNextCountry(true);
-
-  map.flyTo(countryCoords, 5, { animate: true, duration: 0.1 });
+export function newRandomCountry() {
+  const [randomCountry] = getNextCountry(true);
 
   return randomCountry;
 }
 
-export default function CountryVisitorCtrl({ saveCountry, setMap }: RandomCountryVisitorProps) {
+type Props = {
+  onSubmit?: () => void;
+};
+export default function CountryVisitorCtrl({ onSubmit }: Props) {
+  const { setMap } = useMapContext();
+
   // * Map Controller
 
   const leafletMap = useMapEvents({
     click() {
-      if (saveCountry) saveCountry(flyToRandomCountry(leafletMap));
+      if (onSubmit) onSubmit();
       if (setMap) setMap((oldMap) => oldMap || leafletMap);
     },
   });
