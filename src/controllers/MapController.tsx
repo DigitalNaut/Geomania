@@ -1,37 +1,46 @@
 import React from 'react';
 import Leaflet from 'leaflet';
-import { useMapEvent } from 'react-leaflet';
+import { useMapEvents } from 'react-leaflet';
 import countries from 'src/data/country-metadata.json';
 
 export type CountryDataType = typeof countries[number];
 
-type StateUpdateFn = React.Dispatch<React.SetStateAction<CountryDataType | undefined>>;
+type SaveCountryFn = React.Dispatch<React.SetStateAction<CountryDataType | undefined>> | undefined;
 type RandomCountryVisitorProps = {
   countryData?: CountryDataType;
-  callback: StateUpdateFn;
+  saveCountry: SaveCountryFn;
+  setMap?: React.Dispatch<React.SetStateAction<Leaflet.Map | undefined>>;
 };
 
-export default function CountryVisitorCtrl({ callback }: RandomCountryVisitorProps) {
-  function getCountry(
-    random: boolean,
-    effect?: () => void,
-  ): [CountryDataType, Leaflet.LatLngTuple] {
-    const countryIndex = random ? Math.floor(Math.random() * countries.length) : 0;
-    const country: CountryDataType = countries[countryIndex];
-    const countryCoords: Leaflet.LatLngTuple = [country.latitude, country.longitude];
+export function getNextCountry(
+  random: boolean,
+  effect?: () => void,
+): [CountryDataType, Leaflet.LatLngTuple] {
+  const countryIndex = random ? Math.floor(Math.random() * countries.length) : 0;
+  const country: CountryDataType = countries[countryIndex];
+  const countryCoords: Leaflet.LatLngTuple = [country.latitude, country.longitude];
 
-    if (effect) effect();
+  if (effect) effect();
 
-    return [country, countryCoords];
-  }
+  return [country, countryCoords];
+}
 
+export function flyToRandomCountry(map: Leaflet.Map) {
+  const [randomCountry, countryCoords] = getNextCountry(true);
+
+  map.flyTo(countryCoords, 5, { animate: true, duration: 0.1 });
+
+  return randomCountry;
+}
+
+export default function CountryVisitorCtrl({ saveCountry, setMap }: RandomCountryVisitorProps) {
   // * Map Controller
 
-  const map = useMapEvent('click', () => {
-    const [randomCountry, countryCoords] = getCountry(false);
-
-    map.flyTo(countryCoords, 5, { animate: true, duration: 0.1 });
-    callback(randomCountry);
+  const leafletMap = useMapEvents({
+    click() {
+      if (saveCountry) saveCountry(flyToRandomCountry(leafletMap));
+      if (setMap) setMap((oldMap) => oldMap || leafletMap);
+    },
   });
 
   return null;

@@ -1,15 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import MapContextProvider from 'src/controllers/MapContext';
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import 'leaflet/dist/leaflet.css';
-import './index.css';
+import 'src/index.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <MapContextProvider>
+      <App />
+    </MapContextProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 );
