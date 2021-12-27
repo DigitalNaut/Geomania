@@ -57,7 +57,7 @@ export default function Home(): JSX.Element {
       </Map>
       {countryData ? (
         <div className="flex flex-col w-full p-6 text-center text-white align-center">
-          <p>Which country is this?</p>
+          <p>What country is this?</p>
           <div className="flex justify-center">
             <input
               className="p-1 pl-4 text-xl text-black"
