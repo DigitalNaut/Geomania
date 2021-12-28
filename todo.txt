@@ -19,3 +19,6 @@ Map Caching:
 Map Styles:
   https://openmaptiles.org/styles/
   https://github.com/maputnik/osm-liberty
+
+Country Geometries as Polygons:
+  https://datahub.io/core/geo-countries#data
