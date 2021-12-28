@@ -74,6 +74,10 @@ export default function Home(): JSX.Element {
     if (event.key === 'Enter') onSubmit();
   };
 
+  const onCheat = () => {
+    setUserInput(fixName(countryData?.name || ''));
+  };
+
   return (
     <div className="flex flex-col w-full h-screen">
       <Title />
@@ -100,7 +104,9 @@ export default function Home(): JSX.Element {
               Submit
             </Button>
           </div>
-          <span>{cheat}</span>
+          <button type="button" onClick={onCheat}>
+            {cheat}
+          </button>
         </div>
       ) : (
         <div className="flex justify-center w-full p-6 text-lg text-white">
