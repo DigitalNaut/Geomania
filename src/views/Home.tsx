@@ -12,9 +12,10 @@ import { fixName } from 'src/utility';
 import * as Realm from 'realm-web';
 import { getData } from 'src/controllers/database';
 import { PathOptions } from 'leaflet';
-import styles from 'src/styles/TailwindStyles';
 import { GeoJsonObject } from 'geojson';
 import colors from 'tailwindcss/colors';
+
+// import styles from 'src/styles/TailwindStyles';
 
 const REALM_APP_ID = 'geomania-gxxmr'; // e.g. myapp-abcde
 export const realmApp: Realm.App = new Realm.App({ id: REALM_APP_ID });
@@ -39,8 +40,6 @@ export const Login: React.FC<{ setUser: (user: Realm.User) => void }> = ({ setUs
     </button>
   );
 };
-
-const themeColors = styles?.theme?.colors;
 
 const countryStyle: PathOptions = {
   fillColor: colors.green[700],
@@ -119,14 +118,28 @@ export default function Home(): JSX.Element {
     setUserInput(fixName(countryData?.name || ''));
   };
 
-  const [countryGeometry, setCountryGeometry] = useState<GeoJsonObject>();
+  const [countryGeometry, setCountryGeometry] = useState<
+    GeoJsonObject & {
+      properties: {
+        ADMIN: string;
+        ISO_A3: string;
+      };
+    }
+  >();
 
   useEffect(() => {
     async function getGeometry() {
       if (!user || !countryData) return;
 
       const geometry = (await getData(user, countryData.alpha3)) as unknown;
-      setCountryGeometry(geometry as GeoJsonObject);
+      setCountryGeometry(
+        geometry as GeoJsonObject & {
+          properties: {
+            ADMIN: string;
+            ISO_A3: string;
+          };
+        },
+      );
     }
     getGeometry();
   }, [user, countryData]);
@@ -140,6 +153,14 @@ export default function Home(): JSX.Element {
     <div className="flex flex-col w-full h-screen">
       <Title />
       {user ? <UserDetail user={user} /> : <Login setUser={setUser} />}
+
+      {(countryData?.geometry && !countryGeometry) ||
+        (countryData?.geometry && countryData?.alpha3 !== countryGeometry?.properties.ISO_A3 && (
+          <div className="w-full h-full shadow-inner text-white bg-gray-800 absolute z-50">
+            Loading
+          </div>
+        ))}
+
       <Map>
         {countryData && (
           <Marker position={[countryData.latitude, countryData.longitude]} icon={markerIcon} />
@@ -149,6 +170,7 @@ export default function Home(): JSX.Element {
         )}
         <CountryVisitorCtrl onSubmit={onSubmit} />
       </Map>
+
       {countryData ? (
         <div className="flex flex-col w-full p-6 text-center text-white align-center">
           <p>What country is this?</p>

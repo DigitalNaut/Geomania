@@ -46,4 +46,8 @@ const Map: React.FC = ({ children }) => {
   );
 };
 
+// Map.defaultProps = {
+//   hidden: undefined,
+// };
+
 export default Map;
