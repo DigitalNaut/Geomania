@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Marker } from 'react-leaflet';
+import { Marker, GeoJSON } from 'react-leaflet';
 
 import Title from 'src/components/Title';
 import Map from 'src/components/Map';
@@ -9,6 +9,47 @@ import { markerIcon } from 'src/components/Map/Marker';
 import { useMapContext } from 'src/controllers/MapContext';
 import { fixName } from 'src/utility';
 
+import * as Realm from 'realm-web';
+import { getData } from 'src/controllers/database';
+import { PathOptions } from 'leaflet';
+import styles from 'src/styles/TailwindStyles';
+import { GeoJsonObject } from 'geojson';
+import colors from 'tailwindcss/colors';
+
+const REALM_APP_ID = 'geomania-gxxmr'; // e.g. myapp-abcde
+export const realmApp: Realm.App = new Realm.App({ id: REALM_APP_ID });
+
+// Create a component that displays the given user's details
+export const UserDetail: React.FC<{ user: Realm.User }> = ({ user }) => {
+  return (
+    <div>
+      <h1 className="text-white">Logged in with anonymous id: {user.id} </h1>
+    </div>
+  );
+};
+// Create a component that lets an anonymous user log in
+export const Login: React.FC<{ setUser: (user: Realm.User) => void }> = ({ setUser }) => {
+  const loginAnonymous = async () => {
+    const user: Realm.User = await realmApp.logIn(Realm.Credentials.anonymous());
+    setUser(user);
+  };
+  return (
+    <button type="button" className="text-white" onClick={loginAnonymous}>
+      Log In
+    </button>
+  );
+};
+
+const themeColors = styles?.theme?.colors;
+
+const countryStyle: PathOptions = {
+  fillColor: colors.green[700],
+  fillOpacity: 1,
+  color: colors.gray[300],
+  weight: 1,
+  interactive: false,
+};
+
 export default function Home(): JSX.Element {
   const { map, countryData, countryCoords, setCountryData } = useMapContext();
   const isActive = useMemo(() => !!(map && setCountryData), [map, setCountryData]);
@@ -16,6 +57,8 @@ export default function Home(): JSX.Element {
 
   const [userInput, setUserInput] = useState('');
   const [cheat, setCheat] = useState('');
+
+  const [user, setUser] = React.useState<Realm.User | null>(realmApp.currentUser);
 
   function focusInput() {
     if (inputRef?.current) inputRef.current.focus();
@@ -38,7 +81,7 @@ export default function Home(): JSX.Element {
     centerMap();
   }, [centerMap]);
 
-  function getCountryName() {
+  function getFixedCountryName() {
     return fixName(countryData?.name || '');
   }
 
@@ -46,10 +89,10 @@ export default function Home(): JSX.Element {
     return userInput.trim();
   }
 
-  const inputMatches = () => getFixedInput() === getCountryName();
+  const inputMatches = () => getFixedInput() === getFixedCountryName();
 
   const onSubmit = () => {
-    const countryName = getCountryName();
+    const countryName = getFixedCountryName();
     const stdInput = getFixedInput();
 
     console.log(
@@ -63,9 +106,7 @@ export default function Home(): JSX.Element {
     if (map && countryCoords) map.flyTo(countryCoords, 5, { animate: true, duration: 0.1 });
 
     if (!countryData?.name) nextCountry();
-    if (inputMatches()) {
-      setUserInput(nextCountry()?.name.charAt(0) || '');
-    }
+    else if (inputMatches()) setUserInput(nextCountry()?.name.charAt(0) || '');
 
     focusInput();
   };
@@ -78,14 +119,33 @@ export default function Home(): JSX.Element {
     setUserInput(fixName(countryData?.name || ''));
   };
 
+  const [countryGeometry, setCountryGeometry] = useState<GeoJsonObject>();
+
+  useEffect(() => {
+    async function getGeometry() {
+      if (!user || !countryData) return;
+
+      const geometry = (await getData(user, countryData.alpha3)) as unknown;
+      setCountryGeometry(geometry as GeoJsonObject);
+    }
+    getGeometry();
+  }, [user, countryData]);
+
+  function debugNow() {
+    console.log('Repaint');
+    return Date.now();
+  }
+
   return (
     <div className="flex flex-col w-full h-screen">
       <Title />
+      {user ? <UserDetail user={user} /> : <Login setUser={setUser} />}
       <Map>
         {countryData && (
-          <>
-            <Marker position={[countryData.latitude, countryData.longitude]} icon={markerIcon} />
-          </>
+          <Marker position={[countryData.latitude, countryData.longitude]} icon={markerIcon} />
+        )}
+        {countryGeometry && (
+          <GeoJSON key={debugNow()} data={countryGeometry} style={countryStyle} />
         )}
         <CountryVisitorCtrl onSubmit={onSubmit} />
       </Map>

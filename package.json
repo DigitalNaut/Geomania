@@ -37,6 +37,7 @@
     "react-leaflet": "^3.2.0",
     "react-scripts": "5.0.0",
     "react-spring": "^9.2.4",
+    "realm-web": "^1.5.1",
     "web-vitals": "^1.1.2"
   },
   "devDependencies": {
