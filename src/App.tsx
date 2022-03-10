@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Home from 'src/views/Home';
+import Home from 'src/components/Home';
 
 export default function App(): JSX.Element {
   return (

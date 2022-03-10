@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Marker, GeoJSON } from 'react-leaflet';
 
 import fullConfig from 'src/styles/TailwindStyles';
@@ -64,10 +64,6 @@ export default function Home(): JSX.Element {
     if (inputRef?.current) inputRef.current.focus();
   }
 
-  const centerMap = useCallback(() => {
-    if (map && countryCoords) map.flyTo(countryCoords, 5, { animate: true, duration: 0.1 });
-  }, [map, countryCoords]);
-
   function nextCountry() {
     if (!setCountryData) return null;
 
@@ -76,10 +72,6 @@ export default function Home(): JSX.Element {
 
     return newCountry;
   }
-
-  useEffect(() => {
-    centerMap();
-  }, [centerMap]);
 
   function getFixedCountryName() {
     return fixName(countryData?.name || '');
@@ -128,6 +120,11 @@ export default function Home(): JSX.Element {
     }
   >();
 
+  // Center map
+  useEffect(() => {
+    if (map && countryCoords) map.flyTo(countryCoords, 5, { animate: true, duration: 0.1 });
+  }, [map, countryCoords]);
+
   useEffect(() => {
     async function getGeometry() {
       if (!user || !countryData) return;
@@ -153,7 +150,7 @@ export default function Home(): JSX.Element {
 
   return (
     <div className="flex flex-col w-full h-screen">
-      <Title />
+      <Title>Geomania</Title>
       {user ? <UserDetail user={user} /> : <Login setUser={setUser} />}
 
       {(countryData?.geometry && !countryGeometry) ||
