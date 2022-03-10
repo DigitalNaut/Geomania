@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Marker, GeoJSON } from 'react-leaflet';
 
+import fullConfig from 'src/styles/TailwindStyles';
+
 import Title from 'src/components/Title';
 import Map from 'src/components/Map';
 import Button from 'src/components/Button';
@@ -13,7 +15,6 @@ import * as Realm from 'realm-web';
 import { getData } from 'src/controllers/database';
 import { PathOptions } from 'leaflet';
 import { GeoJsonObject } from 'geojson';
-import colors from 'tailwindcss/colors';
 
 // import styles from 'src/styles/TailwindStyles';
 
@@ -24,7 +25,7 @@ export const realmApp: Realm.App = new Realm.App({ id: REALM_APP_ID });
 export const UserDetail: React.FC<{ user: Realm.User }> = ({ user }) => {
   return (
     <div>
-      <h1 className="text-white">Logged in with anonymous id: {user.id} </h1>
+      <h1 className="text-white">Logged in with id: {user.id} </h1>
     </div>
   );
 };
@@ -42,9 +43,9 @@ export const Login: React.FC<{ setUser: (user: Realm.User) => void }> = ({ setUs
 };
 
 const countryStyle: PathOptions = {
-  fillColor: colors.green[700],
+  fillColor: fullConfig.theme.colors?.green[700],
   fillOpacity: 1,
-  color: colors.gray[300],
+  color: fullConfig.theme.colors?.gray[300],
   weight: 1,
   interactive: false,
 };
@@ -132,6 +133,7 @@ export default function Home(): JSX.Element {
       if (!user || !countryData) return;
 
       const geometry = (await getData(user, countryData.alpha3)) as unknown;
+      console.log('Fetching data:', geometry);
       setCountryGeometry(
         geometry as GeoJsonObject & {
           properties: {
@@ -156,7 +158,7 @@ export default function Home(): JSX.Element {
 
       {(countryData?.geometry && !countryGeometry) ||
         (countryData?.geometry && countryData?.alpha3 !== countryGeometry?.properties.ISO_A3 && (
-          <div className="w-full h-full shadow-inner text-white bg-gray-800 absolute z-50">
+          <div className="absolute z-50 w-full h-full text-white bg-gray-800 shadow-inner">
             Loading
           </div>
         ))}
