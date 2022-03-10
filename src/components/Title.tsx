@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
-export default function Title(): JSX.Element {
+type Props = {
+  children: ReactNode;
+};
+
+export default function Title({ children }: Props): JSX.Element {
   return (
     <div
       className="max-w-full p-2 text-3xl text-white uppercase bg-green-800 shadow-lg drop-shadow-sm font-playtone"
       data-testid="app-title"
     >
-      Geomania
+      {children}
     </div>
   );
 }

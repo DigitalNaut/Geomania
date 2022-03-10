@@ -8,6 +8,6 @@ export default {
   component: Title,
 } as ComponentMeta<typeof Title>;
 
-const Template: ComponentStory<typeof Title> = () => <Title />;
+const Template: ComponentStory<typeof Title> = () => <Title>Title</Title>;
 
 export const Primary = Template.bind({});
