@@ -1,46 +1,20 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Marker, GeoJSON } from 'react-leaflet';
+import { PathOptions } from 'leaflet';
+import * as Realm from 'realm-web';
+import { GeoJsonObject } from 'geojson';
 
 import fullConfig from 'src/styles/TailwindStyles';
+import { fixName } from 'src/utility';
 
 import Title from 'src/components/Title';
 import Map from 'src/components/Map';
 import Button from 'src/components/Button';
-import CountryVisitorCtrl, { newRandomCountry } from 'src/controllers/MapController';
 import { markerIcon } from 'src/components/Map/Marker';
+
+import CountryVisitorCtrl, { newRandomCountry } from 'src/controllers/MapController';
+import { getCountryGeometry, Login, realmApp, UserDetail } from 'src/controllers/UserData';
 import { useMapContext } from 'src/controllers/MapContext';
-import { fixName } from 'src/utility';
-
-import * as Realm from 'realm-web';
-import { getData } from 'src/controllers/database';
-import { PathOptions } from 'leaflet';
-import { GeoJsonObject } from 'geojson';
-
-// import styles from 'src/styles/TailwindStyles';
-
-const REALM_APP_ID = 'geomania-gxxmr'; // e.g. myapp-abcde
-export const realmApp: Realm.App = new Realm.App({ id: REALM_APP_ID });
-
-// Create a component that displays the given user's details
-export const UserDetail: React.FC<{ user: Realm.User }> = ({ user }) => {
-  return (
-    <div>
-      <h1 className="text-white">Logged in with id: {user.id} </h1>
-    </div>
-  );
-};
-// Create a component that lets an anonymous user log in
-export const Login: React.FC<{ setUser: (user: Realm.User) => void }> = ({ setUser }) => {
-  const loginAnonymous = async () => {
-    const user: Realm.User = await realmApp.logIn(Realm.Credentials.anonymous());
-    setUser(user);
-  };
-  return (
-    <button type="button" className="text-white" onClick={loginAnonymous}>
-      Log In
-    </button>
-  );
-};
 
 const countryStyle: PathOptions = {
   fillColor: fullConfig.theme.colors?.green[700],
@@ -129,7 +103,7 @@ export default function Home(): JSX.Element {
     async function getGeometry() {
       if (!user || !countryData) return;
 
-      const geometry = (await getData(user, countryData.alpha3)) as unknown;
+      const geometry = (await getCountryGeometry(user, countryData.alpha3)) as unknown;
       console.log('Fetching data:', geometry);
       setCountryGeometry(
         geometry as GeoJsonObject & {
