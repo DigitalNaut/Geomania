@@ -9,8 +9,10 @@ module.exports = {
     },
   },
   babel: {
-    plugins: ["@babel/plugin-proposal-nullish-coalescing-operator"],
+    plugins: [
+      "@babel/plugin-proposal-nullish-coalescing-operator",
+      "preval",
+    ],
     // https://marabesi.com/web/2021/10/31/sharing-tailwind-config-elsewhere-for-variable-access.html
-    plugins: ['preval']
   },
 };
