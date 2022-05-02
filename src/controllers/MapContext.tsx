@@ -1,23 +1,35 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
-import Leaflet from 'leaflet';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  Dispatch,
+  SetStateAction,
+  FC,
+} from 'react';
+import Leaflet, { Map } from 'leaflet';
 
 import { CountryDataType } from 'src/controllers/MapController';
 
-export type MapContextType = {
-  map?: Leaflet.Map;
-  setMap?: React.Dispatch<React.SetStateAction<Leaflet.Map | undefined>>;
-  countryData?: CountryDataType;
-  setCountryData?: React.Dispatch<React.SetStateAction<CountryDataType | undefined>>;
-  countryCoords?: Leaflet.LatLngTuple | null;
+type IMap = Map | undefined;
+type ICountry = CountryDataType | undefined;
+
+type MapContextType = {
+  map: IMap;
+  setMap: Dispatch<SetStateAction<IMap>>;
+  countryData: ICountry;
+  setCountryData: Dispatch<SetStateAction<ICountry>>;
+  countryCoords?: Leaflet.LatLngTuple;
 };
-const MapContext = createContext<MapContextType>({});
 
-const MapContextProvider: React.FC = ({ children }) => {
-  const [map, setMap] = useState<Leaflet.Map>();
-  const [countryData, setCountryData] = useState<CountryDataType>();
+const MapContext = createContext<MapContextType>({} as MapContextType);
 
-  const countryCoords: Leaflet.LatLngTuple | null = useMemo(
-    () => (countryData ? [countryData.latitude, countryData.longitude] : null),
+const MapContextProvider: FC = ({ children }) => {
+  const [map, setMap] = useState<MapContextType['map']>();
+  const [countryData, setCountryData] = useState<MapContextType['countryData']>();
+
+  const countryCoords: MapContextType['countryCoords'] = useMemo(
+    () => (countryData ? [countryData.latitude, countryData.longitude] : undefined),
     [countryData],
   );
 

@@ -9,7 +9,8 @@
     "package.json"
   ],
   "cSpell.words": [
-    "Geomania"
+    "Geomania",
+    "unsplit"
   ],
   "cSpell.ignoreWords": [
     "latlng",
