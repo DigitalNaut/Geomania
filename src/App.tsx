@@ -1,11 +1,14 @@
-import React from 'react';
+import Home from 'src/pages/Home';
+import Header from 'src/components/Title';
+import MapContextProvider from 'src/controllers/MapContext';
 
-import Home from 'src/components/Home';
-
-export default function App(): JSX.Element {
+export default function App() {
   return (
-    <div className="font-sans bg-gray-800">
-      <Home />
+    <div className="grid h-screen grid-rows-[auto,1fr]">
+      <Header>Geomania</Header>
+      <MapContextProvider>
+        <Home />
+      </MapContextProvider>
     </div>
   );
 }

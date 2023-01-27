@@ -1,0 +1,9 @@
+node_modules
+*-lock.yaml
+
+/build
+/public/build
+/coverage
+.env
+
+/src/styles/tailwind.css

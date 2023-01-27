@@ -1,37 +1,30 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useMemo,
-  Dispatch,
-  SetStateAction,
-  FC,
-} from 'react';
-import Leaflet, { Map } from 'leaflet';
+import type { Dispatch, SetStateAction, PropsWithChildren } from 'react';
+import type { Map } from 'leaflet';
+import type { CountryData } from 'src/controllers/MapController';
 
-import { CountryDataType } from 'src/controllers/MapController';
+import { createContext, useContext, useState } from 'react';
 
-type IMap = Map | undefined;
-type ICountry = CountryDataType | undefined;
-
-type MapContextType = {
-  map: IMap;
-  setMap: Dispatch<SetStateAction<IMap>>;
-  countryData: ICountry;
-  setCountryData: Dispatch<SetStateAction<ICountry>>;
-  countryCoords?: Leaflet.LatLngTuple;
+type MapContext = {
+  map: Map | null;
+  setMap: Dispatch<SetStateAction<Map | null>>;
+  countryData?: CountryData;
+  setCountryData: Dispatch<SetStateAction<CountryData | undefined>>;
 };
 
-const MapContext = createContext<MapContextType>({} as MapContextType);
+const MapContext = createContext<MapContext>({
+  map: null,
+  setMap: () => null,
+  countryData: undefined,
+  setCountryData: () => null,
+});
 
-const MapContextProvider: FC = ({ children }) => {
-  const [map, setMap] = useState<MapContextType['map']>();
-  const [countryData, setCountryData] = useState<MapContextType['countryData']>();
-
-  const countryCoords: MapContextType['countryCoords'] = useMemo(
-    () => (countryData ? [countryData.latitude, countryData.longitude] : undefined),
-    [countryData],
-  );
+/**
+ * Map Context Provider
+ * Holds the map instance and the data for the current country
+ */
+export default function MapContextProvider({ children }: PropsWithChildren) {
+  const [map, setMap] = useState<MapContext['map']>(null);
+  const [countryData, setCountryData] = useState<MapContext['countryData']>();
 
   return (
     <MapContext.Provider
@@ -40,7 +33,6 @@ const MapContextProvider: FC = ({ children }) => {
         setMap,
         countryData,
         setCountryData,
-        countryCoords,
       }}
     >
       {children}
@@ -49,7 +41,9 @@ const MapContextProvider: FC = ({ children }) => {
 };
 
 export function useMapContext() {
-  return useContext(MapContext);
-}
+  const context = useContext(MapContext);
+  if (!context)
+    throw new Error('useMapContext must be used within a MapContextProvider');
 
-export default MapContextProvider;
+  return context;
+}

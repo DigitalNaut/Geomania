@@ -1,7 +1,7 @@
 const nameExp = /^(.+), (.+)$/;
 const nameQualifierExp = /^.+,.+$/;
 
-export function unsplitName(text: string) {
+export function joinName(text: string) {
   if (!nameQualifierExp.test(text)) return text;
 
   const matches = nameExp.exec(text);
@@ -10,7 +10,7 @@ export function unsplitName(text: string) {
   return text;
 }
 
-export function normalizeString(text: string) {
+export function normalizeName(text: string) {
   return text
     .trim()
     .normalize('NFD')
@@ -18,6 +18,6 @@ export function normalizeString(text: string) {
 }
 
 export default {
-  unsplitName,
-  normalizeString,
+  joinName,
+  normalizeString: normalizeName,
 };

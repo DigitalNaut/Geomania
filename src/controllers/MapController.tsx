@@ -1,49 +1,43 @@
-import Leaflet from 'leaflet';
+import type Leaflet from 'leaflet';
 import { useMapEvents } from 'react-leaflet';
 
-import countries from 'src/data/country-metadata.json';
+import countriesMetadata from 'src/data/country-metadata.json';
+import countryGeometries from 'src/data/country-geometries.json';
 
-import { useMapContext } from './MapContext';
+export type CountryData = typeof countriesMetadata[number];
+export type CountryGeometry = typeof countryGeometries["features"][number]["geometry"];
 
-export type CountryDataType = typeof countries[number];
+export function getCountryGeometry(alpha3: string) {
+  return countryGeometries["features"].find(
+    (feature) => feature["properties"]["ISO_A3"] === alpha3,
+  );
+}
 
 export function getNextCountry(
   random: boolean,
-  effect?: () => void,
-): [CountryDataType, Leaflet.LatLngTuple] {
-  const countryIndex = random ? Math.floor(Math.random() * countries.length) : 0;
-  const country: CountryDataType = countries[countryIndex];
+  callback?: () => void,
+) {
+  const countryIndex = random ? Math.floor(Math.random() * countriesMetadata.length) : 0;
+  const country: CountryData = countriesMetadata[countryIndex];
   const countryCoords: Leaflet.LatLngTuple = [country.latitude, country.longitude];
 
-  if (effect) effect();
+  callback?.();
 
-  return [country, countryCoords];
-}
-
-export function newRandomCountry() {
-  const [randomCountry] = getNextCountry(true);
-
-  return randomCountry;
+  return { countryIndex, country, countryCoords };
 }
 
 type Props = {
-  onSubmit?: () => void;
+  callback?: () => void;
 };
-export default function CountryVisitorCtrl({ onSubmit }: Props) {
-  const { setMap } = useMapContext();
-
+export default function MapClick({ callback: callback }: Props) {
   // * Map Controller
 
-  const leafletMap = useMapEvents({
+  useMapEvents({
     click() {
-      if (onSubmit) onSubmit();
-      if (setMap) setMap((oldMap) => oldMap || leafletMap);
+      callback?.();
     },
   });
 
   return null;
 }
 
-CountryVisitorCtrl.defaultProps = {
-  callback: () => null,
-};

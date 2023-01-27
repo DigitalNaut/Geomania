@@ -1,14 +1,10 @@
-import React from 'react';
+import type { HTMLProps } from "react";
 
-interface Props {
-  children: string;
+type Props = Pick<HTMLProps<HTMLButtonElement>, 'onClick' | 'children' | 'disabled'> & {
   fit?: true;
-  disabled?: boolean;
 }
 
-const Button: React.FC<
-  Props & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
-> = ({ children, fit, disabled, onClick }) => {
+export function Button({ children, fit, disabled, onClick }: Props) {
   const className =
     'p-4 text-xl font-bold text-center text-white bg-green-700 rounded-md shadow-md cursor-pointer select-none hover:bg-green-600 hover:shadow-lg';
 
@@ -16,7 +12,7 @@ const Button: React.FC<
     <div className="relative bg-clip-content">
       {disabled && (
         <div
-          className={`absolute w-full h-full bg-green-900 ${disabled ? 'opacity-70' : 'opacity-0'}`}
+          className={`absolute h-full w-full bg-green-900 ${disabled ? 'opacity-70' : 'opacity-0'}`}
         />
       )}
       <button
@@ -29,11 +25,4 @@ const Button: React.FC<
       </button>
     </div>
   );
-};
-
-Button.defaultProps = {
-  fit: undefined,
-  disabled: undefined,
-};
-
-export default Button;
+}
