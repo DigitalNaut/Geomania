@@ -1,4 +1,4 @@
-import Home from 'src/pages/Home';
+import MapVisitor from 'src/pages/MapVisitor';
 import Header from 'src/components/Title';
 import MapContextProvider from 'src/controllers/MapContext';
 
@@ -7,7 +7,7 @@ export default function App() {
     <div className="grid h-screen grid-rows-[auto,1fr]">
       <Header>Geomania</Header>
       <MapContextProvider>
-        <Home />
+        <MapVisitor />
       </MapContextProvider>
     </div>
   );

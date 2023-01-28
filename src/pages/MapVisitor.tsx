@@ -5,7 +5,7 @@ import { Map, markerIcon } from 'src/components/Map';
 import MapClick from 'src/controllers/MapController';
 import useUserInteractions from 'src/controllers/UserInteraction';
 
-export default function Home(): JSX.Element {
+export default function MapVisitor(): JSX.Element {
   const {
     inputRef,
     userInput,
