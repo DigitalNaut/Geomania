@@ -1,6 +1,8 @@
 import type { Feature } from "geojson";
-import { useRef, useState } from "react";
+import type { LatLngTuple } from "leaflet";
+import { useState } from "react";
 
+import type { CountryData } from "src/controllers/MapController";
 import { normalizeName, joinName } from "src/utility";
 import {
   getCountryGeometry,
@@ -8,68 +10,42 @@ import {
 } from "src/controllers/MapController";
 import { useMapContext } from "src/controllers/MapContext";
 
-export default function useUserInteractions() {
-  const { map, countryData, setCountryData } = useMapContext();
-  const [userInput, setUserInput] = useState("");
-  const [cheat, setCheat] = useState("");
+export function useCountryGuess() {
+  const { countryAnswerData, setCountryAnswerData } = useMapContext();
   const [countryFeature, setCountryFeature] = useState<Feature>();
 
-  const hasCountryData = () => !!(map && setCountryData);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  function nextCountry() {
+  function nextCountry(): CountryData {
     const { country } = getNextCountry(true);
-    setCountryData(country);
-    const feature = getCountryGeometry(country.alpha3) as Feature;
-    setCountryFeature(feature);
+    const feature = getCountryGeometry(country.alpha3);
 
-    console.log(
-      "Next country:",
-      country.name,
-      country.latitude,
-      country.longitude,
-      map
-    );
-
-    map?.flyTo([country.latitude, country.longitude], 5, {
-      animate: true,
-      duration: 0.1,
-    });
+    setCountryAnswerData(country);
+    if (feature) setCountryFeature(feature);
 
     return country;
   }
 
-  const onCheat = () => setUserInput(joinName(countryData?.name || ""));
-
-  const onSubmit = () => {
-    const answer = joinName(countryData?.name || "");
+  const onSubmitAnswer = (userInput: string) => {
+    const correctAnswer = joinName(countryAnswerData?.name || "");
     const inputMatchesAnswer =
-      normalizeName(userInput) === normalizeName(answer);
+      normalizeName(userInput) === normalizeName(correctAnswer);
 
-    setCheat(inputMatchesAnswer ? "" : answer);
-
-    if (!countryData?.name) nextCountry();
-    else if (inputMatchesAnswer)
-      setUserInput(nextCountry()?.name.charAt(0) || "");
-
-    if (countryData) inputRef.current?.focus();
-  };
-
-  const onKeyDown: React.KeyboardEventHandler<HTMLElement> = (event) => {
-    if (event.key === "Enter") onSubmit();
+    return {
+      correct: inputMatchesAnswer,
+      nextCountry: inputMatchesAnswer ? nextCountry() : null,
+    };
   };
 
   return {
-    userInput,
-    setUserInput,
-    cheat,
-    onCheat,
-    setCheat,
-    countryData,
-    countryGeometry: countryFeature,
-    onSubmit,
-    onKeyDown,
-    inputRef,
-    hasCountryData,
+    countryCorrectAnswer: {
+      data: countryAnswerData,
+      feature: countryFeature,
+      coordinates: countryAnswerData
+        ? ([
+            countryAnswerData.latitude,
+            countryAnswerData.longitude,
+          ] as LatLngTuple)
+        : null,
+    },
+    onSubmitAnswer,
   };
 }

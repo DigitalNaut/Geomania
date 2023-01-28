@@ -15,7 +15,7 @@ const topLeftCorner = Leaflet.latLng(-90, -250);
 const bottomRightCorner = Leaflet.latLng(90, 250);
 const maxBounds = Leaflet.latLngBounds(topLeftCorner, bottomRightCorner);
 
-export function Map({ children }: PropsWithChildren) {
+export function LeafletMap({ children }: PropsWithChildren) {
   const { setMap } = useMapContext();
 
   return (

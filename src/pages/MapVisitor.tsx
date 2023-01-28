@@ -1,32 +1,78 @@
+import type { KeyboardEventHandler, PropsWithChildren } from 'react';
+import { useRef } from 'react';
 import { Marker, GeoJSON } from 'react-leaflet';
 
+import type { CountryData } from 'src/controllers/MapController';
 import { Button } from 'src/components/Button';
-import { Map, markerIcon } from 'src/components/Map';
-import MapClick from 'src/controllers/MapController';
-import useUserInteractions from 'src/controllers/UserInteraction';
+import { LeafletMap, markerIcon } from 'src/components/Map';
+import { useMapContext } from 'src/controllers/MapContext';
+import { MapClick } from 'src/controllers/MapController';
+import { useCountryGuess } from 'src/controllers/UserInteraction';
+
+function InputCover({ children }: PropsWithChildren) {
+  return <div className="absolute inset-0 flex h-full w-full items-center justify-center bg-gray-900 p-6 text-xl italic text-white">
+    {children}
+  </div>
+}
+
+function useUserInteraction() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { map } = useMapContext();
+  const {
+    countryCorrectAnswer,
+    onSubmitAnswer,
+  } = useCountryGuess();
+
+  function updateUI(newCountry: CountryData) {
+    if (!newCountry) return;
+
+    if (inputRef.current) inputRef.current.value = newCountry.name.charAt(0);
+    inputRef.current?.focus();
+
+    map?.flyTo([newCountry.latitude, newCountry.longitude], 5, {
+      animate: true,
+      duration: 0.1,
+    });
+  }
+
+  const handleInteraction = () => {
+    const result = onSubmitAnswer(inputRef.current?.value || "");
+    updateUI(result.nextCountry);
+  }
+  const handleKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
+    if (event.key === "Enter") handleInteraction();
+  };
+
+  return {
+    inputRef,
+    handleInteraction,
+    handleKeyDown,
+    countryCorrectAnswer,
+    isReady: countryCorrectAnswer.data && countryCorrectAnswer.feature
+  }
+}
 
 export default function MapVisitor(): JSX.Element {
   const {
     inputRef,
-    userInput,
-    setUserInput,
-    hasCountryData,
-    countryData,
-    countryGeometry,
-    onSubmit,
-    onKeyDown,
-    cheat,
-    onCheat,
-  } = useUserInteractions();
+    handleInteraction,
+    handleKeyDown,
+    countryCorrectAnswer,
+    isReady,
+  } = useUserInteraction();
 
   return (
-    <div className="grid h-full grid-rows-[1fr,auto]">
-      <Map>
-        {countryData && (
-          <Marker position={[countryData.latitude, countryData.longitude]} icon={markerIcon} />
+    <div className="grid h-full grid-rows-[auto,1fr,auto]">
+      <div>
+        <h1 className="p-2 text-center text-2xl text-white">Name that country!</h1>
+      </div>
+
+      <LeafletMap>
+        {countryCorrectAnswer.coordinates && (
+          <Marker position={countryCorrectAnswer.coordinates} icon={markerIcon} />
         )}
-        {countryGeometry && (
-          <GeoJSON key={Date.now()} data={countryGeometry} style={{
+        {countryCorrectAnswer.feature && (
+          <GeoJSON key={countryCorrectAnswer.data?.alpha3} data={countryCorrectAnswer.feature} style={{
             fillColor: 'green',
             fillOpacity: 1,
             color: 'white',
@@ -34,33 +80,29 @@ export default function MapVisitor(): JSX.Element {
             interactive: false,
           }} />
         )}
-        <MapClick callback={onSubmit} />
-      </Map>
+        <MapClick callback={handleInteraction} />
+      </LeafletMap>
 
-      {countryData ? (
-        <div className="flex w-full flex-col justify-center p-6 text-center text-white">
-          <p>Which country is this?</p>
-          <div className="flex justify-center">
-            <input
-              ref={inputRef}
-              className="p-1 pl-4 text-xl text-black"
-              value={userInput}
-              onChange={(e) => setUserInput(e.currentTarget.value)}
-              onKeyDown={onKeyDown}
-            />
-            <Button fit disabled={!hasCountryData} onClick={onSubmit}>
-              Submit
-            </Button>
-          </div>
-          <button type="button" onClick={onCheat}>
+      <div className="relative flex w-full flex-col justify-center pt-2 pb-6 text-center text-white">
+        <p className="p-2">Which country is this?</p>
+        <div className="flex justify-center">
+          <input
+            ref={inputRef}
+            className="p-1 pl-4 text-xl text-black"
+            onKeyDown={handleKeyDown}
+            placeholder="Enter country name"
+            disabled={!isReady}
+          />
+          <Button fit disabled={!isReady} onClick={handleInteraction}>
+            Submit
+          </Button>
+        </div>
+        {/* <button type="button" onClick={onCheat}>
             {cheat}
-          </button>
-        </div>
-      ) : (
-        <div className="flex w-full justify-center p-6 text-lg text-white">
-          Click the map to begin
-        </div>
-      )}
+          </button> */}
+
+        {!isReady && <InputCover>Click the map to begin</InputCover>}
+      </div>
     </div>
   );
 }
