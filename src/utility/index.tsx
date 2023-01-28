@@ -16,12 +16,8 @@ export function joinName(text: string) {
  * @returns A normalized string.
  */
 export function normalizeName(text?: string) {
-  return text?.trim()
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '');
+  return text
+    ?.trim()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "");
 }
-
-export default {
-  joinName,
-  normalizeString: normalizeName,
-};

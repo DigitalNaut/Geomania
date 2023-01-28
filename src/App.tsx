@@ -4,7 +4,7 @@ import MapContextProvider from "src/controllers/MapContext";
 
 export default function App() {
   return (
-    <div className="grid h-screen grid-rows-[content,1fr]">
+    <div className="flex h-screen w-screen flex-col">
       <Header>Geomania</Header>
       <MapContextProvider>
         <MapVisitor />

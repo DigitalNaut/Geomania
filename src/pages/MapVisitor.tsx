@@ -65,7 +65,7 @@ function useUserInteraction() {
   };
 }
 
-export default function MapVisitor(): JSX.Element {
+export default function MapVisitor({ children }: PropsWithChildren) {
   const {
     inputRef,
     handleInteraction,
@@ -77,14 +77,14 @@ export default function MapVisitor(): JSX.Element {
   const allCountryFeatures = useMemo(() => getAllCountryFeatures(), []);
 
   return (
-    <div className="grid h-full max-h-screen grid-rows-[content,1fr,content]">
-      <div className="h-fit">
-        <h1 className="p-2 text-center text-2xl text-white">
-          Name that country!
-        </h1>
-      </div>
+    <>
+      {children}
 
-      <div className="flex h-full overflow-hidden">
+      <h1 className="flex-[0] p-2 text-center text-2xl text-white">
+        Name that country!
+      </h1>
+
+      <main className="flex flex-1 overflow-hidden">
         <LeafletMap>
           {countryCorrectAnswer.coordinates && (
             <Marker
@@ -101,7 +101,9 @@ export default function MapVisitor(): JSX.Element {
                 data={feature}
                 style={{
                   fillColor:
-                    countryCorrectAnswer.data && isAnswer ? "green" : "yellow",
+                    countryCorrectAnswer.data && isAnswer
+                      ? "#fcd34d"
+                      : "#94a3b8",
                   fillOpacity: 1,
                   color: "white",
                   weight: 1,
@@ -113,7 +115,7 @@ export default function MapVisitor(): JSX.Element {
           <MapClick callback={handleInteraction} />
         </LeafletMap>
 
-        <ol className="h-full list-decimal overflow-y-auto pl-[5ch] text-white">
+        <ol className="list-decimal overflow-y-auto pl-[5ch] text-white">
           {allCountryFeatures.map((feature) => (
             <li
               key={feature.properties?.ADMIN}
@@ -125,9 +127,9 @@ export default function MapVisitor(): JSX.Element {
             </li>
           ))}
         </ol>
-      </div>
+      </main>
 
-      <div className="relative flex flex-col justify-center pt-2 pb-6 text-center text-white">
+      <footer className="relative flex flex-col justify-center pt-2 pb-6 text-center text-white">
         <p className="p-2">Which country is this?</p>
         <div className="flex justify-center">
           <input
@@ -146,7 +148,7 @@ export default function MapVisitor(): JSX.Element {
           </button> */}
 
         {!isReady && <InputCover>Click the map to begin</InputCover>}
-      </div>
-    </div>
+      </footer>
+    </>
   );
 }

@@ -1,24 +1,29 @@
 import type { HTMLProps } from "react";
 
-type Props = Pick<HTMLProps<HTMLButtonElement>, 'onClick' | 'children' | 'disabled'> & {
+type Props = Pick<
+  HTMLProps<HTMLButtonElement>,
+  "onClick" | "children" | "disabled"
+> & {
   fit?: true;
-}
+};
 
 export function Button({ children, fit, disabled, onClick }: Props) {
   const className =
-    'p-4 text-xl font-bold text-center text-white bg-green-700 rounded-md shadow-md cursor-pointer select-none hover:bg-green-600 hover:shadow-lg';
+    "p-4 text-xl font-bold text-center text-white bg-green-700 rounded-md shadow-md cursor-pointer select-none hover:bg-green-600 hover:shadow-lg";
 
   return (
     <div className="relative bg-clip-content">
       {disabled && (
         <div
-          className={`absolute h-full w-full bg-green-900 ${disabled ? 'opacity-70' : 'opacity-0'}`}
+          className={`absolute h-full w-full bg-green-900 ${
+            disabled ? "opacity-70" : "opacity-0"
+          }`}
         />
       )}
       <button
         disabled={disabled}
         type="button"
-        className={[className, fit ? 'w-min' : 'w-full'].join()}
+        className={[className, fit ? "w-min" : "w-full"].join()}
         onClick={onClick}
       >
         {children}
