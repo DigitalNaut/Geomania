@@ -11,7 +11,7 @@ import { Button } from "src/components/Button";
 import { LeafletMap, markerIcon } from "src/components/LeafletMap";
 import { useMapContext } from "src/controllers/MapContext";
 import { MapClick } from "src/controllers/MapController";
-import { useCountryGuess } from "src/controllers/UserInteraction";
+import { useCountryGuess } from "src/controllers/CountryGuesser";
 
 function InputCover({ children }: PropsWithChildren) {
   return (
