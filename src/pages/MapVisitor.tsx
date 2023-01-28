@@ -6,7 +6,7 @@ import { Marker, GeoJSON } from "react-leaflet";
 import type { CountryData } from "src/controllers/MapController";
 import { getAllCountryFeatures } from "src/controllers/MapController";
 import { Button } from "src/components/Button";
-import { LeafletMap, markerIcon } from "src/components/Map";
+import { LeafletMap, markerIcon } from "src/components/LeafletMap";
 import { useMapContext } from "src/controllers/MapContext";
 import { MapClick } from "src/controllers/MapController";
 import { useCountryGuess } from "src/controllers/UserInteraction";
