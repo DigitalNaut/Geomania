@@ -10,11 +10,6 @@ import {
 } from "src/controllers/MapController";
 import { useMapContext } from "src/controllers/MapContext";
 
-type Result = {
-  isCorrect: boolean;
-  nextCountry: CountryData;
-};
-
 export function useCountryGuess() {
   const { countryAnswerData, setCountryAnswerData } = useMapContext();
   const [countryFeature, setCountryFeature] = useState<Feature>();
@@ -29,15 +24,12 @@ export function useCountryGuess() {
     return country;
   }
 
-  const checkAnswer = (userInput: string): Result => {
+  const checkAnswer = (userInput: string) => {
     const correctAnswer = joinName(countryAnswerData?.name || "");
     const inputMatchesAnswer =
       normalizeName(userInput) === normalizeName(correctAnswer);
 
-    return {
-      isCorrect: inputMatchesAnswer,
-      nextCountry: inputMatchesAnswer ? nextCountry() : null,
-    };
+    return inputMatchesAnswer;
   };
 
   return {
@@ -52,5 +44,6 @@ export function useCountryGuess() {
         : null,
     },
     checkAnswer,
+    nextCountry,
   };
 }

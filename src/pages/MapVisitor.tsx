@@ -24,9 +24,9 @@ function InputCover({ children }: PropsWithChildren) {
 function useMapVisitor() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { map } = useMapContext();
-  const { countryCorrectAnswer, checkAnswer } = useCountryGuess();
+  const { countryCorrectAnswer, checkAnswer, nextCountry } = useCountryGuess();
   const [userTries, setUserTries] = useState(0);
-  const [prevAnswer, setPrevAnswer] = useState<string>("");
+  const [prevGuess, setPrevGuess] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
   function flyTo(destination: LatLngExpression | null) {
@@ -46,9 +46,12 @@ function useMapVisitor() {
       );
   }
 
-  function tallyTries(isCorrectResult: boolean) {
-    if (isCorrectResult) setUserTries(0);
-    else setUserTries((prev) => prev + 1);
+  function increaseTriesTally() {
+    setUserTries((prev) => prev + 1);
+  }
+
+  function resetTriesTally() {
+    setUserTries(0);
   }
 
   function focusInputField() {
@@ -74,14 +77,21 @@ function useMapVisitor() {
       return;
     }
 
-    if (prevAnswer !== inputRef.current.value) {
-      const result = checkAnswer(inputRef.current.value || "");
-      updateUI(result.nextCountry);
-      tallyTries(result.isCorrect);
-    }
+    const userGuess = inputRef.current.value;
+    const isCorrect = checkAnswer(userGuess);
 
-    setPrevAnswer(inputRef.current.value);
-    clearInputField();
+    if (isCorrect) {
+      updateUI(nextCountry());
+      resetTriesTally();
+      clearInputField();
+      setPrevGuess(null);
+    } else {
+      const isValidNewGuess = userGuess.length > 0 && userGuess !== prevGuess;
+      if (isValidNewGuess) {
+        setPrevGuess(userGuess);
+        increaseTriesTally();
+      }
+    }
   };
   const handleKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
     if (event.key === "Enter") handleSubmitAnswer();
@@ -89,7 +99,7 @@ function useMapVisitor() {
 
   const handleMapClick = () => {
     if (countryCorrectAnswer.data) updateUI(countryCorrectAnswer.data);
-    else setError(new Error("No country data found."));
+    else updateUI(nextCountry());
   };
 
   const dismissError = () => setError(null);
@@ -103,6 +113,7 @@ function useMapVisitor() {
     userTries,
     giveHint,
     isReady: countryCorrectAnswer.data && countryCorrectAnswer.feature,
+    prevGuess,
     error,
     dismissError,
   };
@@ -118,6 +129,7 @@ export default function MapVisitor({ children }: PropsWithChildren) {
     userTries,
     giveHint,
     isReady,
+    prevGuess,
     error,
     dismissError,
   } = useMapVisitor();
@@ -205,6 +217,7 @@ export default function MapVisitor({ children }: PropsWithChildren) {
           </div>
           <div className="flex w-full justify-between">
             <span>Tries: {userTries}</span>
+            {prevGuess && <div>Previous guess: {prevGuess}</div>}
             <button type="button" onClick={giveHint}>
               Hint!
             </button>
