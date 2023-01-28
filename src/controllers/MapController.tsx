@@ -50,6 +50,10 @@ export function getAllCountryFeatures() {
   return countryGeometries.features as Feature[];
 }
 
+export function getAllCountriesMetadata() {
+  return countriesMetadata as CountryData[];
+}
+
 /**
  * A React Leaflet component that listens for map clicks.
  */

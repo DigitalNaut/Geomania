@@ -43,15 +43,20 @@ export function useMapVisitor() {
   }
 
   function giveHint() {
-    if (inputRef.current && countryCorrectAnswer.data)
-      inputRef.current.value = countryCorrectAnswer.data.name.substring(
-        0,
-        userTries
-      );
+    if (countryCorrectAnswer.data) {
+      const hint = countryCorrectAnswer.data.name.substring(0, userTries);
+      setInputField(hint);
+    }
+
+    focusInputField();
   }
 
   function focusInputField() {
-    if (inputRef.current) inputRef.current.focus();
+    inputRef.current?.focus();
+  }
+
+  function setInputField(newValue: string) {
+    if (inputRef.current) inputRef.current.value = newValue;
   }
 
   function updateUI(nextCountry: CountryData) {
@@ -63,14 +68,10 @@ export function useMapVisitor() {
     focusInputField();
   }
 
-  function clearInputField() {
-    if (inputRef.current) inputRef.current.value = "";
-  }
-
   const prepareNextCountry = () => {
     updateUI(getNextCountry());
     resetTriesTally();
-    clearInputField();
+    setInputField("");
     setPrevGuess(null);
   };
 
