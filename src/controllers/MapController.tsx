@@ -41,6 +41,14 @@ export function getNextCountry(
 }
 
 /**
+ * Gets all the country features from the country geometries data.
+ * @returns The country features.
+ */
+export function getAllCountryFeatures() {
+  return countryGeometries.features as Feature[];
+}
+
+/**
  * A React Leaflet component that listens for map clicks.
  */
 export function MapClick({
