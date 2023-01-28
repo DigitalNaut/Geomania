@@ -6,7 +6,7 @@ import type { CountryData } from "src/controllers/MapController";
 import { normalizeName, joinName } from "src/utility";
 import {
   getCountryGeometry,
-  getNextCountry,
+  getNewCountryData,
 } from "src/controllers/MapController";
 import { useMapContext } from "src/controllers/MapContext";
 
@@ -14,8 +14,8 @@ export function useCountryGuess() {
   const { countryAnswerData, setCountryAnswerData } = useMapContext();
   const [countryFeature, setCountryFeature] = useState<Feature>();
 
-  function nextCountry(): CountryData {
-    const { country } = getNextCountry(true);
+  function getNextCountry(): CountryData {
+    const { country } = getNewCountryData(true);
     const feature = getCountryGeometry(country.alpha3);
 
     setCountryAnswerData(country);
@@ -32,18 +32,17 @@ export function useCountryGuess() {
     return inputMatchesAnswer;
   };
 
+  const coordinates = countryAnswerData
+    ? ([countryAnswerData.latitude, countryAnswerData.longitude] as LatLngTuple)
+    : null;
+
   return {
     countryCorrectAnswer: {
       data: countryAnswerData,
       feature: countryFeature,
-      coordinates: countryAnswerData
-        ? ([
-            countryAnswerData.latitude,
-            countryAnswerData.longitude,
-          ] as LatLngTuple)
-        : null,
+      coordinates,
     },
     checkAnswer,
-    nextCountry,
+    getNextCountry,
   };
 }

@@ -27,7 +27,7 @@ export function getCountryGeometry(alpha3: string) {
  * @param callback A callback function to be called after the country is retrieved.
  * @returns The country index, country data, and country coordinates.
  */
-export function getNextCountry(random: boolean, callback?: () => void) {
+export function getNewCountryData(random: boolean, callback?: () => void) {
   const countryIndex = random
     ? Math.floor(Math.random() * countriesMetadata.length)
     : 0;

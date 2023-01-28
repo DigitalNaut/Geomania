@@ -1,17 +1,14 @@
-import type { KeyboardEventHandler, PropsWithChildren } from "react";
-import type { LatLngExpression, LatLngTuple } from "leaflet";
-import { useState, useMemo, useRef } from "react";
+import type { PropsWithChildren } from "react";
+import { useMemo } from "react";
 import { Marker, GeoJSON } from "react-leaflet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faForward, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-import type { CountryData } from "src/controllers/MapController";
 import { getAllCountryFeatures } from "src/controllers/MapController";
 import { Button } from "src/components/Button";
 import { LeafletMap, markerIcon } from "src/components/LeafletMap";
-import { useMapContext } from "src/controllers/MapContext";
 import { MapClick } from "src/controllers/MapController";
-import { useCountryGuess } from "src/controllers/CountryGuesser";
+import { useMapVisitor } from "src/pages/MapVisitor.logic";
 
 function InputCover({ children }: PropsWithChildren) {
   return (
@@ -21,110 +18,13 @@ function InputCover({ children }: PropsWithChildren) {
   );
 }
 
-function useMapVisitor() {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { map } = useMapContext();
-  const { countryCorrectAnswer, checkAnswer, nextCountry } = useCountryGuess();
-  const [userTries, setUserTries] = useState(0);
-  const [prevGuess, setPrevGuess] = useState<string | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-
-  function flyTo(destination: LatLngExpression | null) {
-    if (!destination) return;
-
-    map?.flyTo(destination, 5, {
-      animate: true,
-      duration: 0.1,
-    });
-  }
-
-  function giveHint() {
-    if (inputRef.current && countryCorrectAnswer.data)
-      inputRef.current.value = countryCorrectAnswer.data.name.substring(
-        0,
-        userTries
-      );
-  }
-
-  function increaseTriesTally() {
-    setUserTries((prev) => prev + 1);
-  }
-
-  function resetTriesTally() {
-    setUserTries(0);
-  }
-
-  function focusInputField() {
-    if (inputRef.current) inputRef.current.focus();
-  }
-
-  function updateUI(nextCountry: CountryData) {
-    const destination = !nextCountry
-      ? countryCorrectAnswer.coordinates
-      : ([nextCountry.latitude, nextCountry.longitude] as LatLngTuple);
-
-    flyTo(destination);
-    focusInputField();
-  }
-
-  function clearInputField() {
-    if (inputRef.current) inputRef.current.value = "";
-  }
-
-  const handleSubmitAnswer = () => {
-    if (!inputRef.current) {
-      setError(new Error("Input field not found."));
-      return;
-    }
-
-    const userGuess = inputRef.current.value;
-    const isCorrect = checkAnswer(userGuess);
-
-    if (isCorrect) {
-      updateUI(nextCountry());
-      resetTriesTally();
-      clearInputField();
-      setPrevGuess(null);
-    } else {
-      const isValidNewGuess = userGuess.length > 0 && userGuess !== prevGuess;
-      if (isValidNewGuess) {
-        setPrevGuess(userGuess);
-        increaseTriesTally();
-      }
-    }
-  };
-  const handleKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
-    if (event.key === "Enter") handleSubmitAnswer();
-  };
-
-  const handleMapClick = () => {
-    if (countryCorrectAnswer.data) updateUI(countryCorrectAnswer.data);
-    else updateUI(nextCountry());
-  };
-
-  const dismissError = () => setError(null);
-
-  return {
-    inputRef,
-    handleSubmitAnswer,
-    handleMapClick,
-    handleKeyDown,
-    countryCorrectAnswer,
-    userTries,
-    giveHint,
-    isReady: countryCorrectAnswer.data && countryCorrectAnswer.feature,
-    prevGuess,
-    error,
-    dismissError,
-  };
-}
-
 export default function MapVisitor({ children }: PropsWithChildren) {
   const {
     inputRef,
     handleSubmitAnswer,
     handleMapClick,
     handleKeyDown,
+    handleSkipCountry,
     countryCorrectAnswer,
     userTries,
     giveHint,
@@ -203,17 +103,26 @@ export default function MapVisitor({ children }: PropsWithChildren) {
       <footer className="relative flex flex-col items-center pt-2 pb-6 text-center text-white">
         <p className="p-2">Which country is this?</p>
         <div className="flex w-fit flex-col items-center">
-          <div className="flex w-full justify-center overflow-hidden rounded-md">
-            <input
-              className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
-              ref={inputRef}
-              onKeyDown={handleKeyDown}
-              placeholder="Enter country name"
-              disabled={!isReady}
-            />
-            <Button fit disabled={!isReady} onClick={handleSubmitAnswer}>
-              Submit
-            </Button>
+          <div className="flex gap-2">
+            <div className="flex w-full justify-center overflow-hidden rounded-md">
+              <input
+                className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
+                ref={inputRef}
+                onKeyDown={handleKeyDown}
+                placeholder="Enter country name"
+                disabled={!isReady}
+              />
+              <Button fit disabled={!isReady} onClick={handleSubmitAnswer}>
+                Submit
+              </Button>
+            </div>
+            <button
+              role="button"
+              title="Skip country"
+              onClick={handleSkipCountry}
+            >
+              <FontAwesomeIcon icon={faForward} size="2x" />
+            </button>
           </div>
           <div
             className="flex w-full justify-between"
