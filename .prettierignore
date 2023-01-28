@@ -7,3 +7,5 @@ node_modules
 .env
 
 /src/styles/tailwind.css
+/src/data/country-geometries.json
+/src/data/country-country-metadata.json

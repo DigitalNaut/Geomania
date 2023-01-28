@@ -203,10 +203,10 @@ export default function MapVisitor({ children }: PropsWithChildren) {
       <footer className="relative flex flex-col items-center pt-2 pb-6 text-center text-white">
         <p className="p-2">Which country is this?</p>
         <div className="flex w-fit flex-col items-center">
-          <div className="flex w-full justify-center">
+          <div className="flex w-full justify-center overflow-hidden rounded-md">
             <input
+              className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
               ref={inputRef}
-              className="p-1 pl-4 text-xl text-black"
               onKeyDown={handleKeyDown}
               placeholder="Enter country name"
               disabled={!isReady}
@@ -215,7 +215,10 @@ export default function MapVisitor({ children }: PropsWithChildren) {
               Submit
             </Button>
           </div>
-          <div className="flex w-full justify-between">
+          <div
+            className="flex w-full justify-between"
+            style={{ visibility: userTries > 0 ? "visible" : "hidden" }}
+          >
             <span>Tries: {userTries}</span>
             {prevGuess && <div>Previous guess: {prevGuess}</div>}
             <button type="button" onClick={giveHint}>
