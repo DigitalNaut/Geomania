@@ -1,7 +1,9 @@
 import type { KeyboardEventHandler, PropsWithChildren } from "react";
 import type { LatLngExpression, LatLngTuple } from "leaflet";
-import { useMemo, useRef } from "react";
+import { useState, useMemo, useRef } from "react";
 import { Marker, GeoJSON } from "react-leaflet";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import type { CountryData } from "src/controllers/MapController";
 import { getAllCountryFeatures } from "src/controllers/MapController";
@@ -19,10 +21,13 @@ function InputCover({ children }: PropsWithChildren) {
   );
 }
 
-function useUserInteraction() {
+function useMapVisitor() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { map } = useMapContext();
-  const { countryCorrectAnswer, onSubmitAnswer } = useCountryGuess();
+  const { countryCorrectAnswer, checkAnswer } = useCountryGuess();
+  const [userTries, setUserTries] = useState(0);
+  const [prevAnswer, setPrevAnswer] = useState<string>("");
+  const [error, setError] = useState<Error | null>(null);
 
   function flyTo(destination: LatLngExpression | null) {
     if (!destination) return;
@@ -33,52 +38,106 @@ function useUserInteraction() {
     });
   }
 
-  function giveHint(answer?: string) {
-    if (inputRef.current && answer) inputRef.current.value = answer.charAt(0);
+  function giveHint() {
+    if (inputRef.current && countryCorrectAnswer.data)
+      inputRef.current.value = countryCorrectAnswer.data.name.substring(
+        0,
+        userTries
+      );
   }
 
-  function updateUI(newCountry: CountryData) {
-    const destination = !newCountry
+  function tallyTries(isCorrectResult: boolean) {
+    if (isCorrectResult) setUserTries(0);
+    else setUserTries((prev) => prev + 1);
+  }
+
+  function focusInputField() {
+    if (inputRef.current) inputRef.current.focus();
+  }
+
+  function updateUI(nextCountry: CountryData) {
+    const destination = !nextCountry
       ? countryCorrectAnswer.coordinates
-      : ([newCountry.latitude, newCountry.longitude] as LatLngTuple);
+      : ([nextCountry.latitude, nextCountry.longitude] as LatLngTuple);
 
-    giveHint(newCountry?.name);
     flyTo(destination);
-
-    inputRef.current?.focus();
+    focusInputField();
   }
 
-  const handleInteraction = () => {
-    const result = onSubmitAnswer(inputRef.current?.value || "");
-    updateUI(result.nextCountry);
+  function clearInputField() {
+    if (inputRef.current) inputRef.current.value = "";
+  }
+
+  const handleSubmitAnswer = () => {
+    if (!inputRef.current) {
+      setError(new Error("Input field not found."));
+      return;
+    }
+
+    if (prevAnswer !== inputRef.current.value) {
+      const result = checkAnswer(inputRef.current.value || "");
+      updateUI(result.nextCountry);
+      tallyTries(result.isCorrect);
+    }
+
+    setPrevAnswer(inputRef.current.value);
+    clearInputField();
   };
   const handleKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
-    if (event.key === "Enter") handleInteraction();
+    if (event.key === "Enter") handleSubmitAnswer();
   };
+
+  const handleMapClick = () => {
+    if (countryCorrectAnswer.data) updateUI(countryCorrectAnswer.data);
+    else setError(new Error("No country data found."));
+  };
+
+  const dismissError = () => setError(null);
 
   return {
     inputRef,
-    handleInteraction,
+    handleSubmitAnswer,
+    handleMapClick,
     handleKeyDown,
     countryCorrectAnswer,
+    userTries,
+    giveHint,
     isReady: countryCorrectAnswer.data && countryCorrectAnswer.feature,
+    error,
+    dismissError,
   };
 }
 
 export default function MapVisitor({ children }: PropsWithChildren) {
   const {
     inputRef,
-    handleInteraction,
+    handleSubmitAnswer,
+    handleMapClick,
     handleKeyDown,
     countryCorrectAnswer,
+    userTries,
+    giveHint,
     isReady,
-  } = useUserInteraction();
+    error,
+    dismissError,
+  } = useMapVisitor();
 
   const allCountryFeatures = useMemo(() => getAllCountryFeatures(), []);
 
   return (
     <>
       {children}
+
+      {error?.message && (
+        <div className="flex w-full flex-[0] justify-center bg-red-800 p-2 text-white">
+          <div className="flex gap-6">
+            {error.message}
+            <button role="button" title="Dismiss" onClick={dismissError}>
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+          </div>
+        </div>
+      )}
 
       <h1 className="flex-[0] p-2 text-center text-2xl text-white">
         Name that country!
@@ -94,10 +153,10 @@ export default function MapVisitor({ children }: PropsWithChildren) {
           )}
           {allCountryFeatures.map((feature) => {
             const isAnswer =
-              feature.properties?.ISO_A3 === countryCorrectAnswer.data?.alpha3;
+              feature.properties?.ADMIN === countryCorrectAnswer.data?.name;
             return (
               <GeoJSON
-                key={feature.properties?.iso_a3}
+                key={feature.properties?.ADMIN}
                 data={feature}
                 style={{
                   fillColor:
@@ -112,7 +171,7 @@ export default function MapVisitor({ children }: PropsWithChildren) {
               />
             );
           })}
-          <MapClick callback={handleInteraction} />
+          <MapClick callback={handleMapClick} />
         </LeafletMap>
 
         <ol className="list-decimal overflow-y-auto pl-[5ch] text-white">
@@ -129,23 +188,28 @@ export default function MapVisitor({ children }: PropsWithChildren) {
         </ol>
       </main>
 
-      <footer className="relative flex flex-col justify-center pt-2 pb-6 text-center text-white">
+      <footer className="relative flex flex-col items-center pt-2 pb-6 text-center text-white">
         <p className="p-2">Which country is this?</p>
-        <div className="flex justify-center">
-          <input
-            ref={inputRef}
-            className="p-1 pl-4 text-xl text-black"
-            onKeyDown={handleKeyDown}
-            placeholder="Enter country name"
-            disabled={!isReady}
-          />
-          <Button fit disabled={!isReady} onClick={handleInteraction}>
-            Submit
-          </Button>
+        <div className="flex w-fit flex-col items-center">
+          <div className="flex w-full justify-center">
+            <input
+              ref={inputRef}
+              className="p-1 pl-4 text-xl text-black"
+              onKeyDown={handleKeyDown}
+              placeholder="Enter country name"
+              disabled={!isReady}
+            />
+            <Button fit disabled={!isReady} onClick={handleSubmitAnswer}>
+              Submit
+            </Button>
+          </div>
+          <div className="flex w-full justify-between">
+            <span>Tries: {userTries}</span>
+            <button type="button" onClick={giveHint}>
+              Hint!
+            </button>
+          </div>
         </div>
-        {/* <button type="button" onClick={onCheat}>
-            {cheat}
-          </button> */}
 
         {!isReady && <InputCover>Click the map to begin</InputCover>}
       </footer>
