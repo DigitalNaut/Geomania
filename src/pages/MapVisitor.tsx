@@ -16,7 +16,7 @@ import {
 import { Button } from "src/components/Button";
 import { LeafletMap, markerIcon } from "src/components/LeafletMap";
 import { MapClick } from "src/controllers/MapController";
-import { useMapVisitor } from "src/pages/MapVisitor.logic";
+import { useMapVisitor } from "src/pages/MapVisitor.hooks";
 
 function InputCover({ children }: PropsWithChildren) {
   return (
@@ -28,15 +28,66 @@ function InputCover({ children }: PropsWithChildren) {
 
 function FloatingHeader({ children }: PropsWithChildren) {
   return (
-    <div className="absolute inset-x-1/2 top-5 z-[1000] h-max w-1/3 -translate-x-1/2 shadow-md">
-      <h1 className="rounded-lg bg-slate-900/40 px-6 py-4 text-center text-2xl text-white">
+    <div className="absolute inset-x-1/2 top-5 z-[1000] h-max w-1/4 -translate-x-1/2 shadow-md">
+      <h1 className="rounded-lg bg-slate-900 px-6 py-4 text-center text-2xl text-white">
         {children}
       </h1>
     </div>
   );
 }
 
-function UserGuessPanel({
+function GuessHeaderSection({
+  children,
+  skipCountryHandler,
+}: PropsWithChildren & {
+  skipCountryHandler: () => void;
+}) {
+  return (
+    <div className="flex gap-2 rounded-md bg-slate-800">
+      <p className="p-2">{children}</p>
+      <button
+        className="flex items-center gap-1 p-2 underline"
+        role="button"
+        title="Skip country"
+        onClick={skipCountryHandler}
+      >
+        <span>Skip</span>
+        <FontAwesomeIcon icon={faForward} />
+      </button>
+    </div>
+  );
+}
+
+function GuessInfoSection({
+  giveHintHandler,
+  prevGuess,
+  userTries,
+}: {
+  giveHintHandler: () => void;
+  prevGuess: string | null;
+  userTries: number;
+}) {
+  return (
+    <div
+      className="flex w-full justify-between rounded-md p-2"
+      // TODO: Revert
+      // style={{ visibility: userTries > 0 ? "visible" : "hidden" }}
+    >
+      <span>Guesses: {userTries}</span>
+      {prevGuess && <div>Last guess: &ldquo;{prevGuess}&rdquo;</div>}
+      <button
+        className="flex items-center gap-1 underline"
+        type="button"
+        onClick={giveHintHandler}
+      >
+        <FontAwesomeIcon icon={faQuestionCircle} />
+        <span>Hint!</span>
+      </button>
+    </div>
+  );
+}
+
+function UserGuessFloatingPanel({
   visitor: {
     handleSkipCountry,
     inputRef,
@@ -55,19 +106,11 @@ function UserGuessPanel({
       className="absolute inset-x-1/2 bottom-8 z-[1000] flex h-fit w-fit -translate-x-1/2 flex-col items-center gap-2 rounded-md text-center text-white"
       style={{ visibility: isReady ? "visible" : "hidden" }}
     >
-      <div className="flex gap-2 rounded-md bg-slate-800">
-        <p className="p-2">Which country is this?</p>
-        <button
-          className="flex items-center gap-1 p-2 underline"
-          role="button"
-          title="Skip country"
-          onClick={handleSkipCountry}
-        >
-          <span>Skip</span>
-          <FontAwesomeIcon icon={faForward} />
-        </button>
-      </div>
-      <div className="flex w-fit flex-col items-center drop-shadow-lg">
+      <GuessHeaderSection skipCountryHandler={handleSkipCountry}>
+        Which country is this?
+      </GuessHeaderSection>
+
+      <div className="flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
         <div className="flex w-full justify-center overflow-hidden rounded-md">
           <input
             className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
@@ -82,22 +125,11 @@ function UserGuessPanel({
           </Button>
         </div>
 
-        <div
-          className="flex w-full justify-between rounded-md bg-blue-900 p-2"
-          // TODO: Revert
-          // style={{ visibility: userTries > 0 ? "visible" : "hidden" }}
-        >
-          <span>Guesses: {userTries}</span>
-          {prevGuess && <div>Last guess: &ldquo;{prevGuess}&rdquo;</div>}
-          <button
-            className="flex items-center gap-2 underline"
-            type="button"
-            onClick={giveHint}
-          >
-            <FontAwesomeIcon icon={faQuestionCircle} />
-            <span>Hint!</span>
-          </button>
-        </div>
+        <GuessInfoSection
+          giveHintHandler={giveHint}
+          prevGuess={prevGuess}
+          userTries={userTries}
+        />
       </div>
     </div>
   );
@@ -202,7 +234,7 @@ export default function MapVisitor() {
 
           {!isReady && <InputCover>Click to start</InputCover>}
 
-          <UserGuessPanel visitor={visitor} />
+          <UserGuessFloatingPanel visitor={visitor} />
         </div>
 
         <CountryListPanel
