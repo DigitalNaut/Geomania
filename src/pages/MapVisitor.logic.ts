@@ -44,7 +44,9 @@ export function useMapVisitor() {
 
   function giveHint() {
     if (countryCorrectAnswer.data) {
-      const hint = countryCorrectAnswer.data.name.substring(0, userTries);
+      // TODO: Revert
+      //const hint = countryCorrectAnswer.data.name.substring(0, userTries);
+      const hint = countryCorrectAnswer.data.name;
       setInputField(hint);
     }
 
