@@ -111,7 +111,7 @@ function CountryListPanel({
   metadata: CountryData[];
 }) {
   return (
-    <ol className="list-decimal overflow-y-auto pl-[5ch] text-white">
+    <ol className="list-decimal overflow-y-auto bg-slate-800 pl-[5ch] text-white">
       {features.map((feature) => {
         // const pair = metadata.find(
         //   (meta) => meta?.alpha3 === feature.properties?.ISO_A3
