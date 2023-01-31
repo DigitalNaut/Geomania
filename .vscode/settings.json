@@ -3,6 +3,7 @@
     "fontawesome",
     "fortawesome",
     "paytone",
+    "svgr",
     "tailwindcss",
     "typecheck"
   ]
