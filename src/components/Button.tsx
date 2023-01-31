@@ -1,16 +1,33 @@
-import React from 'react';
+import type { HTMLProps } from "react";
 
-interface Props {
-  children: string;
-}
+type Props = Pick<
+  HTMLProps<HTMLButtonElement>,
+  "onClick" | "children" | "disabled"
+> & {
+  fit?: true;
+};
 
-export default function Button({ children }: Props): JSX.Element {
+export function Button({ children, fit, disabled, onClick }: Props) {
+  const className =
+    "p-4 text-xl font-bold text-center text-white bg-green-700 shadow-md cursor-pointer select-none hover:bg-green-600 hover:shadow-lg";
+
   return (
-    <button
-      type="button"
-      className="w-full p-4 text-xl font-bold text-center text-white bg-green-700 rounded-md shadow-md cursor-pointer select-none hover:bg-green-600 hover:shadow-lg"
-    >
-      {children}
-    </button>
+    <div className="relative bg-clip-content">
+      {disabled && (
+        <div
+          className={`absolute h-full w-full bg-green-900 ${
+            disabled ? "opacity-70" : "opacity-0"
+          }`}
+        />
+      )}
+      <button
+        disabled={disabled}
+        type="button"
+        className={[className, fit ? "w-min" : "w-full"].join()}
+        onClick={onClick}
+      >
+        {children}
+      </button>
+    </div>
   );
 }

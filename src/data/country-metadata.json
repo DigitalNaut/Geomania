@@ -6,8 +6,9 @@
     "latitude": 42.546245,
     "longitude": 1.601554,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "United Arab Emirates",
@@ -16,8 +17,9 @@
     "latitude": 23.424076,
     "longitude": 53.847818,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Afghanistan",
@@ -26,8 +28,9 @@
     "latitude": 33.93911,
     "longitude": 67.709953,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Antigua and Barbuda",
@@ -36,8 +39,20 @@
     "latitude": 17.060816,
     "longitude": -61.796428,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
+  },
+  {
+    "name": "Anguilla",
+    "alpha2": "AI",
+    "alpha3": "AIA",
+    "latitude": 18.220554,
+    "longitude": -63.068615,
+    "continent": "NA",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Albania",
@@ -46,8 +61,9 @@
     "latitude": 41.153332,
     "longitude": 20.168331,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Armenia",
@@ -56,8 +72,9 @@
     "latitude": 40.069099,
     "longitude": 45.038189,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Angola",
@@ -66,8 +83,20 @@
     "latitude": -11.202692,
     "longitude": 17.873887,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Antarctica",
+    "alpha2": "AQ",
+    "alpha3": "ATA",
+    "latitude": -82.8628,
+    "longitude": 135,
+    "continent": "AN",
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Argentina",
@@ -76,8 +105,20 @@
     "latitude": -38.416097,
     "longitude": -63.616672,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "American Samoa",
+    "alpha2": "AS",
+    "alpha3": "ASM",
+    "latitude": -14.270972,
+    "longitude": -170.132217,
+    "continent": "OC",
+    "territory": "US",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Austria",
@@ -86,8 +127,9 @@
     "latitude": 47.516231,
     "longitude": 14.550072,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Australia",
@@ -96,8 +138,20 @@
     "latitude": -25.274398,
     "longitude": 133.775136,
     "continent": "OC",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Aruba",
+    "alpha2": "AW",
+    "alpha3": "ABW",
+    "latitude": 12.52111,
+    "longitude": -69.968338,
+    "continent": "NA",
+    "territory": "NL",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Åland Islands",
@@ -106,8 +160,9 @@
     "latitude": 60.1785,
     "longitude": 19.9156,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Azerbaijan",
@@ -116,8 +171,9 @@
     "latitude": 40.143105,
     "longitude": 47.576927,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Bosnia and Herzegovina",
@@ -126,8 +182,9 @@
     "latitude": 43.915886,
     "longitude": 17.679076,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Barbados",
@@ -136,8 +193,9 @@
     "latitude": 13.193887,
     "longitude": -59.543198,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Bangladesh",
@@ -146,8 +204,9 @@
     "latitude": 23.684994,
     "longitude": 90.356331,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Belgium",
@@ -156,8 +215,9 @@
     "latitude": 50.503887,
     "longitude": 4.469936,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Burkina Faso",
@@ -166,8 +226,9 @@
     "latitude": 12.238333,
     "longitude": -1.561593,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Bulgaria",
@@ -176,8 +237,9 @@
     "latitude": 42.733883,
     "longitude": 25.48583,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Bahrain",
@@ -186,8 +248,9 @@
     "latitude": 25.930414,
     "longitude": 50.637772,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Burundi",
@@ -196,8 +259,9 @@
     "latitude": -3.373056,
     "longitude": 29.918886,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Benin",
@@ -206,8 +270,9 @@
     "latitude": 9.30769,
     "longitude": 2.315834,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Saint Barthélemy",
@@ -216,8 +281,20 @@
     "latitude": 17.9,
     "longitude": 62.8333,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
+  },
+  {
+    "name": "Bermuda",
+    "alpha2": "BM",
+    "alpha3": "BMU",
+    "latitude": 32.321384,
+    "longitude": -64.75737,
+    "continent": "NA",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Brunei",
@@ -226,8 +303,9 @@
     "latitude": 4.535277,
     "longitude": 114.727669,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Bolivia",
@@ -236,8 +314,20 @@
     "latitude": -16.290154,
     "longitude": -63.588653,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Bonaire, Sint Eustatius and Saba",
+    "alpha2": "BQ",
+    "alpha3": "BES",
+    "latitude": 12.1443,
+    "longitude": 68.2655,
+    "continent": "NA",
+    "territory": "NL",
+    "island": true,
+    "geometry": false
   },
   {
     "name": "Brazil",
@@ -246,8 +336,9 @@
     "latitude": -14.235004,
     "longitude": -51.92528,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Bahamas, The",
@@ -256,8 +347,9 @@
     "latitude": 25.03428,
     "longitude": -77.39628,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Bhutan",
@@ -266,8 +358,20 @@
     "latitude": 27.514162,
     "longitude": 90.433601,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Bouvet Island",
+    "alpha2": "BV",
+    "alpha3": "BVT",
+    "latitude": -54.423199,
+    "longitude": 3.413194,
+    "continent": "AN",
+    "territory": "NO",
+    "island": true,
+    "geometry": false
   },
   {
     "name": "Botswana",
@@ -276,8 +380,9 @@
     "latitude": -22.328474,
     "longitude": 24.684866,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Belarus",
@@ -286,8 +391,9 @@
     "latitude": 53.709807,
     "longitude": 27.953389,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Belize",
@@ -296,8 +402,9 @@
     "latitude": 17.189877,
     "longitude": -88.49765,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Canada",
@@ -306,8 +413,20 @@
     "latitude": 56.130366,
     "longitude": -106.346771,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Cocos (Keeling) Islands",
+    "alpha2": "CC",
+    "alpha3": "CCK",
+    "latitude": -12.164165,
+    "longitude": 96.870956,
+    "continent": "AS",
+    "territory": "AU",
+    "island": true,
+    "geometry": false
   },
   {
     "name": "Congo, Democratic Republic of the",
@@ -316,8 +435,9 @@
     "latitude": -4.038333,
     "longitude": 21.758664,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Central African Republic",
@@ -326,8 +446,9 @@
     "latitude": 6.611111,
     "longitude": 20.939444,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Congo",
@@ -336,8 +457,9 @@
     "latitude": -0.228021,
     "longitude": 15.827659,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Switzerland",
@@ -346,8 +468,9 @@
     "latitude": 46.818188,
     "longitude": 8.227512,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Côte d'Ivoire",
@@ -356,8 +479,9 @@
     "latitude": 7.539989,
     "longitude": -5.54708,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Cook Islands",
@@ -366,8 +490,9 @@
     "latitude": -21.236736,
     "longitude": -159.777671,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Chile",
@@ -376,8 +501,9 @@
     "latitude": -35.675147,
     "longitude": -71.542969,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Cameroon",
@@ -386,8 +512,9 @@
     "latitude": 7.369722,
     "longitude": 12.354722,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "China",
@@ -396,8 +523,9 @@
     "latitude": 35.86166,
     "longitude": 104.195397,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Colombia",
@@ -406,8 +534,9 @@
     "latitude": 4.570868,
     "longitude": -74.297333,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Costa Rica",
@@ -416,8 +545,9 @@
     "latitude": 9.748917,
     "longitude": -83.753428,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Cuba",
@@ -426,8 +556,9 @@
     "latitude": 21.521757,
     "longitude": -77.781167,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Cape Verde",
@@ -436,8 +567,31 @@
     "latitude": 16.002082,
     "longitude": -24.013197,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Curaçao",
+    "alpha2": "CW",
+    "alpha3": "CUW",
+    "latitude": 12.1696,
+    "longitude": 68.99,
+    "continent": "NA",
+    "territory": "NL",
+    "island": true,
+    "geometry": true
+  },
+  {
+    "name": "Christmas Island",
+    "alpha2": "CX",
+    "alpha3": "CXR",
+    "latitude": -10.447525,
+    "longitude": 105.690449,
+    "continent": "AS",
+    "territory": "AU",
+    "island": true,
+    "geometry": false
   },
   {
     "name": "Cyprus",
@@ -446,8 +600,9 @@
     "latitude": 35.126413,
     "longitude": 33.429859,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Czech Republic",
@@ -456,8 +611,9 @@
     "latitude": 49.817492,
     "longitude": 15.472962,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Germany",
@@ -466,8 +622,9 @@
     "latitude": 51.165691,
     "longitude": 10.451526,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Djibouti",
@@ -476,8 +633,9 @@
     "latitude": 11.825138,
     "longitude": 42.590275,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Denmark",
@@ -486,8 +644,9 @@
     "latitude": 56.26392,
     "longitude": 9.501785,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Dominica",
@@ -496,8 +655,9 @@
     "latitude": 15.414999,
     "longitude": -61.370976,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Dominican Republic",
@@ -506,8 +666,9 @@
     "latitude": 18.735693,
     "longitude": -70.162651,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Algeria",
@@ -516,8 +677,9 @@
     "latitude": 28.033886,
     "longitude": 1.659626,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Ecuador",
@@ -526,8 +688,9 @@
     "latitude": -1.831239,
     "longitude": -78.183406,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Estonia",
@@ -536,8 +699,9 @@
     "latitude": 58.595272,
     "longitude": 25.013607,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Egypt",
@@ -546,8 +710,9 @@
     "latitude": 26.820553,
     "longitude": 30.802498,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Western Sahara",
@@ -556,8 +721,9 @@
     "latitude": 24.215527,
     "longitude": -12.885834,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Eritrea",
@@ -566,8 +732,9 @@
     "latitude": 15.179384,
     "longitude": 39.782334,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Spain",
@@ -576,8 +743,9 @@
     "latitude": 40.463667,
     "longitude": -3.74922,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Ethiopia",
@@ -586,8 +754,9 @@
     "latitude": 9.145,
     "longitude": 40.489673,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Finland",
@@ -596,8 +765,9 @@
     "latitude": 61.92411,
     "longitude": 25.748151,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Fiji",
@@ -606,8 +776,20 @@
     "latitude": -16.578193,
     "longitude": 179.414413,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
+  },
+  {
+    "name": "Falkland Islands (Malvinas)",
+    "alpha2": "FK",
+    "alpha3": "FLK",
+    "latitude": -51.796253,
+    "longitude": -59.523613,
+    "continent": "SA",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Micronesia",
@@ -616,8 +798,9 @@
     "latitude": 7.425554,
     "longitude": 150.550812,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Faroe Islands",
@@ -626,8 +809,9 @@
     "latitude": 61.892635,
     "longitude": -6.911806,
     "continent": "EU",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "France",
@@ -636,8 +820,9 @@
     "latitude": 46.227638,
     "longitude": 2.213749,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Gabon",
@@ -646,8 +831,9 @@
     "latitude": -0.803689,
     "longitude": 11.609444,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "United Kingdom",
@@ -656,8 +842,9 @@
     "latitude": 55.378051,
     "longitude": -3.435973,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Grenada",
@@ -666,8 +853,9 @@
     "latitude": 12.262776,
     "longitude": -61.604171,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Georgia",
@@ -676,8 +864,20 @@
     "latitude": 42.315407,
     "longitude": 43.356892,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "French Guiana",
+    "alpha2": "GF",
+    "alpha3": "GUF",
+    "latitude": 3.933889,
+    "longitude": -53.125782,
+    "continent": "SA",
+    "territory": "FR",
+    "island": false,
+    "geometry": false
   },
   {
     "name": "Guernsey",
@@ -686,8 +886,9 @@
     "latitude": 49.465691,
     "longitude": -2.585278,
     "continent": "EU",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Ghana",
@@ -696,8 +897,20 @@
     "latitude": 7.946527,
     "longitude": -1.023194,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Gibraltar",
+    "alpha2": "GI",
+    "alpha3": "GIB",
+    "latitude": 36.137741,
+    "longitude": -5.345374,
+    "continent": "EU",
+    "territory": "GB",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Greenland",
@@ -706,8 +919,9 @@
     "latitude": 71.706936,
     "longitude": -42.604303,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Gambia",
@@ -716,8 +930,9 @@
     "latitude": 13.443182,
     "longitude": -15.310139,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Guinea",
@@ -726,8 +941,9 @@
     "latitude": 9.945587,
     "longitude": -9.696645,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Guadeloupe",
@@ -736,8 +952,9 @@
     "latitude": 16.995971,
     "longitude": -62.067641,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": false
   },
   {
     "name": "Equatorial Guinea",
@@ -746,8 +963,9 @@
     "latitude": 1.650801,
     "longitude": 10.267895,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Greece",
@@ -756,8 +974,20 @@
     "latitude": 39.074208,
     "longitude": 21.824312,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "South Georgia and the South Sandwich Islands",
+    "alpha2": "GS",
+    "alpha3": "SGS",
+    "latitude": -54.429579,
+    "longitude": -36.587909,
+    "continent": "AN",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Guatemala",
@@ -766,8 +996,20 @@
     "latitude": 15.783471,
     "longitude": -90.230759,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Guam",
+    "alpha2": "GU",
+    "alpha3": "GUM",
+    "latitude": 13.444304,
+    "longitude": 144.793731,
+    "continent": "OC",
+    "territory": "US",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Guinea-Bissau",
@@ -776,8 +1018,9 @@
     "latitude": 11.803749,
     "longitude": -15.180413,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Guyana",
@@ -786,8 +1029,31 @@
     "latitude": 4.860416,
     "longitude": -58.93018,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Hong Kong",
+    "alpha2": "HK",
+    "alpha3": "HKG",
+    "latitude": 22.396428,
+    "longitude": 114.109497,
+    "continent": "AS",
+    "territory": "CN",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Heard Island and McDonald Islands",
+    "alpha2": "HM",
+    "alpha3": "HMD",
+    "latitude": -53.08181,
+    "longitude": 73.504158,
+    "continent": "AN",
+    "territory": "AU",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Honduras",
@@ -796,8 +1062,9 @@
     "latitude": 15.199999,
     "longitude": -86.241905,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Croatia",
@@ -806,8 +1073,9 @@
     "latitude": 45.1,
     "longitude": 15.2,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Haiti",
@@ -816,8 +1084,9 @@
     "latitude": 18.971187,
     "longitude": -72.285215,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Hungary",
@@ -826,8 +1095,9 @@
     "latitude": 47.162494,
     "longitude": 19.503304,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Indonesia",
@@ -836,8 +1106,9 @@
     "latitude": -0.789275,
     "longitude": 113.921327,
     "continent": "AS",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Ireland",
@@ -846,8 +1117,9 @@
     "latitude": 53.41291,
     "longitude": -8.24389,
     "continent": "EU",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Israel",
@@ -856,8 +1128,20 @@
     "latitude": 31.046051,
     "longitude": 34.851612,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Isle of Man",
+    "alpha2": "IM",
+    "alpha3": "IMN",
+    "latitude": 54.236107,
+    "longitude": -4.548056,
+    "continent": "EU",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "India",
@@ -866,8 +1150,20 @@
     "latitude": 20.593684,
     "longitude": 78.96288,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "British Indian Ocean Territory",
+    "alpha2": "IO",
+    "alpha3": "IOT",
+    "latitude": -6.343194,
+    "longitude": 71.876519,
+    "continent": "AS",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Iraq",
@@ -876,8 +1172,9 @@
     "latitude": 33.223191,
     "longitude": 43.679291,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Iran",
@@ -886,8 +1183,9 @@
     "latitude": 32.427908,
     "longitude": 53.688046,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Iceland",
@@ -896,8 +1194,9 @@
     "latitude": 64.963051,
     "longitude": -19.020835,
     "continent": "EU",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Italy",
@@ -906,8 +1205,20 @@
     "latitude": 41.87194,
     "longitude": 12.56738,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Jersey",
+    "alpha2": "JE",
+    "alpha3": "JEY",
+    "latitude": 49.214439,
+    "longitude": -2.13125,
+    "continent": "EU",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Jamaica",
@@ -916,8 +1227,9 @@
     "latitude": 18.109581,
     "longitude": -77.297508,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Jordan",
@@ -926,8 +1238,9 @@
     "latitude": 30.585164,
     "longitude": 36.238414,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Japan",
@@ -936,8 +1249,9 @@
     "latitude": 36.204824,
     "longitude": 138.252924,
     "continent": "AS",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Kenya",
@@ -946,8 +1260,9 @@
     "latitude": -0.023559,
     "longitude": 37.906193,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Kyrgyzstan",
@@ -956,8 +1271,9 @@
     "latitude": 41.20438,
     "longitude": 74.766098,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Cambodia",
@@ -966,8 +1282,9 @@
     "latitude": 12.565679,
     "longitude": 104.990963,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Kiribati",
@@ -976,8 +1293,9 @@
     "latitude": -3.370417,
     "longitude": -168.734039,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Comoros",
@@ -986,8 +1304,9 @@
     "latitude": -11.875001,
     "longitude": 43.872219,
     "continent": "AF",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Saint Kitts and Nevis",
@@ -996,8 +1315,9 @@
     "latitude": 17.357822,
     "longitude": -62.782998,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Korea, North",
@@ -1006,8 +1326,9 @@
     "latitude": 40.339852,
     "longitude": 127.510093,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Korea, South",
@@ -1016,8 +1337,9 @@
     "latitude": 35.907757,
     "longitude": 127.766922,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Kuwait",
@@ -1026,8 +1348,20 @@
     "latitude": 29.31166,
     "longitude": 47.481766,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Cayman Islands",
+    "alpha2": "KY",
+    "alpha3": "CYM",
+    "latitude": 19.513469,
+    "longitude": -80.566956,
+    "continent": "NA",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Kazakhstan",
@@ -1036,8 +1370,9 @@
     "latitude": 48.019573,
     "longitude": 66.923684,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Laos",
@@ -1046,8 +1381,9 @@
     "latitude": 19.85627,
     "longitude": 102.495496,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Lebanon",
@@ -1056,8 +1392,9 @@
     "latitude": 33.854721,
     "longitude": 35.862285,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Saint Lucia",
@@ -1066,8 +1403,9 @@
     "latitude": 13.909444,
     "longitude": -60.978893,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Liechtenstein",
@@ -1076,8 +1414,9 @@
     "latitude": 47.166,
     "longitude": 9.555373,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Sri Lanka",
@@ -1086,8 +1425,9 @@
     "latitude": 7.873054,
     "longitude": 80.771797,
     "continent": "AS",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Liberia",
@@ -1096,8 +1436,9 @@
     "latitude": 6.428055,
     "longitude": -9.429499,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Lesotho",
@@ -1106,8 +1447,9 @@
     "latitude": -29.609988,
     "longitude": 28.233608,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Lithuania",
@@ -1116,8 +1458,9 @@
     "latitude": 55.169438,
     "longitude": 23.881275,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Luxembourg",
@@ -1126,8 +1469,9 @@
     "latitude": 49.815273,
     "longitude": 6.129583,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Latvia",
@@ -1136,8 +1480,9 @@
     "latitude": 56.879635,
     "longitude": 24.603189,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Libya",
@@ -1146,8 +1491,9 @@
     "latitude": 26.3351,
     "longitude": 17.228331,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Morocco",
@@ -1156,8 +1502,9 @@
     "latitude": 31.791702,
     "longitude": -7.09262,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Monaco",
@@ -1166,8 +1513,9 @@
     "latitude": 43.750298,
     "longitude": 7.412841,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Moldova",
@@ -1176,8 +1524,9 @@
     "latitude": 47.411631,
     "longitude": 28.369885,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Montenegro",
@@ -1186,8 +1535,20 @@
     "latitude": 42.708678,
     "longitude": 19.37439,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Saint Martin (French part)",
+    "alpha2": "MF",
+    "alpha3": "MAF",
+    "latitude": 18.0708,
+    "longitude": 63.0501,
+    "continent": "NA",
+    "territory": "FR",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Madagascar",
@@ -1196,8 +1557,9 @@
     "latitude": -18.766947,
     "longitude": 46.869107,
     "continent": "AF",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Marshall Islands",
@@ -1206,8 +1568,9 @@
     "latitude": 7.131474,
     "longitude": 171.184478,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Macedonia, North",
@@ -1216,8 +1579,9 @@
     "latitude": 41.608635,
     "longitude": 21.745275,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Mali",
@@ -1226,8 +1590,9 @@
     "latitude": 17.570692,
     "longitude": -3.996166,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Myanmar",
@@ -1236,8 +1601,9 @@
     "latitude": 21.913965,
     "longitude": 95.956223,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Mongolia",
@@ -1246,8 +1612,42 @@
     "latitude": 46.862496,
     "longitude": 103.846656,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Macao",
+    "alpha2": "MO",
+    "alpha3": "MAC",
+    "latitude": 22.198745,
+    "longitude": 113.543873,
+    "continent": "AS",
+    "territory": "CN",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Northern Mariana Islands",
+    "alpha2": "MP",
+    "alpha3": "MNP",
+    "latitude": 17.33083,
+    "longitude": 145.38469,
+    "continent": "OC",
+    "territory": "US",
+    "island": true,
+    "geometry": true
+  },
+  {
+    "name": "Martinique",
+    "alpha2": "MQ",
+    "alpha3": "MTQ",
+    "latitude": 14.641528,
+    "longitude": -61.024174,
+    "continent": "NA",
+    "territory": "FR",
+    "island": true,
+    "geometry": false
   },
   {
     "name": "Mauritania",
@@ -1256,8 +1656,20 @@
     "latitude": 21.00789,
     "longitude": -10.940835,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Montserrat",
+    "alpha2": "MS",
+    "alpha3": "MSR",
+    "latitude": 16.742498,
+    "longitude": -62.187366,
+    "continent": "NA",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Malta",
@@ -1266,8 +1678,9 @@
     "latitude": 35.937496,
     "longitude": 14.375416,
     "continent": "EU",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Mauritius",
@@ -1276,8 +1689,9 @@
     "latitude": -20.348404,
     "longitude": 57.552152,
     "continent": "AF",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Maldives",
@@ -1286,8 +1700,9 @@
     "latitude": 3.202778,
     "longitude": 73.22068,
     "continent": "AS",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Malawi",
@@ -1296,8 +1711,9 @@
     "latitude": -13.254308,
     "longitude": 34.301525,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Mexico",
@@ -1306,8 +1722,9 @@
     "latitude": 23.634501,
     "longitude": -102.552784,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Malaysia",
@@ -1316,8 +1733,9 @@
     "latitude": 4.210484,
     "longitude": 101.975766,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Mozambique",
@@ -1326,8 +1744,9 @@
     "latitude": -18.665695,
     "longitude": 35.529562,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Namibia",
@@ -1336,8 +1755,20 @@
     "latitude": -22.95764,
     "longitude": 18.49041,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "New Caledonia",
+    "alpha2": "NC",
+    "alpha3": "NCL",
+    "latitude": -20.904305,
+    "longitude": 165.618042,
+    "continent": "OC",
+    "territory": "FR",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Niger",
@@ -1346,8 +1777,20 @@
     "latitude": 17.607789,
     "longitude": 8.081666,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Norfolk Island",
+    "alpha2": "NF",
+    "alpha3": "NFK",
+    "latitude": -29.040835,
+    "longitude": 167.954712,
+    "continent": "OC",
+    "territory": "AU",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Nigeria",
@@ -1356,8 +1799,9 @@
     "latitude": 9.081999,
     "longitude": 8.675277,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Nicaragua",
@@ -1366,8 +1810,9 @@
     "latitude": 12.865416,
     "longitude": -85.207229,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Netherlands",
@@ -1376,8 +1821,9 @@
     "latitude": 52.132633,
     "longitude": 5.291266,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Norway",
@@ -1386,8 +1832,9 @@
     "latitude": 60.472024,
     "longitude": 8.468946,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Nepal",
@@ -1396,8 +1843,9 @@
     "latitude": 28.394857,
     "longitude": 84.124008,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Nauru",
@@ -1406,8 +1854,9 @@
     "latitude": -0.522778,
     "longitude": 166.931503,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Niue",
@@ -1416,8 +1865,9 @@
     "latitude": -19.054445,
     "longitude": -169.867233,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "New Zealand",
@@ -1426,8 +1876,9 @@
     "latitude": -40.900557,
     "longitude": 174.885971,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Oman",
@@ -1436,8 +1887,9 @@
     "latitude": 21.512583,
     "longitude": 55.923255,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Panama",
@@ -1446,8 +1898,9 @@
     "latitude": 8.537981,
     "longitude": -80.782127,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Peru",
@@ -1456,8 +1909,20 @@
     "latitude": -9.189967,
     "longitude": -75.015152,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "French Polynesia",
+    "alpha2": "PF",
+    "alpha3": "PYF",
+    "latitude": -17.679742,
+    "longitude": -149.406843,
+    "continent": "OC",
+    "territory": "FR",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Papua New Guinea",
@@ -1466,8 +1931,9 @@
     "latitude": -6.314993,
     "longitude": 143.95555,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Philippines",
@@ -1476,8 +1942,9 @@
     "latitude": 12.879721,
     "longitude": 121.774017,
     "continent": "AS",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Pakistan",
@@ -1486,8 +1953,9 @@
     "latitude": 30.375321,
     "longitude": 69.345116,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Poland",
@@ -1496,8 +1964,42 @@
     "latitude": 51.919438,
     "longitude": 19.145136,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Saint Pierre and Miquelon",
+    "alpha2": "PM",
+    "alpha3": "SPM",
+    "latitude": 46.941936,
+    "longitude": -56.27111,
+    "continent": "NA",
+    "territory": "FR",
+    "island": true,
+    "geometry": true
+  },
+  {
+    "name": "Pitcairn",
+    "alpha2": "PN",
+    "alpha3": "PCN",
+    "latitude": -24.703615,
+    "longitude": -127.439308,
+    "continent": "OC",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
+  },
+  {
+    "name": "Puerto Rico",
+    "alpha2": "PR",
+    "alpha3": "PRI",
+    "latitude": 18.220833,
+    "longitude": -66.590149,
+    "continent": "NA",
+    "territory": "US",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Palestinian Territory, Occupied",
@@ -1506,8 +2008,9 @@
     "latitude": 31.952162,
     "longitude": 35.233154,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Portugal",
@@ -1516,8 +2019,9 @@
     "latitude": 39.399872,
     "longitude": -8.224454,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Palau",
@@ -1526,8 +2030,9 @@
     "latitude": 7.51498,
     "longitude": 134.58252,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Paraguay",
@@ -1536,8 +2041,9 @@
     "latitude": -23.442503,
     "longitude": -58.443832,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Qatar",
@@ -1546,8 +2052,20 @@
     "latitude": 25.354826,
     "longitude": 51.183884,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Réunion",
+    "alpha2": "RE",
+    "alpha3": "REU",
+    "latitude": -21.115141,
+    "longitude": 55.536384,
+    "continent": "AF",
+    "territory": "FR",
+    "island": true,
+    "geometry": false
   },
   {
     "name": "Romania",
@@ -1556,8 +2074,9 @@
     "latitude": 45.943161,
     "longitude": 24.96676,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Serbia",
@@ -1566,8 +2085,9 @@
     "latitude": 44.016521,
     "longitude": 21.005859,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Russian Federation",
@@ -1576,8 +2096,9 @@
     "latitude": 61.52401,
     "longitude": 105.318756,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Rwanda",
@@ -1586,8 +2107,9 @@
     "latitude": -1.940278,
     "longitude": 29.873888,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Saudi Arabia",
@@ -1596,8 +2118,9 @@
     "latitude": 23.885942,
     "longitude": 45.079162,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Solomon Islands",
@@ -1606,8 +2129,9 @@
     "latitude": -9.64571,
     "longitude": 160.156194,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Seychelles",
@@ -1616,8 +2140,9 @@
     "latitude": -4.679574,
     "longitude": 55.491977,
     "continent": "AF",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Sudan",
@@ -1626,8 +2151,9 @@
     "latitude": 12.862807,
     "longitude": 30.217636,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Sweden",
@@ -1636,8 +2162,9 @@
     "latitude": 60.128161,
     "longitude": 18.643501,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Singapore",
@@ -1646,8 +2173,20 @@
     "latitude": 1.352083,
     "longitude": 103.819836,
     "continent": "AS",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
+  },
+  {
+    "name": "Saint Helena, Ascension and Tristan da Cunha",
+    "alpha2": "SH",
+    "alpha3": "SHN",
+    "latitude": -24.143474,
+    "longitude": -10.030696,
+    "continent": "AF",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Slovenia",
@@ -1656,8 +2195,20 @@
     "latitude": 46.151241,
     "longitude": 14.995463,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Svalbard and Jan Mayen",
+    "alpha2": "SJ",
+    "alpha3": "SJM",
+    "latitude": 77.553604,
+    "longitude": 23.670272,
+    "continent": "EU",
+    "territory": "NO",
+    "island": true,
+    "geometry": false
   },
   {
     "name": "Slovakia",
@@ -1666,8 +2217,9 @@
     "latitude": 48.669026,
     "longitude": 19.699024,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Sierra Leone",
@@ -1676,8 +2228,9 @@
     "latitude": 8.460555,
     "longitude": -11.779889,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "San Marino",
@@ -1686,8 +2239,9 @@
     "latitude": 43.94236,
     "longitude": 12.457777,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Senegal",
@@ -1696,8 +2250,9 @@
     "latitude": 14.497401,
     "longitude": -14.452362,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Somalia",
@@ -1706,8 +2261,9 @@
     "latitude": 5.152149,
     "longitude": 46.199616,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Suriname",
@@ -1716,8 +2272,9 @@
     "latitude": 3.919305,
     "longitude": -56.027783,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "South Sudan",
@@ -1726,8 +2283,9 @@
     "latitude": 4.51,
     "longitude": 31.36,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Sao Tome and Principe",
@@ -1736,8 +2294,9 @@
     "latitude": 0.18636,
     "longitude": 6.613081,
     "continent": "AF",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "El Salvador",
@@ -1746,8 +2305,20 @@
     "latitude": 13.794185,
     "longitude": -88.89653,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Sint Maarten (Dutch part)",
+    "alpha2": "SX",
+    "alpha3": "SXM",
+    "latitude": 18.0425,
+    "longitude": 63.0548,
+    "continent": "NA",
+    "territory": "NL",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Syrian Arab Republic",
@@ -1756,8 +2327,9 @@
     "latitude": 34.802075,
     "longitude": 38.996815,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Swaziland",
@@ -1766,8 +2338,20 @@
     "latitude": -26.522503,
     "longitude": 31.465866,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Turks and Caicos Islands",
+    "alpha2": "TC",
+    "alpha3": "TCA",
+    "latitude": 21.694025,
+    "longitude": -71.797928,
+    "continent": "NA",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Chad",
@@ -1776,8 +2360,20 @@
     "latitude": 15.454166,
     "longitude": 18.732207,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "French Southern Territories",
+    "alpha2": "TF",
+    "alpha3": "ATF",
+    "latitude": -49.280366,
+    "longitude": 69.348557,
+    "continent": "AN",
+    "territory": "FR",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Togo",
@@ -1786,8 +2382,9 @@
     "latitude": 8.619543,
     "longitude": 0.824782,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Thailand",
@@ -1796,8 +2393,9 @@
     "latitude": 15.870032,
     "longitude": 100.992541,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Tajikistan",
@@ -1806,8 +2404,20 @@
     "latitude": 38.861034,
     "longitude": 71.276093,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Tokelau",
+    "alpha2": "TK",
+    "alpha3": "TKL",
+    "latitude": -8.967363,
+    "longitude": -171.855881,
+    "continent": "OC",
+    "territory": "NZ",
+    "island": true,
+    "geometry": false
   },
   {
     "name": "Timor-Leste",
@@ -1816,8 +2426,9 @@
     "latitude": -8.874217,
     "longitude": 125.727539,
     "continent": "AS",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Turkmenistan",
@@ -1826,8 +2437,9 @@
     "latitude": 38.969719,
     "longitude": 59.556278,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Tunisia",
@@ -1836,8 +2448,9 @@
     "latitude": 33.886917,
     "longitude": 9.537499,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Tonga",
@@ -1846,8 +2459,9 @@
     "latitude": -21.178986,
     "longitude": -175.198242,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Turkey",
@@ -1856,8 +2470,9 @@
     "latitude": 38.963745,
     "longitude": 35.243322,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Trinidad and Tobago",
@@ -1866,8 +2481,9 @@
     "latitude": 10.691803,
     "longitude": -61.222503,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Tuvalu",
@@ -1876,8 +2492,20 @@
     "latitude": -7.109535,
     "longitude": 177.64933,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
+  },
+  {
+    "name": "Taiwan, Province of China",
+    "alpha2": "TW",
+    "alpha3": "TWN",
+    "latitude": 23.69781,
+    "longitude": 120.960515,
+    "continent": "AS",
+    "territory": "CN",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Tanzania",
@@ -1886,8 +2514,9 @@
     "latitude": -6.369028,
     "longitude": 34.888822,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Ukraine",
@@ -1896,8 +2525,9 @@
     "latitude": 48.379433,
     "longitude": 31.16558,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Uganda",
@@ -1906,8 +2536,20 @@
     "latitude": 1.373333,
     "longitude": 32.290275,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "United States Minor Outlying Islands",
+    "alpha2": "UM",
+    "alpha3": "UMI",
+    "latitude": 19.2823,
+    "longitude": 166.647,
+    "continent": "OC",
+    "territory": "US",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "United States",
@@ -1916,8 +2558,9 @@
     "latitude": 37.09024,
     "longitude": -95.712891,
     "continent": "NA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Uruguay",
@@ -1926,8 +2569,9 @@
     "latitude": -32.522779,
     "longitude": -55.765835,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Uzbekistan",
@@ -1936,8 +2580,9 @@
     "latitude": 41.377491,
     "longitude": 64.585262,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Vatican City State",
@@ -1946,8 +2591,9 @@
     "latitude": 41.902916,
     "longitude": 12.453389,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Saint Vincent and the Grenadines",
@@ -1956,8 +2602,9 @@
     "latitude": 12.984305,
     "longitude": -61.287228,
     "continent": "NA",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Venezuela",
@@ -1966,8 +2613,31 @@
     "latitude": 6.42375,
     "longitude": -66.58973,
     "continent": "SA",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Virgin Islands, British",
+    "alpha2": "VG",
+    "alpha3": "VGB",
+    "latitude": 18.420695,
+    "longitude": -64.639968,
+    "continent": "NA",
+    "territory": "GB",
+    "island": true,
+    "geometry": true
+  },
+  {
+    "name": "Virgin Islands, U.S.",
+    "alpha2": "VI",
+    "alpha3": "VIR",
+    "latitude": 18.335765,
+    "longitude": -64.896335,
+    "continent": "NA",
+    "territory": "US",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Vietnam",
@@ -1976,8 +2646,9 @@
     "latitude": 14.058324,
     "longitude": 108.277199,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Vanuatu",
@@ -1986,8 +2657,20 @@
     "latitude": -15.376706,
     "longitude": 166.959158,
     "continent": "OC",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Wallis and Futuna",
+    "alpha2": "WF",
+    "alpha3": "WLF",
+    "latitude": -13.768752,
+    "longitude": -177.156097,
+    "continent": "OC",
+    "territory": "FR",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Samoa",
@@ -1996,8 +2679,9 @@
     "latitude": -13.759029,
     "longitude": -172.104629,
     "continent": "OC",
-    "territory": false,
-    "island": true
+    "territory": "FALSE",
+    "island": true,
+    "geometry": true
   },
   {
     "name": "Kosovo",
@@ -2006,8 +2690,9 @@
     "latitude": 42.602636,
     "longitude": 20.902977,
     "continent": "EU",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": false
   },
   {
     "name": "Yemen",
@@ -2016,8 +2701,20 @@
     "latitude": 15.552727,
     "longitude": 48.516388,
     "continent": "AS",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
+  },
+  {
+    "name": "Mayotte",
+    "alpha2": "YT",
+    "alpha3": "MYT",
+    "latitude": -12.8275,
+    "longitude": 45.166244,
+    "continent": "AF",
+    "territory": "FR",
+    "island": true,
+    "geometry": false
   },
   {
     "name": "South Africa",
@@ -2026,8 +2723,9 @@
     "latitude": -30.559482,
     "longitude": 22.937506,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Zambia",
@@ -2036,8 +2734,9 @@
     "latitude": -13.133897,
     "longitude": 27.849332,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   },
   {
     "name": "Zimbabwe",
@@ -2046,7 +2745,8 @@
     "latitude": -19.015438,
     "longitude": 29.154857,
     "continent": "AF",
-    "territory": false,
-    "island": false
+    "territory": "FALSE",
+    "island": false,
+    "geometry": true
   }
 ]

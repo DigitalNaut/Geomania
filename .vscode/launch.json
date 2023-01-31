@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch localhost:5173",
+      "type": "firefox",
+      "request": "launch",
+      "reAttach": true,
+      "url": "http://localhost:5173",
+      "pathMappings": [
+        {
+          "url": "http://localhost:5173",
+          "path": "${workspaceFolder}"
+        }
+      ]
+    }
+  ]
+}

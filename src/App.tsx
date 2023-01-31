@@ -1,11 +1,14 @@
-import React from 'react';
+import MapVisitor from "src/pages/MapVisitor";
+import Header from "src/components/Header";
+import MapContextProvider from "src/controllers/MapContext";
 
-import HomeView from 'src/views/Home';
-
-export default function App(): JSX.Element {
+export default function App() {
   return (
-    <div className="font-sans bg-gray-800">
-      <HomeView />
+    <div className="flex h-screen w-full flex-col">
+      <Header />
+      <MapContextProvider>
+        <MapVisitor />
+      </MapContextProvider>
     </div>
   );
 }

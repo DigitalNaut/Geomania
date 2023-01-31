@@ -1,0 +1,12 @@
+node_modules
+*-lock.yaml
+
+/build
+/public/build
+/coverage
+.env
+
+/src/styles/tailwind.css
+/src/data/country-geometries.json
+/src/data/country-country-metadata.json
+/dist

@@ -1,19 +1,10 @@
 {
-  "cSpell.ignorePaths": [
-    "**/package-lock.json",
-    "**/node_modules/**",
-    "**/vscode-extension/**",
-    "**/.git/objects/**",
-    ".vscode",
-    ".vscode-insiders",
-    "package.json"
-  ],
   "cSpell.words": [
-    "Geomania"
-  ],
-  "cSpell.ignoreWords": [
-    "latlng",
+    "fontawesome",
+    "fortawesome",
+    "paytone",
+    "svgr",
     "tailwindcss",
-    "testid"
+    "typecheck"
   ]
 }
