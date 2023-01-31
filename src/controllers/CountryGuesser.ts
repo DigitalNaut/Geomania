@@ -15,7 +15,7 @@ export function useCountryGuess() {
   const [countryFeature, setCountryFeature] = useState<Feature>();
 
   function getNextCountry(): CountryData {
-    const { country } = getNewCountryData(true);
+    const { country } = getNewCountryData();
     const feature = getCountryGeometry(country.alpha3);
 
     setCountryAnswerData(country);

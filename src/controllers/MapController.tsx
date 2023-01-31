@@ -1,7 +1,6 @@
-import type Leaflet from "leaflet";
-import { useMapEvents } from "react-leaflet";
-
+import type { LatLngTuple } from "leaflet";
 import type { Feature } from "geojson";
+
 import countriesMetadata from "src/data/country-metadata.json";
 import countryGeometries from "src/data/country-geometries.json";
 
@@ -23,21 +22,15 @@ export function getCountryGeometry(alpha3: string) {
 
 /**
  * Gets the next country to be displayed from the list of countries in the metadata.
- * @param random Whether to get a random country or the first country in the list.
+ * @param index Whether to get a random country or the first country in the list.
  * @param callback A callback function to be called after the country is retrieved.
  * @returns The country index, country data, and country coordinates.
  */
-export function getNewCountryData(random: boolean, callback?: () => void) {
-  const countryIndex = random
-    ? Math.floor(Math.random() * countriesMetadata.length)
-    : 0;
+export function getNewCountryData(index?: number) {
+  const countryIndex =
+    index ?? Math.floor(Math.random() * countriesMetadata.length);
   const country: CountryData = countriesMetadata[countryIndex];
-  const countryCoords: Leaflet.LatLngTuple = [
-    country.latitude,
-    country.longitude,
-  ];
-
-  callback?.();
+  const countryCoords: LatLngTuple = [country.latitude, country.longitude];
 
   return { countryIndex, country, countryCoords };
 }
@@ -52,15 +45,4 @@ export function getAllCountryFeatures() {
 
 export function getAllCountriesMetadata() {
   return countriesMetadata as CountryData[];
-}
-
-/**
- * A React Leaflet component that listens for map clicks.
- */
-export function MapClick({ callback: callback }: { callback?: () => void }) {
-  useMapEvents({
-    click: () => callback?.(),
-  });
-
-  return null;
 }

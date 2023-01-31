@@ -14,8 +14,8 @@ import {
   getAllCountryFeatures,
 } from "src/controllers/MapController";
 import { Button } from "src/components/Button";
+import { MapClick } from "src/components/MapClick";
 import { LeafletMap, markerIcon } from "src/components/LeafletMap";
-import { MapClick } from "src/controllers/MapController";
 import { useMapVisitor } from "src/pages/MapVisitor.hooks";
 
 function InputCover({ children }: PropsWithChildren) {
