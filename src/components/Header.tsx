@@ -15,7 +15,7 @@ export default function Header({
 }: Props): JSX.Element {
   return (
     <div
-      className={`font-paytone flex h-fit max-w-full flex-[0] gap-1 bg-gradient-to-br from-green-700 to-green-800 p-2 text-3xl uppercase text-white shadow-md ${className}`}
+      className={`font-paytone flex h-fit max-w-full flex-[0] gap-1 bg-gradient-to-br from-slate-700 via-slate-800 to-slate-800 p-2 text-3xl uppercase text-white shadow-md ${className}`}
     >
       {/* <Logo /> */}
       <img src={Logo} title={title} />

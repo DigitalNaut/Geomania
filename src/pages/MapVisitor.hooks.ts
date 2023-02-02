@@ -6,6 +6,12 @@ import type { CountryData } from "src/controllers/MapController";
 import { useMapContext } from "src/controllers/MapContext";
 import { useCountryGuess } from "src/controllers/CountryGuesser";
 
+export type HistoryGuess = {
+  timestamp: number;
+  text: string;
+  isCorrect: boolean;
+} | null;
+
 function useTally() {
   const [tally, setTally] = useState(0);
 
@@ -26,11 +32,11 @@ export function useMapVisitor() {
   const { countryCorrectAnswer, checkAnswer, getNextCountry } =
     useCountryGuess();
   const {
-    tally: userTries,
-    incrementTally: increaseTriesTally,
+    tally: userGuessTally,
+    incrementTally: incrementTriesTally,
     resetTally: resetTriesTally,
   } = useTally();
-  const [prevGuess, setPrevGuess] = useState<string | null>(null);
+  const [guessHistory, setGuessHistory] = useState<HistoryGuess[]>([]);
   const [error, setError] = useState<Error | null>(null);
 
   function flyTo(destination: LatLngExpression | null) {
@@ -70,11 +76,21 @@ export function useMapVisitor() {
     focusInputField();
   }
 
+  function pushGuessToHistory(guess: string, isCorrect: boolean) {
+    setGuessHistory((prev) => [
+      {
+        timestamp: Date.now(),
+        text: guess,
+        isCorrect,
+      },
+      ...prev,
+    ]);
+  }
+
   const prepareNextCountry = () => {
     updateUI(getNextCountry());
     resetTriesTally();
     setInputField("");
-    setPrevGuess(null);
   };
 
   const handleSubmitAnswer = () => {
@@ -85,15 +101,14 @@ export function useMapVisitor() {
 
     const userGuess = inputRef.current.value;
     const isCorrect = checkAnswer(userGuess);
+    const isValidNewGuess =
+      userGuess.length > 0 && userGuess !== guessHistory[0]?.text;
+
+    if (!isValidNewGuess) return;
 
     if (isCorrect) prepareNextCountry();
-    else {
-      const isValidNewGuess = userGuess.length > 0 && userGuess !== prevGuess;
-      if (isValidNewGuess) {
-        setPrevGuess(userGuess);
-        increaseTriesTally();
-      }
-    }
+    else incrementTriesTally();
+    pushGuessToHistory(userGuess, isCorrect);
   };
   const handleKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
     if (event.key === "Enter") handleSubmitAnswer();
@@ -115,10 +130,10 @@ export function useMapVisitor() {
     handleKeyDown,
     handleSkipCountry,
     countryCorrectAnswer,
-    userTries,
+    userGuessTally,
     giveHint,
     isReady: countryCorrectAnswer.data && countryCorrectAnswer.feature,
-    prevGuess,
+    guessHistory,
     error,
     dismissError,
   };
