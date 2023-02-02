@@ -1,4 +1,3 @@
-import type { LatLngTuple } from "leaflet";
 import type { Feature } from "geojson";
 
 import countriesMetadata from "src/data/country-metadata.json";
@@ -20,19 +19,26 @@ export function getCountryGeometry(alpha3: string) {
   return null;
 }
 
+type CountryInfo = {
+  countryIndex: number;
+  country: CountryData;
+};
+
 /**
  * Gets the next country to be displayed from the list of countries in the metadata.
  * @param index Whether to get a random country or the first country in the list.
  * @param callback A callback function to be called after the country is retrieved.
  * @returns The country index, country data, and country coordinates.
  */
-export function getNewCountryData(index?: number) {
+export function getCountryData(
+  index: number | ((length: number) => number)
+): CountryInfo {
   const countryIndex =
-    index ?? Math.floor(Math.random() * countriesMetadata.length);
-  const country: CountryData = countriesMetadata[countryIndex];
-  const countryCoords: LatLngTuple = [country.latitude, country.longitude];
+    typeof index === "function" ? index(countriesMetadata.length) : index;
 
-  return { countryIndex, country, countryCoords };
+  const country: CountryData = countriesMetadata[countryIndex];
+
+  return { countryIndex, country };
 }
 
 /**

@@ -6,43 +6,51 @@ import type { CountryData } from "src/controllers/MapController";
 import { normalizeName, joinName } from "src/utility";
 import {
   getCountryGeometry,
-  getNewCountryData,
+  getCountryData,
 } from "src/controllers/MapController";
 import { useMapContext } from "src/controllers/MapContext";
 
+function randomIndex(length: number) {
+  return Math.floor(Math.random() * length);
+}
+
+function getCountryCoordinates(country: CountryData) {
+  if (!country) return null;
+  return [country.latitude, country.longitude] as LatLngTuple;
+}
+
 export function useCountryGuess() {
-  const { countryAnswerData, setCountryAnswerData } = useMapContext();
+  const { countryAnswer, setCountryAnswer } = useMapContext();
   const [countryFeature, setCountryFeature] = useState<Feature>();
 
   function getNextCountry(): CountryData {
-    const { country } = getNewCountryData();
+    const { country, countryIndex } = getCountryData(randomIndex);
+    if (!country) throw new Error(`No country found for index ${countryIndex}`);
+
     const feature = getCountryGeometry(country.alpha3);
 
-    setCountryAnswerData(country);
+    setCountryAnswer(country);
     if (feature) setCountryFeature(feature);
+    else throw new Error(`No feature found for ${country.name}`);
 
     return country;
   }
 
   const checkAnswer = (userInput: string) => {
-    const correctAnswer = joinName(countryAnswerData?.name || "");
+    const correctAnswer = joinName(countryAnswer?.name || "");
     const inputMatchesAnswer =
       normalizeName(userInput) === normalizeName(correctAnswer);
 
     return inputMatchesAnswer;
   };
 
-  const coordinates = countryAnswerData
-    ? ([countryAnswerData.latitude, countryAnswerData.longitude] as LatLngTuple)
-    : null;
-
   return {
     countryCorrectAnswer: {
-      data: countryAnswerData,
+      data: countryAnswer,
       feature: countryFeature,
-      coordinates,
+      coordinates: getCountryCoordinates(countryAnswer),
     },
-    checkAnswer,
     getNextCountry,
+    checkAnswer,
   };
 }
