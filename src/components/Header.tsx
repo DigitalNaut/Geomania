@@ -14,16 +14,22 @@ export default function Header({
   className,
   title,
 }: Props): JSX.Element {
-  const { user, LoginButton, UserCard } = useUser();
+  const { user, LoginButton, UserCard, LogoutButton } = useUser();
 
   return (
     <div
-      className={`relative z-[1000] flex h-fit max-w-full flex-[0] gap-1 bg-gradient-to-br from-slate-700 via-slate-800 to-slate-800 p-2 text-3xl uppercase text-white shadow-md ${className}`}
+      className={`relative z-[1500] flex h-fit max-w-full flex-[0] gap-1 bg-gradient-to-br from-slate-700 via-slate-800 to-slate-800 p-2 text-white shadow-md ${className}`}
     >
       {/* <Logo /> */}
       <img src={Logo} title={title} />
       <div className="fixed top-0 right-2">
-        {user ? <UserCard /> : <LoginButton />}
+        {user ? (
+          <UserCard>
+            <LogoutButton />
+          </UserCard>
+        ) : (
+          <LoginButton />
+        )}
       </div>
       {children}
     </div>

@@ -3,14 +3,18 @@ import type { PropsWithChildren } from "react";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import { createContext, useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faDoorOpen,
+  faInfoCircle,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import jwtDecode from "jwt-decode";
 
 type UserContext = {
   user?: GoogleUserCredential | null;
   LoginButton(): JSX.Element | null;
   LogoutButton(): JSX.Element | null;
-  UserCard(): JSX.Element | null;
+  UserCard(props: PropsWithChildren): JSX.Element | null;
   logout(reason?: string): void;
 };
 
@@ -53,16 +57,16 @@ function LogoutButton() {
 
   return (
     <button
-      data-filled
       className="g_id_signout"
+      role="button"
       onClick={() => logout("Logged out")}
     >
-      Logout
+      <FontAwesomeIcon icon={faDoorOpen} />
     </button>
   );
 }
 
-function UserCard() {
+function UserCard({ children }: PropsWithChildren) {
   const { user } = useUser();
 
   if (!user) return null;
@@ -79,7 +83,7 @@ function UserCard() {
         className="h-8 w-8 rounded-full"
       />
       <div
-        className="absolute right-0 top-0 z-50 flex cursor-pointer 
+        className="absolute right-0 top-0 z-50 flex  cursor-pointer items-center gap-2
           focus-within:gap-4 focus-within:rounded-md focus-within:bg-white focus-within:p-4 focus-within:text-black
           group-hover:gap-4 group-hover:rounded-md group-hover:bg-white group-hover:p-4 group-hover:text-black"
       >
@@ -107,7 +111,7 @@ function UserCard() {
           </div>
         </a>
         <div className="ml-6 hidden flex-col group-focus-within:flex group-hover:flex">
-          <LogoutButton />
+          {children}
         </div>
       </div>
     </div>

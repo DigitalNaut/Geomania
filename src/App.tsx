@@ -8,6 +8,7 @@ import Footer from "src/components/Footer";
 import MapContextProvider from "src/controllers/MapContext";
 import ErrorFallback from "src/components/ErrorFallback";
 import { UserProvider } from "src/hooks/UserContext";
+import DriveAccessTest from "src/components/DriveAccessTest";
 
 export default function App() {
   return (
@@ -17,11 +18,15 @@ export default function App() {
           <GoogleOAuthProvider
             clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ""}
             onScriptLoadError={() => {
-              throw new Error("Google OAuth script failed to load");
+              throw new Error("Google OAuth script failed to load.");
             }}
           >
             <GoogleDriveProvider>
-              <Header />
+              <Header>
+                <div className="flex w-full justify-center text-sm">
+                  <DriveAccessTest />
+                </div>
+              </Header>
               <MapContextProvider>
                 <MapVisitor />
               </MapContextProvider>

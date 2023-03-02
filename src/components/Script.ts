@@ -13,10 +13,10 @@ export function Script({ src, onLoad }: ScriptProps) {
 
     document.body.appendChild(script);
 
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, [onLoad, src]);
+    return () => void document.body.removeChild(script);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return null;
 }
