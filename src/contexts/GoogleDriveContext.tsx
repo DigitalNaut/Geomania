@@ -60,6 +60,7 @@ type GoogleDriveContextType = {
   ): Promise<AxiosResponse<FileDeletedResponse, unknown>>;
 
   requestDriveAccess(): void;
+  disconnectDrive(): void;
 
   hasDriveAccess: boolean;
   isDriveLoaded: boolean;
@@ -79,6 +80,7 @@ const googleDriveContext = createContext<GoogleDriveContextType>({
   fetchFile: () => Promise.reject(notReadyErrorMsj),
   deleteFile: () => Promise.reject(notReadyErrorMsj),
   requestDriveAccess: () => null,
+  disconnectDrive: () => null,
   isDriveLoaded: false,
   isDriveAuthorizing: false,
   userDriveTokens: undefined,
@@ -179,6 +181,17 @@ export function GoogleDriveProvider({ children }: PropsWithChildren) {
 
     setIsDriveAuthorizing(true);
     initDriveImplicitFlow();
+  }
+
+  function disconnectDrive() {
+    if (!isDriveLoaded) throw new Error(notReadyErrorMsj);
+
+    if (isDriveAuthorizing) return;
+
+    clearTokensAndAccess();
+    setIsDriveAuthorizing(false);
+    setNonDriveError(null);
+    setError(null);
   }
 
   function validateAccess() {
@@ -343,6 +356,7 @@ export function GoogleDriveProvider({ children }: PropsWithChildren) {
         fetchFile,
         deleteFile,
         requestDriveAccess,
+        disconnectDrive,
         isDriveLoaded,
         isDriveAuthorizing,
         hasDriveAccess,
