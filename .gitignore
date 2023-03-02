@@ -24,4 +24,11 @@ dist-ssr
 *.sw?
 
 # Generated
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
+
+# User created
 /src/styles/output.css
+!.env.example

@@ -10,5 +10,6 @@
     "svgr",
     "tailwindcss",
     "typecheck"
-  ]
+  ],
+  "dotenv.enableAutocloaking": false
 }
