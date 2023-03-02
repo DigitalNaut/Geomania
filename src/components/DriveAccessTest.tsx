@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NonOAuthError } from "@react-oauth/google";
 import { useCallback, useEffect } from "react";
 
-import { useGoogleDrive } from "src/controllers/GoogleDriveContext";
+import { useGoogleDrive } from "src/contexts/GoogleDriveContext";
 
 function useDriveFileList() {
   const {

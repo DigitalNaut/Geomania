@@ -3,7 +3,7 @@ import Leaflet from "leaflet";
 import { LayersControl, MapContainer, TileLayer } from "react-leaflet";
 // import { GeoJsonObject } from 'geojson';
 
-import { useMapContext } from "src/controllers/MapContext";
+import { useMapContext } from "src/contexts/MapContext";
 
 import "leaflet/dist/leaflet.css";
 

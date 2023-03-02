@@ -8,7 +8,7 @@ import {
   getCountryGeometry,
   getCountryData,
 } from "src/controllers/MapController";
-import { useMapContext } from "src/controllers/MapContext";
+import { useMapContext } from "src/contexts/MapContext";
 
 function randomIndex(length: number) {
   return Math.floor(Math.random() * length);

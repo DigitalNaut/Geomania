@@ -3,7 +3,7 @@ import type { LatLngExpression, LatLngTuple } from "leaflet";
 import { useState, useRef } from "react";
 
 import type { CountryData } from "src/controllers/MapController";
-import { useMapContext } from "src/controllers/MapContext";
+import { useMapContext } from "src/contexts/MapContext";
 import { useCountryGuess } from "src/controllers/CountryGuesser";
 
 export type HistoryGuess = {

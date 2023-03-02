@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 
 // TODO: Fix this import to work with svgr when that's fixed
 import Logo from "src/assets/geomania.svg";
-import { useUser } from "src/hooks/UserContext";
+// import { useUser } from "src/contexts/UserContext";
 
 type Props = PropsWithChildren & {
   className?: string;
@@ -14,7 +14,7 @@ export default function Header({
   className,
   title,
 }: Props): JSX.Element {
-  const { user, LoginButton, UserCard, LogoutButton } = useUser();
+  // const { user, LoginButton, UserCard, LogoutButton } = useUser();
 
   return (
     <div
@@ -22,7 +22,7 @@ export default function Header({
     >
       {/* <Logo /> */}
       <img src={Logo} title={title} />
-      <div className="fixed top-0 right-2">
+      {/* <div className="fixed top-0 right-2">
         {user ? (
           <UserCard>
             <LogoutButton />
@@ -30,7 +30,7 @@ export default function Header({
         ) : (
           <LoginButton />
         )}
-      </div>
+      </div> */}
       {children}
     </div>
   );
