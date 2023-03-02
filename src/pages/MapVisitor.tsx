@@ -73,9 +73,11 @@ export default function MapVisitor() {
             })}
           </LeafletMap>
 
-          {isReady && <FloatingHeader>Guess the country!</FloatingHeader>}
-
-          {!isReady && <InstructionOverlay>Click to start</InstructionOverlay>}
+          {isReady ? (
+            <FloatingHeader>Guess the country!</FloatingHeader>
+          ) : (
+            <InstructionOverlay>Click to start</InstructionOverlay>
+          )}
 
           <UserGuessFloatingPanel visitor={visitor} />
         </div>
