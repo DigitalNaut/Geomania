@@ -95,7 +95,7 @@ function NonDriveErrorMessage({ error, retry }: NonDriveErrorMessageProps) {
   );
 }
 
-export default function DriveAccessTest() {
+export default function DriveAccess() {
   const {
     isDriveAuthorizing,
     hasDriveAccess,

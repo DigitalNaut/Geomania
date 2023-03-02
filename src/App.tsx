@@ -8,7 +8,7 @@ import Footer from "src/components/Footer";
 import MapContextProvider from "src/contexts/MapContext";
 import ErrorFallback from "src/components/ErrorFallback";
 // import { UserProvider } from "src/contexts/UserContext";
-import DriveAccessTest from "src/components/DriveAccessTest";
+import DriveAccess from "src/components/DriveAccess";
 
 export default function App() {
   return (
@@ -24,7 +24,7 @@ export default function App() {
           <GoogleDriveProvider>
             <Header>
               <div className="flex pl-2 text-sm">
-                <DriveAccessTest />
+                <DriveAccess />
               </div>
             </Header>
             <MapContextProvider>
