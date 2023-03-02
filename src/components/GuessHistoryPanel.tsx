@@ -20,25 +20,33 @@ export default function GuessHistoryPanel({
     <div className="relative flex w-[30ch] flex-col bg-slate-800">
       <h2 className="text-center text-xl italic text-slate-300">My Guesses</h2>
       <div
-        className="flex flex-1 flex-col-reverse overflow-y-auto overflow-x-clip text-ellipsis px-2"
+        className="flex flex-1 flex-col overflow-y-auto overflow-x-clip text-ellipsis px-2"
         onScroll={handleScrollEvent}
         ref={scrollElementRef}
       >
-        <div className="flex flex-col-reverse">
-          {history.map(
-            (guess) =>
-              guess && (
-                <span
-                  className={`flex items-center gap-2 text-clip ${
-                    guess.isCorrect ? "text-green-500" : "text-slate-300"
-                  }`}
-                  key={guess.timestamp}
-                  title={guess.text}
-                >
-                  <FontAwesomeIcon icon={guess.isCorrect ? faCheck : faTimes} />
-                  {guess.text}
-                </span>
-              )
+        <div className="flex flex-col">
+          {history.length ? (
+            history.map(
+              (guess) =>
+                guess && (
+                  <span
+                    className={`flex items-center gap-2 text-clip ${
+                      guess.isCorrect ? "text-green-500" : "text-slate-300"
+                    }`}
+                    key={guess.timestamp}
+                    title={guess.text}
+                  >
+                    <FontAwesomeIcon
+                      icon={guess.isCorrect ? faCheck : faTimes}
+                    />
+                    {guess.text}
+                  </span>
+                )
+            )
+          ) : (
+            <div className="pt-2 text-center text-sm italic text-white/60">
+              None yet.
+            </div>
           )}
         </div>
         {!isScrolledToBottom && (

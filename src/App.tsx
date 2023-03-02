@@ -23,7 +23,7 @@ export default function App() {
         >
           <GoogleDriveProvider>
             <Header>
-              <div className="flex pl-2 text-sm">
+              <div className="flex w-full justify-end pl-2 text-sm">
                 <DriveAccess />
               </div>
             </Header>
