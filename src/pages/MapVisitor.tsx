@@ -38,7 +38,7 @@ export default function MapVisitor() {
         </div>
       )}
 
-      <main className="flex flex-1 p-2">
+      <main className="flex flex-1 px-2 pt-2">
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
           <LeafletMap>
             <MapClick callback={handleMapClick} />

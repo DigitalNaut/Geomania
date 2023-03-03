@@ -17,7 +17,7 @@ export default function GuessHistoryPanel({
   } = useScrollToBottom();
 
   return (
-    <div className="relative flex w-[30ch] flex-col">
+    <div className="relative flex w-[30ch] flex-col gap-2">
       <h2 className="text-center text-xl italic text-slate-300">My Guesses</h2>
       <div
         className="flex flex-1 flex-col overflow-y-auto overflow-x-clip text-ellipsis px-2"
