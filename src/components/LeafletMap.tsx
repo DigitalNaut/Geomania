@@ -21,12 +21,12 @@ export function LeafletMap({ children }: PropsWithChildren) {
 
   return (
     <MapContainer
+      className="bg-gradient-to-br from-sky-700 to-sky-800"
       center={maxBounds.getCenter()}
       zoom={1.5}
       maxBounds={maxBounds}
       maxBoundsViscosity={1.0}
-      className="bg-red-400 shadow-inner"
-      style={{ width: "100%", height: "100%", backgroundColor: "#0c4a6e" }}
+      style={{ width: "100%", height: "100%" }}
       ref={setMap}
     >
       <TileLayer

@@ -28,7 +28,7 @@ export default function MapVisitor() {
   return (
     <>
       {error?.message && (
-        <div className="flex w-full flex-[0] justify-center bg-red-800 p-2 text-white">
+        <div className="flex w-full flex-[0] justify-center bg-red-800 p-2">
           <div className="flex gap-6">
             {error.message}
             <button role="button" title="Dismiss" onClick={dismissError}>
@@ -38,8 +38,8 @@ export default function MapVisitor() {
         </div>
       )}
 
-      <main className="flex flex-1 overflow-hidden">
-        <div className="relative h-full w-full">
+      <main className="flex flex-1 p-2">
+        <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
           <LeafletMap>
             <MapClick callback={handleMapClick} />
             {countryCorrectAnswer.coordinates && (

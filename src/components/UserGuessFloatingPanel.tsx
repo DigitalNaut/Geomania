@@ -69,7 +69,7 @@ export default function UserGuessFloatingPanel({
 }) {
   return (
     <div
-      className="absolute inset-x-1/2 bottom-8 z-[1000] flex h-fit w-fit -translate-x-1/2 flex-col items-center gap-2 rounded-md text-center text-white"
+      className="absolute inset-x-1/2 bottom-8 z-[1000] flex h-fit w-fit -translate-x-1/2 flex-col items-center gap-2 rounded-md text-center"
       style={{ visibility: isReady ? "visible" : "hidden" }}
     >
       <GuessHeaderSection skipCountryHandler={handleSkipCountry}>

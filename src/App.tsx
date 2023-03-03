@@ -12,7 +12,7 @@ import DriveAccess from "src/components/DriveAccess";
 
 export default function App() {
   return (
-    <div className="flex h-screen w-full flex-col">
+    <div className="flex h-screen w-full flex-col bg-gradient-to-br from-slate-800 via-slate-800 to-black text-white">
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         {/* <UserProvider> */}
         <GoogleOAuthProvider

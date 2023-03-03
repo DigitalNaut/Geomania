@@ -56,7 +56,7 @@ type ButtonProps = PropsWithChildren & {
 function Button({ onClick, children }: ButtonProps) {
   return (
     <button
-      className="rounded-sm bg-blue-500 py-1 px-2 text-white"
+      className="rounded-sm bg-blue-500 py-1 px-2"
       role="button"
       onClick={onClick}
     >

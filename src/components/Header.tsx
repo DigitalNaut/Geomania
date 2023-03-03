@@ -18,7 +18,7 @@ export default function Header({
 
   return (
     <div
-      className={`relative z-[1500] flex h-fit max-w-full flex-[0] items-center gap-2 bg-gradient-to-br from-slate-700 via-slate-800 to-slate-800 p-2 text-white shadow-md ${className}`}
+      className={`relative z-[1500] flex h-fit max-w-full flex-[0] items-center gap-2 p-2 shadow-md ${className}`}
     >
       {/* <Logo /> */}
       <img src={Logo} title={title} />
