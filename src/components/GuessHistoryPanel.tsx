@@ -50,7 +50,7 @@ export default function GuessHistoryPanel({
           )}
         </div>
         {!isScrolledToBottom && (
-          <div className="absolute inset-x-0 h-fit bg-gradient-to-t from-slate-900 px-6 pb-4 pt-12">
+          <div className="absolute inset-x-0 bottom-0 h-fit bg-gradient-to-t from-slate-900 px-6 pb-4 pt-12">
             <button
               className="w-full rounded-md bg-white/80 text-center text-slate-900"
               role="button"
