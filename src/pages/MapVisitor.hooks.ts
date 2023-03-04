@@ -1,16 +1,17 @@
 import type { KeyboardEventHandler } from "react";
 import type { LatLngExpression, LatLngTuple } from "leaflet";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import type { CountryData } from "src/controllers/MapController";
 import { useMapContext } from "src/contexts/MapContext";
 import { useCountryGuess } from "src/controllers/CountryGuesser";
 
-export type HistoryGuess = {
+export type UserCountryGuess = {
   timestamp: number;
   text: string;
   isCorrect: boolean;
-} | null;
+  countryCode?: string;
+};
 
 function useTally() {
   const [tally, setTally] = useState(0);
@@ -26,17 +27,45 @@ function useTally() {
   return { tally, incrementTally, resetTally };
 }
 
+function useGuessHistory() {
+  const [guessHistory, setGuessHistory] = useState<UserCountryGuess[]>([]);
+
+  function saveToLocalStorage(history: UserCountryGuess[]) {
+    localStorage.setItem("guessHistory", JSON.stringify(history));
+  }
+
+  function pushGuessToHistory(newGuess: Omit<UserCountryGuess, "timestamp">) {
+    const timestampedGuess: UserCountryGuess = {
+      ...newGuess,
+      timestamp: Date.now(),
+    };
+
+    setGuessHistory((prev) => {
+      const newHistory = [timestampedGuess, ...prev];
+      saveToLocalStorage(newHistory);
+      return newHistory;
+    });
+  }
+
+  useEffect(() => {
+    const history = localStorage.getItem("guessHistory");
+    if (history) setGuessHistory(JSON.parse(history));
+  }, []);
+
+  return { guessHistory, pushGuessToHistory };
+}
+
 export function useMapVisitor() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { map } = useMapContext();
   const { countryCorrectAnswer, checkAnswer, getNextCountry } =
     useCountryGuess();
+  const { pushGuessToHistory, guessHistory } = useGuessHistory();
   const {
     tally: userGuessTally,
     incrementTally: incrementTriesTally,
     resetTally: resetTriesTally,
   } = useTally();
-  const [guessHistory, setGuessHistory] = useState<HistoryGuess[]>([]);
   const [error, setError] = useState<Error | null>(null);
 
   function flyTo(destination: LatLngExpression | null) {
@@ -76,17 +105,6 @@ export function useMapVisitor() {
     focusInputField();
   }
 
-  function pushGuessToHistory(guess: string, isCorrect: boolean) {
-    setGuessHistory((prev) => [
-      {
-        timestamp: Date.now(),
-        text: guess,
-        isCorrect,
-      },
-      ...prev,
-    ]);
-  }
-
   const prepareNextCountry = () => {
     updateUI(getNextCountry());
     resetTriesTally();
@@ -108,7 +126,12 @@ export function useMapVisitor() {
 
     if (isCorrect) prepareNextCountry();
     else incrementTriesTally();
-    pushGuessToHistory(userGuess, isCorrect);
+
+    pushGuessToHistory({
+      text: userGuess,
+      isCorrect,
+      countryCode: countryCorrectAnswer.data?.alpha3,
+    });
   };
   const handleKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
     if (event.key === "Enter") handleSubmitAnswer();

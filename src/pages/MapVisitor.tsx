@@ -53,7 +53,7 @@ export default function MapVisitor() {
             )}
 
             {allCountryFeatures.map((feature) => {
-              const isAnswer =
+              const isHighlightedCountry =
                 feature.properties?.ISO_A3 ===
                 countryCorrectAnswer.data?.alpha3;
 
@@ -62,10 +62,7 @@ export default function MapVisitor() {
                   key={feature.properties?.ADMIN}
                   data={feature}
                   style={{
-                    fillColor:
-                      countryCorrectAnswer.data && isAnswer
-                        ? "#fcd34d"
-                        : "#94a3b8",
+                    fillColor: isHighlightedCountry ? "#fcd34d" : "#94a3b8",
                     fillOpacity: 1,
                     color: "white",
                     weight: 1,
@@ -85,7 +82,7 @@ export default function MapVisitor() {
           <UserGuessFloatingPanel visitor={visitor} />
         </div>
 
-        <GuessHistoryPanel history={guessHistory} />
+        <GuessHistoryPanel guessHistory={guessHistory} />
       </main>
     </>
   );
