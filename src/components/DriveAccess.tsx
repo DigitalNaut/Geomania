@@ -56,7 +56,7 @@ type ButtonProps = PropsWithChildren & {
 function Button({ onClick, children }: ButtonProps) {
   return (
     <button
-      className="rounded-sm bg-blue-500 py-1 px-2"
+      className="rounded-full bg-blue-500 py-1 px-4"
       role="button"
       onClick={onClick}
     >
@@ -161,14 +161,24 @@ export default function DriveAccess() {
 
   return (
     <InfoNotice>
-      <input
-        id="drive-checkbox"
-        type="checkbox"
-        checked={rememberAutoConnect}
-        onChange={(e) => setRememberAutoConnect(e.target.checked)}
-      />
-      <label htmlFor="drive-checkbox">Remember this choice</label>
-      <Button onClick={handleAccessRequest}>Connect to Drive</Button>
+      <label htmlFor="drive-checkbox">
+        <input
+          id="drive-checkbox"
+          type="checkbox"
+          checked={rememberAutoConnect}
+          onChange={(e) => setRememberAutoConnect(e.target.checked)}
+        />
+        &nbsp;Remember this choice
+      </label>
+      <Button onClick={handleAccessRequest}>
+        Save to
+        <img
+          className="mx-1 inline-block h-4 w-4"
+          src="https://fonts.gstatic.com/s/i/productlogos/drive_2020q4/v8/web-16dp/logo_drive_2020q4_color_2x_web_16dp.png"
+          alt="Google Drive"
+        />
+        Google Drive
+      </Button>
     </InfoNotice>
   );
 }
