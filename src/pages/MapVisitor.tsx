@@ -38,7 +38,10 @@ export default function MapVisitor() {
         </div>
       )}
 
-      <main className="flex flex-1 px-2 pt-2">
+      {/*
+        * The overflow-y-auto class is needed to make the side bar scrollable
+      */}
+      <main className="flex flex-1 flex-col overflow-y-auto px-2 pt-2 sm:flex-row">
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
           <LeafletMap>
             <MapClick callback={handleMapClick} />
