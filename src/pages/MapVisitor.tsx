@@ -79,7 +79,11 @@ export default function MapVisitor() {
             <InstructionOverlay>Click to start</InstructionOverlay>
           )}
 
-          <UserGuessFloatingPanel visitor={visitor} />
+          <UserGuessFloatingPanel
+            visitor={visitor}
+            incorrectAnswerAudioSrc="src/assets/sounds/incorrect.mp3"
+            correctAnswerAudioSrc="src/assets/sounds/correct.mp3"
+          />
         </div>
 
         <GuessHistoryPanel guessHistory={guessHistory} />
