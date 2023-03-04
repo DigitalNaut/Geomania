@@ -27,7 +27,7 @@ export default function MapVisitor() {
 
   return (
     <>
-      {error?.message && (
+      {error && (
         <div className="flex w-full flex-[0] justify-center bg-red-800 p-2">
           <div className="flex gap-6">
             {error.message}
@@ -39,8 +39,8 @@ export default function MapVisitor() {
       )}
 
       {/*
-        * The overflow-y-auto class is needed to make the side bar scrollable
-      */}
+       * The overflow-y-auto class is needed to make the side bar scrollable
+       */}
       <main className="flex flex-1 flex-col overflow-y-auto px-2 pt-2 sm:flex-row">
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
           <LeafletMap>

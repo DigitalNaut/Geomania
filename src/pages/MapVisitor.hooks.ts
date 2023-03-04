@@ -1,4 +1,3 @@
-import type { KeyboardEventHandler } from "react";
 import type { LatLngExpression, LatLngTuple } from "leaflet";
 import { useState, useRef, useEffect } from "react";
 
@@ -58,7 +57,7 @@ function useGuessHistory() {
 export function useMapVisitor() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { map } = useMapContext();
-  const { countryCorrectAnswer, checkAnswer, getNextCountry } =
+  const { countryCorrectAnswer, checkAnswer, getRandomCountryData } =
     useCountryGuess();
   const { pushGuessToHistory, guessHistory } = useGuessHistory();
   const {
@@ -105,16 +104,30 @@ export function useMapVisitor() {
     focusInputField();
   }
 
+  function showNextCountry(tries = 0) {
+    const retries = tries || 0;
+    try {
+      const nextCountry = getRandomCountryData();
+      updateUI(nextCountry);
+    } catch (error) {
+      if (tries < 5) {
+        if (error instanceof Error) setError(error);
+        console.log("No country data found. Retrying...", retries);
+        showNextCountry(retries + 1);
+      } else setError(new Error("No country data found."));
+    }
+  }
+
   const prepareNextCountry = () => {
-    updateUI(getNextCountry());
     resetTriesTally();
     setInputField("");
+    showNextCountry();
   };
 
-  const handleSubmitAnswer = () => {
+  const submitAnswer = () => {
     if (!inputRef.current) {
       setError(new Error("Input field not found."));
-      return;
+      return false;
     }
 
     const userGuess = inputRef.current.value;
@@ -122,7 +135,7 @@ export function useMapVisitor() {
     const isValidNewGuess =
       userGuess.length > 0 && userGuess !== guessHistory[0]?.text;
 
-    if (!isValidNewGuess) return;
+    if (!isValidNewGuess) return false;
 
     if (isCorrect) prepareNextCountry();
     else incrementTriesTally();
@@ -132,25 +145,21 @@ export function useMapVisitor() {
       isCorrect,
       countryCode: countryCorrectAnswer.data?.alpha3,
     });
-  };
-  const handleKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
-    if (event.key === "Enter") handleSubmitAnswer();
+
+    return isCorrect;
   };
 
   const handleMapClick = () => {
     if (countryCorrectAnswer.data) updateUI(countryCorrectAnswer.data);
-    else updateUI(getNextCountry());
+    else showNextCountry();
   };
-
   const handleSkipCountry = prepareNextCountry;
-
   const dismissError = () => setError(null);
 
   return {
     inputRef,
-    handleSubmitAnswer,
+    submitAnswer,
     handleMapClick,
-    handleKeyDown,
     handleSkipCountry,
     countryCorrectAnswer,
     userGuessTally,

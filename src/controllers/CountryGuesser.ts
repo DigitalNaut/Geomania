@@ -3,7 +3,6 @@ import type { LatLngTuple } from "leaflet";
 import { useState } from "react";
 
 import type { CountryData } from "src/controllers/MapController";
-import { normalizeName, joinName } from "src/utility";
 import {
   getCountryGeometry,
   getCountryData,
@@ -19,25 +18,37 @@ function getCountryCoordinates(country: CountryData) {
   return [country.latitude, country.longitude] as LatLngTuple;
 }
 
+/**
+ * Normalizes a name by removing diacritics and trimming whitespace.
+ */
+export function normalizeName(text?: string) {
+  return text
+    ?.trim()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "");
+}
+
 export function useCountryGuess() {
   const { countryAnswer, setCountryAnswer } = useMapContext();
   const [countryFeature, setCountryFeature] = useState<Feature>();
 
-  function getNextCountry(): CountryData {
+  function getRandomCountryData(): CountryData {
     const { country, countryIndex } = getCountryData(randomIndex);
+
     if (!country) throw new Error(`No country found for index ${countryIndex}`);
 
     const feature = getCountryGeometry(country.alpha3);
 
-    setCountryAnswer(country);
     if (feature) setCountryFeature(feature);
     else throw new Error(`No feature found for ${country.name}`);
+
+    setCountryAnswer(country);
 
     return country;
   }
 
   const checkAnswer = (userInput: string) => {
-    const correctAnswer = joinName(countryAnswer?.name || "");
+    const correctAnswer = countryAnswer?.name || "";
     const inputMatchesAnswer =
       normalizeName(userInput) === normalizeName(correctAnswer);
 
@@ -50,7 +61,7 @@ export function useCountryGuess() {
       feature: countryFeature,
       coordinates: getCountryCoordinates(countryAnswer),
     },
-    getNextCountry,
+    getRandomCountryData,
     checkAnswer,
   };
 }
