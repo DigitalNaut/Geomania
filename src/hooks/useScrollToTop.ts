@@ -15,7 +15,7 @@ export default function useScrollToTop() {
     []
   );
 
-  const handleScrollToTopClick = (scrollElement: RefObject<HTMLDivElement>) => {
+  const scrollToTop = (scrollElement: RefObject<HTMLDivElement>) => {
     scrollElement.current?.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -25,7 +25,7 @@ export default function useScrollToTop() {
   return {
     isScrolledToBottom: isScrolledToTop,
     handleScrollEvent,
-    handleScrollToTopClick,
+    scrollToTop,
     scrollElementRef,
   };
 }

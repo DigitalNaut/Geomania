@@ -13,7 +13,9 @@ import FloatingHeader from "src/components/FloatingHeader";
 import InstructionOverlay from "src/components/InstructionOverlay";
 
 export default function MapVisitor() {
-  const visitor = useMapVisitor();
+  const visitor = useMapVisitor({
+    historyLimit: 200,
+  });
   const {
     handleMapClick,
     countryCorrectAnswer,

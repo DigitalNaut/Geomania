@@ -26,7 +26,7 @@ function useTally() {
   return { tally, incrementTally, resetTally };
 }
 
-function useGuessHistory() {
+function useGuessHistory(limit: number) {
   const [guessHistory, setGuessHistory] = useState<UserCountryGuess[]>([]);
 
   function saveToLocalStorage(history: UserCountryGuess[]) {
@@ -40,7 +40,10 @@ function useGuessHistory() {
     };
 
     setGuessHistory((prev) => {
-      const newHistory = [timestampedGuess, ...prev];
+      const newHistory = [...prev, timestampedGuess];
+
+      if (newHistory.length > limit) newHistory.shift();
+
       saveToLocalStorage(newHistory);
       return newHistory;
     });
@@ -54,12 +57,12 @@ function useGuessHistory() {
   return { guessHistory, pushGuessToHistory };
 }
 
-export function useMapVisitor() {
+export function useMapVisitor({ historyLimit }: { historyLimit: number }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { map } = useMapContext();
   const { countryCorrectAnswer, checkAnswer, getRandomCountryData } =
     useCountryGuess();
-  const { pushGuessToHistory, guessHistory } = useGuessHistory();
+  const { pushGuessToHistory, guessHistory } = useGuessHistory(historyLimit);
   const {
     tally: userGuessTally,
     incrementTally: incrementTriesTally,
