@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { Link, NavLink } from "react-router-dom";
 
 // TODO: Fix this import to work with svgr when that's fixed
-import Logo from "src/assets/geomania.svg";
+import Logo from "src/assets/geomaniac-wordmark.svg";
 // import { useUser } from "src/contexts/UserContext";
 
 type HeaderLinkProps = PropsWithChildren & {
