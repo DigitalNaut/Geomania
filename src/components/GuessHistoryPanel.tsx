@@ -8,6 +8,12 @@ import useScrollToTop from "src/hooks/useScrollToTop";
 
 let itemStyle: string;
 
+const props = {
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+  config: { duration: 200 },
+};
+
 export default function GuessHistoryPanel({
   guessHistory,
 }: {
@@ -23,12 +29,7 @@ export default function GuessHistoryPanel({
   const [springs, api] = useSpring(() => ({}));
 
   useEffect(() => {
-    if (rendered)
-      api.start({
-        from: { opacity: 0 },
-        to: { opacity: 1 },
-        config: { duration: 200 },
-      });
+    if (rendered) api.start(props);
     else setRendered(true);
   }, [api, guessHistory, rendered]);
 
