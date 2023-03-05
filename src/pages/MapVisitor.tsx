@@ -11,6 +11,7 @@ import GuessHistoryPanel from "src/components/GuessHistoryPanel";
 import UserGuessFloatingPanel from "src/components/UserGuessFloatingPanel";
 import FloatingHeader from "src/components/FloatingHeader";
 import InstructionOverlay from "src/components/InstructionOverlay";
+import MainView from "src/components/MainView";
 
 export default function MapVisitor() {
   const visitor = useMapVisitor({
@@ -43,7 +44,7 @@ export default function MapVisitor() {
       {/*
        * The overflow-y-auto class is needed to make the side bar scrollable
        */}
-      <main className="flex flex-1 flex-col overflow-y-auto px-2 pt-2 sm:flex-row">
+      <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
           <LeafletMap>
             <MapClick callback={handleMapClick} />
@@ -89,7 +90,7 @@ export default function MapVisitor() {
         </div>
 
         <GuessHistoryPanel guessHistory={guessHistory} />
-      </main>
+      </MainView>
     </>
   );
 }
