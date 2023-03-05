@@ -1,4 +1,3 @@
-import type { LatLngTuple } from "leaflet";
 import type { Feature } from "geojson";
 
 import countriesMetadata from "src/data/country-metadata.json";
@@ -20,19 +19,44 @@ export function getCountryGeometry(alpha3: string) {
   return null;
 }
 
+const nameExp = /^(.+), (.+)$/;
+const nameQualifierExp = /^.+,.+$/;
+
+/**
+ * Fixes the name by swapping the first and last name.
+ */
+function fixNameOrder(text: string) {
+  if (!nameQualifierExp.test(text)) return text;
+
+  const matches = nameExp.exec(text);
+  if (matches && matches.length > 1) return `${matches[2]} ${matches[1]}`;
+
+  return text;
+}
+
+type CountryInfo = {
+  countryIndex: number;
+  country: CountryData;
+};
+
 /**
  * Gets the next country to be displayed from the list of countries in the metadata.
- * @param index Whether to get a random country or the first country in the list.
+ * @param indexCallback Whether to get a random country or the first country in the list.
  * @param callback A callback function to be called after the country is retrieved.
  * @returns The country index, country data, and country coordinates.
  */
-export function getNewCountryData(index?: number) {
+export function getCountryData(
+  indexCallback: number | ((length: number) => number)
+): CountryInfo {
   const countryIndex =
-    index ?? Math.floor(Math.random() * countriesMetadata.length);
-  const country: CountryData = countriesMetadata[countryIndex];
-  const countryCoords: LatLngTuple = [country.latitude, country.longitude];
+    typeof indexCallback === "function"
+      ? indexCallback(countriesMetadata.length)
+      : indexCallback;
 
-  return { countryIndex, country, countryCoords };
+  const country: CountryData = countriesMetadata[countryIndex];
+  country.name = fixNameOrder(country.name);
+
+  return { countryIndex, country };
 }
 
 /**

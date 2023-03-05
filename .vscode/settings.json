@@ -2,9 +2,14 @@
   "cSpell.words": [
     "fontawesome",
     "fortawesome",
+    "gapi",
+    "Gapi",
     "paytone",
+    "signin",
+    "signout",
     "svgr",
     "tailwindcss",
     "typecheck"
-  ]
+  ],
+  "dotenv.enableAutocloaking": false
 }

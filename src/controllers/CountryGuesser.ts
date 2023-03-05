@@ -3,46 +3,65 @@ import type { LatLngTuple } from "leaflet";
 import { useState } from "react";
 
 import type { CountryData } from "src/controllers/MapController";
-import { normalizeName, joinName } from "src/utility";
 import {
   getCountryGeometry,
-  getNewCountryData,
+  getCountryData,
 } from "src/controllers/MapController";
-import { useMapContext } from "src/controllers/MapContext";
+import { useMapContext } from "src/contexts/MapContext";
+
+function randomIndex(length: number) {
+  return Math.floor(Math.random() * length);
+}
+
+function getCountryCoordinates(country: CountryData) {
+  if (!country) return null;
+  return [country.latitude, country.longitude] as LatLngTuple;
+}
+
+/**
+ * Normalizes a name by removing diacritics and trimming whitespace.
+ */
+export function normalizeName(text?: string) {
+  return text
+    ?.trim()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "");
+}
 
 export function useCountryGuess() {
-  const { countryAnswerData, setCountryAnswerData } = useMapContext();
+  const { countryAnswer, setCountryAnswer } = useMapContext();
   const [countryFeature, setCountryFeature] = useState<Feature>();
 
-  function getNextCountry(): CountryData {
-    const { country } = getNewCountryData();
+  function getRandomCountryData(): CountryData {
+    const { country, countryIndex } = getCountryData(randomIndex);
+
+    if (!country) throw new Error(`No country found for index ${countryIndex}`);
+
     const feature = getCountryGeometry(country.alpha3);
 
-    setCountryAnswerData(country);
     if (feature) setCountryFeature(feature);
+    else throw new Error(`No feature found for ${country.name}`);
+
+    setCountryAnswer(country);
 
     return country;
   }
 
   const checkAnswer = (userInput: string) => {
-    const correctAnswer = joinName(countryAnswerData?.name || "");
+    const correctAnswer = countryAnswer?.name || "";
     const inputMatchesAnswer =
       normalizeName(userInput) === normalizeName(correctAnswer);
 
     return inputMatchesAnswer;
   };
 
-  const coordinates = countryAnswerData
-    ? ([countryAnswerData.latitude, countryAnswerData.longitude] as LatLngTuple)
-    : null;
-
   return {
     countryCorrectAnswer: {
-      data: countryAnswerData,
+      data: countryAnswer,
       feature: countryFeature,
-      coordinates,
+      coordinates: getCountryCoordinates(countryAnswer),
     },
+    getRandomCountryData,
     checkAnswer,
-    getNextCountry,
   };
 }
