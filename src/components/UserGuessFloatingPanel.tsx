@@ -10,9 +10,9 @@ import { ActionButton } from "src/components/ActionButton";
 function GuessHeaderSection({
   children,
   skipCountryHandler,
-}: PropsWithChildren & {
+}: PropsWithChildren<{
   skipCountryHandler: () => void;
-}) {
+}>) {
   return (
     <div className="flex gap-2 rounded-md bg-slate-800">
       <p className="p-2">{children}</p>
@@ -37,9 +37,7 @@ function GuessInfoSection({
   userTries: number;
 }) {
   return (
-    <div
-      className="flex w-full justify-between rounded-md p-2"
-    >
+    <div className="flex w-full justify-between rounded-md p-2">
       <span className="whitespace-nowrap">Guesses: {userTries}</span>
 
       <button

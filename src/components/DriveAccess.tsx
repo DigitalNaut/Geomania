@@ -32,9 +32,9 @@ function NonDriveErrorMessage({ error }: NonDriveErrorMessageProps) {
   );
 }
 
-type ErrorNoticeProps = PropsWithChildren & {
+type ErrorNoticeProps = PropsWithChildren<{
   retry: () => void;
-};
+}>;
 
 function ErrorNotice({ children, retry }: ErrorNoticeProps) {
   return (
@@ -49,9 +49,9 @@ function InfoNotice({ children }: PropsWithChildren) {
   return <div className="flex items-center gap-1">{children}</div>;
 }
 
-type ButtonProps = PropsWithChildren & {
+type ButtonProps = PropsWithChildren<{
   onClick: () => void;
-};
+}>;
 
 function Button({ onClick, children }: ButtonProps) {
   return (

@@ -5,9 +5,9 @@ import { Link, NavLink } from "react-router-dom";
 import Logo from "src/assets/geomaniac-wordmark.svg";
 // import { useUser } from "src/contexts/UserContext";
 
-type HeaderLinkProps = PropsWithChildren & {
+type HeaderLinkProps = PropsWithChildren<{
   to: string;
-};
+}>;
 
 const headerLinkBaseStyle = "flex items-center gap-1 px-3 py-1 rounded-full";
 const headerLinkActiveStyle = "bg-slate-200 text-slate-900 hover:bg-slate-300";
@@ -28,10 +28,10 @@ export function HeaderLink({ to, children }: HeaderLinkProps) {
   );
 }
 
-type HeaderProps = PropsWithChildren & {
+type HeaderProps = PropsWithChildren<{
   className?: string;
   title?: string;
-};
+}>;
 
 export default function Header({
   children,
