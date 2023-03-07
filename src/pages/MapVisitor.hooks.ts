@@ -1,16 +1,10 @@
 import type { LatLngExpression, LatLngTuple } from "leaflet";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 
 import type { CountryData } from "src/controllers/MapController";
 import { useMapContext } from "src/contexts/MapContext";
 import { useCountryGuess } from "src/controllers/CountryGuesser";
-
-export type UserCountryGuess = {
-  timestamp: number;
-  text: string;
-  isCorrect: boolean;
-  countryCode?: string;
-};
+import { useUserGuessRecord } from "src/contexts/GuessRecordContext";
 
 function useTally() {
   const [tally, setTally] = useState(0);
@@ -26,43 +20,13 @@ function useTally() {
   return { tally, incrementTally, resetTally };
 }
 
-function useGuessHistory(limit: number) {
-  const [guessHistory, setGuessHistory] = useState<UserCountryGuess[]>([]);
-
-  function saveToLocalStorage(history: UserCountryGuess[]) {
-    localStorage.setItem("guessHistory", JSON.stringify(history));
-  }
-
-  function pushGuessToHistory(newGuess: Omit<UserCountryGuess, "timestamp">) {
-    const timestampedGuess: UserCountryGuess = {
-      ...newGuess,
-      timestamp: Date.now(),
-    };
-
-    setGuessHistory((prev) => {
-      const newHistory = [...prev, timestampedGuess];
-
-      if (newHistory.length > limit) newHistory.shift();
-
-      saveToLocalStorage(newHistory);
-      return newHistory;
-    });
-  }
-
-  useEffect(() => {
-    const history = localStorage.getItem("guessHistory");
-    if (history) setGuessHistory(JSON.parse(history));
-  }, []);
-
-  return { guessHistory, pushGuessToHistory };
-}
-
-export function useMapVisitor({ historyLimit }: { historyLimit: number }) {
+export function useMapVisitor() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { map } = useMapContext();
+  const { pushGuessToHistory, guessHistory, updateCountryStats } =
+    useUserGuessRecord();
   const { countryCorrectAnswer, checkAnswer, getRandomCountryData } =
     useCountryGuess();
-  const { pushGuessToHistory, guessHistory } = useGuessHistory(historyLimit);
   const {
     tally: userGuessTally,
     incrementTally: incrementTriesTally,
@@ -148,6 +112,14 @@ export function useMapVisitor({ historyLimit }: { historyLimit: number }) {
       isCorrect,
       countryCode: countryCorrectAnswer.data?.alpha3,
     });
+
+    if (countryCorrectAnswer.data?.alpha3) {
+      updateCountryStats(
+        countryCorrectAnswer.data?.alpha3 || "",
+        countryCorrectAnswer.data?.name || "",
+        isCorrect
+      );
+    }
 
     return isCorrect;
   };
