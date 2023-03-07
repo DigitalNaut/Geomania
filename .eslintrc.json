@@ -4,7 +4,12 @@
       "version": "detect"
     },
     "tailwindcss": {
-      "whitelist": ["g_id_[a-z]+", "fa-[a-z]+", "line-clamp-[1-9]|none"]
+      "whitelist": [
+        "g_id_[a-z]+",
+        "fa-[a-z]+",
+        "line-clamp-[1-9]|none",
+        "bg-custom-[a-z_-]+"
+      ]
     }
   },
   "env": {
@@ -36,8 +41,13 @@
   "rules": {
     "@typescript-eslint/consistent-type-imports": "warn",
     "no-relative-import-paths/no-relative-import-paths": "warn",
-    "object-shorthand": ["error", "always"],
-    "consistent-return": ["warn"],
+    "object-shorthand": [
+      "error",
+      "always"
+    ],
+    "consistent-return": [
+      "warn"
+    ],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
   }

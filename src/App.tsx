@@ -25,7 +25,7 @@ const router = createBrowserRouter(
       element={
         <StandardLayout>
           <Header>
-            <div className="flex flex-1 pl-6">
+            <div className="flex flex-1 gap-2 pl-6">
               <HeaderLink to="/">
                 <FontAwesomeIcon icon={faMap} />
                 Map

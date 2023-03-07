@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./src/**/*.{ts,tsx,css}", "./public/*.html"],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        "custom-unknown-flag": "url('src/assets/images/unknown-flag.min.svg')",
+      },
+    },
     screens: {
       xs: "360px",
       sm: "480px",

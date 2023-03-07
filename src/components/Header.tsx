@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { Link, NavLink } from "react-router-dom";
 
-import { ReactComponent as Logo } from "src/assets/geomaniac-wordmark.svg";
+import { ReactComponent as Logo } from "src/assets/images/geomaniac-wordmark.min.svg";
 
 type HeaderLinkProps = PropsWithChildren<{
   to: string;
@@ -41,7 +41,7 @@ export default function Header({
       className={`relative z-[1500] flex items-center gap-2 p-2 shadow-md ${className}`}
     >
       <Link to="/">
-        <Logo title={title} />
+        <Logo title={title} width={224} height={36} />
       </Link>
       {children}
     </div>
