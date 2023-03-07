@@ -5,7 +5,7 @@ export default function InstructionOverlay({ children }: PropsWithChildren) {
   const springs = useSpring({
     from: {
       opacity: 0,
-      transform: "scale(0.5)",
+      transform: "scale(2)",
     },
     to: {
       opacity: 1,

@@ -5,11 +5,11 @@ export default function FloatingHeader({ children }: PropsWithChildren) {
   const springs = useSpring({
     from: {
       opacity: 0,
-      transform: "scale(0.5)",
+      transform: "translateY(-100%)",
     },
     to: {
       opacity: 1,
-      transform: "scale(1)",
+      transform: "translateY(0%)",
     },
   });
 

@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { useMemo } from "react";
-import { animated, useSpring } from "@react-spring/web";
+import { animated, useSpring, useTrail } from "@react-spring/web";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForward, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 
@@ -77,9 +77,9 @@ export default function UserGuessFloatingPanel({
     [correctAnswerAudioSrc]
   );
 
-  const fadeInSprings = useSpring({
+  const [firstTrail, secondTrail] = useTrail(2, {
     opacity: isReady ? 1 : 0,
-    transform: isReady ? "scale(1)" : "scale(0)",
+    transform: isReady ? "translateY(0%)" : "translateY(100%)",
   });
 
   const [{ x }, errorShake] = useSpring(() => {
@@ -143,11 +143,13 @@ export default function UserGuessFloatingPanel({
   return (
     <animated.div
       className="absolute inset-x-0 bottom-8 z-[1000] mx-auto flex h-fit w-fit flex-col items-center gap-2 rounded-md text-center"
-      style={fadeInSprings}
+      style={firstTrail}
     >
-      <GuessHeaderSection skipCountryHandler={handleSkipCountry}>
-        Which country is this?
-      </GuessHeaderSection>
+      <animated.div style={secondTrail}>
+        <GuessHeaderSection skipCountryHandler={handleSkipCountry}>
+          Which country is this?
+        </GuessHeaderSection>
+      </animated.div>
 
       <div className="flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
         <animated.div

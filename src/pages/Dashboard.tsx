@@ -35,7 +35,6 @@ type CountryStatsWithKey = UserCountryStats[string] & {
 };
 
 type CountryStatsProps = {
-  key: string;
   countryStat: CountryStatsWithKey;
 };
 
