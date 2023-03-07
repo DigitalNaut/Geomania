@@ -22,7 +22,7 @@ function CountryProgress({ correct, incorrect }: CountryProgressProps) {
   }, [correct, incorrect]);
 
   return (
-    <span title={`Correct: ${correct} Incorrect: ${incorrect}`}>
+    <span title={`Correct: ${correct}\nIncorrect: ${incorrect}`}>
       {Array.from({ length: adjustedCorrect }, (_, index) => (
         <span key={index} className="text-green-600">
           &#x25cf;
@@ -62,7 +62,10 @@ function CountryStats({ countryStat }: CountryStatsProps) {
         loading="lazy"
       />
       <div>
-        <div className="w-40 text-ellipsis text-sm">
+        <div
+          className="line-clamp-2 w-32 text-ellipsis text-sm"
+          title={countryStat.countryName}
+        >
           {countryStat.countryName}
         </div>
         <CountryProgress

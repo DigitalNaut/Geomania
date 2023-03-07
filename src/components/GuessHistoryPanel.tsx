@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSpring, animated } from "@react-spring/web";
 
-import type { UserCountryGuess } from "src/pages/MapVisitor.hooks";
+import type { UserCountryGuess } from "src/contexts/GuessRecordContext";
 import useScrollToTop from "src/hooks/useScrollToTop";
 
 let itemStyle: string;

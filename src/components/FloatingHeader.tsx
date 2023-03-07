@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { animated, useSpring } from '@react-spring/web';
+import { animated, useSpring } from "@react-spring/web";
 
 export default function FloatingHeader({ children }: PropsWithChildren) {
   const springs = useSpring({

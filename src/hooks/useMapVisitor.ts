@@ -45,7 +45,7 @@ export function useMapVisitor() {
 
   function giveHint() {
     if (countryCorrectAnswer.data) {
-      // TODO: Revert
+      // TODO: Add a better way to provide hints
       //const hint = countryCorrectAnswer.data.name.substring(0, userTries);
       const hint = countryCorrectAnswer.data.name;
       setInputField(hint);

@@ -4,7 +4,7 @@ import { animated, useSpring } from "@react-spring/web";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForward, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 
-import type { useMapVisitor } from "src/pages/MapVisitor.hooks";
+import type { useMapVisitor } from "src/hooks/useMapVisitor";
 import { ActionButton } from "src/components/ActionButton";
 
 function GuessHeaderSection({

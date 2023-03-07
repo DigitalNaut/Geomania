@@ -4,7 +4,7 @@
       "version": "detect"
     },
     "tailwindcss": {
-      "whitelist": ["g_id_[a-z]+", "fa-[a-z]+"]
+      "whitelist": ["g_id_[a-z]+", "fa-[a-z]+", "line-clamp-[1-9]|none"]
     }
   },
   "env": {

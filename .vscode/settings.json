@@ -4,12 +4,14 @@
     "fortawesome",
     "gapi",
     "Gapi",
+    "geomaniac",
     "paytone",
     "signin",
     "signout",
     "svgr",
     "tailwindcss",
-    "typecheck"
+    "typecheck",
+    "wordmark"
   ],
   "dotenv.enableAutocloaking": false
 }

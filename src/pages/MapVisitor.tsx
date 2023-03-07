@@ -6,7 +6,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { getAllCountryFeatures } from "src/controllers/MapController";
 import { MapClick } from "src/components/MapClick";
 import { LeafletMap, markerIcon } from "src/components/LeafletMap";
-import { useMapVisitor } from "src/pages/MapVisitor.hooks";
+import { useMapVisitor } from "src/hooks/useMapVisitor";
 import GuessHistoryPanel from "src/components/GuessHistoryPanel";
 import UserGuessFloatingPanel from "src/components/UserGuessFloatingPanel";
 import FloatingHeader from "src/components/FloatingHeader";
@@ -14,9 +14,7 @@ import InstructionOverlay from "src/components/InstructionOverlay";
 import MainView from "src/components/MainView";
 
 export default function MapVisitor() {
-  const visitor = useMapVisitor({
-    historyLimit: 200,
-  });
+  const visitor = useMapVisitor();
   const {
     handleMapClick,
     countryCorrectAnswer,
