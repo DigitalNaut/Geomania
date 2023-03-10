@@ -129,17 +129,14 @@ export default function UserGuessFloatingPanel({
   const handleSubmit = () => {
     const isCorrectAnswer = submitAnswer();
 
-    if (!isCorrectAnswer) {
+    if (isCorrectAnswer) {
+      correctAnswerAudio.currentTime = 0;
+      correctAnswerAudio.play();
+    } else
       errorShake.start({
         from: { x: 0 },
         to: { x: 1 },
       });
-    }
-
-    if (isCorrectAnswer) {
-      correctAnswerAudio.currentTime = 0;
-      correctAnswerAudio.play();
-    }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {

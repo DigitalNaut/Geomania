@@ -19,6 +19,7 @@ export type UserCountryStats = {
 
 type GuessRecordContextType = {
   guessHistory: UserCountryGuess[];
+  lastGuess?: UserCountryGuess;
   pushGuessToHistory(newGuess: Omit<UserCountryGuess, "timestamp">): void;
   countryStats: UserCountryStats;
   updateCountryStats(
@@ -135,6 +136,7 @@ export function UserGuessRecordProvider({
       value={{
         guessHistory,
         pushGuessToHistory,
+        lastGuess: guessHistory[guessHistory.length - 1],
         countryStats,
         updateCountryStats,
         clearProgress,

@@ -76,7 +76,7 @@ export function useCountryGuesser(setError: (error: Error) => void) {
     setInputField: setAnswerInputField,
     focusInputField: focusAnswerInputField,
   } = useInputField();
-  const { pushGuessToHistory, guessHistory, updateCountryStats } =
+  const { pushGuessToHistory, guessHistory, lastGuess, updateCountryStats } =
     useUserGuessRecord();
   const { countryCorrectAnswer, checkAnswer, getRandomCountryData } =
     useCountryGuess();
@@ -143,7 +143,7 @@ export function useCountryGuesser(setError: (error: Error) => void) {
     const userGuess = answerInputRef.current.value;
     const isCorrect = checkAnswer(userGuess);
     const isValidNewGuess =
-      userGuess.length > 0 && userGuess !== guessHistory[0]?.text;
+      userGuess.length > 0 && userGuess !== lastGuess?.text;
 
     if (!isValidNewGuess) return false;
 
@@ -174,7 +174,7 @@ export function useCountryGuesser(setError: (error: Error) => void) {
     else showNextCountry();
   };
 
-  const handleSkipCountry = () => {
+  const skipCountry = () => {
     resetUI();
     showNextCountry();
   };
@@ -190,7 +190,7 @@ export function useCountryGuesser(setError: (error: Error) => void) {
     countryCorrectAnswer,
     resetUI,
     showNextCountry,
-    handleSkipCountry,
+    skipCountry,
     handleMapClick,
   };
 }
