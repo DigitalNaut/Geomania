@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { animated, useSpring, useTrail } from "@react-spring/web";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForward, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
@@ -28,8 +28,6 @@ function useFloatingPanelAnimations(
 
   const [{ x }, errorShakeApi] = useSpring(() => ({
     from: { x: 0 },
-    onAnimationStart: onShakeStart,
-    onAnimationEnd: onShakeEnd,
   }));
 
   const shakeXStart = -shakeAmount;
@@ -54,6 +52,8 @@ function useFloatingPanelAnimations(
       from: { x: 0 },
       to: { x: 1 },
       config: { duration: shakeDuration },
+      onStart: onShakeStart,
+      onRest: onShakeEnd,
     });
 
   return {
@@ -119,20 +119,18 @@ export default function UserGuessFloatingPanel({
     [correctAnswerAudioSrc]
   );
 
-  function onShakeStart() {
+  const onShakeStart = useCallback(() => {
     if (!answerInputRef.current) return;
     answerInputRef.current.disabled = true;
-    incorrectAnswerAudio.currentTime = 0;
-    incorrectAnswerAudio.play();
-  }
+  }, [answerInputRef]);
 
-  function onShakeEnd() {
+  const onShakeEnd = useCallback(() => {
     if (!answerInputRef.current) return;
     answerInputRef.current.disabled = false;
-    answerInputRef.current.value = "";
     answerInputRef.current.focus();
+    answerInputRef.current.select();
     incorrectAnswerAudio.pause();
-  }
+  }, [answerInputRef, incorrectAnswerAudio]);
 
   const { firstTrail, secondTrail, startShake, xShake } =
     useFloatingPanelAnimations(isReady, { onShakeStart, onShakeEnd });
@@ -143,7 +141,11 @@ export default function UserGuessFloatingPanel({
     if (isCorrectAnswer) {
       correctAnswerAudio.currentTime = 0;
       correctAnswerAudio.play();
-    } else startShake();
+    } else {
+      incorrectAnswerAudio.currentTime = 0;
+      incorrectAnswerAudio.play();
+      startShake();
+    }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {

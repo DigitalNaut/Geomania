@@ -1,19 +1,15 @@
-import type {
-  DetailedHTMLProps,
-  ButtonHTMLAttributes,
-  PropsWithChildren,
-} from "react";
 import { useMemo, useRef } from "react";
 import { animated, useSpring } from "@react-spring/web";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { faBroom } from "@fortawesome/free-solid-svg-icons";
 
 import type { UserCountryStats } from "src/contexts/GuessRecordContext";
-import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+
 import MainView from "src/components/MainView";
 import { useUserGuessRecord } from "src/contexts/GuessRecordContext";
 import { Link } from "react-router-dom";
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg";
+import { Button } from "src/components/Button";
 
 type CountryProgressProps = {
   correct: number;
@@ -74,32 +70,6 @@ function CountryStats({ countryStat }: CountryStatsProps) {
         />
       </div>
     </div>
-  );
-}
-
-function Button({
-  children,
-  className,
-  icon,
-  ...props
-}: PropsWithChildren<
-  DetailedHTMLProps<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
-  > & {
-    icon?: IconDefinition;
-  }
->) {
-  return (
-    <button
-      role="button"
-      className={`flex items-center gap-2 rounded-full px-4 py-1 hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent
-        ${className}`}
-      {...props}
-    >
-      {icon && <FontAwesomeIcon icon={icon} />}
-      {children}
-    </button>
   );
 }
 
@@ -167,9 +137,11 @@ export default function Dashboard() {
           Your user guess history and country stats will be deleted.
         </p>
         <form className="flex justify-end gap-2 pt-4" method="dialog">
-          <Button className="inline-block">Cancel</Button>
+          <Button className="bg-transparent hover:bg-slate-900/10">
+            Cancel
+          </Button>
           <Button
-            className="inline-block bg-red-700 text-white hover:bg-red-600"
+            className="bg-red-700 text-white hover:bg-red-600"
             onClick={clearProgress}
           >
             Delete
@@ -181,7 +153,7 @@ export default function Dashboard() {
         <div className="flex flex-col gap-2 rounded-md bg-slate-800 p-2">
           <h2 className="text-lg font-bold">Options</h2>
           <Button
-            className="w-max"
+            className="w-max bg-transparent hover:bg-slate-400/40"
             onClick={showDialog}
             icon={faBroom}
             disabled={constructedCountryStatList.length === 0}
