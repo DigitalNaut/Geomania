@@ -181,7 +181,7 @@ export function useCountryGuesser(setError: (error: Error) => void) {
 
   return {
     answerInputRef,
-    isReady: countryCorrectAnswer.data && countryCorrectAnswer.feature,
+    isReady: !!(countryCorrectAnswer.data && countryCorrectAnswer.feature),
     submitAnswer,
     userGuessTally,
     giveHint,
