@@ -9,24 +9,31 @@ import { ActionButton } from "src/components/ActionButton";
 
 function useFloatingPanelAnimations(
   isReady: boolean,
-  onStart: () => void,
-  onRest: () => void
+  {
+    onShakeStart,
+    onShakeEnd,
+    shakeAmount = 7,
+    shakeDuration = 400,
+  }: {
+    onShakeStart: () => void;
+    onShakeEnd: () => void;
+    shakeAmount?: number;
+    shakeDuration?: number;
+  }
 ) {
   const [firstTrail, secondTrail] = useTrail(2, {
     opacity: isReady ? 1 : 0,
     transform: isReady ? "translateY(0%)" : "translateY(100%)",
   });
 
-  const [{ x }, errorShakeApi] = useSpring(() => {
-    return {
-      from: { x: 0 },
-      onStart,
-      onRest,
-    };
-  });
+  const [{ x }, errorShakeApi] = useSpring(() => ({
+    from: { x: 0 },
+    onAnimationStart: onShakeStart,
+    onAnimationEnd: onShakeEnd,
+  }));
 
-  const shakeXStart = -5;
-  const shakeXEnd = 5;
+  const shakeXStart = -shakeAmount;
+  const shakeXEnd = shakeAmount;
 
   const xShake = x.to(
     [0, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 1],
@@ -42,16 +49,17 @@ function useFloatingPanelAnimations(
     ]
   );
 
-  const errorShake = () =>
+  const startShake = () =>
     errorShakeApi.start({
       from: { x: 0 },
       to: { x: 1 },
+      config: { duration: shakeDuration },
     });
 
   return {
     firstTrail,
     secondTrail,
-    errorShake,
+    startShake,
     xShake,
   };
 }
@@ -111,14 +119,14 @@ export default function UserGuessFloatingPanel({
     [correctAnswerAudioSrc]
   );
 
-  function onStartShake() {
+  function onShakeStart() {
     if (!answerInputRef.current) return;
     answerInputRef.current.disabled = true;
     incorrectAnswerAudio.currentTime = 0;
     incorrectAnswerAudio.play();
   }
 
-  function onEndShake() {
+  function onShakeEnd() {
     if (!answerInputRef.current) return;
     answerInputRef.current.disabled = false;
     answerInputRef.current.value = "";
@@ -126,8 +134,8 @@ export default function UserGuessFloatingPanel({
     incorrectAnswerAudio.pause();
   }
 
-  const { firstTrail, secondTrail, errorShake, xShake } =
-    useFloatingPanelAnimations(isReady, onStartShake, onEndShake);
+  const { firstTrail, secondTrail, startShake, xShake } =
+    useFloatingPanelAnimations(isReady, { onShakeStart, onShakeEnd });
 
   const handleSubmit = () => {
     const isCorrectAnswer = submitAnswer();
@@ -135,7 +143,7 @@ export default function UserGuessFloatingPanel({
     if (isCorrectAnswer) {
       correctAnswerAudio.currentTime = 0;
       correctAnswerAudio.play();
-    } else errorShake();
+    } else startShake();
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -156,22 +164,24 @@ export default function UserGuessFloatingPanel({
       </animated.div>
 
       <div className="flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
-        <animated.div
-          className="flex w-full justify-center overflow-hidden rounded-md"
-          style={{ x: xShake }}
-        >
-          <input
-            className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
-            ref={answerInputRef}
-            onKeyDown={handleKeyDown}
-            placeholder="Enter country name"
-            disabled={!isReady}
-            maxLength={50}
-          />
-          <ActionButton fit disabled={!isReady} onClick={handleSubmit}>
-            Submit
-          </ActionButton>
-        </animated.div>
+        <div className="rounded-md bg-red-500">
+          <animated.div
+            className="flex w-full justify-center overflow-hidden rounded-md"
+            style={{ x: xShake }}
+          >
+            <input
+              className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
+              ref={answerInputRef}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter country name"
+              disabled={!isReady}
+              maxLength={50}
+            />
+            <ActionButton fit disabled={!isReady} onClick={handleSubmit}>
+              Submit
+            </ActionButton>
+          </animated.div>
+        </div>
 
         <div className="flex w-full justify-between rounded-md p-2">
           <span className="whitespace-nowrap">Guesses: {userGuessTally}</span>
@@ -180,7 +190,6 @@ export default function UserGuessFloatingPanel({
             className="flex items-center gap-1 underline disabled:cursor-not-allowed disabled:opacity-50"
             type="button"
             onClick={giveHint}
-            disabled={true}
           >
             <FontAwesomeIcon icon={faQuestionCircle} />
             <span>Hint!</span>
