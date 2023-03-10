@@ -4,7 +4,6 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
 import { Outlet } from "react-router-dom";
 
@@ -26,16 +25,13 @@ const router = createBrowserRouter(
         <StandardLayout>
           <Header>
             <div className="flex flex-1 gap-2 pl-6">
-              <HeaderLink to="/">
-                <FontAwesomeIcon icon={faMap} />
+              <HeaderLink to="/" icon={faMap}>
                 Map
               </HeaderLink>
-              <HeaderLink to="dashboard">
-                <FontAwesomeIcon icon={faChartLine} />
+              <HeaderLink to="dashboard" icon={faChartLine}>
                 Dashboard
               </HeaderLink>
-              <HeaderLink to="settings">
-                <FontAwesomeIcon icon={faCog} />
+              <HeaderLink to="settings" icon={faCog}>
                 Settings
               </HeaderLink>
             </div>

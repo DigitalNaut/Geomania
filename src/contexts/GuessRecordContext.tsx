@@ -26,6 +26,7 @@ type GuessRecordContextType = {
     countryName: string,
     isCorrect: boolean
   ): void;
+  clearProgress(): void;
 };
 
 const guessRecordContext = createContext<GuessRecordContextType>({
@@ -33,6 +34,7 @@ const guessRecordContext = createContext<GuessRecordContextType>({
   pushGuessToHistory: () => null,
   countryStats: {},
   updateCountryStats: () => null,
+  clearProgress: () => null,
 });
 
 function useGuessHistory(limit: number) {
@@ -65,7 +67,12 @@ function useGuessHistory(limit: number) {
     if (history) setGuessHistory(JSON.parse(history));
   }, []);
 
-  return { guessHistory, pushGuessToHistory };
+  const clearGuessHistory = () => {
+    localStorage.removeItem("guessHistory");
+    setGuessHistory([]);
+  };
+
+  return { guessHistory, pushGuessToHistory, clearGuessHistory };
 }
 
 function useCountryStats() {
@@ -99,7 +106,12 @@ function useCountryStats() {
     if (stats) setCountryStats(JSON.parse(stats));
   }, []);
 
-  return { countryStats, updateCountryStats };
+  const clearCountryStats = () => {
+    localStorage.removeItem("countryStats");
+    setCountryStats({});
+  };
+
+  return { countryStats, updateCountryStats, clearCountryStats };
 }
 
 export function UserGuessRecordProvider({
@@ -108,8 +120,15 @@ export function UserGuessRecordProvider({
 }: PropsWithChildren<{
   historyLimit: number;
 }>) {
-  const { guessHistory, pushGuessToHistory } = useGuessHistory(historyLimit);
-  const { countryStats, updateCountryStats } = useCountryStats();
+  const { guessHistory, pushGuessToHistory, clearGuessHistory } =
+    useGuessHistory(historyLimit);
+  const { countryStats, updateCountryStats, clearCountryStats } =
+    useCountryStats();
+
+  const clearProgress = () => {
+    clearGuessHistory();
+    clearCountryStats();
+  };
 
   return (
     <guessRecordContext.Provider
@@ -118,6 +137,7 @@ export function UserGuessRecordProvider({
         pushGuessToHistory,
         countryStats,
         updateCountryStats,
+        clearProgress,
       }}
     >
       {children}

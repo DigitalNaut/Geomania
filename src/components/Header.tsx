@@ -1,17 +1,20 @@
+import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import type { PropsWithChildren } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, NavLink } from "react-router-dom";
 
 import { ReactComponent as Logo } from "src/assets/images/geomaniac-wordmark.min.svg";
 
 type HeaderLinkProps = PropsWithChildren<{
   to: string;
+  icon: IconDefinition;
 }>;
 
-const headerLinkBaseStyle = "flex items-center gap-1 px-3 py-1 rounded-full";
-const headerLinkActiveStyle = "bg-slate-200 text-slate-900 hover:bg-slate-300";
-const headerLinkInactiveStyle = "hover:bg-slate-700";
+const headerLinkBaseStyle = "flex items-center gap-1 px-3 py-1 border-b-2";
+const headerLinkActiveStyle = "border-slate-200 text-slate-200";
+const headerLinkInactiveStyle = "hover:border-slate-500 border-transparent";
 
-export function HeaderLink({ to, children }: HeaderLinkProps) {
+export function HeaderLink({ to, children, icon }: HeaderLinkProps) {
   return (
     <NavLink
       className={({ isActive }) =>
@@ -21,6 +24,7 @@ export function HeaderLink({ to, children }: HeaderLinkProps) {
       }
       to={to}
     >
+      {icon && <FontAwesomeIcon icon={icon} />}
       {children}
     </NavLink>
   );

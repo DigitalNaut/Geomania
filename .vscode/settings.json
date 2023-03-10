@@ -11,7 +11,8 @@
     "svgr",
     "tailwindcss",
     "typecheck",
-    "wordmark"
+    "wordmark",
+    "ponicode"
   ],
   "dotenv.enableAutocloaking": false
 }
