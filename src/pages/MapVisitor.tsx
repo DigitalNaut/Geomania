@@ -13,6 +13,7 @@ import InstructionOverlay from "src/components/InstructionOverlay";
 import MainView from "src/components/MainView";
 import { useCountryGuesser } from "src/controllers/CountryGuesser";
 import { useError } from "src/hooks/useError";
+import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
 export default function MapVisitor() {
   const { error, setError, dismissError } = useError();
@@ -81,7 +82,10 @@ export default function MapVisitor() {
           </LeafletMap>
 
           {isReady ? (
-            <FloatingHeader>Guess the country!</FloatingHeader>
+            <FloatingHeader>
+              <img src={NerdMascot} width={42} />
+              Guess the country!
+            </FloatingHeader>
           ) : (
             <InstructionOverlay>Click to start</InstructionOverlay>
           )}

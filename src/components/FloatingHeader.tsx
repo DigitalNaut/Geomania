@@ -18,7 +18,7 @@ export default function FloatingHeader({ children }: PropsWithChildren) {
       className="absolute inset-x-0 top-3 z-[1000] mx-auto h-max w-fit min-w-min shadow-md sm:min-w-max"
       style={springs}
     >
-      <h1 className="rounded-lg bg-slate-800 px-6 py-4 text-center text-lg sm:rounded-full sm:px-10 md:text-2xl">
+      <h1 className="flex items-center gap-2 rounded-lg bg-slate-800 px-4 text-center text-lg sm:rounded-full sm:px-4 md:text-2xl">
         {children}
       </h1>
     </animated.div>
