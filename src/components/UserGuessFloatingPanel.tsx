@@ -4,7 +4,7 @@ import { animated, useSpring, useTrail } from "@react-spring/web";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForward, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 
-import type { useMapVisitor } from "src/hooks/useMapVisitor";
+import type { useCountryGuesser } from "src/controllers/CountryGuesser";
 import { ActionButton } from "src/components/ActionButton";
 
 function GuessHeaderSection({
@@ -54,17 +54,25 @@ function GuessInfoSection({
 
 export default function UserGuessFloatingPanel({
   visitor: {
-    handleSkipCountry,
-    inputRef,
+    answerInputRef,
     isReady,
     submitAnswer,
     userGuessTally,
     giveHint,
+    skipCountry,
   },
   incorrectAnswerAudioSrc,
   correctAnswerAudioSrc,
 }: {
-  visitor: ReturnType<typeof useMapVisitor>;
+  visitor: Pick<
+    ReturnType<typeof useCountryGuesser>,
+    | "answerInputRef"
+    | "skipCountry"
+    | "isReady"
+    | "submitAnswer"
+    | "userGuessTally"
+    | "giveHint"
+  >;
   incorrectAnswerAudioSrc: string;
   correctAnswerAudioSrc: string;
 }) {
@@ -86,16 +94,16 @@ export default function UserGuessFloatingPanel({
     return {
       from: { x: 0 },
       onStart: () => {
-        if (!inputRef.current) return;
-        inputRef.current.disabled = true;
+        if (!answerInputRef.current) return;
+        answerInputRef.current.disabled = true;
         incorrectAnswerAudio.currentTime = 0;
         incorrectAnswerAudio.play();
       },
       onRest: () => {
-        if (!inputRef.current) return;
-        inputRef.current.disabled = false;
-        inputRef.current.value = "";
-        inputRef.current.focus();
+        if (!answerInputRef.current) return;
+        answerInputRef.current.disabled = false;
+        answerInputRef.current.value = "";
+        answerInputRef.current.focus();
         incorrectAnswerAudio.pause();
       },
     };
@@ -146,7 +154,7 @@ export default function UserGuessFloatingPanel({
       style={firstTrail}
     >
       <animated.div style={secondTrail}>
-        <GuessHeaderSection skipCountryHandler={handleSkipCountry}>
+        <GuessHeaderSection skipCountryHandler={skipCountry}>
           Which country is this?
         </GuessHeaderSection>
       </animated.div>
@@ -158,7 +166,7 @@ export default function UserGuessFloatingPanel({
         >
           <input
             className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
-            ref={inputRef}
+            ref={answerInputRef}
             onKeyDown={handleKeyDown}
             placeholder="Enter country name"
             disabled={!isReady}
