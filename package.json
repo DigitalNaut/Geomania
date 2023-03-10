@@ -14,7 +14,8 @@
     "preview": "vite preview",
     "format": "prettier --write .",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
-    "typecheck": "pnpm exec tsc -b"
+    "typecheck": "pnpm exec tsc -b",
+    "validate": "pnpm lint && pnpm typecheck"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.3.0",

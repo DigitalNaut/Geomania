@@ -50,6 +50,12 @@ function Notification({
   );
 }
 
+export function useUser() {
+  const context = useContext(userContext);
+  if (!context) throw new Error("useUser must be used within a UserProvider");
+  return context;
+}
+
 function LogoutButton() {
   const { logout, user } = useUser();
 
@@ -132,16 +138,16 @@ export function UserProvider({ children }: PropsWithChildren) {
     setUser(userInfo);
   };
 
-  const onSignInError = () => {
-    logout("Error starting session");
-  };
-
   const logout = (reason?: string) => {
     googleLogout();
     setUser(null);
     setNotification(reason);
 
     setTimeout(() => setNotification(undefined), 3000);
+  };
+
+  const onSignInError = () => {
+    logout("Error starting session");
   };
 
   function LoginButton() {
@@ -180,10 +186,4 @@ export function UserProvider({ children }: PropsWithChildren) {
       />
     </userContext.Provider>
   );
-}
-
-export function useUser() {
-  const context = useContext(userContext);
-  if (!context) throw new Error("useUser must be used within a UserProvider");
-  return context;
 }
