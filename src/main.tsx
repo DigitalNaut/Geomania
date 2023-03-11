@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         }}
       >
         <GoogleDriveProvider>
-          <App />{" "}
+          <App />
         </GoogleDriveProvider>
       </GoogleOAuthProvider>
     </ErrorBoundary>

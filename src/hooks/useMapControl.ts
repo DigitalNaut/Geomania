@@ -15,7 +15,7 @@ export function useMapControl({ zoom = 5, animate = true, duration = 0.1 }) {
   }
 
   function resetView() {
-    map?.setView([0, 0], 2);
+    map?.setView([0, 0], 1.5);
   }
 
   return { flyTo, resetView };

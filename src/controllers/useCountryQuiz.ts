@@ -117,7 +117,6 @@ export function useCountryQuiz(
     giveHint,
 
     guessHistory,
-    countryCorrectAnswer,
     resetUI,
     showNextCountry,
     skipCountry,

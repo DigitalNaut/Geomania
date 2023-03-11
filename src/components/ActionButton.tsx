@@ -23,7 +23,7 @@ export function ActionButton({
       <button
         disabled={disabled}
         type="button"
-        className={`cursor-pointer select-none bg-green-700 p-4 text-center text-xl font-bold shadow-md hover:bg-green-600 hover:shadow-lg ${className}`}
+        className={`cursor-pointer select-none bg-green-600 p-4 text-center text-xl font-bold shadow-md hover:bg-green-500 hover:shadow-lg ${className}`}
         onClick={onClick}
       >
         {children}
