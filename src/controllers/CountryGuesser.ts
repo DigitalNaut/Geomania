@@ -111,7 +111,7 @@ export function useCountryGuesser(setError: (error: Error) => void) {
     setAnswerInputField("");
   };
 
-  function updateUI(nextCountry: CountryData) {
+  function focusUI(nextCountry: CountryData) {
     const destination = !nextCountry
       ? countryCorrectAnswer.coordinates
       : ([nextCountry.latitude, nextCountry.longitude] as LatLngTuple);
@@ -120,17 +120,13 @@ export function useCountryGuesser(setError: (error: Error) => void) {
     focusAnswerInputField();
   }
 
-  function showNextCountry(tries = 0) {
-    const retries = tries;
+  function showNextCountry() {
     try {
       const nextCountry = getRandomCountryData();
-      updateUI(nextCountry);
+      focusUI(nextCountry);
     } catch (error) {
-      if (tries < 5) {
-        if (error instanceof Error) setError(error);
-        console.log("No country data found. Retrying...", retries);
-        showNextCountry(retries + 1);
-      } else setError(new Error("No country data found."));
+      if (error instanceof Error) setError(error);
+      else setError(new Error("An unknown error occurred."));
     }
   }
 
@@ -170,7 +166,7 @@ export function useCountryGuesser(setError: (error: Error) => void) {
   };
 
   const handleMapClick = () => {
-    if (countryCorrectAnswer.data) updateUI(countryCorrectAnswer.data);
+    if (countryCorrectAnswer.data) focusUI(countryCorrectAnswer.data);
     else showNextCountry();
   };
 
