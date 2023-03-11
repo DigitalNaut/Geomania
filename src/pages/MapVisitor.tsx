@@ -46,9 +46,6 @@ export default function MapVisitor() {
         </div>
       )}
 
-      {/*
-       * The overflow-y-auto class is needed to make the side bar scrollable
-       */}
       <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
           <LeafletMap>

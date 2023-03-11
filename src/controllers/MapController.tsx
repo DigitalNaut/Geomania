@@ -12,7 +12,7 @@ export type CountryData = (typeof countriesMetadata)[number] | null;
  */
 export function getCountryGeometry(alpha3: string) {
   const feature = countryGeometries["features"].find(
-    (feature) => feature["properties"]["ISO_A3"] === alpha3
+    ({ properties }) => properties["ISO_A3"] === alpha3
   );
 
   if (feature) return feature as Feature;
