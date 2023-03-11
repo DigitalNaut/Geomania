@@ -2,15 +2,15 @@ import type { HTMLProps } from "react";
 
 type Props = Pick<
   HTMLProps<HTMLButtonElement>,
-  "onClick" | "children" | "disabled"
-> & {
-  fit?: true;
-};
+  "onClick" | "children" | "disabled" | "className"
+>;
 
-export function ActionButton({ children, fit, disabled, onClick }: Props) {
-  const className =
-    "p-4 text-xl font-bold text-center bg-green-700 shadow-md cursor-pointer select-none hover:bg-green-600 hover:shadow-lg";
-
+export function ActionButton({
+  children,
+  className,
+  disabled,
+  onClick,
+}: Props) {
   return (
     <div className="relative bg-clip-content">
       {disabled && (
@@ -23,7 +23,7 @@ export function ActionButton({ children, fit, disabled, onClick }: Props) {
       <button
         disabled={disabled}
         type="button"
-        className={[className, fit ? "w-min" : "w-full"].join()}
+        className={`cursor-pointer select-none bg-green-700 p-4 text-center text-xl font-bold shadow-md hover:bg-green-600 hover:shadow-lg ${className}`}
         onClick={onClick}
       >
         {children}
