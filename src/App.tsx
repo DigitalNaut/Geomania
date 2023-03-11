@@ -10,7 +10,7 @@ import { Outlet } from "react-router-dom";
 import MapContextProvider from "src/contexts/MapContext";
 import { UserGuessRecordProvider } from "src/contexts/GuessRecordContext";
 import Header, { HeaderLink } from "src/components/Header";
-import MapReview from "src/pages/MapReview";
+import MapActivity from "src/pages/MapActivity";
 import Settings from "src/pages/Settings";
 import Dashboard from "src/pages/Dashboard";
 import Footer from "src/components/Footer";
@@ -58,7 +58,7 @@ const router = createBrowserRouter(
           index
           element={
             <MapContextProvider>
-              <MapReview />
+              <MapActivity />
             </MapContextProvider>
           }
         />

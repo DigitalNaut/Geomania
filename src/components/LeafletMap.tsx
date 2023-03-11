@@ -18,9 +18,9 @@ const maxBounds = Leaflet.latLngBounds(topLeftCorner, bottomRightCorner);
 
 export function LeafletMap({
   children,
-  isReviewMode,
+  isActivityMode,
 }: PropsWithChildren<{
-  isReviewMode: boolean;
+  isActivityMode: boolean;
 }>) {
   const { setMap } = useMapContext();
 
@@ -35,7 +35,7 @@ export function LeafletMap({
       style={{ width: "100%", height: "100%" }}
       ref={setMap}
     >
-      {isReviewMode && (
+      {isActivityMode && (
         <LayersControl position="topright">
           <LayersControl.BaseLayer name="OpenStreetMap" checked={false}>
             <TileLayer
