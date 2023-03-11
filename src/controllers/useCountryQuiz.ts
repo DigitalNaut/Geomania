@@ -1,76 +1,22 @@
-import type { Feature } from "geojson";
-import type { LatLngExpression, LatLngTuple } from "leaflet";
-import { useState } from "react";
+import type { LatLngTuple } from "leaflet";
 
 import type { CountryData } from "src/controllers/MapController";
-import {
-  getCountryGeometry,
-  getCountryData,
-} from "src/controllers/MapController";
-import { useMapContext } from "src/contexts/MapContext";
+import type { useCountryStore } from "src/hooks/useCountryStore";
+import type { useMapControl } from "src/hooks/useMapControl";
 import { useUserGuessRecord } from "src/contexts/GuessRecordContext";
 import { useTally } from "src/hooks/useTally";
 import { useInputField } from "src/hooks/useInputField";
 
-function randomIndex(length: number) {
-  return Math.floor(Math.random() * length);
-}
-
-function getCountryCoordinates(country: CountryData) {
-  if (!country) return null;
-  return [country.latitude, country.longitude] as LatLngTuple;
-}
-
-/**
- * Normalizes a name by removing diacritics and trimming whitespace.
- */
-export function normalizeName(text?: string) {
-  return text
-    ?.trim()
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "");
-}
-
-function useCountryGuess() {
-  const { countryAnswer, setCountryAnswer } = useMapContext();
-  const [countryFeature, setCountryFeature] = useState<Feature>();
-
-  function getRandomCountryData(): CountryData {
-    const { country, countryIndex } = getCountryData(randomIndex);
-
-    if (!country) throw new Error(`No country found for index ${countryIndex}`);
-
-    const feature = getCountryGeometry(country.alpha3);
-
-    if (feature) setCountryFeature(feature);
-    else throw new Error(`No feature found for ${country.name}`);
-
-    setCountryAnswer(country);
-
-    return country;
-  }
-
-  const checkAnswer = (userInput: string) => {
-    const correctAnswer = countryAnswer?.name || "";
-    const inputMatchesAnswer =
-      normalizeName(userInput) === normalizeName(correctAnswer);
-
-    return inputMatchesAnswer;
-  };
-
-  return {
-    countryCorrectAnswer: {
-      data: countryAnswer,
-      feature: countryFeature,
-      coordinates: getCountryCoordinates(countryAnswer),
-    },
+export function useCountryQuiz(
+  countryStore: ReturnType<typeof useCountryStore>,
+  mapControl: ReturnType<typeof useMapControl>,
+  setError: (error: Error) => void
+) {
+  const {
+    countryStored: countryCorrectAnswer,
+    compareStoredCountry: checkAnswer,
     getRandomCountryData,
-    checkAnswer,
-  };
-}
-
-export function useCountryGuesser(setError: (error: Error) => void) {
-  const { map } = useMapContext();
+  } = countryStore;
   const {
     inputRef: answerInputRef,
     setInputField: setAnswerInputField,
@@ -78,22 +24,11 @@ export function useCountryGuesser(setError: (error: Error) => void) {
   } = useInputField();
   const { pushGuessToHistory, guessHistory, lastGuess, updateCountryStats } =
     useUserGuessRecord();
-  const { countryCorrectAnswer, checkAnswer, getRandomCountryData } =
-    useCountryGuess();
   const {
     tally: userGuessTally,
     incrementTally: incrementTriesTally,
     resetTally: resetTriesTally,
   } = useTally();
-
-  function flyTo(destination: LatLngExpression | null) {
-    if (!destination) return;
-
-    map?.flyTo(destination, 5, {
-      animate: true,
-      duration: 0.1,
-    });
-  }
 
   function giveHint() {
     if (countryCorrectAnswer.data) {
@@ -116,7 +51,7 @@ export function useCountryGuesser(setError: (error: Error) => void) {
       ? countryCorrectAnswer.coordinates
       : ([nextCountry.latitude, nextCountry.longitude] as LatLngTuple);
 
-    flyTo(destination);
+    mapControl.flyTo(destination);
     focusAnswerInputField();
   }
 
@@ -177,7 +112,6 @@ export function useCountryGuesser(setError: (error: Error) => void) {
 
   return {
     answerInputRef,
-    isReady: !!(countryCorrectAnswer.data && countryCorrectAnswer.feature),
     submitAnswer,
     userGuessTally,
     giveHint,

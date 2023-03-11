@@ -4,28 +4,20 @@ import { animated, useSpring, useTrail } from "@react-spring/web";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForward, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 
-import type { useCountryGuesser } from "src/controllers/CountryGuesser";
+import type { useCountryQuiz } from "src/controllers/useCountryQuiz";
 import { ActionButton } from "src/components/ActionButton";
 
-function useFloatingPanelAnimations(
-  isReady: boolean,
-  {
-    onShakeStart,
-    onShakeEnd,
-    shakeAmount = 7,
-    shakeDuration = 400,
-  }: {
-    onShakeStart: () => void;
-    onShakeEnd: () => void;
-    shakeAmount?: number;
-    shakeDuration?: number;
-  }
-) {
-  const [firstTrail, secondTrail] = useTrail(2, {
-    opacity: isReady ? 1 : 0,
-    transform: isReady ? "translateY(0%)" : "translateY(100%)",
-  });
-
+function useHorizontalShakeAnimation({
+  onShakeStart,
+  onShakeEnd,
+  shakeAmount = 7,
+  shakeDuration = 400,
+}: {
+  onShakeStart: () => void;
+  onShakeEnd: () => void;
+  shakeAmount?: number;
+  shakeDuration?: number;
+}) {
   const [{ x }, errorShakeApi] = useSpring(() => ({
     from: { x: 0 },
   }));
@@ -57,10 +49,20 @@ function useFloatingPanelAnimations(
     });
 
   return {
-    firstTrail,
-    secondTrail,
     startShake,
     xShake,
+  };
+}
+
+export function useFloatingPanelSlideInAnimation(shouldShow: boolean) {
+  const [firstTrail, secondTrail] = useTrail(2, {
+    opacity: shouldShow ? 1 : 0,
+    transform: shouldShow ? "translateY(0%)" : "translateY(100%)",
+  });
+
+  return {
+    firstTrail,
+    secondTrail,
   };
 }
 
@@ -87,9 +89,9 @@ function GuessHeaderSection({
 }
 
 export default function UserGuessFloatingPanel({
+  shouldShow,
   visitor: {
     answerInputRef,
-    isReady,
     submitAnswer,
     userGuessTally,
     giveHint,
@@ -98,11 +100,11 @@ export default function UserGuessFloatingPanel({
   incorrectAnswerAudioSrc,
   correctAnswerAudioSrc,
 }: {
+  shouldShow: boolean;
   visitor: Pick<
-    ReturnType<typeof useCountryGuesser>,
+    ReturnType<typeof useCountryQuiz>,
     | "answerInputRef"
     | "skipCountry"
-    | "isReady"
     | "submitAnswer"
     | "userGuessTally"
     | "giveHint"
@@ -132,8 +134,12 @@ export default function UserGuessFloatingPanel({
     incorrectAnswerAudio.pause();
   }, [answerInputRef, incorrectAnswerAudio]);
 
-  const { firstTrail, secondTrail, startShake, xShake } =
-    useFloatingPanelAnimations(isReady, { onShakeStart, onShakeEnd });
+  const { startShake, xShake } = useHorizontalShakeAnimation({
+    onShakeStart,
+    onShakeEnd,
+  });
+
+  const { firstTrail, secondTrail } = useFloatingPanelSlideInAnimation(shouldShow);
 
   const handleSubmit = () => {
     const isCorrectAnswer = submitAnswer();
@@ -176,10 +182,10 @@ export default function UserGuessFloatingPanel({
               ref={answerInputRef}
               onKeyDown={handleKeyDown}
               placeholder="Enter country name"
-              disabled={!isReady}
+              disabled={!shouldShow}
               maxLength={50}
             />
-            <ActionButton fit disabled={!isReady} onClick={handleSubmit}>
+            <ActionButton disabled={!shouldShow} onClick={handleSubmit}>
               Submit
             </ActionButton>
           </animated.div>

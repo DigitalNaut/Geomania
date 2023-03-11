@@ -7,15 +7,15 @@ import { createContext, useContext, useState } from "react";
 type MapContext = {
   map: Map | null;
   setMap: Dispatch<SetStateAction<Map | null>>;
-  countryAnswer: CountryData;
-  setCountryAnswer: Dispatch<SetStateAction<CountryData>>;
+  storedCountry: CountryData;
+  setStoredCountry: Dispatch<SetStateAction<CountryData>>;
 };
 
 const MapContext = createContext<MapContext>({
   map: null,
   setMap: () => null,
-  countryAnswer: null,
-  setCountryAnswer: () => null,
+  storedCountry: null,
+  setStoredCountry: () => null,
 });
 
 /**
@@ -24,16 +24,16 @@ const MapContext = createContext<MapContext>({
  */
 export default function MapContextProvider({ children }: PropsWithChildren) {
   const [map, setMap] = useState<MapContext["map"]>(null);
-  const [countryAnswer, setCountryAnswer] =
-    useState<MapContext["countryAnswer"]>(null);
+  const [storedCountry, setStoredCountry] =
+    useState<MapContext["storedCountry"]>(null);
 
   return (
     <MapContext.Provider
       value={{
         map,
         setMap,
-        countryAnswer,
-        setCountryAnswer,
+        storedCountry,
+        setStoredCountry,
       }}
     >
       {children}
