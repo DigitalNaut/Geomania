@@ -47,6 +47,22 @@ export function useCountryStore() {
     return country;
   }
 
+  function getSpecificCountryData(alpha3: string) {
+    const { country } = getCountryData(alpha3);
+
+    if (!country)
+      throw new Error(`No country found for country code ${alpha3}`);
+
+    const feature = getCountryGeometry(country.alpha3);
+
+    if (feature) setCountryFeature(feature);
+    else throw new Error(`No feature found for ${alpha3}`);
+
+    setStoredCountry(country);
+
+    return country;
+  }
+
   const compareStoredCountry = (countryName: string) => {
     const correctAnswer = storedCountry?.name || "";
     const inputMatchesAnswer =
@@ -64,6 +80,7 @@ export function useCountryStore() {
       coordinates: getCountryCoordinates(storedCountry),
     },
     getRandomCountryData,
+    getSpecificCountryData,
     compareStoredCountry,
     resetStore,
   };

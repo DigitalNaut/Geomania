@@ -9,7 +9,8 @@ export function useCountryReview(
   mapControl: ReturnType<typeof useMapControl>,
   setError: (error: Error) => void
 ) {
-  const { countryStored, getRandomCountryData } = countryStore;
+  const { countryStored, getRandomCountryData, getSpecificCountryData } =
+    countryStore;
 
   function focusUI(nextCountry: CountryData) {
     const destination = !nextCountry
@@ -21,16 +22,16 @@ export function useCountryReview(
 
   function showNextCountry() {
     try {
-      const nextCountry = getRandomCountryData();
-      focusUI(nextCountry);
+      focusUI(getRandomCountryData());
     } catch (error) {
       if (error instanceof Error) setError(error);
       else setError(new Error("An unknown error occurred."));
     }
   }
 
-  const handleMapClick = () => {
-    if (countryStored.data) focusUI(countryStored.data);
+  const handleMapClick = (alpha3?: string) => {
+    if (alpha3) focusUI(getSpecificCountryData(alpha3));
+    else if (countryStored.data) focusUI(countryStored.data);
     else showNextCountry();
   };
 

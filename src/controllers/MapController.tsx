@@ -1,4 +1,4 @@
-import type { Feature } from "geojson";
+import type { Feature, GeoJsonObject } from "geojson";
 
 import countriesMetadata from "src/data/country-metadata.json";
 import countryGeometries from "src/data/country-geometries.json";
@@ -46,11 +46,13 @@ type CountryInfo = {
  * @returns The country index, country data, and country coordinates.
  */
 export function getCountryData(
-  indexCallback: number | ((length: number) => number)
+  indexCallback: string | number | ((length: number) => number)
 ): CountryInfo {
   const countryIndex =
     typeof indexCallback === "function"
       ? indexCallback(countriesMetadata.length)
+      : typeof indexCallback === "string"
+      ? countriesMetadata.findIndex(({ alpha3 }) => alpha3 === indexCallback)
       : indexCallback;
 
   const country: CountryData = countriesMetadata[countryIndex];
@@ -64,7 +66,7 @@ export function getCountryData(
  * @returns The country features.
  */
 export function getAllCountryFeatures() {
-  return countryGeometries.features as Feature[];
+  return countryGeometries as GeoJsonObject;
 }
 
 export function getAllCountriesMetadata() {
