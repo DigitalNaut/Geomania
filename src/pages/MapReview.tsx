@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
-import { Marker, GeoJSON } from "react-leaflet";
+import { Marker, GeoJSON, ZoomControl, Popup } from "react-leaflet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import { getAllCountryFeatures } from "src/controllers/MapController";
 import { MapClick } from "src/components/MapClick";
@@ -19,32 +19,29 @@ import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapControl } from "src/hooks/useMapControl";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
-export default function MapVisitor() {
+export default function MapReview() {
   const { error, setError, dismissError } = useError();
   const [reviewMode, setReviewMode] = useState<"review" | "quiz">();
   const countryStore = useCountryStore();
   const { countryStored, resetStore } = countryStore;
+
   const mapControl = useMapControl({});
-
-  const isStoreReady = useMemo(
-    () => !!(countryStored.data && countryStored.feature),
-    [countryStored]
-  );
-
+  const { handleMapClick: handleMapClickReview, showNextCountry } =
+    useCountryReview(countryStore, mapControl, setError);
   const {
     answerInputRef,
     submitAnswer,
     userGuessTally,
     giveHint,
-
     guessHistory,
-    countryCorrectAnswer,
     skipCountry,
     handleMapClick: handleMapClickQuiz,
   } = useCountryQuiz(countryStore, mapControl, setError);
 
-  const { handleMapClick: handleMapClickReview, showNextCountry } =
-    useCountryReview(countryStore, mapControl, setError);
+  const isStoreReady = useMemo(
+    () => !!(countryStored.data && countryStored.feature),
+    [countryStored]
+  );
 
   const allCountryFeatures = useMemo(() => getAllCountryFeatures(), []);
 
@@ -76,19 +73,39 @@ export default function MapVisitor() {
 
       <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
-          <LeafletMap>
+          <LeafletMap isReviewMode={isStoreReady}>
             <MapClick callback={handleMapClick} />
-            {countryCorrectAnswer.coordinates && (
-              <Marker
-                position={countryCorrectAnswer.coordinates}
-                icon={markerIcon}
-              />
+
+            {!!reviewMode && <ZoomControl />}
+
+            {countryStored.coordinates && (
+              <>
+                <Marker
+                  position={countryStored.coordinates}
+                  icon={markerIcon}
+                />
+                {reviewMode === "review" && (
+                  <Popup
+                    position={countryStored.coordinates}
+                    keepInView
+                    closeButton
+                    autoClose={false}
+                    closeOnClick={false}
+                    closeOnEscapeKey={false}
+                    autoPan={false}
+                    eventHandlers={{
+                      remove: () => console.log("remove"),
+                    }}
+                  >
+                    <h3 className="text-xl">{countryStored.data?.name}</h3>
+                  </Popup>
+                )}
+              </>
             )}
 
             {allCountryFeatures.map((feature) => {
               const isHighlightedCountry =
-                feature.properties?.ISO_A3 ===
-                countryCorrectAnswer.data?.alpha3;
+                feature.properties?.ISO_A3 === countryStored.data?.alpha3;
 
               return (
                 <GeoJSON
@@ -106,56 +123,58 @@ export default function MapVisitor() {
             })}
           </LeafletMap>
 
-          {!reviewMode && (
-            <InstructionOverlay>
-              <button
-                role="button"
-                className="flex w-full flex-1 flex-col items-center justify-center gap-3 hover:bg-white/20"
-                onClick={() => {
-                  setReviewMode("quiz");
-                  handleMapClickQuiz();
-                }}
-              >
-                <h2 className="text-2xl">Quiz</h2>
-                <p className="max-w-[50ch] text-base">
-                  Learn about the cultures, geography, and history of countries
-                  from around the world.
-                </p>
-              </button>
-              <button
-                role="button"
-                className="flex w-full flex-1 flex-col items-center justify-center gap-3 hover:bg-white/20"
-                onClick={() => {
-                  setReviewMode("review");
-                  handleMapClickReview();
-                }}
-              >
-                <h2 className="text-2xl">Review</h2>
-                <p className="max-w-[50ch] text-base">
-                  Test your knowledge of countries with this fun guessing game.
-                  Can you guess them all?
-                </p>
-              </button>
-            </InstructionOverlay>
-          )}
-
-          {
-            <FloatingHeader
-              shouldShow={!!reviewMode && isStoreReady}
-              imageSrc={NerdMascot}
-              button={{
-                label: "Finish",
-                onClick: finishReview,
+          <InstructionOverlay shouldShow={!reviewMode}>
+            <button
+              role="button"
+              className="w-full flex-1 items-center justify-center gap-3 hover:bg-white/10"
+              onClick={() => {
+                setReviewMode("quiz");
+                handleMapClickQuiz();
               }}
             >
-              {reviewMode === "quiz" && "Guess the country!"}
-              {reviewMode === "review" && (
-                <>
-                  Country: {countryStored.data?.name || "Unknown country name"}
-                </>
-              )}
-            </FloatingHeader>
-          }
+              <div className="m-auto flex w-fit items-center gap-4 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 p-6 shadow-lg">
+                <div className="inline-block">
+                  <h2 className="text-2xl">📝 Practice</h2>
+                  <p className="inline-block max-w-[40ch] text-base">
+                    Test your knowledge of countries with this fun guessing
+                    game. Can you guess them all?
+                  </p>
+                </div>
+                <FontAwesomeIcon icon={faChevronRight} />
+              </div>
+            </button>
+            <button
+              role="button"
+              className="w-full flex-1 items-center justify-center gap-3 hover:bg-white/10"
+              onClick={() => {
+                setReviewMode("review");
+                handleMapClickReview();
+              }}
+            >
+              <div className="m-auto flex w-fit items-center gap-4 rounded-lg bg-gradient-to-br from-yellow-600 to-yellow-700 p-6 shadow-lg">
+                <div className="inline-block">
+                  <h2 className="text-2xl">🗺 Review</h2>
+                  <p className="inline-block max-w-[40ch] text-base">
+                    Learn about the cultures, geography, and history of
+                    countries from around the world.
+                  </p>
+                </div>
+                <FontAwesomeIcon icon={faChevronRight} />
+              </div>
+            </button>
+          </InstructionOverlay>
+
+          <FloatingHeader
+            shouldShow={!!reviewMode && isStoreReady}
+            imageSrc={NerdMascot}
+            button={{
+              label: "Finish",
+              onClick: finishReview,
+            }}
+          >
+            {reviewMode === "quiz" && "Guess the country!"}
+            {reviewMode === "review" && "Reviewing countries"}
+          </FloatingHeader>
 
           <UserGuessFloatingPanel
             shouldShow={isStoreReady && reviewMode === "quiz"}
