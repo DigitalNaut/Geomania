@@ -2,10 +2,13 @@ import type { LatLngExpression } from "leaflet";
 
 import { useMapContext } from "src/contexts/MapContext";
 
-export function useMapControl({ zoom = 5, animate = true, duration = 0.1 }) {
-  const { map } = useMapContext();
+export function useMapControl() {
+  const { map, defaults } = useMapContext();
 
-  function flyTo(destination: LatLngExpression | null) {
+  function flyTo(
+    destination: LatLngExpression | null,
+    { zoom = 5, animate = true, duration = 0.1 } = {}
+  ) {
     if (!destination) return;
 
     map?.flyTo(destination, zoom, {
@@ -15,7 +18,7 @@ export function useMapControl({ zoom = 5, animate = true, duration = 0.1 }) {
   }
 
   function resetView() {
-    map?.setView([0, 0], 1.5);
+    map?.setView(defaults.center, defaults.zoom);
   }
 
   return { flyTo, resetView };
