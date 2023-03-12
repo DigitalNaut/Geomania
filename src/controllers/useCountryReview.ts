@@ -9,12 +9,12 @@ export function useCountryReview(
   mapControl: ReturnType<typeof useMapControl>,
   setError: (error: Error) => void
 ) {
-  const { countryStored, getRandomCountryData, getSpecificCountryData } =
+  const { storedCountry, getRandomCountryData, getCountryDataByCode } =
     countryStore;
 
   function focusUI(nextCountry: CountryData) {
     const destination = !nextCountry
-      ? countryStored.coordinates
+      ? storedCountry.coordinates
       : ([nextCountry.latitude, nextCountry.longitude] as LatLngTuple);
 
     mapControl.flyTo(destination);
@@ -30,8 +30,8 @@ export function useCountryReview(
   }
 
   const handleMapClick = (alpha3?: string) => {
-    if (alpha3) focusUI(getSpecificCountryData(alpha3));
-    else if (countryStored.data) focusUI(countryStored.data);
+    if (alpha3) focusUI(getCountryDataByCode(alpha3));
+    else if (storedCountry.data) focusUI(storedCountry.data);
     else showNextCountry();
   };
 

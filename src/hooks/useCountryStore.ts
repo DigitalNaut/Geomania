@@ -47,7 +47,7 @@ export function useCountryStore() {
     return country;
   }
 
-  function getSpecificCountryData(alpha3: string) {
+  function getCountryDataByCode(alpha3: string) {
     const { country } = getCountryData(alpha3);
 
     if (!country)
@@ -74,13 +74,13 @@ export function useCountryStore() {
   const resetStore = () => setStoredCountry(null);
 
   return {
-    countryStored: {
+    storedCountry: {
       data: storedCountry,
       feature: countryFeature,
       coordinates: getCountryCoordinates(storedCountry),
     },
     getRandomCountryData,
-    getSpecificCountryData,
+    getCountryDataByCode,
     compareStoredCountry,
     resetStore,
   };

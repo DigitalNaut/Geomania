@@ -90,7 +90,7 @@ function GuessHeaderSection({
 
 export default function UserGuessFloatingPanel({
   shouldShow,
-  visitor: {
+  activity: {
     answerInputRef,
     submitAnswer,
     userGuessTally,
@@ -101,7 +101,7 @@ export default function UserGuessFloatingPanel({
   correctAnswerAudioSrc,
 }: {
   shouldShow: boolean;
-  visitor: Pick<
+  activity: Pick<
     ReturnType<typeof useCountryQuiz>,
     | "answerInputRef"
     | "skipCountry"

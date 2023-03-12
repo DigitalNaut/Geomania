@@ -24,7 +24,7 @@ export default function MapActivity() {
   const { error, setError, dismissError } = useError();
   const activityMode = useRef<"review" | "quiz">();
   const countryStore = useCountryStore();
-  const { countryStored, resetStore } = countryStore;
+  const { storedCountry, resetStore } = countryStore;
 
   const mapControl = useMapControl({});
   const { resetView } = mapControl;
@@ -40,9 +40,9 @@ export default function MapActivity() {
     handleMapClick: handleMapClickQuiz,
   } = useCountryQuiz(countryStore, mapControl, setError);
 
-  const isStoreReady = useMemo(
-    () => !!(countryStored.data && countryStored.feature),
-    [countryStored]
+  const storeHasData = useMemo(
+    () => !!(storedCountry.data && storedCountry.feature),
+    [storedCountry]
   );
 
   const allCountryFeatures = useMemo(() => getAllCountryFeatures(), []);
@@ -81,18 +81,18 @@ export default function MapActivity() {
 
       <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
-          <LeafletMap isActivityMode={isStoreReady}>
+          <LeafletMap isActivityMode={storeHasData}>
             {!!activityMode.current && <ZoomControl />}
 
-            {countryStored.coordinates && (
+            {storedCountry.coordinates && (
               <>
                 <Marker
-                  position={countryStored.coordinates}
+                  position={storedCountry.coordinates}
                   icon={markerIcon}
                 />
                 {activityMode.current === "review" && (
                   <Popup
-                    position={countryStored.coordinates}
+                    position={storedCountry.coordinates}
                     keepInView
                     closeButton
                     autoClose={false}
@@ -106,7 +106,7 @@ export default function MapActivity() {
                         ),
                     }}
                   >
-                    <h3 className="text-xl">{countryStored.data?.name}</h3>
+                    <h3 className="text-xl">{storedCountry.data?.name}</h3>
                   </Popup>
                 )}
               </>
@@ -116,7 +116,7 @@ export default function MapActivity() {
               data={allCountryFeatures}
               style={(feature) => ({
                 fillColor:
-                  feature?.properties?.ISO_A3 === countryStored.data?.alpha3
+                  feature?.properties?.ISO_A3 === storedCountry.data?.alpha3
                     ? "#fcd34d"
                     : "#94a3b8",
                 fillOpacity: 1,
@@ -167,7 +167,7 @@ export default function MapActivity() {
           </InstructionOverlay>
 
           <FloatingHeader
-            shouldShow={!!activityMode.current && isStoreReady}
+            shouldShow={!!activityMode.current && storeHasData}
             imageSrc={NerdMascot}
             button={{
               label: "Finish",
@@ -179,8 +179,8 @@ export default function MapActivity() {
           </FloatingHeader>
 
           <UserGuessFloatingPanel
-            shouldShow={isStoreReady && activityMode.current === "quiz"}
-            visitor={{
+            shouldShow={storeHasData && activityMode.current === "quiz"}
+            activity={{
               answerInputRef,
               submitAnswer,
               userGuessTally,
@@ -192,8 +192,8 @@ export default function MapActivity() {
           />
 
           <UserReviewFloatingPanel
-            shouldShow={isStoreReady && activityMode.current === "review"}
-            visitor={{
+            shouldShow={storeHasData && activityMode.current === "review"}
+            activity={{
               showNextCountry,
             }}
           />

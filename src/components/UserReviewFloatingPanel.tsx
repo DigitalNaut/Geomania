@@ -6,10 +6,10 @@ import { useFloatingPanelSlideInAnimation } from "src/components/UserGuessFloati
 
 export default function UserReviewFloatingPanel({
   shouldShow,
-  visitor: { showNextCountry },
+  activity: { showNextCountry },
 }: {
   shouldShow: boolean;
-  visitor: Pick<ReturnType<typeof useCountryReview>, "showNextCountry">;
+  activity: Pick<ReturnType<typeof useCountryReview>, "showNextCountry">;
 }) {
   const { firstTrail } = useFloatingPanelSlideInAnimation(shouldShow);
 

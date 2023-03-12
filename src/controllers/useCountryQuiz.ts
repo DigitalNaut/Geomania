@@ -13,7 +13,7 @@ export function useCountryQuiz(
   setError: (error: Error) => void
 ) {
   const {
-    countryStored: countryCorrectAnswer,
+    storedCountry: countryCorrectAnswer,
     compareStoredCountry: checkAnswer,
     getRandomCountryData,
   } = countryStore;
