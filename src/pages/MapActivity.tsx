@@ -1,4 +1,5 @@
 import type { Layer, LeafletMouseEventHandlerFn } from "leaflet";
+import type { PropsWithChildren } from "react";
 import { useRef, useMemo } from "react";
 import { Marker, GeoJSON, ZoomControl, Popup } from "react-leaflet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,13 +21,57 @@ import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapControl } from "src/hooks/useMapControl";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
+function ActivityButton({
+  label,
+  children,
+  onClick,
+  className,
+}: PropsWithChildren<{
+  label: string;
+  onClick: () => void;
+  className?: string;
+}>) {
+  return (
+    <button
+      role="button"
+      className="w-full flex-1 items-center justify-center gap-3 hover:bg-white/10"
+      onClick={onClick}
+    >
+      <div
+        className={`m-auto flex w-fit items-center gap-4 rounded-lg p-6 shadow-lg ${className}`}
+      >
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl">{label}</h2>
+          <p className="inline-block max-w-[40ch] text-base">{children}</p>
+        </div>
+        <FontAwesomeIcon icon={faChevronRight} />
+      </div>
+    </button>
+  );
+}
+
+type ActivityMode = "review" | "quiz";
+
+function useActivityMode() {
+  const activityMode = useRef<ActivityMode>();
+
+  const chooseActivity = (activity: ActivityMode, callback: () => void) => {
+    activityMode.current = activity;
+    callback();
+  };
+
+  return { activityMode, chooseActivity };
+}
+
+const allCountryFeatures = getAllCountryFeatures();
+
 export default function MapActivity() {
   const { error, setError, dismissError } = useError();
-  const activityMode = useRef<"review" | "quiz">();
+  const { activityMode, chooseActivity } = useActivityMode();
   const countryStore = useCountryStore();
   const { storedCountry, resetStore } = countryStore;
 
-  const mapControl = useMapControl({});
+  const mapControl = useMapControl();
   const { resetView } = mapControl;
   const { handleMapClick: handleMapClickReview, showNextCountry } =
     useCountryReview(countryStore, mapControl, setError);
@@ -45,8 +90,6 @@ export default function MapActivity() {
     [storedCountry]
   );
 
-  const allCountryFeatures = useMemo(() => getAllCountryFeatures(), []);
-
   const finishActivity = () => {
     activityMode.current = undefined;
     resetStore();
@@ -59,11 +102,6 @@ export default function MapActivity() {
 
   const onEachFeature = (_feature: unknown, layer: Layer) => {
     layer.on({ click: handleFeatureClick });
-  };
-
-  const chooseActivity = (activity: "review" | "quiz") => {
-    activityMode.current = activity;
-    handleMapClickReview();
   };
 
   return (
@@ -132,38 +170,22 @@ export default function MapActivity() {
           </LeafletMap>
 
           <InstructionOverlay shouldShow={!activityMode.current}>
-            <button
-              role="button"
-              className="w-full flex-1 items-center justify-center gap-3 hover:bg-white/10"
-              onClick={() => chooseActivity("review")}
+            <ActivityButton
+              label="🗺 Review"
+              onClick={() => chooseActivity("review", handleMapClickReview)}
+              className="bg-gradient-to-br from-blue-600 to-blue-700"
             >
-              <div className="m-auto flex w-fit items-center gap-4 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 p-6 shadow-lg">
-                <div className="flex flex-col gap-4">
-                  <h2 className="text-2xl">🗺 Review</h2>
-                  <p className="inline-block max-w-[40ch] text-base">
-                    Learn about the cultures, geography, and history of
-                    countries from around the world.
-                  </p>
-                </div>
-                <FontAwesomeIcon icon={faChevronRight} />
-              </div>
-            </button>
-            <button
-              role="button"
-              className="w-full flex-1 items-center justify-center gap-3 hover:bg-white/10"
-              onClick={() => chooseActivity("quiz")}
+              Learn about the cultures, geography, and history of countries from
+              around the world.
+            </ActivityButton>
+            <ActivityButton
+              label="🏆 Quiz"
+              onClick={() => chooseActivity("quiz", handleMapClickQuiz)}
+              className="bg-gradient-to-br from-yellow-600 to-yellow-700"
             >
-              <div className="m-auto flex w-fit items-center gap-4 rounded-lg bg-gradient-to-br from-yellow-600 to-yellow-700 p-6 shadow-lg">
-                <div className="flex flex-col gap-4">
-                  <h2 className="text-2xl">📝 Practice</h2>
-                  <p className="inline-block max-w-[40ch] text-base">
-                    Test your knowledge of countries with this fun guessing
-                    game. Can you guess them all?
-                  </p>
-                </div>
-                <FontAwesomeIcon icon={faChevronRight} />
-              </div>
-            </button>
+              Test your knowledge of countries around the world. Can you guess
+              them all?
+            </ActivityButton>
           </InstructionOverlay>
 
           <FloatingHeader
