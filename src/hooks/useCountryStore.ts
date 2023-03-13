@@ -82,6 +82,7 @@ export function useCountryStore() {
     getRandomCountryData,
     getCountryDataByCode,
     compareStoredCountry,
+    setStoredCountry,
     resetStore,
   };
 }
