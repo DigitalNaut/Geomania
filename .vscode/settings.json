@@ -6,13 +6,14 @@
     "Gapi",
     "geomaniac",
     "paytone",
+    "ponicode",
     "signin",
     "signout",
     "svgr",
     "tailwindcss",
+    "tanstack",
     "typecheck",
-    "wordmark",
-    "ponicode"
+    "wordmark"
   ],
   "dotenv.enableAutocloaking": false
 }

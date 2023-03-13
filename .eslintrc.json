@@ -8,7 +8,9 @@
         "g_id_[a-z]+",
         "fa-[a-z]+",
         "line-clamp-[1-9]|none",
-        "bg-custom-[a-z_-]+"
+        "bg-custom-[a-z_-]+",
+        "scrollbar-(thin|none)",
+        "scrollbar-(track|thumb|corner)-(black|white|[a-z]+-[0-9]{2,3})"
       ]
     }
   },
