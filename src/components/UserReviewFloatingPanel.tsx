@@ -88,7 +88,7 @@ export function CountryWikiInfo() {
           alt={storedCountry?.name}
           width={flagSize}
         />
-        <span className="pointer-events-none absolute top-0 z-50 hidden -translate-y-1/3 rounded-sm bg-slate-200 shadow-lg peer-hover:block">
+        <span className="pointer-events-none absolute top-0 z-50 hidden -translate-y-1/3 rounded-sm bg-slate-200 p-2 shadow-lg peer-hover:block">
           <img
             className="shadow-md"
             loading="lazy"
