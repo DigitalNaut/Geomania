@@ -50,7 +50,9 @@ export default function CountriesListPanel() {
 
   return (
     <div className="flex h-1/5 w-auto flex-col gap-2 sm:h-auto sm:w-[30ch]">
-      <h2 className="text-center text-xl italic text-slate-300">My Guesses</h2>
+      <h2 className="text-center text-xl italic text-slate-300">
+        Countries by Region
+      </h2>
       <div className="flex flex-1 flex-col overflow-y-auto text-ellipsis px-2">
         <div className="flex flex-col gap-3" ref={listRef}>
           {countriesByContinent.map(({ continent, countries }, index) => (
@@ -59,8 +61,11 @@ export default function CountriesListPanel() {
               className={`cursor-pointer px-2 ${continentStyles[index]}`}
               open
             >
-              <summary>
-                <h3 className="inline-block text-xl">{continent}</h3>
+              <summary className="flex justify-between">
+                <h3 className="text-lg">{continent}</h3>
+                <span className="text-base italic">
+                  &#40;{countries.length}&#41;
+                </span>
               </summary>
               <div className="flex flex-col gap-1 rounded-sm bg-slate-800 p-1">
                 {countries.map((country) => (
