@@ -19,21 +19,6 @@ export function getCountryGeometry(alpha3: string) {
   return null;
 }
 
-const nameExp = /^(.+), (.+)$/;
-const nameQualifierExp = /^.+,.+$/;
-
-/**
- * Fixes the name by swapping the first and last name.
- */
-function fixNameOrder(text: string) {
-  if (!nameQualifierExp.test(text)) return text;
-
-  const matches = nameExp.exec(text);
-  if (matches && matches.length > 1) return `${matches[2]} ${matches[1]}`;
-
-  return text;
-}
-
 type CountryInfo = {
   countryIndex: number;
   country: CountryData;
@@ -56,7 +41,6 @@ export function getCountryData(
       : indexCallback;
 
   const country: CountryData = countriesMetadata[countryIndex];
-  country.name = fixNameOrder(country.name);
 
   return { countryIndex, country };
 }
@@ -70,5 +54,7 @@ export function getAllCountryFeatures() {
 }
 
 export function getAllCountriesMetadata() {
-  return countriesMetadata as CountryData[];
+  return countriesMetadata.sort(({ name: nameA }, { name: nameB }) =>
+    nameA.localeCompare(nameB)
+  ) as CountryData[];
 }

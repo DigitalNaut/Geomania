@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction, PropsWithChildren } from "react";
 import type { LatLngTuple, Map } from "leaflet";
-import type { CountryData } from "src/controllers/MapController";
+import type { CountryData } from "src/controllers/CountriesData";
 import type { LatLngExpression } from "leaflet";
 
 import { createContext, useContext, useState } from "react";

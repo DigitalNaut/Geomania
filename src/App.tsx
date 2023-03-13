@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
 import { Outlet } from "react-router-dom";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 import MapContextProvider from "src/contexts/MapContext";
 import { UserGuessRecordProvider } from "src/contexts/GuessRecordContext";
@@ -17,6 +18,8 @@ import Footer from "src/components/Footer";
 import PageNotFound from "src/pages/PageNotFound";
 import DriveAccess from "src/components/DriveAccess";
 import StandardLayout from "src/components/StandardLayout";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -58,7 +61,9 @@ const router = createBrowserRouter(
           index
           element={
             <MapContextProvider>
-              <MapActivity />
+              <QueryClientProvider client={queryClient}>
+                <MapActivity />
+              </QueryClientProvider>
             </MapContextProvider>
           }
         />

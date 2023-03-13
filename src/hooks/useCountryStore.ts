@@ -2,11 +2,11 @@ import type { Feature } from "geojson";
 import type { LatLngTuple } from "leaflet";
 import { useState } from "react";
 
-import type { CountryData } from "src/controllers/MapController";
+import type { CountryData } from "src/controllers/CountriesData";
 import {
   getCountryGeometry,
   getCountryData,
-} from "src/controllers/MapController";
+} from "src/controllers/CountriesData";
 import { useMapContext } from "src/contexts/MapContext";
 
 function randomIndex(length: number) {

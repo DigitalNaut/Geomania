@@ -1,6 +1,6 @@
 import type { LatLngTuple } from "leaflet";
 
-import type { CountryData } from "src/controllers/MapController";
+import type { CountryData } from "src/controllers/CountriesData";
 import type { useCountryStore } from "src/hooks/useCountryStore";
 import type { useMapControl } from "src/hooks/useMapControl";
 

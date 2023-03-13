@@ -5,7 +5,7 @@ import { Marker, GeoJSON, ZoomControl, Popup } from "react-leaflet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-import { getAllCountryFeatures } from "src/controllers/MapController";
+import { getAllCountryFeatures } from "src/controllers/CountriesData";
 import { MapClick } from "src/components/MapClick";
 import { LeafletMap, markerIcon } from "src/components/LeafletMap";
 import GuessHistoryPanel from "src/components/GuessHistoryPanel";
