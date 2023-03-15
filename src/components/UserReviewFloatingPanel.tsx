@@ -46,9 +46,9 @@ function parse(text?: string) {
 
 export function CountryWikiInfo() {
   const { storedCountry } = useMapContext();
-  const { isLoading, error, data } = useQuery(
-    ["country-info", storedCountry],
-    () =>
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["country-info", storedCountry?.wikipedia, storedCountry?.name],
+    queryFn: () =>
       axios.get<WikipediaSummaryResponse>(
         `https://en.wikipedia.org/api/rest_v1/page/summary/${
           storedCountry?.wikipedia ?? storedCountry?.name
@@ -59,8 +59,8 @@ export function CountryWikiInfo() {
           },
         }
       ),
-    { refetchOnWindowFocus: false }
-  );
+    refetchOnWindowFocus: false,
+  });
 
   if (isLoading)
     return <div className={"rounded-md bg-sky-900/60 p-3"}>Loading...</div>;

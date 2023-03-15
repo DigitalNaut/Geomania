@@ -10,6 +10,7 @@ specifiers:
   '@react-spring/web': ^9.7.1
   '@tailwindcss/line-clamp': ^0.4.2
   '@tailwindcss/typography': ^0.5.9
+  '@tanstack/eslint-plugin-query': ^4.26.2
   '@tanstack/react-query': ^4.26.1
   '@types/gapi': ^0.0.44
   '@types/gapi.client.drive': ^3.0.15
@@ -71,6 +72,7 @@ dependencies:
 devDependencies:
   '@tailwindcss/line-clamp': 0.4.2_tailwindcss@3.2.7
   '@tailwindcss/typography': 0.5.9_tailwindcss@3.2.7
+  '@tanstack/eslint-plugin-query': 4.26.2
   '@types/gapi': 0.0.44
   '@types/gapi.client.drive': 3.0.15
   '@types/geojson': 7946.0.10
@@ -938,6 +940,10 @@ packages:
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.2.7
+    dev: true
+
+  /@tanstack/eslint-plugin-query/4.26.2:
+    resolution: {integrity: sha512-ugAvl6Is+bUMLt9BlAnXK6Wi7UnGV+4RwJ2W1ToFoucPvUb2Uf+ADU38JkHaNsI/TFgE3+kePhKh0zzDBhkw0Q==}
     dev: true
 
   /@tanstack/query-core/4.26.1:

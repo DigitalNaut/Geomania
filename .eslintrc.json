@@ -38,7 +38,8 @@
     "react",
     "@typescript-eslint",
     "tailwindcss",
-    "no-relative-import-paths"
+    "no-relative-import-paths",
+    "@tanstack/query"
   ],
   "rules": {
     "@typescript-eslint/consistent-type-imports": "warn",
@@ -52,6 +53,8 @@
     ],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
-    "no-use-before-define": "warn"
+    "no-use-before-define": "warn",
+    "@tanstack/query/exhaustive-deps": "error",
+    "@tanstack/query/prefer-query-object-syntax": "error"
   }
 }
