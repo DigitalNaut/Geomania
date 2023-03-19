@@ -1,7 +1,7 @@
 import type { LatLngTuple } from "leaflet";
+import { useState } from "react";
 
-import type { CountryData } from "src/controllers/CountriesData";
-import type { useCountryStore } from "src/hooks/useCountryStore";
+import type { CountryData, useCountryStore } from "src/hooks/useCountryStore";
 import type { useMapControl } from "src/hooks/useMapControl";
 
 export function useCountryReview(
@@ -9,8 +9,14 @@ export function useCountryReview(
   mapControl: ReturnType<typeof useMapControl>,
   setError: (error: Error) => void
 ) {
-  const { storedCountry, getRandomCountryData, getCountryDataByCode } =
-    countryStore;
+  const [isRandomReviewMode, setRandomReviewMode] = useState(false);
+
+  const {
+    storedCountry,
+    getRandomCountryData,
+    getNextCountryData,
+    getCountryDataByCode,
+  } = countryStore;
 
   function focusUI(nextCountry: CountryData) {
     const destination = !nextCountry
@@ -22,7 +28,9 @@ export function useCountryReview(
 
   function showNextCountry() {
     try {
-      focusUI(getRandomCountryData());
+      focusUI(
+        isRandomReviewMode ? getRandomCountryData() : getNextCountryData()
+      );
     } catch (error) {
       if (error instanceof Error) setError(error);
       else setError(new Error("An unknown error occurred."));
@@ -38,5 +46,7 @@ export function useCountryReview(
   return {
     handleMapClick,
     showNextCountry,
+    isRandomReviewMode,
+    setRandomReviewMode,
   };
 }

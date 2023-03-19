@@ -1,11 +1,10 @@
 import type { Layer, LeafletMouseEventHandlerFn } from "leaflet";
 import type { PropsWithChildren } from "react";
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import { Marker, GeoJSON, ZoomControl, Popup } from "react-leaflet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-import { getAllCountryFeatures } from "src/controllers/CountriesData";
 import { MapClick } from "src/components/MapClick";
 import { LeafletMap, markerIcon } from "src/components/LeafletMap";
 import { useCountryQuiz } from "src/controllers/useCountryQuiz";
@@ -64,18 +63,27 @@ function useActivityMode() {
   return { activityMode, chooseActivity };
 }
 
-const allCountryFeatures = getAllCountryFeatures();
-
 export default function MapActivity() {
   const { error, setError, dismissError } = useError();
   const { activityMode, chooseActivity } = useActivityMode();
   const countryStore = useCountryStore();
-  const { storedCountry, resetStore } = countryStore;
+  const {
+    storedCountry,
+    resetStore,
+    toggleContinent,
+    countryDataByContinent,
+    allCountryFeatures,
+    filteredCountryData,
+  } = countryStore;
 
   const mapControl = useMapControl();
   const { resetView } = mapControl;
-  const { handleMapClick: handleMapClickReview, showNextCountry } =
-    useCountryReview(countryStore, mapControl, setError);
+  const {
+    handleMapClick: handleMapClickReview,
+    showNextCountry,
+    isRandomReviewMode,
+    setRandomReviewMode,
+  } = useCountryReview(countryStore, mapControl, setError);
   const {
     answerInputRef,
     submitAnswer,
@@ -85,11 +93,6 @@ export default function MapActivity() {
     skipCountry,
     handleMapClick: handleMapClickQuiz,
   } = useCountryQuiz(countryStore, mapControl, setError);
-
-  const storeHasData = useMemo(
-    () => !!(storedCountry.data && storedCountry.feature),
-    [storedCountry]
-  );
 
   const finishActivity = () => {
     activityMode.current = undefined;
@@ -120,7 +123,7 @@ export default function MapActivity() {
 
       <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
-          <LeafletMap isActivityMode={storeHasData}>
+          <LeafletMap isActivityMode={!!activityMode.current}>
             {!!activityMode.current && <ZoomControl />}
 
             {storedCountry.coordinates && (
@@ -190,7 +193,7 @@ export default function MapActivity() {
           </InstructionOverlay>
 
           <FloatingHeader
-            shouldShow={!!activityMode.current && storeHasData}
+            shouldShow={!!activityMode.current}
             imageSrc={NerdMascot}
             button={{
               label: "Finish",
@@ -202,7 +205,7 @@ export default function MapActivity() {
           </FloatingHeader>
 
           <UserGuessFloatingPanel
-            shouldShow={storeHasData && activityMode.current === "quiz"}
+            shouldShow={activityMode.current === "quiz"}
             activity={{
               answerInputRef,
               submitAnswer,
@@ -217,10 +220,13 @@ export default function MapActivity() {
           />
 
           <UserReviewFloatingPanel
-            shouldShow={storeHasData && activityMode.current === "review"}
+            shouldShow={activityMode.current === "review"}
             activity={{
               showNextCountry,
+              isRandomReviewMode,
+              setRandomReviewMode,
             }}
+            disabled={filteredCountryData.length === 0}
           />
         </div>
 
@@ -228,7 +234,12 @@ export default function MapActivity() {
           <GuessHistoryPanel guessHistory={guessHistory} />
         )}
 
-        {activityMode.current === "review" && <CountriesListPanel />}
+        {activityMode.current === "review" && (
+          <CountriesListPanel
+            countriesByContinent={countryDataByContinent}
+            toggleContinent={toggleContinent}
+          />
+        )}
       </MainView>
     </>
   );

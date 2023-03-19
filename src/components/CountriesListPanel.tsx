@@ -1,38 +1,30 @@
 import { useEffect, useRef } from "react";
 
-import type { CountryData } from "src/controllers/CountriesData";
-import { getAllCountriesMetadata } from "src/controllers/CountriesData";
+import type {
+  CountriesDataByContinent,
+  CountryData,
+} from "src/hooks/useCountryStore";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapControl } from "src/hooks/useMapControl";
 import continents from "src/data/continents.json";
 
-export default function CountriesListPanel() {
+const continentStyles = ["bg-green-700/30", "bg-blue-700/30"];
+
+export default function CountriesListPanel({
+  countriesByContinent,
+  toggleContinent,
+}: {
+  countriesByContinent: CountriesDataByContinent;
+  toggleContinent: (continent: string, toggle: boolean) => void;
+}) {
   const { setStoredCountry, storedCountry: currentCountry } = useCountryStore();
   const { flyTo } = useMapControl();
-  const countriesList = getAllCountriesMetadata();
   const listRef = useRef<HTMLDivElement>(null);
 
   const handleCountryClick = (country: CountryData) => {
     setStoredCountry(country);
     flyTo([country?.latitude || 0, country?.longitude || 0]);
   };
-
-  const countriesByContinent = continents.map((continent) => ({
-    continent,
-    countries: countriesList.filter(
-      (country) => country?.continent === continent
-    ),
-  }));
-
-  const continentStyles = [
-    "bg-green-700/30",
-    "bg-slate-700/30",
-    "bg-red-700/30",
-    "bg-blue-700/30",
-    "bg-orange-700/30",
-    "bg-yellow-700/30",
-    "bg-purple-700/30",
-  ];
 
   // Scroll to the active country
   useEffect(() => {
@@ -55,20 +47,25 @@ export default function CountriesListPanel() {
       </h2>
       <div className="flex flex-1 flex-col overflow-y-auto text-ellipsis px-2">
         <div className="flex flex-col gap-3" ref={listRef}>
-          {countriesByContinent.map(({ continent, countries }, index) => (
+          {continents.map((continent, index) => (
             <details
               key={continent}
-              className={`cursor-pointer px-2 ${continentStyles[index]}`}
+              className={`cursor-pointer px-2 ${
+                continentStyles[index % continentStyles.length]
+              }`}
               open
+              onToggle={(event) =>
+                toggleContinent(continent, event.currentTarget.open)
+              }
             >
               <summary className="flex justify-between">
                 <h3 className="text-lg">{continent}</h3>
                 <span className="text-base italic">
-                  &#40;{countries.length}&#41;
+                  &#40;{countriesByContinent[continent].length}&#41;
                 </span>
               </summary>
               <div className="flex flex-col gap-1 rounded-sm bg-slate-800 p-1">
-                {countries.map((country) => (
+                {countriesByContinent[continent].map((country) => (
                   <button
                     className={`flex items-center gap-2 pl-2 pr-1 text-left -indent-2 ${
                       country?.alpha3 === currentCountry.data?.alpha3

@@ -132,10 +132,15 @@ export function CountryWikiInfo() {
 
 export default function UserReviewFloatingPanel({
   shouldShow,
-  activity: { showNextCountry },
+  activity: { showNextCountry, isRandomReviewMode, setRandomReviewMode },
+  disabled,
 }: {
   shouldShow: boolean;
-  activity: Pick<ReturnType<typeof useCountryReview>, "showNextCountry">;
+  activity: Pick<
+    ReturnType<typeof useCountryReview>,
+    "showNextCountry" | "isRandomReviewMode" | "setRandomReviewMode"
+  >;
+  disabled: boolean;
 }) {
   const [showDetails, setShowDetails] = useState(true);
   const { firstTrail } = useFloatingPanelSlideInAnimation(shouldShow);
@@ -154,13 +159,25 @@ export default function UserReviewFloatingPanel({
         {shouldShow && showDetails && <CountryWikiInfo />}
       </details>
       <div className="pointer-events-auto flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
-        <div className="rounded-md bg-red-500">
-          <animated.div className="flex w-full justify-center overflow-hidden rounded-md">
-            <ActionButton disabled={!shouldShow} onClick={showNextCountry}>
-              Next country
-            </ActionButton>
-          </animated.div>
-        </div>
+        <animated.div className="flex w-full flex-col items-center overflow-hidden rounded-md">
+          <ActionButton
+            disabled={disabled || !shouldShow}
+            onClick={showNextCountry}
+          >
+            Next country
+          </ActionButton>
+          <label className="flex gap-2 p-1" htmlFor="randomMode">
+            <input
+              id="randomMode"
+              type="checkbox"
+              checked={isRandomReviewMode}
+              onChange={(event) =>
+                setRandomReviewMode(event.currentTarget.checked)
+              }
+            />
+            Random mode
+          </label>
+        </animated.div>
       </div>
     </animated.div>
   );

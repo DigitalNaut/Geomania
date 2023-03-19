@@ -1,26 +1,70 @@
-import type { Feature } from "geojson";
+import type { GeoJsonObject } from "geojson";
 import type { LatLngTuple } from "leaflet";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-import type { CountryData } from "src/controllers/CountriesData";
-import {
-  getCountryGeometry,
-  getCountryData,
-} from "src/controllers/CountriesData";
-import { useMapContext } from "src/contexts/MapContext";
+import { useCountryStoreContext } from "src/contexts/CountryStoreContext";
+import continents from "src/data/continents.json";
+import countriesMetadata from "src/data/country-metadata.json";
+import countryGeometries from "src/data/country-geometries.json";
+
+export type CountryData = (typeof countriesMetadata)[number] | null;
+export type CountriesDataByContinent = Record<string, CountryData[]>;
+
+const allCountryFeatures = countryGeometries as GeoJsonObject;
+
+const allCountriesMetadata = countriesMetadata as CountryData[];
+
+const sortCountriesDataByContinent = () =>
+  allCountriesMetadata.reduce((groups, country) => {
+    const { continent } = country || {};
+
+    if (continent) {
+      if (groups[continent]) groups[continent].push(country);
+      else groups[continent] = [country];
+    }
+    return groups;
+  }, {} as CountriesDataByContinent);
+
+function useCountryData() {
+  const [continentFilters, setContinentFilters] = useState(() =>
+    continents.reduce((continents, continent) => {
+      continents[continent] = true;
+      return continents;
+    }, {} as Record<string, boolean>)
+  );
+
+  const filteredCountryData = useMemo(
+    () =>
+      allCountriesMetadata.filter((country) => {
+        const { continent } = country || {};
+        return continent && continentFilters[continent];
+      }),
+    [continentFilters]
+  );
+
+  const countryDataByContinent = useMemo(() => {
+    return sortCountriesDataByContinent();
+  }, []);
+
+  const toggleContinent = (continent: string, toggle: boolean) => {
+    setContinentFilters((currentFilters) => ({
+      ...currentFilters,
+      [continent]: toggle,
+    }));
+  };
+
+  return {
+    toggleContinent,
+    countryDataByContinent,
+    filteredCountryData,
+    allCountryFeatures,
+  };
+}
 
 function randomIndex(length: number) {
   return Math.floor(Math.random() * length);
 }
 
-function getCountryCoordinates(country: CountryData) {
-  if (!country) return null;
-  return [country.latitude, country.longitude] as LatLngTuple;
-}
-
-/**
- * Normalizes a name by removing diacritics and trimming whitespace.
- */
 function normalizeName(text?: string) {
   return text
     ?.trim()
@@ -28,19 +72,41 @@ function normalizeName(text?: string) {
     .replace(/\p{Diacritic}/gu, "");
 }
 
-export function useCountryStore() {
-  const { storedCountry, setStoredCountry } = useMapContext();
-  const [countryFeature, setCountryFeature] = useState<Feature>();
+function getCountryCoordinates(country: CountryData) {
+  if (!country) return null;
+  return [country.latitude, country.longitude] as LatLngTuple;
+}
 
-  function getRandomCountryData(): CountryData {
-    const { country, countryIndex } = getCountryData(randomIndex);
+export function useCountryStore() {
+  const { storedCountry, setStoredCountry } = useCountryStoreContext();
+  const {
+    toggleContinent,
+    countryDataByContinent,
+    allCountryFeatures,
+    filteredCountryData,
+  } = useCountryData();
+
+  function getNextCountryData(): CountryData {
+    const countryIndex = filteredCountryData.findIndex(
+      (country) => country?.alpha3 === storedCountry?.alpha3
+    );
+    const country =
+      filteredCountryData[(countryIndex + 1) % filteredCountryData.length];
 
     if (!country) throw new Error(`No country found for index ${countryIndex}`);
 
-    const feature = getCountryGeometry(country.alpha3);
+    setStoredCountry(country);
 
-    if (feature) setCountryFeature(feature);
-    else throw new Error(`No feature found for ${country.name}`);
+    return country;
+  }
+
+  function getRandomCountryData(): CountryData {
+    if (!filteredCountryData.length) return null;
+
+    const countryIndex = randomIndex(filteredCountryData.length);
+    const country = filteredCountryData[countryIndex];
+
+    if (!country) throw new Error(`No country found for index ${countryIndex}`);
 
     setStoredCountry(country);
 
@@ -48,15 +114,12 @@ export function useCountryStore() {
   }
 
   function getCountryDataByCode(alpha3: string) {
-    const { country } = getCountryData(alpha3);
+    const country = countriesMetadata.find(
+      (country) => country.alpha3 === alpha3
+    );
 
     if (!country)
       throw new Error(`No country found for country code ${alpha3}`);
-
-    const feature = getCountryGeometry(country.alpha3);
-
-    if (feature) setCountryFeature(feature);
-    else throw new Error(`No feature found for ${alpha3}`);
 
     setStoredCountry(country);
 
@@ -76,13 +139,17 @@ export function useCountryStore() {
   return {
     storedCountry: {
       data: storedCountry,
-      feature: countryFeature,
       coordinates: getCountryCoordinates(storedCountry),
     },
+    getNextCountryData,
     getRandomCountryData,
     getCountryDataByCode,
     compareStoredCountry,
     setStoredCountry,
     resetStore,
+    toggleContinent,
+    countryDataByContinent,
+    allCountryFeatures,
+    filteredCountryData,
   };
 }
