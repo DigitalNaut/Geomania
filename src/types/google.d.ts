@@ -1,4 +1,3 @@
-
 declare interface GoogleUserInfo {
   /**
    * The user's email address
