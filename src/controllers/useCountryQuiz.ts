@@ -2,7 +2,7 @@ import type { LatLngTuple } from "leaflet";
 
 import type { CountryData, useCountryStore } from "src/hooks/useCountryStore";
 import type { useMapControl } from "src/hooks/useMapControl";
-import { useUserGuessRecord } from "src/contexts/GuessRecordContext";
+import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { useTally } from "src/hooks/useTally";
 import { useInputField } from "src/hooks/useInputField";
 
@@ -22,7 +22,7 @@ export function useCountryQuiz(
     focusInputField: focusAnswerInputField,
   } = useInputField();
   const { pushGuessToHistory, guessHistory, lastGuess, updateCountryStats } =
-    useUserGuessRecord();
+    useUserGuessRecordContext();
   const {
     tally: userGuessTally,
     incrementTally: incrementTriesTally,
@@ -82,18 +82,22 @@ export function useCountryQuiz(
       showNextCountry();
     } else incrementTriesTally();
 
-    pushGuessToHistory({
-      text: userGuess,
-      isCorrect,
-      countryCode: countryCorrectAnswer.data?.alpha3,
-    });
+    if (countryCorrectAnswer.data) {
+      const { alpha2, alpha3, name: countryName } = countryCorrectAnswer.data;
 
-    if (countryCorrectAnswer.data?.alpha3) {
-      updateCountryStats(
-        countryCorrectAnswer.data?.alpha3 || "",
-        countryCorrectAnswer.data?.name || "",
-        isCorrect
-      );
+      pushGuessToHistory({
+        text: userGuess,
+        isCorrect,
+        alpha2,
+        alpha3,
+      });
+
+      updateCountryStats({
+        countryName,
+        isCorrect,
+        alpha2,
+        alpha3,
+      });
     }
 
     return isCorrect;

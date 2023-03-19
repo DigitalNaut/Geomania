@@ -5,16 +5,21 @@ export type UserCountryGuess = {
   timestamp: number;
   text: string;
   isCorrect: boolean;
-  countryCode?: string;
+  alpha2?: string;
+  alpha3?: string;
 };
 
-export type UserCountryStats = {
-  [countryCode: string]: {
-    countryName: string;
-    correctGuesses: number;
-    incorrectGuesses: number;
-    lastTimestamp: number;
-  };
+export type CountryStats = {
+  countryName: string;
+  alpha2: string;
+  alpha3: string;
+  correctGuesses: number;
+  incorrectGuesses: number;
+  lastGuessTimestamp: number;
+};
+
+type UserCountryStats = {
+  [id: string]: CountryStats;
 };
 
 type GuessRecordContextType = {
@@ -22,11 +27,12 @@ type GuessRecordContextType = {
   lastGuess?: UserCountryGuess;
   pushGuessToHistory(newGuess: Omit<UserCountryGuess, "timestamp">): void;
   countryStats: UserCountryStats;
-  updateCountryStats(
-    countryCode: string,
-    countryName: string,
-    isCorrect: boolean
-  ): void;
+  updateCountryStats(stats: {
+    alpha2: string;
+    alpha3: string;
+    countryName: string;
+    isCorrect: boolean;
+  }): void;
   clearProgress(): void;
 };
 
@@ -79,21 +85,24 @@ function useGuessHistory(limit: number) {
 function useCountryStats() {
   const [countryStats, setCountryStats] = useState<UserCountryStats>({});
 
-  const updateCountryStats: GuessRecordContextType["updateCountryStats"] = (
-    countryCode,
+  const updateCountryStats: GuessRecordContextType["updateCountryStats"] = ({
+    alpha2,
+    alpha3,
     countryName,
-    isCorrect
-  ) => {
+    isCorrect,
+  }) => {
     setCountryStats((prevStats) => {
-      const country = prevStats[countryCode];
+      const country = prevStats[alpha3];
       const newStats = {
         ...prevStats,
-        [countryCode]: {
+        [alpha3]: {
           countryName,
+          alpha2,
+          alpha3,
           correctGuesses: (country?.correctGuesses || 0) + (isCorrect ? 1 : 0),
           incorrectGuesses:
             (country?.incorrectGuesses || 0) + (isCorrect ? 0 : 1),
-          lastTimestamp: Date.now(),
+          lastGuessTimestamp: Date.now(),
         },
       };
 
@@ -102,6 +111,7 @@ function useCountryStats() {
     });
   };
 
+  // Restore country stats from previous session
   useEffect(() => {
     const stats = localStorage.getItem("countryStats");
     if (stats) setCountryStats(JSON.parse(stats));
@@ -137,6 +147,7 @@ export default function UserGuessRecordProvider({
         guessHistory,
         pushGuessToHistory,
         lastGuess: guessHistory[guessHistory.length - 1],
+
         countryStats,
         updateCountryStats,
         clearProgress,
@@ -147,7 +158,7 @@ export default function UserGuessRecordProvider({
   );
 }
 
-export function useUserGuessRecord() {
+export function useUserGuessRecordContext() {
   const context = useContext(guessRecordContext);
   if (!context)
     throw new Error(

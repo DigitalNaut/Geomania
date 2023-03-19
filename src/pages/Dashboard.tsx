@@ -3,10 +3,10 @@ import { animated, useSpring } from "@react-spring/web";
 
 import { faBroom } from "@fortawesome/free-solid-svg-icons";
 
-import type { UserCountryStats } from "src/contexts/GuessRecordContext";
+import type { CountryStats } from "src/contexts/GuessRecordContext";
 
 import MainView from "src/components/MainView";
-import { useUserGuessRecord } from "src/contexts/GuessRecordContext";
+import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { Link } from "react-router-dom";
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg";
 import { Button } from "src/components/Button";
@@ -37,36 +37,31 @@ function CountryProgress({ correct, incorrect }: CountryProgressProps) {
   );
 }
 
-type CountryStatsWithKey = UserCountryStats[string] & {
-  countryCode: string;
-};
-
 type CountryStatsProps = {
-  countryStat: CountryStatsWithKey;
+  countryStats: CountryStats;
 };
 
-function CountryStats({ countryStat }: CountryStatsProps) {
+function CountryStatsCard({ countryStats }: CountryStatsProps) {
   return (
     <div
       className="flex gap-2 rounded-md p-4 hover:bg-white/10"
-      title={`${countryStat.countryName}\nCorrect: ${countryStat.correctGuesses}\nIncorrect: ${countryStat.incorrectGuesses}`}
+      title={`${countryStats.countryName}\nCorrect: ${countryStats.correctGuesses}\nIncorrect: ${countryStats.incorrectGuesses}`}
     >
       <img
         className="before:bg-custom-unknown-flag h-[2.4rem] w-16 p-1 before:block before:h-[2.4rem] before:w-16"
-        src={`https://countryflagsapi.com/svg/${countryStat.countryCode}`}
-        alt={countryStat.countryCode}
-        crossOrigin="anonymous"
+        src={`https://flagcdn.com/${countryStats.alpha2.toLocaleLowerCase()}.svg`}
+        alt={countryStats.alpha3}
         loading="lazy"
         width={64}
         height={38.4}
       />
       <div>
         <div className="line-clamp-2 w-32 text-ellipsis text-sm">
-          {countryStat.countryName}
+          {countryStats.countryName}
         </div>
         <CountryProgress
-          correct={countryStat.correctGuesses}
-          incorrect={countryStat.incorrectGuesses}
+          correct={countryStats.correctGuesses}
+          incorrect={countryStats.incorrectGuesses}
         />
       </div>
     </div>
@@ -93,36 +88,27 @@ function useAnimatedDialog(ref: React.RefObject<HTMLDialogElement>) {
   };
 }
 
-const countryStatsAbcSort = (
-  a: UserCountryStats[string],
-  b: UserCountryStats[string]
-) => a.countryName.localeCompare(b.countryName);
+const countryStatsAbcSort = (a: CountryStats, b: CountryStats) =>
+  a.countryName.localeCompare(b.countryName);
 
 function useDashboard() {
-  const { countryStats, clearProgress } = useUserGuessRecord();
+  const { countryStats, clearProgress } = useUserGuessRecordContext();
 
-  const constructedCountryStatList: CountryStatsWithKey[] | undefined =
-    useMemo(() => {
-      const countryKeys = Object.keys(countryStats);
-      const countryValues = Object.values(countryStats);
+  const countryStatsList: CountryStats[] | undefined = useMemo(() => {
+    const countryValues = Object.values(countryStats);
 
-      return countryValues
-        .sort(countryStatsAbcSort)
-        .map((country: UserCountryStats[string], index) => ({
-          ...country,
-          countryCode: countryKeys[index],
-        }));
-    }, [countryStats]);
+    return countryValues.sort(countryStatsAbcSort);
+  }, [countryStats]);
 
   return {
-    constructedCountryStatList,
+    countryStatsList,
     clearProgress,
   };
 }
 
 export default function Dashboard() {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const { constructedCountryStatList, clearProgress } = useDashboard();
+  const { countryStatsList, clearProgress } = useDashboard();
   const { dialogSprings, showDialog } = useAnimatedDialog(dialogRef);
 
   return (
@@ -156,7 +142,7 @@ export default function Dashboard() {
             className="w-max bg-transparent hover:bg-slate-400/40"
             onClick={showDialog}
             icon={faBroom}
-            disabled={constructedCountryStatList.length === 0}
+            disabled={countryStatsList.length === 0}
           >
             Clear progress
           </Button>
@@ -164,7 +150,7 @@ export default function Dashboard() {
 
         <div className="flex flex-1 flex-col overflow-y-auto">
           <h1 className="p-2 pb-4 text-xl font-bold">Country Stats</h1>
-          {constructedCountryStatList.length === 0 ? (
+          {countryStatsList.length === 0 ? (
             <div className="flex flex-[0.3_0.3_30%] items-center justify-center">
               <div className="rounded-md border-2 border-dashed border-slate-600 p-6 text-center">
                 <img
@@ -172,7 +158,6 @@ export default function Dashboard() {
                   className="mx-auto"
                   width={96}
                   height={96}
-                  loading="lazy"
                   alt="No records found"
                 />
                 <h3 className="text-lg">No records found</h3>
@@ -186,10 +171,10 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="flex h-fit flex-wrap overflow-y-auto p-2">
-              {constructedCountryStatList.map((countryStat) => (
-                <CountryStats
-                  key={countryStat.countryCode}
-                  countryStat={countryStat}
+              {countryStatsList.map((countryStat) => (
+                <CountryStatsCard
+                  key={countryStat.alpha3}
+                  countryStats={countryStat}
                 />
               ))}
             </div>
