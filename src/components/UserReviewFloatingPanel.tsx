@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { useCountryReview } from "src/controllers/useCountryReview";
 import { ActionButton } from "src/components/ActionButton";
 import { useFloatingPanelSlideInAnimation } from "src/components/UserGuessFloatingPanel";
-import { useMapContext } from "src/contexts/MapContext";
+import { useCountryStore } from "src/hooks/useCountryStore";
 
 const flagSize = 48;
 
@@ -45,13 +45,18 @@ function parse(text?: string) {
 }
 
 export function CountryWikiInfo() {
-  const { storedCountry } = useMapContext();
+  const { storedCountry } = useCountryStore();
   const { isLoading, error, data } = useQuery({
-    queryKey: ["country-info", storedCountry?.wikipedia, storedCountry?.name],
+    queryKey: [
+      "country-info",
+      storedCountry.data,
+      storedCountry.data?.wikipedia,
+      storedCountry.data?.name,
+    ],
     queryFn: () =>
       axios.get<WikipediaSummaryResponse>(
         `https://en.wikipedia.org/api/rest_v1/page/summary/${
-          storedCountry?.wikipedia ?? storedCountry?.name
+          storedCountry.data?.wikipedia ?? storedCountry.data?.name
         }`,
         {
           headers: {
@@ -85,7 +90,7 @@ export function CountryWikiInfo() {
             /\/\d+px-/,
             `/${flagSize}px-`
           )}
-          alt={storedCountry?.name}
+          alt={storedCountry.data?.name}
           width={flagSize}
         />
         <span className="pointer-events-none absolute top-0 z-50 hidden -translate-y-1/3 rounded-sm bg-slate-200 p-2 shadow-lg peer-hover:block">

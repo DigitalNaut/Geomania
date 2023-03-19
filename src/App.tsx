@@ -9,7 +9,7 @@ import { Outlet } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 import MapContextProvider from "src/contexts/MapContext";
-import { UserGuessRecordProvider } from "src/contexts/GuessRecordContext";
+import CountryStoreProvider from "src/contexts/CountryStoreContext";
 import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
 import Header, { HeaderLink } from "src/components/Header";
 import MapActivity from "src/pages/MapActivity";
@@ -62,9 +62,11 @@ const router = createBrowserRouter(
           index
           element={
             <MapContextProvider>
-              <QueryClientProvider client={queryClient}>
-                <MapActivity />
-              </QueryClientProvider>
+              <CountryStoreProvider>
+                <QueryClientProvider client={queryClient}>
+                  <MapActivity />
+                </QueryClientProvider>
+              </CountryStoreProvider>
             </MapContextProvider>
           }
         />
