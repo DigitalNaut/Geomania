@@ -97,8 +97,7 @@ export default function UserGuessFloatingPanel({
     giveHint,
     skipCountry,
   },
-  incorrectAnswerAudioSrc,
-  correctAnswerAudioSrc,
+  audio: { incorrectAnswerAudioSrc, correctAnswerAudioSrc },
 }: {
   shouldShow: boolean;
   activity: Pick<
@@ -109,8 +108,10 @@ export default function UserGuessFloatingPanel({
     | "userGuessTally"
     | "giveHint"
   >;
-  incorrectAnswerAudioSrc: string;
-  correctAnswerAudioSrc: string;
+  audio: {
+    incorrectAnswerAudioSrc: string;
+    correctAnswerAudioSrc: string;
+  };
 }) {
   const incorrectAnswerAudio = useMemo(
     () => new Audio(incorrectAnswerAudioSrc),
@@ -139,7 +140,8 @@ export default function UserGuessFloatingPanel({
     onShakeEnd,
   });
 
-  const { firstTrail, secondTrail } = useFloatingPanelSlideInAnimation(shouldShow);
+  const { firstTrail, secondTrail } =
+    useFloatingPanelSlideInAnimation(shouldShow);
 
   const handleSubmit = () => {
     const isCorrectAnswer = submitAnswer();

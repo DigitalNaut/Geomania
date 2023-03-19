@@ -210,8 +210,10 @@ export default function MapActivity() {
               giveHint,
               skipCountry,
             }}
-            incorrectAnswerAudioSrc="src/assets/sounds/incorrect.mp3"
-            correctAnswerAudioSrc="src/assets/sounds/correct.mp3"
+            audio={{
+              incorrectAnswerAudioSrc: "src/assets/sounds/incorrect.mp3",
+              correctAnswerAudioSrc: "src/assets/sounds/correct.mp3",
+            }}
           />
 
           <UserReviewFloatingPanel

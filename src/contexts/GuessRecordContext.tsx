@@ -115,7 +115,7 @@ function useCountryStats() {
   return { countryStats, updateCountryStats, clearCountryStats };
 }
 
-export function UserGuessRecordProvider({
+export default function UserGuessRecordProvider({
   children,
   historyLimit,
 }: PropsWithChildren<{

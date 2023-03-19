@@ -33,6 +33,7 @@ export default function FloatingHeader({
         <Button
           className="w-fit rounded-md bg-yellow-700 text-base hover:bg-yellow-600"
           onClick={button?.onClick}
+          title="End the activity"
         >
           {button?.label}
         </Button>

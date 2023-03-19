@@ -10,6 +10,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 import MapContextProvider from "src/contexts/MapContext";
 import { UserGuessRecordProvider } from "src/contexts/GuessRecordContext";
+import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
 import Header, { HeaderLink } from "src/components/Header";
 import MapActivity from "src/pages/MapActivity";
 import Settings from "src/pages/Settings";
