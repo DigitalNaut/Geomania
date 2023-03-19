@@ -45,7 +45,7 @@ function CountryStatsCard({ countryStats }: CountryStatsProps) {
   return (
     <div
       className="flex gap-2 rounded-md p-4 hover:bg-white/10"
-      title={`${countryStats.countryName}\nCorrect: ${countryStats.correctGuesses}\nIncorrect: ${countryStats.incorrectGuesses}`}
+      title={`${countryStats.name}\nCorrect: ${countryStats.correctGuesses}\nIncorrect: ${countryStats.incorrectGuesses}`}
     >
       <img
         className="before:bg-custom-unknown-flag h-[2.4rem] w-16 p-1 before:block before:h-[2.4rem] before:w-16"
@@ -57,7 +57,7 @@ function CountryStatsCard({ countryStats }: CountryStatsProps) {
       />
       <div>
         <div className="line-clamp-2 w-32 text-ellipsis text-sm">
-          {countryStats.countryName}
+          {countryStats.name}
         </div>
         <CountryProgress
           correct={countryStats.correctGuesses}
@@ -88,16 +88,13 @@ function useAnimatedDialog(ref: React.RefObject<HTMLDialogElement>) {
   };
 }
 
-const countryStatsAbcSort = (a: CountryStats, b: CountryStats) =>
-  a.countryName.localeCompare(b.countryName);
-
 function useDashboard() {
   const { countryStats, clearProgress } = useUserGuessRecordContext();
 
   const countryStatsList: CountryStats[] | undefined = useMemo(() => {
     const countryValues = Object.values(countryStats);
 
-    return countryValues.sort(countryStatsAbcSort);
+    return countryValues.sort((a, b) => a.name.localeCompare(b.name));
   }, [countryStats]);
 
   return {

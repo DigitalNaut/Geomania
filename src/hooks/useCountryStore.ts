@@ -7,11 +7,11 @@ import continents from "src/data/continents.json";
 import countriesMetadata from "src/data/country-metadata.json";
 import countryGeometries from "src/data/country-geometries.json";
 
-export type CountryData = (typeof countriesMetadata)[number] | null;
+export type CountryData = (typeof countriesMetadata)[number];
 export type CountriesDataByContinent = Record<string, CountryData[]>;
+type CountryFilters = Record<string, boolean>;
 
 const allCountryFeatures = countryGeometries as GeoJsonObject;
-
 const allCountriesMetadata = countriesMetadata as CountryData[];
 
 const sortCountriesDataByContinent = () =>
@@ -30,7 +30,7 @@ function useCountryData() {
     continents.reduce((continents, continent) => {
       continents[continent] = true;
       return continents;
-    }, {} as Record<string, boolean>)
+    }, {} as CountryFilters)
   );
 
   const filteredCountryData = useMemo(
@@ -72,8 +72,7 @@ function normalizeName(text?: string) {
     .replace(/\p{Diacritic}/gu, "");
 }
 
-function getCountryCoordinates(country: CountryData) {
-  if (!country) return null;
+export function getCountryCoordinates(country: CountryData) {
   return [country.latitude, country.longitude] as LatLngTuple;
 }
 
@@ -86,7 +85,9 @@ export function useCountryStore() {
     filteredCountryData,
   } = useCountryData();
 
-  function getNextCountryData(): CountryData {
+  function getNextCountryData(): CountryData | null {
+    if (!filteredCountryData.length) return null;
+
     const countryIndex = filteredCountryData.findIndex(
       (country) => country?.alpha3 === storedCountry?.alpha3
     );
@@ -100,7 +101,7 @@ export function useCountryStore() {
     return country;
   }
 
-  function getRandomCountryData(): CountryData {
+  function getRandomCountryData(): CountryData | null {
     if (!filteredCountryData.length) return null;
 
     const countryIndex = randomIndex(filteredCountryData.length);
@@ -113,7 +114,9 @@ export function useCountryStore() {
     return country;
   }
 
-  function getCountryDataByCode(alpha3: string) {
+  function getCountryDataByCode(alpha3?: string): CountryData | null {
+    if (!filteredCountryData.length || !alpha3) return null;
+
     const country = countriesMetadata.find(
       (country) => country.alpha3 === alpha3
     );
@@ -139,7 +142,7 @@ export function useCountryStore() {
   return {
     storedCountry: {
       data: storedCountry,
-      coordinates: getCountryCoordinates(storedCountry),
+      coordinates: storedCountry ? getCountryCoordinates(storedCountry) : null,
     },
     getNextCountryData,
     getRandomCountryData,

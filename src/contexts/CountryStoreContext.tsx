@@ -4,8 +4,8 @@ import { useState, createContext, useContext } from "react";
 import type { CountryData } from "src/hooks/useCountryStore";
 
 type CountryStoreContextType = {
-  storedCountry: CountryData;
-  setStoredCountry: Dispatch<SetStateAction<CountryData>>;
+  storedCountry: CountryData | null;
+  setStoredCountry: Dispatch<SetStateAction<CountryData | null>>;
 };
 
 const countryStoreContext = createContext<CountryStoreContextType>({
@@ -14,7 +14,7 @@ const countryStoreContext = createContext<CountryStoreContextType>({
 });
 
 export default function CountryStoreProvider({ children }: PropsWithChildren) {
-  const [storedCountry, setStoredCountry] = useState<CountryData>(null);
+  const [storedCountry, setStoredCountry] = useState<CountryData | null>(null);
 
   return (
     <countryStoreContext.Provider

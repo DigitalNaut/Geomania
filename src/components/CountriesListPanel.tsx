@@ -4,7 +4,10 @@ import type {
   CountriesDataByContinent,
   CountryData,
 } from "src/hooks/useCountryStore";
-import { useCountryStore } from "src/hooks/useCountryStore";
+import {
+  useCountryStore,
+  getCountryCoordinates,
+} from "src/hooks/useCountryStore";
 import { useMapControl } from "src/hooks/useMapControl";
 import continents from "src/data/continents.json";
 
@@ -23,7 +26,7 @@ export default function CountriesListPanel({
 
   const handleCountryClick = (country: CountryData) => {
     setStoredCountry(country);
-    flyTo([country?.latitude || 0, country?.longitude || 0]);
+    flyTo(getCountryCoordinates(country));
   };
 
   // Scroll to the active country

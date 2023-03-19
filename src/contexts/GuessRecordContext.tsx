@@ -1,38 +1,30 @@
 import type { PropsWithChildren } from "react";
+import type { CountryData } from "src/hooks/useCountryStore";
 import { createContext, useContext, useEffect, useState } from "react";
 
 export type UserCountryGuess = {
   timestamp: number;
   text: string;
   isCorrect: boolean;
-  alpha2?: string;
-  alpha3?: string;
-};
+} & Pick<CountryData, "alpha2" | "alpha3">;
 
 export type CountryStats = {
-  countryName: string;
-  alpha2: string;
-  alpha3: string;
   correctGuesses: number;
   incorrectGuesses: number;
   lastGuessTimestamp: number;
-};
+} & Pick<CountryData, "alpha2" | "alpha3" | "name">;
 
-type UserCountryStats = {
-  [id: string]: CountryStats;
-};
+type UserCountryStats = Record<string, CountryStats>;
 
 type GuessRecordContextType = {
   guessHistory: UserCountryGuess[];
   lastGuess?: UserCountryGuess;
   pushGuessToHistory(newGuess: Omit<UserCountryGuess, "timestamp">): void;
   countryStats: UserCountryStats;
-  updateCountryStats(stats: {
-    alpha2: string;
-    alpha3: string;
-    countryName: string;
-    isCorrect: boolean;
-  }): void;
+  updateCountryStats(
+    stats: Omit<UserCountryGuess, "timestamp" | "text"> &
+      Pick<CountryData, "name">
+  ): void;
   clearProgress(): void;
 };
 
@@ -88,7 +80,7 @@ function useCountryStats() {
   const updateCountryStats: GuessRecordContextType["updateCountryStats"] = ({
     alpha2,
     alpha3,
-    countryName,
+    name,
     isCorrect,
   }) => {
     setCountryStats((prevStats) => {
@@ -96,7 +88,7 @@ function useCountryStats() {
       const newStats = {
         ...prevStats,
         [alpha3]: {
-          countryName,
+          name,
           alpha2,
           alpha3,
           correctGuesses: (country?.correctGuesses || 0) + (isCorrect ? 1 : 0),

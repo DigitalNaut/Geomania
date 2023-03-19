@@ -1,7 +1,6 @@
-import type { LatLngTuple } from "leaflet";
-
 import type { CountryData, useCountryStore } from "src/hooks/useCountryStore";
 import type { useMapControl } from "src/hooks/useMapControl";
+import { getCountryCoordinates } from "src/hooks/useCountryStore";
 import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { useTally } from "src/hooks/useTally";
 import { useInputField } from "src/hooks/useInputField";
@@ -46,10 +45,7 @@ export function useCountryQuiz(
   };
 
   function focusUI(nextCountry: CountryData) {
-    const destination = !nextCountry
-      ? countryCorrectAnswer.coordinates
-      : ([nextCountry.latitude, nextCountry.longitude] as LatLngTuple);
-
+    const destination = getCountryCoordinates(nextCountry);
     mapControl.flyTo(destination);
     focusAnswerInputField();
   }
@@ -57,7 +53,7 @@ export function useCountryQuiz(
   function showNextCountry() {
     try {
       const nextCountry = getRandomCountryData();
-      focusUI(nextCountry);
+      if (nextCountry) focusUI(nextCountry);
     } catch (error) {
       if (error instanceof Error) setError(error);
       else setError(new Error("An unknown error occurred."));
@@ -83,7 +79,7 @@ export function useCountryQuiz(
     } else incrementTriesTally();
 
     if (countryCorrectAnswer.data) {
-      const { alpha2, alpha3, name: countryName } = countryCorrectAnswer.data;
+      const { alpha2, alpha3, name } = countryCorrectAnswer.data;
 
       pushGuessToHistory({
         text: userGuess,
@@ -93,7 +89,7 @@ export function useCountryQuiz(
       });
 
       updateCountryStats({
-        countryName,
+        name,
         isCorrect,
         alpha2,
         alpha3,
