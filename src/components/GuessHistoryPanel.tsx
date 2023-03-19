@@ -35,7 +35,7 @@ export default function GuessHistoryPanel({
 
   return (
     <div className="relative flex h-1/5 w-auto flex-col gap-2 sm:h-auto sm:w-[30ch]">
-      <h2 className="text-center text-xl italic text-slate-300">My Guesses</h2>
+      <h2 className="text-center text-xl italic text-slate-300">My Guess History</h2>
       <div
         className="flex flex-1 flex-col overflow-y-auto text-ellipsis px-2"
         onScroll={handleScrollEvent}
