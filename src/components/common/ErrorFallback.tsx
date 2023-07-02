@@ -16,6 +16,7 @@ export default function ErrorFallback({
         <h2 className="text-lg font-bold">Something went wrong:</h2>
         <code className="w-full rounded-md bg-red-900 p-2">
           {error.message}
+          <div>Test: {process.env.SECRET}</div>
         </code>
         <button
           className="rounded-md bg-red-400 p-2 hover:bg-red-300"
