@@ -29,6 +29,9 @@ const router = createBrowserRouter(
         <StandardLayout>
           <Header>
             <div className="flex flex-1 gap-2 pl-6">
+              <div className="bg-red-400 text-white">
+                Secrets: {import.meta.env.VITE_SECRET}
+              </div>
               <HeaderLink to="/" icon={faMap}>
                 Map
               </HeaderLink>

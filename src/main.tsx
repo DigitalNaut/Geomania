@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <GoogleOAuthProvider
-        clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ""}
+        clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
         onScriptLoadError={() => {
           throw new Error("Google OAuth script failed to load.");
         }}
