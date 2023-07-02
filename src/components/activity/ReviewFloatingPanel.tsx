@@ -4,8 +4,8 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
 import type { useCountryReview } from "src/controllers/useCountryReview";
-import { ActionButton } from "src/components/ActionButton";
-import { useFloatingPanelSlideInAnimation } from "src/components/UserGuessFloatingPanel";
+import { ActionButton } from "src/components/common/ActionButton";
+import { useFloatingPanelSlideInAnimation } from "src/components/activity/QuizFloatingPanel";
 import { useCountryStore } from "src/hooks/useCountryStore";
 
 const flagSize = 48;
@@ -74,7 +74,7 @@ export function CountryWikiInfo() {
     return (
       <p
         className={
-          "scrollbar-track-sky-900 scrollbar-thumb-sky-700 scrollbar-thin pointer-events-auto max-h-[300px] max-w-xl overflow-y-auto break-all rounded-md bg-sky-900/60 p-3 hover:bg-sky-900"
+          "pointer-events-auto max-h-[300px] max-w-xl overflow-y-auto break-all rounded-md bg-sky-900/60 p-3 scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700 hover:bg-sky-900"
         }
       >
         Data unavailable at the moment. An error has occurred.
@@ -107,7 +107,7 @@ export function CountryWikiInfo() {
           <span className="text-xs">{data?.data.description}</span>
         </div>
       </h3>
-      <p className="scrollbar-track-sky-900 scrollbar-thumb-sky-700 prose scrollbar-thin visible scroll-pb-3 overflow-y-auto indent-4 text-white">
+      <p className="prose visible scroll-pb-3 overflow-y-auto indent-4 text-white scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700">
         {parse(data?.data?.extract_html)}
       </p>
       <span className="flex justify-end">
@@ -130,7 +130,7 @@ export function CountryWikiInfo() {
   );
 }
 
-export default function UserReviewFloatingPanel({
+export default function ReviewFloatingPanel({
   shouldShow,
   activity: { showNextCountry, isRandomReviewMode, setRandomReviewMode },
   disabled,
@@ -163,6 +163,7 @@ export default function UserReviewFloatingPanel({
           <ActionButton
             disabled={disabled || !shouldShow}
             onClick={showNextCountry}
+            title="Next country"
           >
             Next country
           </ActionButton>

@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { animated, useSpring } from "@react-spring/web";
-import { Button } from "src/components/Button";
+import { Button } from "src/components/common/Button";
 
 export default function FloatingHeader({
   shouldShow,

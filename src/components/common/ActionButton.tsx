@@ -1,8 +1,8 @@
-import type { HTMLProps } from "react";
+import type { DetailedHTMLProps, ButtonHTMLAttributes } from "react";
 
-type Props = Pick<
-  HTMLProps<HTMLButtonElement>,
-  "onClick" | "children" | "disabled" | "className"
+type ActionButtonProps = Omit<
+  DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
+  "type"
 >;
 
 export function ActionButton({
@@ -10,7 +10,8 @@ export function ActionButton({
   className,
   disabled,
   onClick,
-}: Props) {
+  ...props
+}: ActionButtonProps) {
   return (
     <div className="relative bg-clip-content">
       {disabled && (
@@ -22,9 +23,10 @@ export function ActionButton({
       )}
       <button
         disabled={disabled}
-        type="button"
         className={`cursor-pointer select-none bg-green-600 p-4 text-center text-xl font-bold shadow-md hover:bg-green-500 hover:shadow-lg ${className}`}
         onClick={onClick}
+        type="button"
+        {...props}
       >
         {children}
       </button>

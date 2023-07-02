@@ -5,7 +5,7 @@ import { useState, createContext, useContext } from "react";
 import { useGoogleLogin, hasGrantedAnyScopeGoogle } from "@react-oauth/google";
 import axios from "axios";
 
-import { Script } from "src/components/Script";
+import { Script } from "src/components/common/Script";
 
 type MetadataType = {
   name: string;

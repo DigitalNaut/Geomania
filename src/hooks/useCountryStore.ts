@@ -46,7 +46,7 @@ function useCountryData() {
     return sortCountriesDataByContinent();
   }, []);
 
-  const toggleContinent = (continent: string, toggle: boolean) => {
+  const toggleContinentFilter = (continent: string, toggle: boolean) => {
     setContinentFilters((currentFilters) => ({
       ...currentFilters,
       [continent]: toggle,
@@ -54,7 +54,8 @@ function useCountryData() {
   };
 
   return {
-    toggleContinent,
+    toggleContinentFilter,
+    continentFilters,
     countryDataByContinent,
     filteredCountryData,
     allCountryFeatures,
@@ -79,10 +80,11 @@ export function getCountryCoordinates(country: CountryData) {
 export function useCountryStore() {
   const { storedCountry, setStoredCountry } = useCountryStoreContext();
   const {
-    toggleContinent,
+    toggleContinentFilter,
     countryDataByContinent,
     allCountryFeatures,
     filteredCountryData,
+    continentFilters,
   } = useCountryData();
 
   function getNextCountryData(): CountryData | null {
@@ -150,7 +152,8 @@ export function useCountryStore() {
     compareStoredCountry,
     setStoredCountry,
     resetStore,
-    toggleContinent,
+    toggleContinentFilter,
+    continentFilters,
     countryDataByContinent,
     allCountryFeatures,
     filteredCountryData,

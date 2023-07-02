@@ -4,7 +4,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { GoogleDriveProvider } from "src/contexts/GoogleDriveContext";
-import ErrorFallback from "src/components/ErrorFallback";
+import ErrorFallback from "src/components/common/ErrorFallback";
 import App from "src/App";
 
 import "src/styles/output.css";

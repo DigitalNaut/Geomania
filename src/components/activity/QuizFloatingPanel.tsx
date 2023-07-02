@@ -1,3 +1,4 @@
+import type { KeyboardEvent } from "react";
 import type { PropsWithChildren } from "react";
 import { useCallback, useMemo } from "react";
 import { animated, useSpring, useTrail } from "@react-spring/web";
@@ -5,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForward, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 
 import type { useCountryQuiz } from "src/controllers/useCountryQuiz";
-import { ActionButton } from "src/components/ActionButton";
+import { ActionButton } from "src/components/common/ActionButton";
 
 function useHorizontalShakeAnimation({
   onShakeStart,
@@ -66,7 +67,7 @@ export function useFloatingPanelSlideInAnimation(shouldShow: boolean) {
   };
 }
 
-function GuessHeaderSection({
+function QuizHeaderSection({
   children,
   skipCountryHandler,
 }: PropsWithChildren<{
@@ -88,7 +89,7 @@ function GuessHeaderSection({
   );
 }
 
-export default function UserGuessFloatingPanel({
+export default function QuizFloatingPanel({
   shouldShow,
   activity: {
     answerInputRef,
@@ -156,7 +157,7 @@ export default function UserGuessFloatingPanel({
     }
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleSubmit();
     }
@@ -168,9 +169,9 @@ export default function UserGuessFloatingPanel({
       style={firstTrail}
     >
       <animated.div style={secondTrail}>
-        <GuessHeaderSection skipCountryHandler={skipCountry}>
+        <QuizHeaderSection skipCountryHandler={skipCountry}>
           Which country is this?
-        </GuessHeaderSection>
+        </QuizHeaderSection>
       </animated.div>
 
       <div className="flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">

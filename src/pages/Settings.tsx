@@ -1,4 +1,4 @@
-import MainView from "src/components/MainView";
+import MainView from "src/components/layout/MainView";
 
 export default function Settings() {
   return (

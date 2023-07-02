@@ -11,14 +11,14 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import MapContextProvider from "src/contexts/MapContext";
 import CountryStoreProvider from "src/contexts/CountryStoreContext";
 import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
-import Header, { HeaderLink } from "src/components/Header";
+import Header, { HeaderLink } from "src/components/layout/Header";
 import MapActivity from "src/pages/MapActivity";
 import Settings from "src/pages/Settings";
 import Dashboard from "src/pages/Dashboard";
-import Footer from "src/components/Footer";
+import Footer from "src/components/layout/Footer";
 import PageNotFound from "src/pages/PageNotFound";
-import DriveAccess from "src/components/DriveAccess";
-import StandardLayout from "src/components/StandardLayout";
+import DriveAccess from "src/components/drive/DriveAccess";
+import StandardLayout from "src/components/layout/StandardLayout";
 
 const queryClient = new QueryClient();
 

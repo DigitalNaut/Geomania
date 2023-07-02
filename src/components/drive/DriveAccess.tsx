@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useGoogleDrive } from "src/contexts/GoogleDriveContext";
-import { Button } from "src/components/Button";
+import { Button } from "src/components/common/Button";
 
 type NonDriveErrorMessageProps = {
   error: NonOAuthError;

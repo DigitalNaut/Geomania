@@ -5,11 +5,11 @@ import { faBroom } from "@fortawesome/free-solid-svg-icons";
 
 import type { CountryStats } from "src/contexts/GuessRecordContext";
 
-import MainView from "src/components/MainView";
+import MainView from "src/components/layout/MainView";
 import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { Link } from "react-router-dom";
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg";
-import { Button } from "src/components/Button";
+import { Button } from "src/components/common/Button";
 
 type CountryProgressProps = {
   correct: number;
@@ -48,7 +48,7 @@ function CountryStatsCard({ countryStats }: CountryStatsProps) {
       title={`${countryStats.name}\nCorrect: ${countryStats.correctGuesses}\nIncorrect: ${countryStats.incorrectGuesses}`}
     >
       <img
-        className="before:bg-custom-unknown-flag h-[2.4rem] w-16 p-1 before:block before:h-[2.4rem] before:w-16"
+        className="h-[2.4rem] w-16 p-1 before:block before:h-[2.4rem] before:w-16 before:bg-custom-unknown-flag"
         src={`https://flagcdn.com/${countryStats.alpha2.toLocaleLowerCase()}.svg`}
         alt={countryStats.alpha3}
         loading="lazy"
@@ -56,7 +56,7 @@ function CountryStatsCard({ countryStats }: CountryStatsProps) {
         height={38.4}
       />
       <div>
-        <div className="line-clamp-2 w-32 text-ellipsis text-sm">
+        <div className="w-32 text-ellipsis text-sm line-clamp-2">
           {countryStats.name}
         </div>
         <CountryProgress

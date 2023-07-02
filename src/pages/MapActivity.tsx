@@ -5,21 +5,21 @@ import { Marker, GeoJSON, ZoomControl, Popup } from "react-leaflet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-import { MapClick } from "src/components/MapClick";
-import { LeafletMap, markerIcon } from "src/components/LeafletMap";
+import { MapClick } from "src/components/activity/MapClick";
+import { LeafletMap, markerIcon } from "src/components/activity/LeafletMap";
 import { useCountryQuiz } from "src/controllers/useCountryQuiz";
 import { useCountryReview } from "src/controllers/useCountryReview";
 import { useError } from "src/hooks/useError";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapControl } from "src/hooks/useMapControl";
-import GuessHistoryPanel from "src/components/GuessHistoryPanel";
-import UserGuessFloatingPanel from "src/components/UserGuessFloatingPanel";
-import UserReviewFloatingPanel from "src/components/UserReviewFloatingPanel";
-import FloatingHeader from "src/components/FloatingHeader";
-import InstructionOverlay from "src/components/InstructionOverlay";
-import MainView from "src/components/MainView";
+import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
+import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
+import ReviewFloatingPanel from "src/components/activity/ReviewFloatingPanel";
+import FloatingHeader from "src/components/activity/FloatingHeader";
+import InstructionOverlay from "src/components/activity/InstructionOverlay";
+import MainView from "src/components/layout/MainView";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
-import CountriesListPanel from "src/components/CountriesListPanel";
+import CountriesListPanel from "src/components/activity/CountriesListPanel";
 
 function ActivityButton({
   label,
@@ -67,14 +67,8 @@ export default function MapActivity() {
   const { error, setError, dismissError } = useError();
   const { activityMode, chooseActivity } = useActivityMode();
   const countryStore = useCountryStore();
-  const {
-    storedCountry,
-    resetStore,
-    toggleContinent,
-    countryDataByContinent,
-    allCountryFeatures,
-    filteredCountryData,
-  } = countryStore;
+  const { storedCountry, resetStore, allCountryFeatures, filteredCountryData } =
+    countryStore;
 
   const mapControl = useMapControl();
   const { resetView } = mapControl;
@@ -204,7 +198,7 @@ export default function MapActivity() {
             {activityMode.current === "review" && "Reviewing countries"}
           </FloatingHeader>
 
-          <UserGuessFloatingPanel
+          <QuizFloatingPanel
             shouldShow={activityMode.current === "quiz"}
             activity={{
               answerInputRef,
@@ -219,7 +213,7 @@ export default function MapActivity() {
             }}
           />
 
-          <UserReviewFloatingPanel
+          <ReviewFloatingPanel
             shouldShow={activityMode.current === "review"}
             activity={{
               showNextCountry,
@@ -234,12 +228,7 @@ export default function MapActivity() {
           <GuessHistoryPanel guessHistory={guessHistory} />
         )}
 
-        {activityMode.current === "review" && (
-          <CountriesListPanel
-            countriesByContinent={countryDataByContinent}
-            toggleContinent={toggleContinent}
-          />
-        )}
+        {activityMode.current === "review" && <CountriesListPanel />}
       </MainView>
     </>
   );
