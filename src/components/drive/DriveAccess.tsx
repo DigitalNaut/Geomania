@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import type { NonOAuthError } from "@react-oauth/google";
 import {
-  faCircleCheck,
+  faCheck,
   faSpinner,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
@@ -47,7 +47,7 @@ function ErrorNotice({ children, retry }: ErrorNoticeProps) {
 }
 
 function InfoNotice({ children }: PropsWithChildren) {
-  return <div className="flex items-center gap-1">{children}</div>;
+  return <div className="flex min-w-fit flex-col items-center gap-1">{children}</div>;
 }
 
 export default function DriveAccess() {
@@ -94,8 +94,7 @@ export default function DriveAccess() {
   if (!isDriveLoaded) {
     return (
       <InfoNotice>
-        Loading Drive...
-        <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+        <span className="flex items-center gap-2">Loading Drive... <FontAwesomeIcon className="fa-spin" icon={faSpinner} /></span>
       </InfoNotice>
     );
   }
@@ -119,8 +118,7 @@ export default function DriveAccess() {
   if (isDriveAuthorizing) {
     return (
       <InfoNotice>
-        Authorizing Google Drive
-        <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+        <span className="flex items-center gap-2">Authorizing Google Drive<FontAwesomeIcon className="fa-spin" icon={faSpinner} /></span>
       </InfoNotice>
     );
   }
@@ -128,8 +126,7 @@ export default function DriveAccess() {
   if (hasDriveAccess) {
     return (
       <InfoNotice>
-        Connected to Drive
-        <FontAwesomeIcon icon={faCircleCheck} />
+        <span className="flex items-center gap-2">Connected to Drive<FontAwesomeIcon icon={faCheck} /></span>
         <Button onClick={handleDisconnectDrive}>Disconnect</Button>
       </InfoNotice>
     );
@@ -138,8 +135,7 @@ export default function DriveAccess() {
   if (autoConnectDrive === "true") {
     return (
       <InfoNotice>
-        Connecting to Drive
-        <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+        <span className="flex gap-2">Connecting to Drive<FontAwesomeIcon className="fa-spin" icon={faSpinner} /></span>
       </InfoNotice>
     );
   }

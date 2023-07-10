@@ -31,6 +31,8 @@ import StandardLayout from "src/components/layout/StandardLayout";
 
 const queryClient = new QueryClient();
 
+console.log(PACKAGE_VERSION);
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route
@@ -49,7 +51,7 @@ const router = createBrowserRouter(
               </HeaderLink>
             </div>
 
-            <div>v0.3.1</div>
+            <div>v{PACKAGE_VERSION}</div>
 
             <div className="flex w-full justify-end pl-2 text-sm">
               <DriveAccess />

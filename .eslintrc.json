@@ -7,6 +7,7 @@
       "whitelist": [
         "g_id_[a-z]+",
         "fa-[a-z]+",
+        "leaflet-[a-z_-]+",
         "line-clamp-[1-9]|none",
         "bg-custom-[a-z_-]+",
         "scrollbar-(thin|none)",
@@ -43,7 +44,10 @@
   ],
   "rules": {
     "@typescript-eslint/consistent-type-imports": "warn",
-    "no-relative-import-paths/no-relative-import-paths": "warn",
+    "no-relative-import-paths/no-relative-import-paths": [
+      "warn",
+      { "allowSameFolder": true }
+    ],
     "object-shorthand": ["error", "always"],
     "consistent-return": ["warn"],
     "react-hooks/rules-of-hooks": "error",

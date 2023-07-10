@@ -21,6 +21,24 @@ import MainView from "src/components/layout/MainView";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 import CountriesListPanel from "src/components/activity/CountriesListPanel";
 
+const POSITION_CLASSES = {
+  bottomleft: 'leaflet-bottom leaflet-left',
+  bottomright: 'leaflet-bottom leaflet-right',
+  topleft: 'leaflet-top leaflet-left',
+  topright: 'leaflet-top leaflet-right',
+}
+
+function BackControl({ position }: {
+  position?: keyof typeof POSITION_CLASSES
+}) {
+  const positionClass =  (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright
+  return (
+    <div className={positionClass}>
+      <div className="leaflet-control leaflet-bar">Back</div>
+    </div>
+  )
+}
+
 function ActivityButton({
   label,
   children,
@@ -118,7 +136,10 @@ export default function MapActivity() {
       <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
           <LeafletMap isActivityMode={!!activityMode.current}>
-            {!!activityMode.current && <ZoomControl />}
+            {!!activityMode.current && <ZoomControl position="topright" />}
+            <BackControl position="topleft" />
+            <BackControl position="topleft" />
+            <BackControl position="topleft" />
 
             {storedCountry.coordinates && (
               <>
