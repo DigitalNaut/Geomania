@@ -2,8 +2,8 @@ import type { Context } from "https://edge.netlify.com/";
 
 export default (_: Request, { site }: Context) => {
   const KEYS = [
-    Netlify.env.get("VITE_GOOGLE_API_KEY"),
-    Netlify.env.get("VITE_GOOGLE_CLIENT_ID"),
+    Netlify.env.get("GOOGLE_API_KEY"),
+    Netlify.env.get("GOOGLE_CLIENT_ID"),
   ];
 
   if (site.url === "http://geomaniac.netlify.app")
