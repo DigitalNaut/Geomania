@@ -97,16 +97,13 @@ export default function App() {
     queryFn: async () => {
       const response = await fetch("/api/keys");
       const text = await response.text();
-      const keys = text.split(" ");
+      const keys = JSON.parse(text);
 
-      const apiKey = keys[0];
-      const clientId = keys[1];
-
-      return { clientId, apiKey };
+      return keys;
     },
   });
 
-  const { clientId, apiKey } = data || {};
+  const { apiKey, clientId } = data || {};
 
   if (status === "loading")
     return (
