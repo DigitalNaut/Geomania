@@ -1,27 +1,21 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
+import { StrictMode } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 
-import { GoogleDriveProvider } from "src/contexts/GoogleDriveContext";
-import ErrorFallback from "src/components/common/ErrorFallback";
 import App from "src/App";
+import ErrorFallback from "src/components/common/ErrorFallback";
 
 import "src/styles/output.css";
 
+const queryClient = new QueryClient();
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
+  <StrictMode>
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <GoogleOAuthProvider
-        clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-        onScriptLoadError={() => {
-          throw new Error("Google OAuth script failed to load.");
-        }}
-      >
-        <GoogleDriveProvider>
-          <App />
-        </GoogleDriveProvider>
-      </GoogleOAuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </ErrorBoundary>
-  </React.StrictMode>
+  </StrictMode>
 );

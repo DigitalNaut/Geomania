@@ -94,7 +94,7 @@ export default function DriveAccess() {
   if (!isDriveLoaded) {
     return (
       <InfoNotice>
-        Loading
+        Loading Drive...
         <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
       </InfoNotice>
     );

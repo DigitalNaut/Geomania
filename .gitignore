@@ -32,3 +32,5 @@ dist-ssr
 # User created
 /src/styles/output.css
 !.env.example
+# Local Netlify folder
+.netlify
