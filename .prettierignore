@@ -8,5 +8,6 @@ node_modules
 
 /src/styles/tailwind.css
 /src/data/country-geometries.json
-/src/data/country-country-metadata.json
+/src/data/country-metadata.json
+/src/data/continents.json
 /dist

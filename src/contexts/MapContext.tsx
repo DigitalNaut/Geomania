@@ -1,21 +1,26 @@
 import type { Dispatch, SetStateAction, PropsWithChildren } from "react";
-import type { Map } from "leaflet";
-import type { CountryData } from "src/controllers/MapController";
-
+import type { LatLngTuple, Map } from "leaflet";
+import type { LatLngExpression } from "leaflet";
 import { createContext, useContext, useState } from "react";
 
 type MapContext = {
   map: Map | null;
   setMap: Dispatch<SetStateAction<Map | null>>;
-  countryAnswer: CountryData;
-  setCountryAnswer: Dispatch<SetStateAction<CountryData>>;
+  defaults: {
+    center: LatLngExpression;
+    zoom: number;
+  };
+};
+
+const defaults = {
+  center: [0, 0] as LatLngTuple,
+  zoom: 1.5,
 };
 
 const MapContext = createContext<MapContext>({
   map: null,
   setMap: () => null,
-  countryAnswer: null,
-  setCountryAnswer: () => null,
+  defaults,
 });
 
 /**
@@ -24,16 +29,13 @@ const MapContext = createContext<MapContext>({
  */
 export default function MapContextProvider({ children }: PropsWithChildren) {
   const [map, setMap] = useState<MapContext["map"]>(null);
-  const [countryAnswer, setCountryAnswer] =
-    useState<MapContext["countryAnswer"]>(null);
 
   return (
     <MapContext.Provider
       value={{
         map,
         setMap,
-        countryAnswer,
-        setCountryAnswer,
+        defaults,
       }}
     >
       {children}

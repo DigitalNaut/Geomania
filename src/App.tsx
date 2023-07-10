@@ -4,18 +4,32 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCog } from "@fortawesome/free-solid-svg-icons";
+import { useQuery } from "@tanstack/react-query";
+import {
+  faChartLine,
+  faCog,
+  faMap,
+  faSpinner,
+} from "@fortawesome/free-solid-svg-icons";
 import { Outlet } from "react-router-dom";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleDriveProvider } from "src/contexts/GoogleDriveContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import MapContextProvider from "src/contexts/MapContext";
-import MapVisitor from "src/pages/MapVisitor";
+import CountryStoreProvider from "src/contexts/CountryStoreContext";
+import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
+import Header, { HeaderLink } from "src/components/layout/Header";
+import MapActivity from "src/pages/MapActivity";
 import Settings from "src/pages/Settings";
-import Header, { HeaderLink } from "src/components/Header";
-import Footer from "src/components/Footer";
-import DriveAccess from "src/components/DriveAccess";
-import StandardLayout from "src/components/StandardLayout";
+import Dashboard from "src/pages/Dashboard";
+import Footer from "src/components/layout/Footer";
 import PageNotFound from "src/pages/PageNotFound";
+import DriveAccess from "src/components/drive/DriveAccess";
+import StandardLayout from "src/components/layout/StandardLayout";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,10 +37,20 @@ const router = createBrowserRouter(
       element={
         <StandardLayout>
           <Header>
-            <HeaderLink to="settings">
-              <FontAwesomeIcon icon={faCog} />
-              Settings
-            </HeaderLink>
+            <div className="flex flex-1 gap-2 pl-6">
+              <HeaderLink to="/" icon={faMap}>
+                Map
+              </HeaderLink>
+              <HeaderLink to="dashboard" icon={faChartLine}>
+                Dashboard
+              </HeaderLink>
+              <HeaderLink to="settings" icon={faCog}>
+                Settings
+              </HeaderLink>
+            </div>
+
+            <div>v0.3.1</div>
+
             <div className="flex w-full justify-end pl-2 text-sm">
               <DriveAccess />
             </div>
@@ -39,15 +63,28 @@ const router = createBrowserRouter(
       }
     >
       <Route
-        path="/"
-        index
         element={
-          <MapContextProvider>
-            <MapVisitor />
-          </MapContextProvider>
+          <UserGuessRecordProvider historyLimit={200}>
+            <Outlet />
+          </UserGuessRecordProvider>
         }
-      />
-      <Route path="/settings" element={<Settings />} />
+      >
+        <Route
+          path="/"
+          index
+          element={
+            <MapContextProvider>
+              <CountryStoreProvider>
+                <QueryClientProvider client={queryClient}>
+                  <MapActivity />
+                </QueryClientProvider>
+              </CountryStoreProvider>
+            </MapContextProvider>
+          }
+        />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Route>
 
       <Route path="*" element={<PageNotFound />} />
     </Route>
@@ -55,5 +92,42 @@ const router = createBrowserRouter(
 );
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  const { data, status } = useQuery({
+    queryKey: ["keys"],
+    queryFn: async () => {
+      const response = await fetch("/api/keys");
+      const text = await response.text();
+      const keys = text.split(" ");
+
+      const apiKey = keys[0];
+      const clientId = keys[1];
+
+      return { clientId, apiKey };
+    },
+  });
+
+  const { clientId, apiKey } = data || {};
+
+  if (status === "loading")
+    return (
+      <div className="flex h-screen items-center justify-center gap-2 text-white">
+        <span>Loading...</span>
+        <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+      </div>
+    );
+
+  if (!clientId || !apiKey) throw new Error("Missing configuration.");
+
+  return (
+    <GoogleOAuthProvider
+      clientId={clientId}
+      onScriptLoadError={() => {
+        throw new Error("Google OAuth script failed to load.");
+      }}
+    >
+      <GoogleDriveProvider apiKey={apiKey}>
+        <RouterProvider router={router} />
+      </GoogleDriveProvider>
+    </GoogleOAuthProvider>
+  );
 }

@@ -1,3 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-declare const _default: import("vite").UserConfigExport;
+import type { UserConfigExport } from "vite";
+
+declare const _default: UserConfigExport;
 export default _default;

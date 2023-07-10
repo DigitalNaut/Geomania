@@ -36,7 +36,7 @@ function Notification({
   if (!notification) return null;
 
   return (
-    <div className="fixed top-0 left-0 flex w-full justify-center gap-2 bg-blue-400 p-1 shadow-xl sm:p-2 md:p-4">
+    <div className="fixed left-0 top-0 flex w-full justify-center gap-2 bg-blue-400 p-1 shadow-xl sm:p-2 md:p-4">
       <div className="flex w-full justify-between px-4 sm:max-w-sm sm:px-0 md:max-w-md lg:max-w-lg">
         <div className="flex items-center gap-2">
           <FontAwesomeIcon icon={faInfoCircle} />
@@ -48,6 +48,12 @@ function Notification({
       </div>
     </div>
   );
+}
+
+export function useUser() {
+  const context = useContext(userContext);
+  if (!context) throw new Error("useUser must be used within a UserProvider");
+  return context;
 }
 
 function LogoutButton() {
@@ -132,16 +138,16 @@ export function UserProvider({ children }: PropsWithChildren) {
     setUser(userInfo);
   };
 
-  const onSignInError = () => {
-    logout("Error starting session");
-  };
-
   const logout = (reason?: string) => {
     googleLogout();
     setUser(null);
     setNotification(reason);
 
     setTimeout(() => setNotification(undefined), 3000);
+  };
+
+  const onSignInError = () => {
+    logout("Error starting session");
   };
 
   function LoginButton() {
@@ -180,10 +186,4 @@ export function UserProvider({ children }: PropsWithChildren) {
       />
     </userContext.Provider>
   );
-}
-
-export function useUser() {
-  const context = useContext(userContext);
-  if (!context) throw new Error("useUser must be used within a UserProvider");
-  return context;
 }

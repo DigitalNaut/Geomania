@@ -1,3 +1,30 @@
+declare interface GoogleUserInfo {
+  /**
+   * The user's email address
+   */
+  email: string;
+  /**
+   * true, if Google has verified the email address
+   */
+  email_verified: boolean;
+  family_name: string;
+  given_name: string;
+  /**
+   * The user's full name
+   */
+  name: string;
+  /**
+   * If present, a URL to user's profile picture
+   */
+  picture?: string;
+  /**
+   * The unique ID of the user's Google Account
+   */
+  sub: string;
+
+  locale: string;
+}
+
 /**
  * Docs: https://developers.google.com/identity/gsi/web/reference/js-reference#credential
  */
@@ -34,33 +61,6 @@ declare interface GoogleUserCredential extends Omit<GoogleUserInfo, "locale"> {
    * If present, the host domain of the user's GSuite email address
    */
   hd?: string;
-}
-
-declare interface GoogleUserInfo {
-  /**
-   * The user's email address
-   */
-  email: string;
-  /**
-   * true, if Google has verified the email address
-   */
-  email_verified: boolean;
-  family_name: string;
-  given_name: string;
-  /**
-   * The user's full name
-   */
-  name: string;
-  /**
-   * If present, a URL to user's profile picture
-   */
-  picture?: string;
-  /**
-   * The unique ID of the user's Google Account
-   */
-  sub: string;
-
-  locale: string;
 }
 
 type GoogleDriveError = {

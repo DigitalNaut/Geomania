@@ -16,7 +16,12 @@ const topLeftCorner = Leaflet.latLng(-90, -250);
 const bottomRightCorner = Leaflet.latLng(90, 250);
 const maxBounds = Leaflet.latLngBounds(topLeftCorner, bottomRightCorner);
 
-export function LeafletMap({ children }: PropsWithChildren) {
+export function LeafletMap({
+  children,
+  isActivityMode,
+}: PropsWithChildren<{
+  isActivityMode: boolean;
+}>) {
   const { setMap } = useMapContext();
 
   return (
@@ -24,23 +29,26 @@ export function LeafletMap({ children }: PropsWithChildren) {
       className="bg-gradient-to-br from-sky-700 to-sky-800"
       center={maxBounds.getCenter()}
       zoom={1.5}
+      zoomControl={false}
       maxBounds={maxBounds}
       maxBoundsViscosity={1.0}
       style={{ width: "100%", height: "100%" }}
       ref={setMap}
     >
-      <TileLayer
-        attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
-        url=""
-      />
-      <LayersControl position="topright">
-        <LayersControl.BaseLayer name="OpenStreetMap" checked={false}>
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        </LayersControl.BaseLayer>
-        <LayersControl.BaseLayer name="None" checked={true}>
-          <TileLayer url="" />
-        </LayersControl.BaseLayer>
-      </LayersControl>
+      {isActivityMode && (
+        <LayersControl position="topright">
+          <LayersControl.BaseLayer name="OpenStreetMap" checked={false}>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="None" checked={true}>
+            <TileLayer url="" />
+          </LayersControl.BaseLayer>
+        </LayersControl>
+      )}
+
       {children}
     </MapContainer>
   );

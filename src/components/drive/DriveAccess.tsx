@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useGoogleDrive } from "src/contexts/GoogleDriveContext";
+import { Button } from "src/components/common/Button";
 
 type NonDriveErrorMessageProps = {
   error: NonOAuthError;
@@ -32,9 +33,9 @@ function NonDriveErrorMessage({ error }: NonDriveErrorMessageProps) {
   );
 }
 
-type ErrorNoticeProps = PropsWithChildren & {
+type ErrorNoticeProps = PropsWithChildren<{
   retry: () => void;
-};
+}>;
 
 function ErrorNotice({ children, retry }: ErrorNoticeProps) {
   return (
@@ -47,22 +48,6 @@ function ErrorNotice({ children, retry }: ErrorNoticeProps) {
 
 function InfoNotice({ children }: PropsWithChildren) {
   return <div className="flex items-center gap-1">{children}</div>;
-}
-
-type ButtonProps = PropsWithChildren & {
-  onClick: () => void;
-};
-
-function Button({ onClick, children }: ButtonProps) {
-  return (
-    <button
-      className="rounded-full bg-blue-500 py-1 px-4"
-      role="button"
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
 }
 
 export default function DriveAccess() {
@@ -109,7 +94,7 @@ export default function DriveAccess() {
   if (!isDriveLoaded) {
     return (
       <InfoNotice>
-        Loading
+        Loading Drive...
         <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
       </InfoNotice>
     );
