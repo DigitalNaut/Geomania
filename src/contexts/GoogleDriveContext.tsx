@@ -103,7 +103,12 @@ const DRIVE_API_UPLOAD_URL = "https://www.googleapis.com/upload/drive/v3/files";
  * 2. Then use the `useGoogleDrive` hook to request access to Google Drive.
  * 3. Finally call the methods on the `useGoogleDrive` hook to use the API.
  */
-export function GoogleDriveProvider({ children }: PropsWithChildren) {
+export function GoogleDriveProvider({
+  children,
+  apiKey,
+}: PropsWithChildren<{
+  apiKey: string;
+}>) {
   const [isDriveLoaded, setIsLoaded] = useState(false);
   const [hasDriveAccess, setHasAccess] = useState(false);
   const [isDriveAuthorizing, setIsDriveAuthorizing] = useState(false);
@@ -117,7 +122,7 @@ export function GoogleDriveProvider({ children }: PropsWithChildren) {
   async function initGapiClient() {
     try {
       await gapi.client.init({
-        apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
+        apiKey,
         discoveryDocs: [DISCOVERY_DOC],
       });
       console.log("Google Drive API initialized.");

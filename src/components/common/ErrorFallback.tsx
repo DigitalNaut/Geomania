@@ -8,7 +8,7 @@ export default function ErrorFallback({
   resetErrorBoundary,
 }: ErrorFallbackProps) {
   return (
-    <div className="flex flex-1 justify-center bg-slate-900 p-6">
+    <div className="flex h-screen flex-1 items-center justify-center bg-slate-900 p-6">
       <div
         role="alert"
         className="flex h-fit w-full max-w-full flex-col flex-wrap gap-2 overflow-auto rounded-lg bg-red-800 p-4 shadow-md sm:w-2/3 md:w-1/2"
