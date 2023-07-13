@@ -7,7 +7,7 @@ import packageJson from "./package.json";
 export default defineConfig({
   plugins: [react(), svgr()],
   define:  {
-    'PACKAGE_VERSION': JSON.stringify(packageJson.version)
+    'import.meta.env.PACKAGE_VERSION': JSON.stringify(packageJson.version)
   },
   resolve: {
     alias: {
