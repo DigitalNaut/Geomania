@@ -1,17 +1,14 @@
-import type { GeoJsonObject } from "geojson";
 import type { LatLngTuple } from "leaflet";
 import { useMemo, useState } from "react";
 
 import { useCountryStoreContext } from "src/contexts/CountryStoreContext";
 import continents from "src/data/continents.json";
 import countriesMetadata from "src/data/country-metadata.json";
-import countryGeometries from "src/data/country-geometries.json";
 
 export type CountryData = (typeof countriesMetadata)[number];
 export type CountriesDataByContinent = Record<string, CountryData[]>;
 type CountryFilters = Record<string, boolean>;
 
-const allCountryFeatures = countryGeometries as GeoJsonObject;
 const allCountriesMetadata = countriesMetadata as CountryData[];
 
 const sortCountriesDataByContinent = () =>
@@ -58,7 +55,6 @@ function useCountryData() {
     continentFilters,
     countryDataByContinent,
     filteredCountryData,
-    allCountryFeatures,
   };
 }
 
@@ -82,7 +78,6 @@ export function useCountryStore() {
   const {
     toggleContinentFilter,
     countryDataByContinent,
-    allCountryFeatures,
     filteredCountryData,
     continentFilters,
   } = useCountryData();
@@ -155,7 +150,6 @@ export function useCountryStore() {
     toggleContinentFilter,
     continentFilters,
     countryDataByContinent,
-    allCountryFeatures,
     filteredCountryData,
   };
 }

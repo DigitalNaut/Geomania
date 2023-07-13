@@ -11,6 +11,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useGoogleDrive } from "src/contexts/GoogleDriveContext";
 import { Button } from "src/components/common/Button";
 
+import { DriveSettingsHook } from "./DriveSettingsHook";
+
 type NonDriveErrorMessageProps = {
   error: NonOAuthError;
 };
@@ -47,11 +49,12 @@ function ErrorNotice({ children, retry }: ErrorNoticeProps) {
 }
 
 function InfoNotice({ children }: PropsWithChildren) {
-  return <div className="flex min-w-fit flex-col items-center gap-1">{children}</div>;
+  return (
+    <div className="flex min-w-fit flex-col items-center gap-1">{children}</div>
+  );
 }
 
 export default function DriveAccess() {
-  const [rememberAutoConnect, setRememberAutoConnect] = useState(true);
   const {
     requestDriveAccess,
     disconnectDrive,
@@ -62,39 +65,40 @@ export default function DriveAccess() {
     error,
   } = useGoogleDrive();
 
-  const autoConnectDrive = localStorage.getItem("autoConnectDrive");
+  const { driveSettings, setAutoConnectDrive } = DriveSettingsHook();
+  const [rememberAutoConnect, setRememberAutoConnect] = useState(
+    driveSettings.autoConnectDrive
+  );
 
   const handleAccessRequest = () => {
-    if (rememberAutoConnect) {
-      localStorage.setItem("autoConnectDrive", "true");
-    }
+    setAutoConnectDrive(rememberAutoConnect);
     requestDriveAccess();
   };
 
   const handleDisconnectDrive = () => {
-    localStorage.removeItem("autoConnectDrive");
+    setAutoConnectDrive(false);
     disconnectDrive();
   };
 
   useEffect(() => {
     if (!isDriveLoaded || nonDriveError) return;
 
-    if (autoConnectDrive === "true" && !hasDriveAccess) {
-      requestDriveAccess();
-      return;
-    }
+    if (driveSettings.autoConnectDrive && !hasDriveAccess) requestDriveAccess();
   }, [
     requestDriveAccess,
     hasDriveAccess,
     isDriveLoaded,
     nonDriveError,
-    autoConnectDrive,
+    driveSettings.autoConnectDrive,
   ]);
 
   if (!isDriveLoaded) {
     return (
       <InfoNotice>
-        <span className="flex items-center gap-2">Loading Drive... <FontAwesomeIcon className="fa-spin" icon={faSpinner} /></span>
+        <span className="flex items-center gap-2">
+          Loading Drive...{" "}
+          <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+        </span>
       </InfoNotice>
     );
   }
@@ -118,7 +122,10 @@ export default function DriveAccess() {
   if (isDriveAuthorizing) {
     return (
       <InfoNotice>
-        <span className="flex items-center gap-2">Authorizing Google Drive<FontAwesomeIcon className="fa-spin" icon={faSpinner} /></span>
+        <span className="flex items-center gap-2">
+          Authorizing Google Drive
+          <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+        </span>
       </InfoNotice>
     );
   }
@@ -126,16 +133,20 @@ export default function DriveAccess() {
   if (hasDriveAccess) {
     return (
       <InfoNotice>
-        <span className="flex items-center gap-2">Connected to Drive<FontAwesomeIcon icon={faCheck} /></span>
+        <span className="flex items-center gap-2">
+          Connected to Drive
+          <FontAwesomeIcon icon={faCheck} />
+        </span>
         <Button onClick={handleDisconnectDrive}>Disconnect</Button>
       </InfoNotice>
     );
-  }
-
-  if (autoConnectDrive === "true") {
+  } else if (driveSettings.autoConnectDrive) {
     return (
       <InfoNotice>
-        <span className="flex gap-2">Connecting to Drive<FontAwesomeIcon className="fa-spin" icon={faSpinner} /></span>
+        <span className="flex gap-2">
+          Connecting to Drive
+          <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+        </span>
       </InfoNotice>
     );
   }

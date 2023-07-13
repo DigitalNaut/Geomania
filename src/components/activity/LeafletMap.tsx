@@ -34,6 +34,7 @@ export function LeafletMap({
       maxBoundsViscosity={1.0}
       style={{ width: "100%", height: "100%" }}
       ref={setMap}
+      crs={Leaflet.CRS.EPSG4326}
     >
       {isActivityMode && (
         <LayersControl position="topright">

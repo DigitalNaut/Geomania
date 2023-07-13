@@ -1,9 +1,14 @@
-import type { Layer, LeafletMouseEventHandlerFn } from "leaflet";
+// import type { Layer, LeafletMouseEventHandlerFn } from "leaflet";
 import type { PropsWithChildren } from "react";
+
 import { useRef } from "react";
-import { Marker, GeoJSON, ZoomControl, Popup } from "react-leaflet";
+import { Marker, ZoomControl, Popup } from "react-leaflet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCaretLeft,
+  faChevronRight,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { MapClick } from "src/components/activity/MapClick";
 import { LeafletMap, markerIcon } from "src/components/activity/LeafletMap";
@@ -12,6 +17,7 @@ import { useCountryReview } from "src/controllers/useCountryReview";
 import { useError } from "src/hooks/useError";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapControl } from "src/hooks/useMapControl";
+import { Button } from "src/components/common/Button";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
 import ReviewFloatingPanel from "src/components/activity/ReviewFloatingPanel";
@@ -20,23 +26,40 @@ import InstructionOverlay from "src/components/activity/InstructionOverlay";
 import MainView from "src/components/layout/MainView";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 import CountriesListPanel from "src/components/activity/CountriesListPanel";
+import { SvgMap, svgPaths } from "src/data/mapSvg";
 
 const POSITION_CLASSES = {
-  bottomleft: 'leaflet-bottom leaflet-left',
-  bottomright: 'leaflet-bottom leaflet-right',
-  topleft: 'leaflet-top leaflet-left',
-  topright: 'leaflet-top leaflet-right',
-}
+  bottomleft: "leaflet-bottom leaflet-left",
+  bottomright: "leaflet-bottom leaflet-right",
+  topleft: "leaflet-top leaflet-left",
+  topright: "leaflet-top leaflet-right",
+};
 
-function BackControl({ position }: {
-  position?: keyof typeof POSITION_CLASSES
+function BackControl({
+  position,
+  onClick,
+  label = "Back",
+}: {
+  position?: keyof typeof POSITION_CLASSES;
+  onClick: () => void;
+  label?: string;
 }) {
-  const positionClass =  (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright
+  const positionClass =
+    (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright;
   return (
     <div className={positionClass}>
-      <div className="leaflet-control leaflet-bar">Back</div>
+      <div className="leaflet-control leaflet-bar rounded-full">
+        <Button
+          className="w-fit bg-white text-base text-slate-950 hover:bg-red-600 hover:text-white"
+          onClick={onClick}
+          title="End the activity"
+        >
+          <FontAwesomeIcon icon={faCaretLeft} />
+          <span>{label}</span>
+        </Button>
+      </div>
     </div>
-  )
+  );
 }
 
 function ActivityButton({
@@ -85,8 +108,8 @@ export default function MapActivity() {
   const { error, setError, dismissError } = useError();
   const { activityMode, chooseActivity } = useActivityMode();
   const countryStore = useCountryStore();
-  const { storedCountry, resetStore, allCountryFeatures, filteredCountryData } =
-    countryStore;
+  // const { storedCountry, resetStore, allCountryFeatures, filteredCountryData } =
+  const { storedCountry, resetStore, filteredCountryData } = countryStore;
 
   const mapControl = useMapControl();
   const { resetView } = mapControl;
@@ -112,14 +135,6 @@ export default function MapActivity() {
     resetView();
   };
 
-  const handleFeatureClick: LeafletMouseEventHandlerFn = (event) =>
-    activityMode.current === "review" &&
-    handleMapClickReview(event.target.feature.properties.ISO_A3);
-
-  const onEachFeature = (_feature: unknown, layer: Layer) => {
-    layer.on({ click: handleFeatureClick });
-  };
-
   return (
     <>
       {error && (
@@ -136,10 +151,16 @@ export default function MapActivity() {
       <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
           <LeafletMap isActivityMode={!!activityMode.current}>
-            {!!activityMode.current && <ZoomControl position="topright" />}
-            <BackControl position="topleft" />
-            <BackControl position="topleft" />
-            <BackControl position="topleft" />
+            {!!activityMode.current && (
+              <>
+                <ZoomControl position="topright" />
+                <BackControl
+                  position="topleft"
+                  label="Finish"
+                  onClick={finishActivity}
+                />
+              </>
+            )}
 
             {storedCountry.coordinates && (
               <>
@@ -169,19 +190,35 @@ export default function MapActivity() {
               </>
             )}
 
-            <GeoJSON
-              data={allCountryFeatures}
-              style={(feature) => ({
-                fillColor:
-                  feature?.properties?.ISO_A3 === storedCountry.data?.alpha3
-                    ? "#fcd34d"
-                    : "#94a3b8",
-                fillOpacity: 1,
-                color: "white",
-                weight: 1,
-              })}
-              onEachFeature={onEachFeature}
-            />
+            <SvgMap
+              eventHandlers={{
+                click: ({ originalEvent }) => {
+                  if (activityMode.current !== "review") return;
+
+                  if (
+                    originalEvent.target &&
+                    "id" in originalEvent.target &&
+                    typeof originalEvent.target.id === "string"
+                  )
+                    handleMapClickReview(originalEvent.target.id);
+                },
+              }}
+            >
+              {svgPaths.map((item, index) => (
+                <path
+                  key={index}
+                  id={item.a3}
+                  d={item.path}
+                  style={{
+                    fill:
+                      item.a3 === storedCountry.data?.alpha3
+                        ? "#fcd34d"
+                        : "#94a3b8",
+                    strokeWidth: 0.05,
+                  }}
+                />
+              ))}
+            </SvgMap>
 
             {activityMode.current === "quiz" && (
               <MapClick callback={handleMapClickQuiz} />
@@ -210,10 +247,6 @@ export default function MapActivity() {
           <FloatingHeader
             shouldShow={!!activityMode.current}
             imageSrc={NerdMascot}
-            button={{
-              label: "Finish",
-              onClick: finishActivity,
-            }}
           >
             {activityMode.current === "quiz" && "Guess the country!"}
             {activityMode.current === "review" && "Reviewing countries"}
