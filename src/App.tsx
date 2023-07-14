@@ -85,8 +85,8 @@ const router = createBrowserRouter(
       </Route>
 
       <Route path="*" element={<PageNotFound />} />
-    </Route>
-  )
+    </Route>,
+  ),
 );
 
 export default function App() {

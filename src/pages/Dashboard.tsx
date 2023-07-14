@@ -56,7 +56,7 @@ function CountryStatsCard({ countryStats }: CountryStatsProps) {
         height={38.4}
       />
       <div>
-        <div className="w-32 text-ellipsis text-sm line-clamp-2">
+        <div className="line-clamp-2 w-32 text-ellipsis text-sm">
           {countryStats.name}
         </div>
         <CountryProgress

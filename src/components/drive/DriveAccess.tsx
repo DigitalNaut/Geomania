@@ -67,7 +67,7 @@ export default function DriveAccess() {
 
   const { driveSettings, setAutoConnectDrive } = DriveSettingsHook();
   const [rememberAutoConnect, setRememberAutoConnect] = useState(
-    driveSettings.autoConnectDrive
+    driveSettings.autoConnectDrive,
   );
 
   const handleAccessRequest = () => {

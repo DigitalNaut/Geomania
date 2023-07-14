@@ -6,8 +6,8 @@ import packageJson from "./package.json";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), svgr()],
-  define:  {
-    'import.meta.env.PACKAGE_VERSION': JSON.stringify(packageJson.version)
+  define: {
+    "import.meta.env.PACKAGE_VERSION": JSON.stringify(packageJson.version),
   },
   resolve: {
     alias: {
