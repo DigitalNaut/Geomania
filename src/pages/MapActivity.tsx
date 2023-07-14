@@ -18,6 +18,7 @@ import { useError } from "src/hooks/useError";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapControl } from "src/hooks/useMapControl";
 import { Button } from "src/components/common/Button";
+import { SvgMap, svgPaths } from "src/components/activity/MapSvg";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
 import ReviewFloatingPanel from "src/components/activity/ReviewFloatingPanel";
@@ -26,7 +27,6 @@ import InstructionOverlay from "src/components/activity/InstructionOverlay";
 import MainView from "src/components/layout/MainView";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 import CountriesListPanel from "src/components/activity/CountriesListPanel";
-import { SvgMap, svgPaths } from "src/data/mapSvg";
 
 const POSITION_CLASSES = {
   bottomleft: "leaflet-bottom leaflet-left",

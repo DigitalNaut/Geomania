@@ -1,4 +1,5 @@
 import type { LatLngTuple } from "leaflet";
+
 import { useMemo, useState } from "react";
 
 import { useCountryStoreContext } from "src/contexts/CountryStoreContext";
@@ -7,6 +8,7 @@ import countriesMetadata from "src/data/country-metadata.json";
 
 export type CountryData = (typeof countriesMetadata)[number];
 export type CountriesDataByContinent = Record<string, CountryData[]>;
+
 type CountryFilters = Record<string, boolean>;
 
 const allCountriesMetadata = countriesMetadata as CountryData[];
