@@ -37,7 +37,7 @@ function useHorizontalShakeAnimation({
       shakeXEnd,
       shakeXStart,
       0,
-    ]
+    ],
   );
 
   const startShake = () =>
@@ -116,11 +116,11 @@ export default function QuizFloatingPanel({
 }) {
   const incorrectAnswerAudio = useMemo(
     () => new Audio(incorrectAnswerAudioSrc),
-    [incorrectAnswerAudioSrc]
+    [incorrectAnswerAudioSrc],
   );
   const correctAnswerAudio = useMemo(
     () => new Audio(correctAnswerAudioSrc),
-    [correctAnswerAudioSrc]
+    [correctAnswerAudioSrc],
   );
 
   const onShakeStart = useCallback(() => {

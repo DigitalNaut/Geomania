@@ -49,8 +49,6 @@ const router = createBrowserRouter(
               </HeaderLink>
             </div>
 
-            <div>v0.3.1</div>
-
             <div className="flex w-full justify-end pl-2 text-sm">
               <DriveAccess />
             </div>
@@ -87,8 +85,8 @@ const router = createBrowserRouter(
       </Route>
 
       <Route path="*" element={<PageNotFound />} />
-    </Route>
-  )
+    </Route>,
+  ),
 );
 
 export default function App() {

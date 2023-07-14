@@ -1,19 +1,13 @@
 import type { PropsWithChildren } from "react";
 import { animated, useSpring } from "@react-spring/web";
-import { Button } from "src/components/common/Button";
 
 export default function FloatingHeader({
   shouldShow,
-  children,
   imageSrc,
-  button,
+  children,
 }: PropsWithChildren<{
   shouldShow: boolean;
   imageSrc?: string;
-  button?: {
-    label: string;
-    onClick: () => void;
-  };
 }>) {
   const springs = useSpring({
     opacity: shouldShow ? 1 : 0,
@@ -29,15 +23,6 @@ export default function FloatingHeader({
         {imageSrc && <img src={imageSrc} width={42} height={42} />}
         {children}
       </h1>
-      {button && (
-        <Button
-          className="w-fit rounded-md bg-yellow-700 text-base hover:bg-yellow-600"
-          onClick={button?.onClick}
-          title="End the activity"
-        >
-          {button?.label}
-        </Button>
-      )}
     </animated.div>
   );
 }

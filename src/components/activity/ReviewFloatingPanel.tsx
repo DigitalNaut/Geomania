@@ -62,7 +62,7 @@ export function CountryWikiInfo() {
           headers: {
             "Api-User-Agent": "johnbernalfsd@gmail.com",
           },
-        }
+        },
       ),
     refetchOnWindowFocus: false,
   });
@@ -88,7 +88,7 @@ export function CountryWikiInfo() {
           className="peer mr-2"
           src={data?.data.thumbnail?.source.replace(
             /\/\d+px-/,
-            `/${flagSize}px-`
+            `/${flagSize}px-`,
           )}
           alt={storedCountry.data?.name}
           width={flagSize}
@@ -142,7 +142,7 @@ export default function ReviewFloatingPanel({
   >;
   disabled: boolean;
 }) {
-  const [showDetails, setShowDetails] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
   const { firstTrail } = useFloatingPanelSlideInAnimation(shouldShow);
 
   return (

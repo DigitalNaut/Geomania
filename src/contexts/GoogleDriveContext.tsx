@@ -37,26 +37,26 @@ export type FilesListResponse = GoogleDriveError & gapi.client.drive.FileList;
 type GoogleDriveContextType = {
   uploadFile(
     { file, metadata }: Omit<FileParams, "id">,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<FileUploadResponse, unknown>>;
 
   updateFile(
     { file, metadata }: FileParams,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<FileUploadResponse, unknown>>;
 
   fetchFileList(
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<FilesListResponse, unknown>>;
 
   fetchFile<T extends ResponseType>(
     file: gapi.client.drive.File,
-    config?: AxiosRequestConfig<T>
+    config?: AxiosRequestConfig<T>,
   ): Promise<AxiosResponse<FileDownloadResponse<T>, unknown>>;
 
   deleteFile(
     file: gapi.client.drive.File,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<FileDeletedResponse, unknown>>;
 
   requestDriveAccess(): void;
@@ -116,7 +116,7 @@ export function GoogleDriveProvider({
   const [tokensExpirationDate, setTokensExpirationDate] = useState<Date>();
   const [error, setError] = useState<Error | null>(null);
   const [nonDriveError, setNonDriveError] = useState<NonOAuthError | null>(
-    null
+    null,
   );
 
   async function initGapiClient() {
@@ -220,7 +220,7 @@ export function GoogleDriveProvider({
 
   const uploadFile: GoogleDriveContextType["uploadFile"] = async (
     { file, metadata },
-    config
+    config,
   ) => {
     try {
       validateAccess();
@@ -234,7 +234,7 @@ export function GoogleDriveProvider({
     const body = new FormData();
     body.append(
       "metadata",
-      new Blob([JSON.stringify(metadata)], { type: "application/json" })
+      new Blob([JSON.stringify(metadata)], { type: "application/json" }),
     );
     body.append("file", file);
 
@@ -251,7 +251,7 @@ export function GoogleDriveProvider({
 
   const updateFile: GoogleDriveContextType["updateFile"] = async (
     { id, file, metadata },
-    config
+    config,
   ) => {
     try {
       validateAccess();
@@ -263,7 +263,7 @@ export function GoogleDriveProvider({
     const formBody = new FormData();
     formBody.append(
       "metadata",
-      new Blob([JSON.stringify(metadata)], { type: "application/json" })
+      new Blob([JSON.stringify(metadata)], { type: "application/json" }),
     );
     formBody.append("file", file);
 
@@ -276,7 +276,7 @@ export function GoogleDriveProvider({
           Authorization: `Bearer ${userDriveTokens?.access_token}`,
         },
         ...config,
-      }
+      },
     );
 
     return request;
@@ -284,7 +284,7 @@ export function GoogleDriveProvider({
 
   const fetchFile: GoogleDriveContextType["fetchFile"] = async (
     { id },
-    { params, ...config }: AxiosRequestConfig = {}
+    { params, ...config }: AxiosRequestConfig = {},
   ) => {
     try {
       validateAccess();
@@ -334,7 +334,7 @@ export function GoogleDriveProvider({
 
   const deleteFile: GoogleDriveContextType["deleteFile"] = async (
     { id },
-    config
+    config,
   ) => {
     try {
       validateAccess();

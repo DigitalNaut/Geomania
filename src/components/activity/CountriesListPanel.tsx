@@ -5,8 +5,8 @@ import {
   useCountryStore,
   getCountryCoordinates,
 } from "src/hooks/useCountryStore";
-import { useMapControl } from "src/hooks/useMapControl";
-import continents from "src/data/continents.json";
+import { useMapViewport } from "src/hooks/useMapViewport";
+import continents from "src/assets/data/continents.json";
 
 const continentStyles = [
   "bg-green-400/10",
@@ -26,7 +26,7 @@ export default function CountriesListPanel() {
     countryDataByContinent,
     continentFilters,
   } = useCountryStore();
-  const { flyTo } = useMapControl();
+  const { flyTo } = useMapViewport();
   const listRef = useRef<HTMLDivElement>(null);
 
   const handleCountryClick = (country: CountryData) => {
@@ -39,7 +39,7 @@ export default function CountriesListPanel() {
     if (!currentCountry.data || !listRef.current) return;
 
     const countryButton = listRef.current?.querySelector(
-      `#${currentCountry.data?.alpha3}`
+      `#${currentCountry.data?.alpha3}`,
     );
 
     countryButton?.scrollIntoView({

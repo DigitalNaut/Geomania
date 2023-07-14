@@ -23,7 +23,7 @@ type GuessRecordContextType = {
   countryStats: UserCountryStats;
   updateCountryStats(
     stats: Omit<UserCountryGuess, "timestamp" | "text"> &
-      Pick<CountryData, "name">
+      Pick<CountryData, "name">,
   ): void;
   clearProgress(): void;
 };
@@ -44,7 +44,7 @@ function useGuessHistory(limit: number) {
   }
 
   const pushGuessToHistory: GuessRecordContextType["pushGuessToHistory"] = (
-    newGuess
+    newGuess,
   ) => {
     const timestampedGuess: UserCountryGuess = {
       ...newGuess,
@@ -154,7 +154,7 @@ export function useUserGuessRecordContext() {
   const context = useContext(guessRecordContext);
   if (!context)
     throw new Error(
-      "useUserGuessRecord must be used within a UserGuessRecordProvider"
+      "useUserGuessRecord must be used within a UserGuessRecordProvider",
     );
   return context;
 }

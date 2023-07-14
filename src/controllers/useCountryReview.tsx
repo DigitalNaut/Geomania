@@ -1,13 +1,13 @@
 import { useState } from "react";
 
 import type { CountryData, useCountryStore } from "src/hooks/useCountryStore";
-import type { useMapControl } from "src/hooks/useMapControl";
+import type { useMapViewport } from "src/hooks/useMapViewport";
 import { getCountryCoordinates } from "src/hooks/useCountryStore";
 
 export function useCountryReview(
   countryStore: ReturnType<typeof useCountryStore>,
-  mapControl: ReturnType<typeof useMapControl>,
-  setError: (error: Error) => void
+  mapControl: ReturnType<typeof useMapViewport>,
+  setError: (error: Error) => void,
 ) {
   const [isRandomReviewMode, setRandomReviewMode] = useState(false);
 

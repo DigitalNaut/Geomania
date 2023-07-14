@@ -6,3 +6,11 @@ status = 200
 [[edge_functions]]
 path = "/api/keys"
 function = "keys"
+
+[dev]
+command = "pnpm start:dev"
+targetPort = 5173
+port = 8888
+publish = "dist"
+autoLaunch = true
+envFiles = [".env"]

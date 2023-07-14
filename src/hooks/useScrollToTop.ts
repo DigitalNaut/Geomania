@@ -12,7 +12,7 @@ export default function useScrollToTop() {
       const { scrollTop } = event.currentTarget;
       setIsScrolledToTop(scrollTop === 0);
     },
-    []
+    [],
   );
 
   const scrollToTop = (scrollElement: RefObject<HTMLDivElement>) => {
