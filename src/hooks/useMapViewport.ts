@@ -2,12 +2,12 @@ import type { LatLngExpression } from "leaflet";
 
 import { useMapContext } from "src/contexts/MapContext";
 
-export function useMapControl() {
+export function useMapViewport() {
   const { map, defaults } = useMapContext();
 
   function flyTo(
     destination: LatLngExpression | null,
-    { zoom = 5, animate = true, duration = 0.1 } = {}
+    { zoom = 5, animate = true, duration = 0.1 } = {},
   ) {
     if (!destination) return;
 

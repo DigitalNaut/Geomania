@@ -3,8 +3,8 @@ import type { LatLngTuple } from "leaflet";
 import { useMemo, useState } from "react";
 
 import { useCountryStoreContext } from "src/contexts/CountryStoreContext";
-import continents from "src/data/continents.json";
-import countriesMetadata from "src/data/country-metadata.json";
+import continents from "src/assets/data/continents.json";
+import countriesMetadata from "src/assets/data/country-metadata.json";
 
 export type CountryData = (typeof countriesMetadata)[number];
 export type CountriesDataByContinent = Record<string, CountryData[]>;
@@ -29,7 +29,7 @@ function useCountryData() {
     continents.reduce((continents, continent) => {
       continents[continent] = true;
       return continents;
-    }, {} as CountryFilters)
+    }, {} as CountryFilters),
   );
 
   const filteredCountryData = useMemo(
@@ -38,7 +38,7 @@ function useCountryData() {
         const { continent } = country || {};
         return continent && continentFilters[continent];
       }),
-    [continentFilters]
+    [continentFilters],
   );
 
   const countryDataByContinent = useMemo(() => {
@@ -88,7 +88,7 @@ export function useCountryStore() {
     if (!filteredCountryData.length) return null;
 
     const countryIndex = filteredCountryData.findIndex(
-      (country) => country?.alpha3 === storedCountry?.alpha3
+      (country) => country?.alpha3 === storedCountry?.alpha3,
     );
     const country =
       filteredCountryData[(countryIndex + 1) % filteredCountryData.length];
@@ -117,7 +117,7 @@ export function useCountryStore() {
     if (!filteredCountryData.length || !alpha3) return null;
 
     const country = countriesMetadata.find(
-      (country) => country.alpha3 === alpha3
+      (country) => country.alpha3 === alpha3,
     );
 
     if (!country)
