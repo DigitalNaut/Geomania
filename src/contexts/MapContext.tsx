@@ -6,26 +6,21 @@ import {
   useContext,
   useState,
 } from "react";
-import type { LatLngTuple, Map, LatLngExpression } from "leaflet";
+import type { Map } from "leaflet";
+
+import { mapDefaults } from "src/components/activity/map/LeafletMap";
 
 type MapContext = {
-  map: Map | null;
-  setMap: Dispatch<SetStateAction<Map | null>>;
-  defaults: {
-    center: LatLngExpression;
-    zoom: number;
-  };
-};
-
-const defaults = {
-  center: [0, 0] as LatLngTuple,
-  zoom: 1.5,
+  map?: Map;
+  setMap: Dispatch<SetStateAction<Map | undefined>>;
+  zoom: number;
+  setZoom: Dispatch<SetStateAction<number>>;
 };
 
 const MapContext = createContext<MapContext>({
-  map: null,
   setMap: () => null,
-  defaults,
+  zoom: mapDefaults.zoom,
+  setZoom: () => null,
 });
 
 /**
@@ -33,14 +28,16 @@ const MapContext = createContext<MapContext>({
  * Holds the map instance and the data for the current country
  */
 export default function MapContextProvider({ children }: PropsWithChildren) {
-  const [map, setMap] = useState<MapContext["map"]>(null);
+  const [map, setMap] = useState<MapContext["map"]>();
+  const [zoom, setZoom] = useState<number>(mapDefaults.zoom);
 
   return (
     <MapContext.Provider
       value={{
         map,
         setMap,
-        defaults,
+        zoom,
+        setZoom,
       }}
     >
       {children}

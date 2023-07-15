@@ -1,11 +1,9 @@
-import type { LatLngBoundsExpression, LeafletEventHandlerFnMap } from "leaflet";
-import { useState } from "react";
+import { useMemo } from "react";
+import { SVGOverlay } from "react-leaflet";
+import { type LatLngBoundsExpression, latLng, latLngBounds } from "leaflet";
 
-import { latLng, latLngBounds } from "leaflet";
-import { SVGOverlay, useMapEvents } from "react-leaflet";
-
-import mapSvg from "src/assets/images/world-map-mercator.svg?raw";
 import { useMapContext } from "src/contexts/MapContext";
+import mapSvg from "src/assets/images/world-map-mercator.svg?raw";
 
 const viewBoxParser = /viewBox="(.+?)"/g;
 const attributesParser = /<path d="(.+?)" A3="(.+?)" ADMIN="(.+?)"\/>/g;
@@ -37,22 +35,29 @@ const maxBounds = latLngBounds(topLeftCorner, bottomRightCorner);
 const bounds: LatLngBoundsExpression = maxBounds;
 
 export function SvgMap({
-  children,
-  eventHandlers,
+  highlightAlpha3,
+  onClick,
+  enableOnClick,
 }: {
-  eventHandlers?: LeafletEventHandlerFnMap;
-  children: (zoom: number) => JSX.Element;
+  highlightAlpha3?: string;
+  onClick: (alpha3: string) => void;
+  enableOnClick: boolean;
 }) {
-  const { map } = useMapContext();
-  const [zoom, setZoom] = useState(1.5);
+  const { zoom } = useMapContext();
 
-  useMapEvents({
-    zoomend: () => {
-      setZoom(map?.getZoom() || 1.5);
-      console.log("zoom", map?.getZoom());
-    },
-  });
+  const [highlightPath, otherPaths] = useMemo(() => {
+    const index = svgPaths.findIndex((item) => item.a3 === highlightAlpha3);
+    if (index === -1) return [undefined, svgPaths];
 
+    const otherPaths = svgPaths.filter((_, i) => i !== index);
+    return [svgPaths[index].path, otherPaths];
+  }, [highlightAlpha3]);
+
+  const onClickHandler = ({ originalEvent }: { originalEvent: MouseEvent }) => {
+    const target = originalEvent.target as SVGPathElement | null;
+    const alpha3 = target?.getAttribute("data-alpha3");
+    if (alpha3) onClick(alpha3);
+  };
   return (
     <SVGOverlay
       bounds={bounds}
@@ -70,10 +75,35 @@ export function SvgMap({
       opacity={1}
       interactive
       zIndex={1000}
-      eventHandlers={eventHandlers}
       className="transition-colors duration-500 ease-in-out"
+      eventHandlers={{
+        click: enableOnClick ? onClickHandler : undefined,
+      }}
     >
-      {children(zoom)}
+      {otherPaths.map((item, index) => (
+        <path
+          key={index}
+          data-alpha3={item.a3}
+          d={item.path}
+          style={{
+            stroke: "unset",
+            fill: "#94a3b8",
+            strokeWidth: 1 / zoom ** 2,
+          }}
+        />
+      ))}
+      {/* SVG path for the highlight country must be rendered last to be on top of the other countries */}
+      {highlightPath && (
+        <path
+          data-alpha3={highlightAlpha3}
+          d={highlightPath}
+          style={{
+            stroke: "#fcd34d",
+            fill: "#fcd34d",
+            strokeWidth: 2 / zoom ** 2,
+          }}
+        />
+      )}
     </SVGOverlay>
   );
 }
