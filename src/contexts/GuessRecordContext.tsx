@@ -1,6 +1,12 @@
-import type { PropsWithChildren } from "react";
+import {
+  type PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
 import type { CountryData } from "src/hooks/useCountryStore";
-import { createContext, useContext, useEffect, useState } from "react";
 
 export type UserCountryGuess = {
   timestamp: number;

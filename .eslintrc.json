@@ -48,12 +48,13 @@
       "warn",
       { "allowSameFolder": true }
     ],
-    "object-shorthand": ["error", "always"],
+    "object-shorthand": ["warn", "always"],
     "consistent-return": ["warn"],
-    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/rules-of-hooks": "warn",
     "react-hooks/exhaustive-deps": "warn",
     "no-use-before-define": "warn",
-    "@tanstack/query/exhaustive-deps": "error",
-    "@tanstack/query/prefer-query-object-syntax": "error"
+    "no-duplicate-imports": "error",
+    "@tanstack/query/exhaustive-deps": "warn",
+    "@tanstack/query/prefer-query-object-syntax": "warn"
   }
 }

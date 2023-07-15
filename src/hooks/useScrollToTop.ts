@@ -1,5 +1,10 @@
-import type { RefObject, UIEventHandler } from "react";
-import { createRef, useCallback, useState } from "react";
+import {
+  type RefObject,
+  type UIEventHandler,
+  createRef,
+  useCallback,
+  useState,
+} from "react";
 
 // See: Keep overflow div scrolled to bottom unless user scrolls up https://stackoverflow.com/a/21067431/13351497
 

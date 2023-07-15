@@ -1,7 +1,12 @@
-import type { Dispatch, SetStateAction, PropsWithChildren } from "react";
-import type { LatLngTuple, Map } from "leaflet";
-import type { LatLngExpression } from "leaflet";
-import { createContext, useContext, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  type PropsWithChildren,
+  createContext,
+  useContext,
+  useState,
+} from "react";
+import type { LatLngTuple, Map, LatLngExpression } from "leaflet";
 
 type MapContext = {
   map: Map | null;

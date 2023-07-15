@@ -3,10 +3,11 @@ import { animated, useSpring } from "@react-spring/web";
 
 import { faBroom } from "@fortawesome/free-solid-svg-icons";
 
-import type { CountryStats } from "src/contexts/GuessRecordContext";
-
 import MainView from "src/components/layout/MainView";
-import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
+import {
+  type CountryStats,
+  useUserGuessRecordContext,
+} from "src/contexts/GuessRecordContext";
 import { Link } from "react-router-dom";
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg";
 import { Button } from "src/components/common/Button";

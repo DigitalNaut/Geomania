@@ -1,6 +1,9 @@
-import type { KeyboardEvent } from "react";
-import type { PropsWithChildren } from "react";
-import { useCallback, useMemo } from "react";
+import {
+  type KeyboardEvent,
+  type PropsWithChildren,
+  useCallback,
+  useMemo,
+} from "react";
 import { animated, useSpring, useTrail } from "@react-spring/web";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForward, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";

@@ -1,9 +1,20 @@
-import type { PropsWithChildren } from "react";
-import type { AxiosRequestConfig, AxiosResponse, ResponseType } from "axios";
-import type { NonOAuthError, TokenResponse } from "@react-oauth/google";
-import { useState, createContext, useContext } from "react";
-import { useGoogleLogin, hasGrantedAnyScopeGoogle } from "@react-oauth/google";
-import axios from "axios";
+import {
+  type PropsWithChildren,
+  useState,
+  createContext,
+  useContext,
+} from "react";
+import {
+  type NonOAuthError,
+  type TokenResponse,
+  useGoogleLogin,
+  hasGrantedAnyScopeGoogle,
+} from "@react-oauth/google";
+import axios, {
+  type AxiosRequestConfig,
+  type AxiosResponse,
+  type ResponseType,
+} from "axios";
 
 import { Script } from "src/components/common/Script";
 
@@ -131,7 +142,7 @@ export function GoogleDriveProvider({
       if (error instanceof Error) {
         setError(error);
       }
-      console.log("Weird error was:", error);
+      console.log("Unknown error:", error);
       setIsLoaded(false);
     }
   }

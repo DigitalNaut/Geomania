@@ -1,5 +1,9 @@
-import type { PropsWithChildren, HTMLProps } from "react";
-import { useCallback, useState } from "react";
+import {
+  type PropsWithChildren,
+  type HTMLProps,
+  useCallback,
+  useState,
+} from "react";
 
 export function useDialog(initialContent: JSX.Element | null = null) {
   const [isOpen, setIsOpen] = useState(false);
