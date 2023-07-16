@@ -31,9 +31,12 @@
   "dotenv.enableAutocloaking": false,
   "deno.enable": true,
   "deno.enablePaths": ["netlify/edge-functions"],
-    "netlify/edge-functions"
-  ],
   "deno.unstable": true,
   "deno.importMap": ".netlify/edge-functions-import-map.json",
-  "deno.path": "C:\\Users\\hoaxy\\AppData\\Roaming\\netlify\\Config\\deno-cli\\deno.exe"
+  "deno.path": "C:\\Users\\hoaxy\\AppData\\Roaming\\netlify\\Config\\deno-cli\\deno.exe",
+  "markdownlint.config": {
+    "MD033": {
+      "allowed_elements": ["details", "summary"]
+    }
+  }
 }
