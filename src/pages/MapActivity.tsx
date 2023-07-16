@@ -3,18 +3,14 @@ import { Marker, ZoomControl, Popup } from "react-leaflet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-import {
-  BackControl,
-  MapClick,
-  TileLayersControl,
-} from "src/components/activity/mapControls";
-import { LeafletMap, markerIcon } from "src/components/activity/LeafletMap";
+import { BackControl, MapClick, TileLayersControl } from "src/components/map";
+import { LeafletMap, markerIcon } from "src/components/map/LeafletMap";
 import { useCountryQuiz } from "src/controllers/useCountryQuiz";
 import { useCountryReview } from "src/controllers/useCountryReview";
 import { useError } from "src/hooks/useError";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
-import { SvgMap, svgPaths } from "src/components/activity/MapSvg";
+import { SvgMap } from "src/components/map/MapSvg";
 import { ActivityButton } from "src/components/activity/ActivityButton";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
@@ -38,21 +34,37 @@ function useActivityMode() {
   return { activityMode, chooseActivity };
 }
 
+function ErrorBanner({
+  error,
+  dismissError,
+}: {
+  error: Error;
+  dismissError: () => void;
+}) {
+  return (
+    <div className="flex w-full flex-[0] justify-center bg-red-800 p-2">
+      <div className="flex gap-6">
+        {error.message}
+        <button role="button" title="Dismiss" onClick={dismissError}>
+          <FontAwesomeIcon icon={faTimes} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function MapActivity() {
   const { error, setError, dismissError } = useError();
   const { activityMode, chooseActivity } = useActivityMode();
   const countryStore = useCountryStore();
-  // const { storedCountry, resetStore, allCountryFeatures, filteredCountryData } =
   const { storedCountry, resetStore, filteredCountryData } = countryStore;
 
-  const mapControl = useMapViewport();
-  const { resetView } = mapControl;
   const {
     handleMapClick: handleMapClickReview,
     showNextCountry,
     isRandomReviewMode,
     setRandomReviewMode,
-  } = useCountryReview(countryStore, mapControl, setError);
+  } = useCountryReview(countryStore, setError);
   const {
     answerInputRef,
     submitAnswer,
@@ -61,8 +73,9 @@ export default function MapActivity() {
     guessHistory,
     skipCountry,
     handleMapClick: handleMapClickQuiz,
-  } = useCountryQuiz(countryStore, mapControl, setError);
+  } = useCountryQuiz(countryStore, setError);
 
+  const { resetView } = useMapViewport();
   const finishActivity = () => {
     activityMode.current = undefined;
     resetStore();
@@ -71,21 +84,12 @@ export default function MapActivity() {
 
   return (
     <>
-      {error && (
-        <div className="flex w-full flex-[0] justify-center bg-red-800 p-2">
-          <div className="flex gap-6">
-            {error.message}
-            <button role="button" title="Dismiss" onClick={dismissError}>
-              <FontAwesomeIcon icon={faTimes} />
-            </button>
-          </div>
-        </div>
-      )}
+      {error && <ErrorBanner error={error} dismissError={dismissError} />}
 
       <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
           <LeafletMap>
-            {!!activityMode.current && (
+            {activityMode.current && (
               <>
                 <TileLayersControl />
 
@@ -116,6 +120,7 @@ export default function MapActivity() {
                     autoPan={false}
                     eventHandlers={{
                       remove: () =>
+                        // TODO: Find a better way to handle this
                         console.log(
                           "Popup removed, please provide an alternative place to display the country name",
                         ),
@@ -127,47 +132,15 @@ export default function MapActivity() {
               </>
             )}
 
-            <SvgMap
-              eventHandlers={{
-                click: ({ originalEvent }) => {
-                  if (activityMode.current !== "review") return;
-
-                  if (
-                    originalEvent.target &&
-                    "id" in originalEvent.target &&
-                    typeof originalEvent.target.id === "string"
-                  )
-                    handleMapClickReview(originalEvent.target.id);
-                },
-              }}
-            >
-              {(zoom) => (
-                <>
-                  {svgPaths.map((item, index) => (
-                    <path
-                      key={index}
-                      id={item.a3}
-                      d={item.path}
-                      style={{
-                        stroke:
-                          item.a3 === storedCountry.data?.alpha3
-                            ? "#fcd34d"
-                            : "unset",
-                        fill:
-                          item.a3 === storedCountry.data?.alpha3
-                            ? "#fcd34d"
-                            : "#94a3b8",
-                        strokeWidth: 1 / zoom ** 2,
-                      }}
-                    />
-                  ))}
-                </>
-              )}
-            </SvgMap>
-
             {activityMode.current === "quiz" && (
               <MapClick callback={handleMapClickQuiz} />
             )}
+
+            <SvgMap
+              highlightAlpha3={storedCountry.data?.alpha3}
+              onClick={handleMapClickReview}
+              enableOnClick={activityMode.current === "review"}
+            />
           </LeafletMap>
 
           <InstructionOverlay shouldShow={!activityMode.current}>
@@ -220,6 +193,7 @@ export default function MapActivity() {
               setRandomReviewMode,
             }}
             disabled={filteredCountryData.length === 0}
+            onError={setError}
           />
         </div>
 

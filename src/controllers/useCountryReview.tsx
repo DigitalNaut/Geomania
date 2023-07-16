@@ -1,14 +1,17 @@
 import { useState } from "react";
 
-import type { CountryData, useCountryStore } from "src/hooks/useCountryStore";
-import type { useMapViewport } from "src/hooks/useMapViewport";
-import { getCountryCoordinates } from "src/hooks/useCountryStore";
+import { useMapViewport } from "src/hooks/useMapViewport";
+import {
+  type CountryData,
+  type useCountryStore,
+  getCountryCoordinates,
+} from "src/hooks/useCountryStore";
 
 export function useCountryReview(
   countryStore: ReturnType<typeof useCountryStore>,
-  mapControl: ReturnType<typeof useMapViewport>,
   setError: (error: Error) => void,
 ) {
+  const mapControl = useMapViewport();
   const [isRandomReviewMode, setRandomReviewMode] = useState(false);
 
   const {
@@ -36,10 +39,15 @@ export function useCountryReview(
   }
 
   const handleMapClick = (alpha3?: string) => {
-    const country = getCountryDataByCode(alpha3);
-    if (country) focusUI(country);
-    else if (storedCountry.data) focusUI(storedCountry.data);
-    else showNextCountry();
+    try {
+      const country = getCountryDataByCode(alpha3);
+      if (country) focusUI(country);
+      else if (storedCountry.data) focusUI(storedCountry.data);
+      else showNextCountry();
+    } catch (error) {
+      if (error instanceof Error) setError(error);
+      else setError(new Error("An unknown error occurred."));
+    }
   };
 
   return {

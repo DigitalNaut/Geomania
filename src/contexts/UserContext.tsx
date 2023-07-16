@@ -1,7 +1,14 @@
-import type { CredentialResponse } from "@react-oauth/google";
-import type { PropsWithChildren } from "react";
-import { GoogleLogin, googleLogout } from "@react-oauth/google";
-import { createContext, useContext, useState } from "react";
+import {
+  type CredentialResponse,
+  GoogleLogin,
+  googleLogout,
+} from "@react-oauth/google";
+import {
+  type PropsWithChildren,
+  createContext,
+  useContext,
+  useState,
+} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDoorOpen,

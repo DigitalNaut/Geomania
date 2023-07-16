@@ -1,13 +1,19 @@
 import type { LatLngExpression } from "leaflet";
+import { useEffect } from "react";
 
+import { mapDefaults } from "src/components/map/LeafletMap";
 import { useMapContext } from "src/contexts/MapContext";
 
 export function useMapViewport() {
-  const { map, defaults } = useMapContext();
+  const { map } = useMapContext();
+
+  useEffect(() => {
+    map?.setMaxBounds(map.getBounds());
+  }, [map]);
 
   function flyTo(
     destination: LatLngExpression | null,
-    { zoom = 5, animate = true, duration = 0.1 } = {},
+    { zoom = 4, animate = true, duration = 0.1 } = {},
   ) {
     if (!destination) return;
 
@@ -18,7 +24,7 @@ export function useMapViewport() {
   }
 
   function resetView() {
-    map?.setView(defaults.center, defaults.zoom);
+    map?.setView(mapDefaults.center, mapDefaults.zoom);
   }
 
   return { flyTo, resetView };

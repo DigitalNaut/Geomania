@@ -1,12 +1,11 @@
-import type { PropsWithChildren } from "react";
+import { type PropsWithChildren, useState, useEffect } from "react";
 import type { NonOAuthError } from "@react-oauth/google";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
   faSpinner,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useGoogleDrive } from "src/contexts/GoogleDriveContext";
 import { Button } from "src/components/common/Button";

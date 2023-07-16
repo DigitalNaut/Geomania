@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
-import type { CountryData } from "src/hooks/useCountryStore";
 import {
+  type CountryData,
   useCountryStore,
   getCountryCoordinates,
 } from "src/hooks/useCountryStore";

@@ -3,16 +3,19 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
+  Outlet,
 } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import {
   faChartLine,
   faCog,
   faMap,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
-import { Outlet } from "react-router-dom";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  QueryClientProvider,
+  QueryClient,
+} from "@tanstack/react-query";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleDriveProvider } from "src/contexts/GoogleDriveContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
