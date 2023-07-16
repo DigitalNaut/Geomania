@@ -1,7 +1,7 @@
 import type { LatLngExpression } from "leaflet";
 import { useEffect } from "react";
 
-import { mapDefaults } from "src/components/activity/map/LeafletMap";
+import { mapDefaults } from "src/components/map/LeafletMap";
 import { useMapContext } from "src/contexts/MapContext";
 
 export function useMapViewport() {

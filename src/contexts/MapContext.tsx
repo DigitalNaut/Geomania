@@ -8,7 +8,7 @@ import {
 } from "react";
 import type { Map } from "leaflet";
 
-import { mapDefaults } from "src/components/activity/map/LeafletMap";
+import { mapDefaults } from "src/components/map/LeafletMap";
 
 type MapContext = {
   map?: Map;

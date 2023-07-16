@@ -3,18 +3,14 @@ import { Marker, ZoomControl, Popup } from "react-leaflet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-import {
-  BackControl,
-  MapClick,
-  TileLayersControl,
-} from "src/components/activity/map";
-import { LeafletMap, markerIcon } from "src/components/activity/map/LeafletMap";
+import { BackControl, MapClick, TileLayersControl } from "src/components/map";
+import { LeafletMap, markerIcon } from "src/components/map/LeafletMap";
 import { useCountryQuiz } from "src/controllers/useCountryQuiz";
 import { useCountryReview } from "src/controllers/useCountryReview";
 import { useError } from "src/hooks/useError";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
-import { SvgMap } from "src/components/activity/map/MapSvg";
+import { SvgMap } from "src/components/map/MapSvg";
 import { ActivityButton } from "src/components/activity/ActivityButton";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
@@ -197,6 +193,7 @@ export default function MapActivity() {
               setRandomReviewMode,
             }}
             disabled={filteredCountryData.length === 0}
+            onError={setError}
           />
         </div>
 

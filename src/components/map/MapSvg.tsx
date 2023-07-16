@@ -77,7 +77,7 @@ export function SvgMap({
       zIndex={1000}
       className="transition-colors duration-500 ease-in-out"
       eventHandlers={{
-        click: enableOnClick ? onClickHandler : undefined,
+        click: enableOnClick ? onClickHandler : () => null,
       }}
     >
       {otherPaths.map((item, index) => (
