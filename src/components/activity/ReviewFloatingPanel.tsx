@@ -1,5 +1,5 @@
 import { animated } from "@react-spring/web";
-import { createElement, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
@@ -7,44 +7,16 @@ import type { useCountryReview } from "src/controllers/useCountryReview";
 import { ActionButton } from "src/components/common/ActionButton";
 import { useFloatingPanelSlideInAnimation } from "src/components/activity/QuizFloatingPanel";
 import { useCountryStore } from "src/hooks/useCountryStore";
+import { RenderDOM } from "src/components/common/RenderDOM";
 
-const flagSize = 48;
+const wikidataApi =
+  "https://en.wikipedia.org/w/api.php?format=json&action=query";
 
-const purgedElementsRegex = /<\/?(p|span|ol|li)(\s\w+="[a-z- ]+?")?>/g;
-const elementsRegex = /(.*?)<(i|b|sup)>(.+?)<\/\2>(.*?)/g;
-const mergedElementsRegex = /\s+(—)\s+/g;
-
-function purge(text: string) {
-  return text
-    .replace(purgedElementsRegex, " ")
-    .replace(mergedElementsRegex, "$1");
-}
-
-function replace(text: string) {
-  const matches = [...text.matchAll(elementsRegex)];
-
-  return matches.map(([, before, tag, content, after], i) => {
-    const last =
-      i === matches.length - 1 &&
-      text.slice((matches[i].index || 0) + matches[i][0].length);
-
-    return (
-      <span key={i}>
-        {before && <span>{before}</span>}
-        {createElement(tag, { key: content }, content)}
-        {after && <span>{after}</span>}
-        {last && <span>{last}</span>}
-      </span>
-    );
-  });
-}
-
-function parse(text?: string) {
-  if (!text) return null;
-  return replace(purge(text));
-}
-
-export function CountryWikiInfo() {
+export function CountryWikiInfo({
+  onError,
+}: {
+  onError: (error: Error) => void;
+}) {
   const { storedCountry } = useCountryStore();
   const { isLoading, error, data } = useQuery({
     queryKey: [
@@ -54,18 +26,26 @@ export function CountryWikiInfo() {
       storedCountry.data?.name,
     ],
     queryFn: () =>
-      axios.get<WikipediaSummaryResponse>(
-        `https://en.wikipedia.org/api/rest_v1/page/summary/${
-          storedCountry.data?.wikipedia ?? storedCountry.data?.name
-        }`,
-        {
-          headers: {
-            "Api-User-Agent": "johnbernalfsd@gmail.com",
+      axios
+        .get<WikidataSummaryResponse>(
+          `${wikidataApi}&prop=info%7Cpageimages%7Cextracts&exintro&inprop=url&piprop=thumbnail%7Coriginal&redirects=1&origin=*&titles=${
+            storedCountry.data?.wikipedia ?? storedCountry.data?.name ?? ""
+          }`,
+          {
+            headers: {
+              "Api-User-Agent": import.meta.env.VITE_WIKIPEDIA_API_USER_AGENT,
+            },
           },
-        },
-      ),
+        )
+        .then((response) => {
+          return response.data;
+        }),
     refetchOnWindowFocus: false,
   });
+
+  useEffect(() => {
+    if (error) onError(error as Error);
+  }, [error, onError]);
 
   if (isLoading)
     return <div className={"rounded-md bg-sky-900/60 p-3"}>Loading...</div>;
@@ -81,38 +61,40 @@ export function CountryWikiInfo() {
       </p>
     );
 
+  const page = data ? Object.values(data?.query.pages)[0] : undefined;
+
+  if (!page) {
+    return <p>Page not found</p>;
+  }
+
+  if (page.missing) return <p>Data unavailable</p>;
+
   return (
-    <section className="flex max-h-[300px] max-w-xl flex-col gap-2 p-3">
-      <h3 className="flex items-center text-xl">
-        <img
-          className="peer mr-2"
-          src={data?.data.thumbnail?.source.replace(
-            /\/\d+px-/,
-            `/${flagSize}px-`,
-          )}
-          alt={storedCountry.data?.name}
-          width={flagSize}
-        />
-        <span className="pointer-events-none absolute top-0 z-50 hidden -translate-y-1/3 rounded-sm bg-slate-200 p-2 shadow-lg peer-hover:block">
+    <section className="flex max-h-[300px] max-w-xl flex-col p-3">
+      <div className="prose visible scroll-pb-3 overflow-y-auto indent-2 text-white scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700">
+        <div className="float-left mt-5">
           <img
-            className="shadow-md"
-            loading="lazy"
-            src={data?.data.thumbnail?.source}
-            width={data?.data.thumbnail?.width}
-            height={data?.data.thumbnail?.height}
+            className="peer m-2"
+            alt={storedCountry.data?.name}
+            src={page.thumbnail.source}
+            width={page.thumbnail.width}
           />
-        </span>
-        <div className="flex flex-col">
-          <span>{data?.data.title}</span>
-          <span className="text-xs">{data?.data.description}</span>
+
+          <span className="pointer-events-none absolute top-0 z-50 hidden -translate-y-1/3 rounded-sm bg-slate-200 p-2 shadow-lg peer-hover:block">
+            <img
+              className="shadow-md"
+              loading="lazy"
+              src={page.original.source}
+              width={page.original.width}
+              height={page.original.height}
+            />
+          </span>
         </div>
-      </h3>
-      <p className="prose visible scroll-pb-3 overflow-y-auto indent-4 text-white scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700">
-        {parse(data?.data?.extract_html)}
-      </p>
+        <RenderDOM input={page.extract} />
+      </div>
       <span className="flex justify-end">
         <a
-          href={data?.data.content_urls.desktop.page}
+          href={page.fullurl}
           target="_blank"
           rel="noreferrer"
           className="mr-2 flex items-center justify-end gap-1 text-blue-300 hover:underline"
@@ -134,6 +116,7 @@ export default function ReviewFloatingPanel({
   shouldShow,
   activity: { showNextCountry, isRandomReviewMode, setRandomReviewMode },
   disabled,
+  onError,
 }: {
   shouldShow: boolean;
   activity: Pick<
@@ -141,6 +124,7 @@ export default function ReviewFloatingPanel({
     "showNextCountry" | "isRandomReviewMode" | "setRandomReviewMode"
   >;
   disabled: boolean;
+  onError: (error: Error) => void;
 }) {
   const [showDetails, setShowDetails] = useState(false);
   const { firstTrail } = useFloatingPanelSlideInAnimation(shouldShow);
@@ -156,7 +140,7 @@ export default function ReviewFloatingPanel({
         onToggle={(event) => setShowDetails(event.currentTarget.open)}
       >
         <summary className="cursor-pointer">Wikipedia summary</summary>
-        {shouldShow && showDetails && <CountryWikiInfo />}
+        {shouldShow && showDetails && <CountryWikiInfo onError={onError} />}
       </details>
       <div className="pointer-events-auto flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
         <animated.div className="flex w-full flex-col items-center overflow-hidden rounded-md">

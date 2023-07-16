@@ -1,50 +1,32 @@
-interface Desktop {
-  page: string;
-  revisions: string;
-  edit: string;
-  talk: string;
-}
-
-interface ContentUrls {
-  desktop: Desktop;
-  mobile: Desktop;
-}
-
-interface Thumbnail {
+interface Image {
   source: string;
   width: number;
   height: number;
 }
 
-interface Titles {
-  canonical: string;
-  normalized: string;
-  display: string;
-}
-
-interface Namespace {
-  id: number;
-  text: string;
-}
-
-declare interface WikipediaSummaryResponse {
-  type: string;
+type PageNotFound = {
+  ns: number;
   title: string;
-  displaytitle: string;
-  namespace: Namespace;
-  wikibase_item: string;
-  titles: Titles;
+  missing?: string;
+};
+
+type PageInfo = {
   pageid: number;
-  thumbnail: Thumbnail;
-  originalimage: Thumbnail;
-  lang: string;
-  dir: string;
-  revision: string;
-  tid: string;
-  timestamp: string;
-  description: string;
-  description_source: string;
-  content_urls: ContentUrls;
+  ns: number;
+  title: string;
   extract: string;
-  extract_html: string;
+  thumbnail: Image;
+  original: Image;
+  fullurl: string;
+};
+
+type Pages = Record<number, PageInfo & PageNotFound>;
+
+interface Query {
+  pages: Pages;
+}
+
+declare interface WikidataSummaryResponse {
+  batchcomplete: string;
+  query: Query;
 }

@@ -1,13 +1,23 @@
 {
   "cSpell.words": [
+    "batchcomplete",
+    "Cextracts",
+    "Coriginal",
+    "Cpageimages",
+    "exintro",
     "fontawesome",
     "fortawesome",
+    "fullurl",
     "gapi",
     "Gapi",
     "geomaniac",
     "GQIS",
+    "inprop",
     "merc",
+    "pageid",
+    "parsererror",
     "paytone",
+    "piprop",
     "ponicode",
     "signin",
     "signout",
@@ -20,7 +30,7 @@
   ],
   "dotenv.enableAutocloaking": false,
   "deno.enable": true,
-  "deno.enablePaths": [
+  "deno.enablePaths": ["netlify/edge-functions"],
     "netlify/edge-functions"
   ],
   "deno.unstable": true,
