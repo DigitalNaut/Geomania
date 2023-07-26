@@ -67,7 +67,7 @@ export function CountryWikiInfo({
     return <p>Page not found</p>;
   }
 
-  if (page.missing) return <p>Data unavailable</p>;
+  if ("missing" in page) return <p>Data unavailable</p>;
 
   return (
     <section className="flex max-h-[300px] max-w-xl flex-col p-3">
