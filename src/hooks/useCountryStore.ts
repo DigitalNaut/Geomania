@@ -77,21 +77,13 @@ export function getCountryCoordinates(country: CountryData) {
 
 export function useCountryStore() {
   const { storedCountry, setStoredCountry } = useCountryStoreContext();
-  const {
-    toggleContinentFilter,
-    countryDataByContinent,
-    filteredCountryData,
-    continentFilters,
-  } = useCountryData();
+  const { toggleContinentFilter, countryDataByContinent, filteredCountryData, continentFilters } = useCountryData();
 
   function getNextCountryData(): CountryData | null {
     if (!filteredCountryData.length) return null;
 
-    const countryIndex = filteredCountryData.findIndex(
-      (country) => country?.alpha3 === storedCountry?.alpha3,
-    );
-    const country =
-      filteredCountryData[(countryIndex + 1) % filteredCountryData.length];
+    const countryIndex = filteredCountryData.findIndex((country) => country?.alpha3 === storedCountry?.alpha3);
+    const country = filteredCountryData[(countryIndex + 1) % filteredCountryData.length];
 
     if (!country) throw new Error(`No country found for index ${countryIndex}`);
 
@@ -116,12 +108,9 @@ export function useCountryStore() {
   function getCountryDataByCode(alpha3?: string): CountryData | null {
     if (!filteredCountryData.length || !alpha3) return null;
 
-    const country = countriesMetadata.find(
-      (country) => country.alpha3 === alpha3,
-    );
+    const country = countriesMetadata.find((country) => country.alpha3 === alpha3);
 
-    if (!country)
-      throw new Error(`No country found for country code ${alpha3}`);
+    if (!country) throw new Error(`No country found for country code ${alpha3}`);
 
     setStoredCountry(country);
 
@@ -130,8 +119,7 @@ export function useCountryStore() {
 
   const compareStoredCountry = (countryName: string) => {
     const correctAnswer = storedCountry?.name || "";
-    const inputMatchesAnswer =
-      normalizeName(countryName) === normalizeName(correctAnswer);
+    const inputMatchesAnswer = normalizeName(countryName) === normalizeName(correctAnswer);
 
     return inputMatchesAnswer;
   };

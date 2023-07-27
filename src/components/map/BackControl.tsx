@@ -19,8 +19,7 @@ export function BackControl({
   onClick: () => void;
   label?: string;
 }) {
-  const positionClass =
-    (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright;
+  const positionClass = (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright;
   return (
     <div className={positionClass}>
       <div className="leaflet-control leaflet-bar rounded-full">

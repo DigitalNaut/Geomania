@@ -18,9 +18,7 @@ export function HeaderLink({ to, children, icon }: HeaderLinkProps) {
   return (
     <NavLink
       className={({ isActive }) =>
-        `${headerLinkBaseStyle} ${
-          isActive ? headerLinkActiveStyle : headerLinkInactiveStyle
-        }`
+        `${headerLinkBaseStyle} ${isActive ? headerLinkActiveStyle : headerLinkInactiveStyle}`
       }
       to={to}
     >
@@ -35,15 +33,9 @@ type HeaderProps = PropsWithChildren<{
   title?: string;
 }>;
 
-export default function Header({
-  children,
-  className,
-  title,
-}: HeaderProps): JSX.Element {
+export default function Header({ children, className, title }: HeaderProps): JSX.Element {
   return (
-    <div
-      className={`relative z-[1500] flex items-center gap-2 p-2 shadow-md ${className}`}
-    >
+    <div className={`relative z-[1500] flex items-center gap-2 p-2 shadow-md ${className}`}>
       <Link to="/">
         <Logo title={title} width={224} height={36} />
       </Link>

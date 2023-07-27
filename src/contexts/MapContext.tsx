@@ -1,11 +1,4 @@
-import {
-  type Dispatch,
-  type SetStateAction,
-  type PropsWithChildren,
-  createContext,
-  useContext,
-  useState,
-} from "react";
+import { type Dispatch, type SetStateAction, type PropsWithChildren, createContext, useContext, useState } from "react";
 import type { Map } from "leaflet";
 
 import { mapDefaults } from "src/components/map/LeafletMap";
@@ -47,8 +40,7 @@ export default function MapContextProvider({ children }: PropsWithChildren) {
 
 export function useMapContext() {
   const context = useContext(MapContext);
-  if (!context)
-    throw new Error("useMapContext must be used within a MapContextProvider");
+  if (!context) throw new Error("useMapContext must be used within a MapContextProvider");
 
   return context;
 }

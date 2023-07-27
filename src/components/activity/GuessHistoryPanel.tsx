@@ -14,17 +14,8 @@ const props = {
   config: { duration: 200 },
 };
 
-export default function GuessHistoryPanel({
-  guessHistory,
-}: {
-  guessHistory: UserCountryGuess[];
-}) {
-  const {
-    isScrolledToBottom,
-    handleScrollEvent,
-    scrollToTop,
-    scrollElementRef,
-  } = useScrollToTop();
+export default function GuessHistoryPanel({ guessHistory }: { guessHistory: UserCountryGuess[] }) {
+  const { isScrolledToBottom, handleScrollEvent, scrollToTop, scrollElementRef } = useScrollToTop();
   const [rendered, setRendered] = useState(false);
   const [springs, api] = useSpring(() => ({}));
 
@@ -35,9 +26,7 @@ export default function GuessHistoryPanel({
 
   return (
     <div className="relative flex h-1/5 w-auto flex-col gap-2 sm:h-auto sm:w-[30ch]">
-      <h2 className="text-center text-xl italic text-slate-300">
-        My Guess History
-      </h2>
+      <h2 className="text-center text-xl italic text-slate-300">My Guess History</h2>
       <div
         className="flex flex-1 flex-col overflow-y-auto text-ellipsis px-2"
         onScroll={handleScrollEvent}
@@ -49,13 +38,9 @@ export default function GuessHistoryPanel({
               const isLastItem = index === guessHistory.length - 1;
 
               if (isLastItem) {
-                itemStyle = `py-2 text-white ${
-                  guess.isCorrect ? "bg-green-800" : "bg-yellow-800"
-                }`;
+                itemStyle = `py-2 text-white ${guess.isCorrect ? "bg-green-800" : "bg-yellow-800"}`;
               } else {
-                itemStyle = guess.isCorrect
-                  ? " text-green-500 "
-                  : " text-slate-200 ";
+                itemStyle = guess.isCorrect ? " text-green-500 " : " text-slate-200 ";
               }
 
               return (
@@ -71,9 +56,7 @@ export default function GuessHistoryPanel({
               );
             })
           ) : (
-            <div className="pt-2 text-center text-sm italic">
-              None yet, start guessing!
-            </div>
+            <div className="pt-2 text-center text-sm italic">None yet, start guessing!</div>
           )}
         </div>
         {!isScrolledToBottom && (

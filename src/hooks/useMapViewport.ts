@@ -11,10 +11,7 @@ export function useMapViewport() {
     map?.setMaxBounds(map.getBounds());
   }, [map]);
 
-  function flyTo(
-    destination: LatLngExpression | null,
-    { zoom = 4, animate = true, duration = 0.1 } = {},
-  ) {
+  function flyTo(destination: LatLngExpression | null, { zoom = 4, animate = true, duration = 0.1 } = {}) {
     if (!destination) return;
 
     map?.flyTo(destination, zoom, {

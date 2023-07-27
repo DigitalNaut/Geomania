@@ -6,10 +6,7 @@ type ErrorFallbackProps = {
   resetErrorBoundary: () => void;
 };
 
-export default function ErrorFallback({
-  error,
-  resetErrorBoundary,
-}: ErrorFallbackProps) {
+export default function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
   return (
     <div className="flex h-screen flex-1 items-center justify-center bg-slate-900 p-6 text-white">
       <div
