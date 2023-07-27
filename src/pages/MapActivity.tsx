@@ -23,6 +23,9 @@ import CountriesListPanel from "src/components/activity/CountriesListPanel";
 
 type ActivityMode = "review" | "quiz";
 
+const incorrectAnswerAudioSrc = new URL("src/assets/sounds/incorrect.mp3", import.meta.url);
+const correctAnswerAudioSrc = new URL("src/assets/sounds/correct.mp3", import.meta.url);
+
 function useActivityMode() {
   const activityMode = useRef<ActivityMode>();
 
@@ -34,13 +37,7 @@ function useActivityMode() {
   return { activityMode, chooseActivity };
 }
 
-function ErrorBanner({
-  error,
-  dismissError,
-}: {
-  error: Error;
-  dismissError: () => void;
-}) {
+function ErrorBanner({ error, dismissError }: { error: Error; dismissError: () => void }) {
   return (
     <div className="flex w-full flex-[0] justify-center bg-red-800 p-2">
       <div className="flex gap-6">
@@ -95,20 +92,13 @@ export default function MapActivity() {
 
                 <ZoomControl position="topright" />
 
-                <BackControl
-                  position="topleft"
-                  label="Finish"
-                  onClick={finishActivity}
-                />
+                <BackControl position="topleft" label="Finish" onClick={finishActivity} />
               </>
             )}
 
             {storedCountry.coordinates && (
               <>
-                <Marker
-                  position={storedCountry.coordinates}
-                  icon={markerIcon}
-                />
+                <Marker position={storedCountry.coordinates} icon={markerIcon} />
                 {activityMode.current === "review" && (
                   <Popup
                     position={storedCountry.coordinates}
@@ -121,9 +111,7 @@ export default function MapActivity() {
                     eventHandlers={{
                       remove: () =>
                         // TODO: Find a better way to handle this
-                        console.log(
-                          "Popup removed, please provide an alternative place to display the country name",
-                        ),
+                        console.log("Popup removed, please provide an alternative place to display the country name"),
                     }}
                   >
                     <h3 className="text-xl">{storedCountry.data?.name}</h3>
@@ -132,9 +120,7 @@ export default function MapActivity() {
               </>
             )}
 
-            {activityMode.current === "quiz" && (
-              <MapClick callback={handleMapClickQuiz} />
-            )}
+            {activityMode.current === "quiz" && <MapClick callback={handleMapClickQuiz} />}
 
             <SvgMap
               highlightAlpha3={storedCountry.data?.alpha3}
@@ -149,23 +135,18 @@ export default function MapActivity() {
               onClick={() => chooseActivity("review", handleMapClickReview)}
               className="bg-gradient-to-br from-blue-600 to-blue-700"
             >
-              Learn about the cultures, geography, and history of countries from
-              around the world.
+              Learn about the cultures, geography, and history of countries from around the world.
             </ActivityButton>
             <ActivityButton
               label="🏆 Quiz"
               onClick={() => chooseActivity("quiz", handleMapClickQuiz)}
               className="bg-gradient-to-br from-yellow-600 to-yellow-700"
             >
-              Test your knowledge of countries around the world. Can you guess
-              them all?
+              Test your knowledge of countries around the world. Can you guess them all?
             </ActivityButton>
           </InstructionOverlay>
 
-          <FloatingHeader
-            shouldShow={!!activityMode.current}
-            imageSrc={NerdMascot}
-          >
+          <FloatingHeader shouldShow={!!activityMode.current} imageSrc={NerdMascot}>
             {activityMode.current === "quiz" && "Guess the country!"}
             {activityMode.current === "review" && "Reviewing countries"}
           </FloatingHeader>
@@ -180,8 +161,8 @@ export default function MapActivity() {
               skipCountry,
             }}
             audio={{
-              incorrectAnswerAudioSrc: "src/assets/sounds/incorrect.mp3",
-              correctAnswerAudioSrc: "src/assets/sounds/correct.mp3",
+              incorrectAnswerAudioSrc,
+              correctAnswerAudioSrc,
             }}
           />
 
@@ -197,9 +178,7 @@ export default function MapActivity() {
           />
         </div>
 
-        {activityMode.current === "quiz" && (
-          <GuessHistoryPanel guessHistory={guessHistory} />
-        )}
+        {activityMode.current === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
 
         {activityMode.current === "review" && <CountriesListPanel />}
       </MainView>
