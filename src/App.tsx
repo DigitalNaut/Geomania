@@ -1,21 +1,6 @@
-import {
-  Route,
-  createBrowserRouter,
-  createRoutesFromElements,
-  RouterProvider,
-  Outlet,
-} from "react-router-dom";
-import {
-  faChartLine,
-  faCog,
-  faMap,
-  faSpinner,
-} from "@fortawesome/free-solid-svg-icons";
-import {
-  useQuery,
-  QueryClientProvider,
-  QueryClient,
-} from "@tanstack/react-query";
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, Outlet } from "react-router-dom";
+import { faChartLine, faCog, faMap, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleDriveProvider } from "src/contexts/GoogleDriveContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,14 +8,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MapContextProvider from "src/contexts/MapContext";
 import CountryStoreProvider from "src/contexts/CountryStoreContext";
 import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
-import Header, { HeaderLink } from "src/components/layout/Header";
 import MapActivity from "src/pages/MapActivity";
 import Settings from "src/pages/Settings";
 import Dashboard from "src/pages/Dashboard";
-import Footer from "src/components/layout/Footer";
 import PageNotFound from "src/pages/PageNotFound";
+import Header, { HeaderLink } from "src/components/layout/Header";
+import Footer from "src/components/layout/Footer";
 import DriveAccess from "src/components/drive/DriveAccess";
 import StandardLayout from "src/components/layout/StandardLayout";
+import { useEdgeKeys } from "src/hooks/useEdgeKeys";
 
 const queryClient = new QueryClient();
 
@@ -93,18 +79,7 @@ const router = createBrowserRouter(
 );
 
 export default function App() {
-  const { data, status } = useQuery({
-    queryKey: ["keys"],
-    queryFn: async () => {
-      const response = await fetch("/api/keys");
-      const text = await response.text();
-      const keys = JSON.parse(text);
-
-      return keys;
-    },
-  });
-
-  const { apiKey, clientId } = data || {};
+  const { status, data } = useEdgeKeys();
 
   if (status === "loading")
     return (
@@ -114,16 +89,14 @@ export default function App() {
       </div>
     );
 
-  if (!clientId || !apiKey) throw new Error("Missing configuration.");
-
   return (
     <GoogleOAuthProvider
-      clientId={clientId}
+      clientId={data?.clientId || "xxx"}
       onScriptLoadError={() => {
         throw new Error("Google OAuth script failed to load.");
       }}
     >
-      <GoogleDriveProvider apiKey={apiKey}>
+      <GoogleDriveProvider apiKey={data?.apiKey || ""}>
         <RouterProvider router={router} />
       </GoogleDriveProvider>
     </GoogleOAuthProvider>
