@@ -1,20 +1,6 @@
-import {
-  type PropsWithChildren,
-  useState,
-  createContext,
-  useContext,
-} from "react";
-import {
-  type NonOAuthError,
-  type TokenResponse,
-  useGoogleLogin,
-  hasGrantedAnyScopeGoogle,
-} from "@react-oauth/google";
-import axios, {
-  type AxiosRequestConfig,
-  type AxiosResponse,
-  type ResponseType,
-} from "axios";
+import { type PropsWithChildren, useState, createContext, useContext } from "react";
+import { type NonOAuthError, type TokenResponse, useGoogleLogin, hasGrantedAnyScopeGoogle } from "@react-oauth/google";
+import axios, { type AxiosRequestConfig, type AxiosResponse, type ResponseType } from "axios";
 
 import { Script } from "src/components/common/Script";
 
@@ -37,10 +23,9 @@ type FileResponseType = {
   text: string;
   stream: ReadableStream;
 };
-type FileDownloadResponse<T extends ResponseType> =
-  T extends keyof FileResponseType
-    ? FileResponseType[T] | GoogleDriveError | false
-    : JSON | GoogleDriveError | false;
+type FileDownloadResponse<T extends ResponseType> = T extends keyof FileResponseType
+  ? FileResponseType[T] | GoogleDriveError | false
+  : JSON | GoogleDriveError | false;
 type FileUploadResponse = (FileUploadSuccess & GoogleDriveError) | false;
 type FileDeletedResponse = GoogleDriveError | "";
 export type FilesListResponse = GoogleDriveError & gapi.client.drive.FileList;
@@ -56,9 +41,7 @@ type GoogleDriveContextType = {
     config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<FileUploadResponse, unknown>>;
 
-  fetchFileList(
-    config?: AxiosRequestConfig,
-  ): Promise<AxiosResponse<FilesListResponse, unknown>>;
+  fetchFileList(config?: AxiosRequestConfig): Promise<AxiosResponse<FilesListResponse, unknown>>;
 
   fetchFile<T extends ResponseType>(
     file: gapi.client.drive.File,
@@ -77,32 +60,29 @@ type GoogleDriveContextType = {
   isDriveLoaded: boolean;
   isDriveAuthorizing: boolean;
   userDriveTokens?: TokenResponse;
-  nonDriveError: NonOAuthError | null;
-  error: Error | null;
+  error: Error | NonOAuthError | null;
 };
 
-const notReadyErrorMsj = "Google Drive is uninitialized.";
+const notReadyMessage = "Google Drive is unavailable.";
 
 const googleDriveContext = createContext<GoogleDriveContextType>({
   hasDriveAccess: false,
-  uploadFile: () => Promise.reject(notReadyErrorMsj),
-  updateFile: () => Promise.reject(notReadyErrorMsj),
-  fetchFileList: () => Promise.reject(notReadyErrorMsj),
-  fetchFile: () => Promise.reject(notReadyErrorMsj),
-  deleteFile: () => Promise.reject(notReadyErrorMsj),
+  uploadFile: () => Promise.reject(notReadyMessage),
+  updateFile: () => Promise.reject(notReadyMessage),
+  fetchFileList: () => Promise.reject(notReadyMessage),
+  fetchFile: () => Promise.reject(notReadyMessage),
+  deleteFile: () => Promise.reject(notReadyMessage),
   requestDriveAccess: () => null,
   disconnectDrive: () => null,
   isDriveLoaded: false,
   isDriveAuthorizing: false,
   userDriveTokens: undefined,
-  nonDriveError: null,
   error: null,
 });
 
 const scope = "https://www.googleapis.com/auth/drive.appdata";
 const spaces = "appDataFolder";
-const DISCOVERY_DOC =
-  "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest";
+const DISCOVERY_DOC = "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest";
 const DRIVE_API_URL = "https://www.googleapis.com/drive/v3/files";
 const DRIVE_API_UPLOAD_URL = "https://www.googleapis.com/upload/drive/v3/files";
 
@@ -121,14 +101,11 @@ export function GoogleDriveProvider({
   apiKey: string;
 }>) {
   const [isDriveLoaded, setIsLoaded] = useState(false);
-  const [hasDriveAccess, setHasAccess] = useState(false);
   const [isDriveAuthorizing, setIsDriveAuthorizing] = useState(false);
+  const [hasDriveAccess, setHasAccess] = useState(false);
   const [userDriveTokens, setUserTokens] = useState<TokenResponse>();
   const [tokensExpirationDate, setTokensExpirationDate] = useState<Date>();
-  const [error, setError] = useState<Error | null>(null);
-  const [nonDriveError, setNonDriveError] = useState<NonOAuthError | null>(
-    null,
-  );
+  const [error, setError] = useState<Error | NonOAuthError | null>(null);
 
   async function initGapiClient() {
     try {
@@ -136,14 +113,10 @@ export function GoogleDriveProvider({
         apiKey,
         discoveryDocs: [DISCOVERY_DOC],
       });
-      console.log("Google Drive API initialized.");
       setIsLoaded(true);
     } catch (error) {
-      if (error instanceof Error) {
-        setError(error);
-      }
-      console.log("Unknown error:", error);
-      setIsLoaded(false);
+      if (error instanceof Error) setError(error);
+      else setError(new Error("An unknown error occurred."));
     }
   }
 
@@ -166,33 +139,29 @@ export function GoogleDriveProvider({
 
   const initDriveImplicitFlow = useGoogleLogin({
     prompt: "",
-    onNonOAuthError: (error) => {
+    onNonOAuthError(error) {
       clearTokensAndAccess();
       setIsDriveAuthorizing(false);
-      setNonDriveError(error);
-      setError(null);
+      setError(error);
     },
-    onSuccess: (tokenResponse: TokenResponse) => {
+    onSuccess(tokenResponse: TokenResponse) {
       setTokensAndAccess(tokenResponse);
       setIsDriveAuthorizing(false);
-      setNonDriveError(null);
       setError(null);
     },
-    onError: (errorResponse) => {
+    onError(errorResponse) {
       clearTokensAndAccess();
       setIsDriveAuthorizing(false);
-      setNonDriveError(null);
       setError(new Error(errorResponse.error_description));
     },
     scope,
   });
 
   function requestDriveAccess() {
-    if (!isDriveLoaded) throw new Error(notReadyErrorMsj);
+    if (!isDriveLoaded) throw new Error(notReadyMessage);
 
     if (isDriveAuthorizing) return;
 
-    setNonDriveError(null);
     setError(null);
 
     setIsDriveAuthorizing(true);
@@ -200,53 +169,38 @@ export function GoogleDriveProvider({
   }
 
   function disconnectDrive() {
-    if (!isDriveLoaded) throw new Error(notReadyErrorMsj);
+    if (!isDriveLoaded) throw new Error(notReadyMessage);
 
     if (isDriveAuthorizing) return;
 
     clearTokensAndAccess();
     setIsDriveAuthorizing(false);
-    setNonDriveError(null);
     setError(null);
   }
 
-  function validateAccess() {
-    if (!isDriveLoaded) throw new Error("Google Drive is not loaded.");
+  function validateDriveAccess() {
+    if (!isDriveLoaded) return new Error("Google Drive is not loaded.");
 
-    if (!userDriveTokens || !tokensExpirationDate) {
-      throw new Error("User not authenticated.");
-    }
+    if (!userDriveTokens || !tokensExpirationDate) return new Error("User not authenticated.");
 
     if (new Date() > tokensExpirationDate) {
       clearTokensAndAccess();
-      throw new Error("Session expired.");
+      return new Error("Session expired.");
     }
 
-    if (!hasGrantedAnyScopeGoogle(userDriveTokens, scope)) {
-      throw new Error("Unauthorized.");
-    }
+    if (!hasGrantedAnyScopeGoogle(userDriveTokens, scope)) return new Error("Unauthorized.");
 
-    return true;
+    return null;
   }
 
-  const uploadFile: GoogleDriveContextType["uploadFile"] = async (
-    { file, metadata },
-    config,
-  ) => {
-    try {
-      validateAccess();
-    } catch (error) {
-      console.error(error);
-      return Promise.reject(error);
-    }
+  const uploadFile: GoogleDriveContextType["uploadFile"] = async ({ file, metadata }, config) => {
+    const noAccess = validateDriveAccess();
+    if (noAccess) return Promise.reject(noAccess);
 
     metadata.parents = [spaces];
 
     const body = new FormData();
-    body.append(
-      "metadata",
-      new Blob([JSON.stringify(metadata)], { type: "application/json" }),
-    );
+    body.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
     body.append("file", file);
 
     const request = axios.post<FileUploadResponse>(DRIVE_API_UPLOAD_URL, body, {
@@ -260,35 +214,21 @@ export function GoogleDriveProvider({
     return request;
   };
 
-  const updateFile: GoogleDriveContextType["updateFile"] = async (
-    { id, file, metadata },
-    config,
-  ) => {
-    try {
-      validateAccess();
-    } catch (error) {
-      console.error(error);
-      return Promise.reject(error);
-    }
+  const updateFile: GoogleDriveContextType["updateFile"] = async ({ id, file, metadata }, config) => {
+    const noAccess = validateDriveAccess();
+    if (noAccess) return Promise.reject(noAccess);
 
     const formBody = new FormData();
-    formBody.append(
-      "metadata",
-      new Blob([JSON.stringify(metadata)], { type: "application/json" }),
-    );
+    formBody.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
     formBody.append("file", file);
 
-    const request = axios.patch<FileUploadResponse>(
-      `${DRIVE_API_UPLOAD_URL}/${id}`,
-      formBody,
-      {
-        params: { uploadType: "multipart" },
-        headers: {
-          Authorization: `Bearer ${userDriveTokens?.access_token}`,
-        },
-        ...config,
+    const request = axios.patch<FileUploadResponse>(`${DRIVE_API_UPLOAD_URL}/${id}`, formBody, {
+      params: { uploadType: "multipart" },
+      headers: {
+        Authorization: `Bearer ${userDriveTokens?.access_token}`,
       },
-    );
+      ...config,
+    });
 
     return request;
   };
@@ -297,12 +237,8 @@ export function GoogleDriveProvider({
     { id },
     { params, ...config }: AxiosRequestConfig = {},
   ) => {
-    try {
-      validateAccess();
-    } catch (error) {
-      console.error(error);
-      return Promise.reject(error);
-    }
+    const noAccess = validateDriveAccess();
+    if (noAccess) return Promise.reject(noAccess);
 
     const request = axios.get(`${DRIVE_API_URL}/${id}`, {
       params: { alt: "media", ...params },
@@ -320,19 +256,15 @@ export function GoogleDriveProvider({
     params,
     ...config
   }: AxiosRequestConfig = {}) => {
-    try {
-      validateAccess();
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    const noAccess = validateDriveAccess();
+    if (noAccess) return Promise.reject(noAccess);
 
     console.log("Drive access validated. Requesting data...");
 
     const request = axios.get(DRIVE_API_URL, {
       params: {
         pageSize: 10,
-        fields:
-          "files(id, name, mimeType, hasThumbnail, thumbnailLink, iconLink, size)",
+        fields: "files(id, name, mimeType, hasThumbnail, thumbnailLink, iconLink, size)",
         spaces,
         oauth_token: userDriveTokens?.access_token,
         ...params,
@@ -343,15 +275,9 @@ export function GoogleDriveProvider({
     return request;
   };
 
-  const deleteFile: GoogleDriveContextType["deleteFile"] = async (
-    { id },
-    config,
-  ) => {
-    try {
-      validateAccess();
-    } catch (error) {
-      return Promise.reject(error);
-    }
+  const deleteFile: GoogleDriveContextType["deleteFile"] = async ({ id }, config) => {
+    const noAccess = validateDriveAccess();
+    if (noAccess) return Promise.reject(noAccess);
 
     const request = axios.delete(`${DRIVE_API_URL}/${id}`, {
       headers: {
@@ -377,26 +303,18 @@ export function GoogleDriveProvider({
         isDriveAuthorizing,
         hasDriveAccess,
         userDriveTokens,
-        nonDriveError,
         error,
       }}
     >
-      <Script
-        src="https://apis.google.com/js/api.js"
-        onLoad={handleGapiLoaded}
-      />
+      <Script src="https://apis.google.com/js/api.js" onLoad={handleGapiLoaded} />
       {children}
     </googleDriveContext.Provider>
   );
 }
 
-/**
- * Provides a hook to access the Google Drive context
- */
 export function useGoogleDrive() {
   const context = useContext(googleDriveContext);
-  if (!context)
-    throw new Error("useGoogleDrive must be used within a GoogleDriveContext");
+  if (!context) throw new Error("useGoogleDrive must be used within a GoogleDriveContext");
 
   return context;
 }

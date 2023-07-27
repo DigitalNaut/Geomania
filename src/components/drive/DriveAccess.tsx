@@ -1,11 +1,7 @@
 import { type PropsWithChildren, useState, useEffect } from "react";
 import type { NonOAuthError } from "@react-oauth/google";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheck,
-  faSpinner,
-  faTriangleExclamation,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faSpinner, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 import { useGoogleDrive } from "src/contexts/GoogleDriveContext";
 import { Button } from "src/components/common/Button";
@@ -16,13 +12,10 @@ type NonDriveErrorMessageProps = {
   error: NonOAuthError;
 };
 
-function NonDriveErrorMessage({ error }: NonDriveErrorMessageProps) {
+function PopupErrorMessage({ error }: NonDriveErrorMessageProps) {
   return (
     <span className="flex items-center gap-2">
-      <FontAwesomeIcon
-        className="text-yellow-300"
-        icon={faTriangleExclamation}
-      />
+      <FontAwesomeIcon className="text-yellow-300" icon={faTriangleExclamation} />
       {error.type === "popup_closed" ? (
         <span>Popup window closed before authorization completed.</span>
       ) : error.type === "popup_failed_to_open" ? (
@@ -34,40 +27,32 @@ function NonDriveErrorMessage({ error }: NonDriveErrorMessageProps) {
   );
 }
 
-type ErrorNoticeProps = PropsWithChildren<{
+type ErrorNoticeProps = {
   retry: () => void;
-}>;
+  error: NonOAuthError | Error;
+};
 
-function ErrorNotice({ children, retry }: ErrorNoticeProps) {
+function ErrorNotice({ retry, error }: ErrorNoticeProps) {
   return (
     <div className="flex items-center rounded-md bg-red-900">
-      <div className="flex items-center gap-2 px-2">{children}</div>
+      <div className="flex items-center gap-2 px-2">
+        {error instanceof Error ? <span>Error: {error.message}</span> : <PopupErrorMessage error={error} />}
+      </div>
       <Button onClick={retry}>Retry</Button>
     </div>
   );
 }
 
 function InfoNotice({ children }: PropsWithChildren) {
-  return (
-    <div className="flex min-w-fit flex-col items-center gap-1">{children}</div>
-  );
+  return <div className="flex min-w-fit flex-col items-center gap-1">{children}</div>;
 }
 
 export default function DriveAccess() {
-  const {
-    requestDriveAccess,
-    disconnectDrive,
-    isDriveLoaded,
-    isDriveAuthorizing,
-    hasDriveAccess,
-    nonDriveError,
-    error,
-  } = useGoogleDrive();
+  const { requestDriveAccess, disconnectDrive, isDriveLoaded, isDriveAuthorizing, hasDriveAccess, error } =
+    useGoogleDrive();
 
   const { driveSettings, setAutoConnectDrive } = DriveSettingsHook();
-  const [rememberAutoConnect, setRememberAutoConnect] = useState(
-    driveSettings.autoConnectDrive,
-  );
+  const [rememberAutoConnect, setRememberAutoConnect] = useState(driveSettings.autoConnectDrive);
 
   const handleAccessRequest = () => {
     setAutoConnectDrive(rememberAutoConnect);
@@ -80,43 +65,22 @@ export default function DriveAccess() {
   };
 
   useEffect(() => {
-    if (!isDriveLoaded || nonDriveError) return;
+    if (!isDriveLoaded || error) return;
 
     if (driveSettings.autoConnectDrive && !hasDriveAccess) requestDriveAccess();
-  }, [
-    requestDriveAccess,
-    hasDriveAccess,
-    isDriveLoaded,
-    nonDriveError,
-    driveSettings.autoConnectDrive,
-  ]);
+  }, [requestDriveAccess, hasDriveAccess, isDriveLoaded, error, driveSettings.autoConnectDrive]);
 
   if (!isDriveLoaded) {
     return (
       <InfoNotice>
         <span className="flex items-center gap-2">
-          Loading Drive...{" "}
-          <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+          Loading Drive... <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
         </span>
       </InfoNotice>
     );
   }
 
-  if (error) {
-    return (
-      <ErrorNotice retry={handleAccessRequest}>
-        Error: {error.message}
-      </ErrorNotice>
-    );
-  }
-
-  if (nonDriveError) {
-    return (
-      <ErrorNotice retry={handleAccessRequest}>
-        <NonDriveErrorMessage error={nonDriveError} />
-      </ErrorNotice>
-    );
-  }
+  if (error) return <ErrorNotice retry={handleAccessRequest} error={error} />;
 
   if (isDriveAuthorizing) {
     return (
