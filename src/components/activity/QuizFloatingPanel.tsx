@@ -1,9 +1,4 @@
-import {
-  type KeyboardEvent,
-  type PropsWithChildren,
-  useCallback,
-  useMemo,
-} from "react";
+import { type KeyboardEvent, type PropsWithChildren, useCallback, useMemo } from "react";
 import { animated, useSpring, useTrail } from "@react-spring/web";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForward, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
@@ -31,16 +26,7 @@ function useHorizontalShakeAnimation({
 
   const xShake = x.to(
     [0, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 1],
-    [
-      0,
-      shakeXEnd,
-      shakeXStart,
-      shakeXEnd,
-      shakeXStart,
-      shakeXEnd,
-      shakeXStart,
-      0,
-    ],
+    [0, shakeXEnd, shakeXStart, shakeXEnd, shakeXStart, shakeXEnd, shakeXStart, 0],
   );
 
   const startShake = () =>
@@ -94,37 +80,21 @@ function QuizHeaderSection({
 
 export default function QuizFloatingPanel({
   shouldShow,
-  activity: {
-    answerInputRef,
-    submitAnswer,
-    userGuessTally,
-    giveHint,
-    skipCountry,
-  },
+  activity: { answerInputRef, submitAnswer, userGuessTally, giveHint, skipCountry },
   audio: { incorrectAnswerAudioSrc, correctAnswerAudioSrc },
 }: {
   shouldShow: boolean;
   activity: Pick<
     ReturnType<typeof useCountryQuiz>,
-    | "answerInputRef"
-    | "skipCountry"
-    | "submitAnswer"
-    | "userGuessTally"
-    | "giveHint"
+    "answerInputRef" | "skipCountry" | "submitAnswer" | "userGuessTally" | "giveHint"
   >;
   audio: {
-    incorrectAnswerAudioSrc: string;
-    correctAnswerAudioSrc: string;
+    incorrectAnswerAudioSrc: URL;
+    correctAnswerAudioSrc: URL;
   };
 }) {
-  const incorrectAnswerAudio = useMemo(
-    () => new Audio(incorrectAnswerAudioSrc),
-    [incorrectAnswerAudioSrc],
-  );
-  const correctAnswerAudio = useMemo(
-    () => new Audio(correctAnswerAudioSrc),
-    [correctAnswerAudioSrc],
-  );
+  const incorrectAnswerAudio = useMemo(() => new Audio(incorrectAnswerAudioSrc.href), [incorrectAnswerAudioSrc]);
+  const correctAnswerAudio = useMemo(() => new Audio(correctAnswerAudioSrc.href), [correctAnswerAudioSrc]);
 
   const onShakeStart = useCallback(() => {
     if (!answerInputRef.current) return;
@@ -144,8 +114,7 @@ export default function QuizFloatingPanel({
     onShakeEnd,
   });
 
-  const { firstTrail, secondTrail } =
-    useFloatingPanelSlideInAnimation(shouldShow);
+  const { firstTrail, secondTrail } = useFloatingPanelSlideInAnimation(shouldShow);
 
   const handleSubmit = () => {
     const isCorrectAnswer = submitAnswer();
@@ -172,17 +141,12 @@ export default function QuizFloatingPanel({
       style={firstTrail}
     >
       <animated.div style={secondTrail}>
-        <QuizHeaderSection skipCountryHandler={skipCountry}>
-          Which country is this?
-        </QuizHeaderSection>
+        <QuizHeaderSection skipCountryHandler={skipCountry}>Which country is this?</QuizHeaderSection>
       </animated.div>
 
       <div className="flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
         <div className="rounded-md bg-red-500">
-          <animated.div
-            className="flex w-full justify-center overflow-hidden rounded-md"
-            style={{ x: xShake }}
-          >
+          <animated.div className="flex w-full justify-center overflow-hidden rounded-md" style={{ x: xShake }}>
             <input
               className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
               ref={answerInputRef}

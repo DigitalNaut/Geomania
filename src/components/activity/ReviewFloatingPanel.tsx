@@ -9,22 +9,14 @@ import { useFloatingPanelSlideInAnimation } from "src/components/activity/QuizFl
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { RenderDOM } from "src/components/common/RenderDOM";
 
-const wikidataApi =
-  "https://en.wikipedia.org/w/api.php?format=json&action=query";
+const wikidataApi = "https://en.wikipedia.org/w/api.php?format=json&action=query";
+const wikipediaLogo =
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/16px-Wikipedia-logo-v2.svg.png";
 
-export function CountryWikiInfo({
-  onError,
-}: {
-  onError: (error: Error) => void;
-}) {
+export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }) {
   const { storedCountry } = useCountryStore();
   const { isLoading, error, data } = useQuery({
-    queryKey: [
-      "country-info",
-      storedCountry.data,
-      storedCountry.data?.wikipedia,
-      storedCountry.data?.name,
-    ],
+    queryKey: ["country-info", storedCountry.data, storedCountry.data?.wikipedia, storedCountry.data?.name],
     queryFn: () =>
       axios
         .get<WikidataSummaryResponse>(
@@ -47,8 +39,7 @@ export function CountryWikiInfo({
     if (error) onError(error as Error);
   }, [error, onError]);
 
-  if (isLoading)
-    return <div className={"rounded-md bg-sky-900/60 p-3"}>Loading...</div>;
+  if (isLoading) return <div className={"rounded-md bg-sky-900/60 p-3"}>Loading...</div>;
 
   if (error)
     return (
@@ -100,11 +91,7 @@ export function CountryWikiInfo({
           className="mr-2 flex items-center justify-end gap-1 text-blue-300 hover:underline"
         >
           Read more on
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/16px-Wikipedia-logo-v2.svg.png"
-            loading="lazy"
-            width={16}
-          />
+          <img src={wikipediaLogo} loading="lazy" width={16} />
           Wikipedia &gt;
         </a>
       </span>
@@ -119,10 +106,7 @@ export default function ReviewFloatingPanel({
   onError,
 }: {
   shouldShow: boolean;
-  activity: Pick<
-    ReturnType<typeof useCountryReview>,
-    "showNextCountry" | "isRandomReviewMode" | "setRandomReviewMode"
-  >;
+  activity: Pick<ReturnType<typeof useCountryReview>, "showNextCountry" | "isRandomReviewMode" | "setRandomReviewMode">;
   disabled: boolean;
   onError: (error: Error) => void;
 }) {
@@ -144,11 +128,7 @@ export default function ReviewFloatingPanel({
       </details>
       <div className="pointer-events-auto flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
         <animated.div className="flex w-full flex-col items-center overflow-hidden rounded-md">
-          <ActionButton
-            disabled={disabled || !shouldShow}
-            onClick={showNextCountry}
-            title="Next country"
-          >
+          <ActionButton disabled={disabled || !shouldShow} onClick={showNextCountry} title="Next country">
             Next country
           </ActionButton>
           <label className="flex gap-2 p-1" htmlFor="randomMode">
@@ -156,9 +136,7 @@ export default function ReviewFloatingPanel({
               id="randomMode"
               type="checkbox"
               checked={isRandomReviewMode}
-              onChange={(event) =>
-                setRandomReviewMode(event.currentTarget.checked)
-              }
+              onChange={(event) => setRandomReviewMode(event.currentTarget.checked)}
             />
             Random mode
           </label>
