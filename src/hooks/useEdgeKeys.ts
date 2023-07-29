@@ -6,16 +6,19 @@ export function useEdgeKeys() {
   return useQuery({
     queryKey: ["keys"],
     queryFn: async () => {
-      const response = await fetch("/api/keys");
+      const { text, status } = await fetch("/api/keys");
 
-      if (!response.ok) throw new Error("Failed to fetch keys.");
+      if (status === 403) throw new Error("Unauthorized");
 
-      const payload = await response.text();
+      const payload = await text();
 
       if (payload.length > 0) return JSON.parse(payload) as EdgeKeys;
       return undefined;
     },
-    retry: 2,
+    retry: (failureCount, error) => {
+      if (error instanceof Error && error.message === "Unauthorized") return false;
+      else return failureCount < 2;
+    },
     refetchOnWindowFocus: false,
   });
 }
