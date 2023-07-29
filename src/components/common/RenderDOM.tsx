@@ -26,11 +26,7 @@ export function RenderDOM({ input }: { input?: string }) {
 
   return Object.values(htmlSections).map((node, key) =>
     node instanceof Element && node.tagName && node.textContent?.length
-      ? createElement(
-          node.tagName,
-          { key, ...node.attributes },
-          <RenderDOM input={node.innerHTML} />,
-        )
+      ? createElement(node.tagName, { key, ...node.attributes }, <RenderDOM input={node.innerHTML} />)
       : node.textContent ?? "",
   );
 }

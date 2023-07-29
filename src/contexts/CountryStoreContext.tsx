@@ -1,11 +1,4 @@
-import {
-  type Dispatch,
-  type SetStateAction,
-  type PropsWithChildren,
-  useState,
-  createContext,
-  useContext,
-} from "react";
+import { type Dispatch, type SetStateAction, type PropsWithChildren, useState, createContext, useContext } from "react";
 
 import type { CountryData } from "src/hooks/useCountryStore";
 
@@ -14,10 +7,7 @@ type CountryStoreContextType = {
   setStoredCountry: Dispatch<SetStateAction<CountryData | null>>;
 };
 
-const countryStoreContext = createContext<CountryStoreContextType>({
-  storedCountry: null,
-  setStoredCountry: () => null,
-});
+const countryStoreContext = createContext<CountryStoreContextType | null>(null);
 
 export default function CountryStoreProvider({ children }: PropsWithChildren) {
   const [storedCountry, setStoredCountry] = useState<CountryData | null>(null);
@@ -36,10 +26,7 @@ export default function CountryStoreProvider({ children }: PropsWithChildren) {
 
 export function useCountryStoreContext() {
   const context = useContext(countryStoreContext);
-  if (!context)
-    throw new Error(
-      "useCountryStore must be used within a CountryStoreProvider",
-    );
+  if (!context) throw new Error("useCountryStore must be used within a CountryStoreProvider");
 
   return context;
 }

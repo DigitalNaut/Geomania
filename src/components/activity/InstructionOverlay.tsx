@@ -1,10 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { animated, useSpring } from "@react-spring/web";
 
-export default function InstructionOverlay({
-  shouldShow,
-  children,
-}: PropsWithChildren<{ shouldShow: boolean }>) {
+export default function InstructionOverlay({ shouldShow, children }: PropsWithChildren<{ shouldShow: boolean }>) {
   const springs = useSpring({
     opacity: shouldShow ? 1 : 0,
     transform: shouldShow ? "scale(1)" : "scale(1.5)",

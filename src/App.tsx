@@ -1,36 +1,20 @@
-import {
-  Route,
-  createBrowserRouter,
-  createRoutesFromElements,
-  RouterProvider,
-  Outlet,
-} from "react-router-dom";
-import {
-  faChartLine,
-  faCog,
-  faMap,
-  faSpinner,
-} from "@fortawesome/free-solid-svg-icons";
-import {
-  useQuery,
-  QueryClientProvider,
-  QueryClient,
-} from "@tanstack/react-query";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { GoogleDriveProvider } from "src/contexts/GoogleDriveContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, Outlet } from "react-router-dom";
+import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 import MapContextProvider from "src/contexts/MapContext";
 import CountryStoreProvider from "src/contexts/CountryStoreContext";
 import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
-import Header, { HeaderLink } from "src/components/layout/Header";
 import MapActivity from "src/pages/MapActivity";
 import Settings from "src/pages/Settings";
 import Dashboard from "src/pages/Dashboard";
-import Footer from "src/components/layout/Footer";
 import PageNotFound from "src/pages/PageNotFound";
+import Header, { HeaderLink } from "src/components/layout/Header";
+import Footer from "src/components/layout/Footer";
 import DriveAccess from "src/components/drive/DriveAccess";
 import StandardLayout from "src/components/layout/StandardLayout";
+import { ConditionalDriveProvider } from "src/components/drive/ConditionalDriveProvider";
+import { ErrorBoundary } from "react-error-boundary";
 
 const queryClient = new QueryClient();
 
@@ -53,7 +37,9 @@ const router = createBrowserRouter(
             </div>
 
             <div className="flex w-full justify-end pl-2 text-sm">
-              <DriveAccess />
+              <ErrorBoundary fallback={<>Drive not available.</>}>
+                <DriveAccess />
+              </ErrorBoundary>
             </div>
           </Header>
 
@@ -93,39 +79,9 @@ const router = createBrowserRouter(
 );
 
 export default function App() {
-  const { data, status } = useQuery({
-    queryKey: ["keys"],
-    queryFn: async () => {
-      const response = await fetch("/api/keys");
-      const text = await response.text();
-      const keys = JSON.parse(text);
-
-      return keys;
-    },
-  });
-
-  const { apiKey, clientId } = data || {};
-
-  if (status === "loading")
-    return (
-      <div className="flex h-screen items-center justify-center gap-2 text-white">
-        <span>Loading...</span>
-        <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
-      </div>
-    );
-
-  if (!clientId || !apiKey) throw new Error("Missing configuration.");
-
   return (
-    <GoogleOAuthProvider
-      clientId={clientId}
-      onScriptLoadError={() => {
-        throw new Error("Google OAuth script failed to load.");
-      }}
-    >
-      <GoogleDriveProvider apiKey={apiKey}>
-        <RouterProvider router={router} />
-      </GoogleDriveProvider>
-    </GoogleOAuthProvider>
+    <ConditionalDriveProvider>
+      <RouterProvider router={router} />
+    </ConditionalDriveProvider>
   );
 }

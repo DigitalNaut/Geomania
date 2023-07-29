@@ -5,9 +5,9 @@ interface Image {
 }
 
 type PageNotFound = {
-  ns: number;
+  ns: "-1";
   title: string;
-  missing?: string;
+  missing: string;
 };
 
 type PageInfo = {
@@ -20,7 +20,7 @@ type PageInfo = {
   fullurl: string;
 };
 
-type Pages = Record<number, PageInfo & PageNotFound>;
+type Pages = Record<number, PageInfo | PageNotFound>;
 
 interface Query {
   pages: Pages;

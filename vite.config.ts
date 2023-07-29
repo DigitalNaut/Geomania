@@ -14,4 +14,5 @@ export default defineConfig({
       src: "/src",
     },
   },
+  assetsInclude: ["**/*.mp3"],
 });

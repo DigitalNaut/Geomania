@@ -10,8 +10,7 @@ const defaultDriveSettings = DriveSettingsSchema.parse({});
 type DriveSettings = z.infer<typeof DriveSettingsSchema>;
 
 export function DriveSettingsHook() {
-  const [driveSettings, setDriveSettings] =
-    useState<DriveSettings>(defaultDriveSettings);
+  const [driveSettings, setDriveSettings] = useState<DriveSettings>(defaultDriveSettings);
 
   const updateDriveSettings = (settings: DriveSettings) => {
     localStorage.setItem(driveSettingsKey, JSON.stringify(settings));
@@ -34,11 +33,9 @@ export function DriveSettingsHook() {
   const setAutoConnectDrive = (autoConnectDrive: boolean) =>
     void updateDriveSettings({ ...driveSettings, autoConnectDrive });
 
-  const toggleAutoConnectDrive = () =>
-    void setAutoConnectDrive(!driveSettings.autoConnectDrive);
+  const toggleAutoConnectDrive = () => void setAutoConnectDrive(!driveSettings.autoConnectDrive);
 
-  const resetDriveSettings = () =>
-    void updateDriveSettings(defaultDriveSettings);
+  const resetDriveSettings = () => void updateDriveSettings(defaultDriveSettings);
 
   return {
     driveSettings,

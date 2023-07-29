@@ -24,9 +24,7 @@ const strokeLinecap = strokeLinecapParser.exec(mapSvg)?.[1] || "round";
 const strokeLinejoin = strokeLinejoinParser.exec(mapSvg)?.[1] || "round";
 const strokeWidth = strokeWidthParser.exec(mapSvg)?.[1] || "0.01";
 
-export const svgPaths = [...mapSvg.matchAll(attributesParser)].map(
-  ([, path, a3, admin]) => ({ path, a3, admin }),
-);
+export const svgPaths = [...mapSvg.matchAll(attributesParser)].map(([, path, a3, admin]) => ({ path, a3, admin }));
 
 const topLeftCorner = latLng(-84.267, -180.5);
 const bottomRightCorner = latLng(93, 172.1);

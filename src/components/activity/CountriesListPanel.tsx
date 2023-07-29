@@ -1,10 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import {
-  type CountryData,
-  useCountryStore,
-  getCountryCoordinates,
-} from "src/hooks/useCountryStore";
+import { type CountryData, useCountryStore, getCountryCoordinates } from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import continents from "src/assets/data/continents.json";
 
@@ -38,9 +34,7 @@ export default function CountriesListPanel() {
   useEffect(() => {
     if (!currentCountry.data || !listRef.current) return;
 
-    const countryButton = listRef.current?.querySelector(
-      `#${currentCountry.data?.alpha3}`,
-    );
+    const countryButton = listRef.current?.querySelector(`#${currentCountry.data?.alpha3}`);
 
     countryButton?.scrollIntoView({
       behavior: "smooth",
@@ -50,39 +44,27 @@ export default function CountriesListPanel() {
 
   return (
     <div className="flex h-1/5 w-auto flex-col gap-2 sm:h-auto sm:w-[30ch]">
-      <h2 className="text-center text-xl italic text-slate-300">
-        Countries by Region
-      </h2>
+      <h2 className="text-center text-xl italic text-slate-300">Countries by Region</h2>
       <div className="flex flex-1 flex-col overflow-y-auto text-ellipsis px-2">
         <div className="flex flex-col gap-3" ref={listRef}>
           {continents.map((continent, index) => (
             <details
               key={continent}
-              className={`cursor-pointer ${
-                continentStyles[index % continentStyles.length]
-              }`}
+              className={`cursor-pointer ${continentStyles[index % continentStyles.length]}`}
               open
-              onToggle={(event) =>
-                toggleContinentFilter(continent, event.currentTarget.open)
-              }
+              onToggle={(event) => toggleContinentFilter(continent, event.currentTarget.open)}
             >
               <summary
-                className={`flex justify-between px-1 italic ${
-                  continentFilters[continent] ? "" : "line-through"
-                }`}
+                className={`flex justify-between px-1 italic ${continentFilters[continent] ? "" : "line-through"}`}
               >
                 <h3 className="text-lg font-bold">{continent}</h3>
-                <span className="text-base">
-                  &#40;{countryDataByContinent[continent].length}&#41;
-                </span>
+                <span className="text-base">&#40;{countryDataByContinent[continent].length}&#41;</span>
               </summary>
               <div className="flex flex-col gap-1 rounded-sm p-1">
                 {countryDataByContinent[continent].map((country) => (
                   <button
                     className={`flex items-center gap-2 pl-2 pr-1 text-left -indent-2 ${
-                      country?.alpha3 === currentCountry.data?.alpha3
-                        ? "bg-yellow-700"
-                        : ""
+                      country?.alpha3 === currentCountry.data?.alpha3 ? "bg-yellow-700" : ""
                     }`}
                     id={country?.alpha3}
                     key={country?.alpha3}

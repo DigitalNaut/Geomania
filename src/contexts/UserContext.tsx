@@ -1,20 +1,7 @@
-import {
-  type CredentialResponse,
-  GoogleLogin,
-  googleLogout,
-} from "@react-oauth/google";
-import {
-  type PropsWithChildren,
-  createContext,
-  useContext,
-  useState,
-} from "react";
+import { type CredentialResponse, GoogleLogin, googleLogout } from "@react-oauth/google";
+import { type PropsWithChildren, createContext, useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faDoorOpen,
-  faInfoCircle,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
+import { faDoorOpen, faInfoCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
 import jwtDecode from "jwt-decode";
 
 type UserContext = {
@@ -25,21 +12,9 @@ type UserContext = {
   logout(reason?: string): void;
 };
 
-const userContext = createContext<UserContext>({
-  user: undefined,
-  LoginButton: () => null,
-  LogoutButton: () => null,
-  UserCard: () => null,
-  logout: () => null,
-});
+const userContext = createContext<UserContext | null>(null);
 
-function Notification({
-  notification,
-  onClick,
-}: {
-  notification?: string;
-  onClick: () => void;
-}) {
+function Notification({ notification, onClick }: { notification?: string; onClick: () => void }) {
   if (!notification) return null;
 
   return (
@@ -69,11 +44,7 @@ function LogoutButton() {
   if (!user) return null;
 
   return (
-    <button
-      className="g_id_signout"
-      role="button"
-      onClick={() => logout("Logged out")}
-    >
+    <button className="g_id_signout" role="button" onClick={() => logout("Logged out")}>
       <FontAwesomeIcon icon={faDoorOpen} />
     </button>
   );
@@ -88,13 +59,7 @@ function UserCard({ children }: PropsWithChildren) {
 
   return (
     <div className="group relative w-fit lg:fixed lg:right-2 lg:top-2">
-      <img
-        src={picture}
-        alt="User avatar"
-        width={32}
-        height={32}
-        className="h-8 w-8 rounded-full"
-      />
+      <img src={picture} alt="User avatar" width={32} height={32} className="h-8 w-8 rounded-full" />
       <div
         className="absolute right-0 top-0 z-50 flex  cursor-pointer items-center gap-2
           focus-within:gap-4 focus-within:rounded-md focus-within:bg-white focus-within:p-4 focus-within:text-black
@@ -107,25 +72,13 @@ function UserCard({ children }: PropsWithChildren) {
           rel="noreferrer"
           title="Open preferences on Google Drive"
         >
-          <img
-            src={picture}
-            alt="User avatar"
-            width={32}
-            height={32}
-            className="h-8 w-8 rounded-full"
-          />
+          <img src={picture} alt="User avatar" width={32} height={32} className="h-8 w-8 rounded-full" />
           <div>
-            <div className="hidden text-sm font-medium group-focus-within:block group-hover:block">
-              {name}
-            </div>
-            <div className="hidden text-xs group-focus-within:block group-hover:block">
-              {email}
-            </div>
+            <div className="hidden text-sm font-medium group-focus-within:block group-hover:block">{name}</div>
+            <div className="hidden text-xs group-focus-within:block group-hover:block">{email}</div>
           </div>
         </a>
-        <div className="ml-6 hidden flex-col group-focus-within:flex group-hover:flex">
-          {children}
-        </div>
+        <div className="ml-6 hidden flex-col group-focus-within:flex group-hover:flex">{children}</div>
       </div>
     </div>
   );
@@ -187,10 +140,7 @@ export function UserProvider({ children }: PropsWithChildren) {
       }}
     >
       {children}
-      <Notification
-        notification={notification}
-        onClick={() => setNotification(undefined)}
-      />
+      <Notification notification={notification} onClick={() => setNotification(undefined)} />
     </userContext.Provider>
   );
 }

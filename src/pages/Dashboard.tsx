@@ -4,10 +4,7 @@ import { animated, useSpring } from "@react-spring/web";
 import { faBroom } from "@fortawesome/free-solid-svg-icons";
 
 import MainView from "src/components/layout/MainView";
-import {
-  type CountryStats,
-  useUserGuessRecordContext,
-} from "src/contexts/GuessRecordContext";
+import { type CountryStats, useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { Link } from "react-router-dom";
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg";
 import { Button } from "src/components/common/Button";
@@ -57,13 +54,8 @@ function CountryStatsCard({ countryStats }: CountryStatsProps) {
         height={38.4}
       />
       <div>
-        <div className="line-clamp-2 w-32 text-ellipsis text-sm">
-          {countryStats.name}
-        </div>
-        <CountryProgress
-          correct={countryStats.correctGuesses}
-          incorrect={countryStats.incorrectGuesses}
-        />
+        <div className="line-clamp-2 w-32 text-ellipsis text-sm">{countryStats.name}</div>
+        <CountryProgress correct={countryStats.correctGuesses} incorrect={countryStats.incorrectGuesses} />
       </div>
     </div>
   );
@@ -117,17 +109,10 @@ export default function Dashboard() {
         style={dialogSprings}
       >
         <h2 className="pb-2 text-xl font-bold">All progress will be lost</h2>
-        <p className="text-sm">
-          Your user guess history and country stats will be deleted.
-        </p>
+        <p className="text-sm">Your user guess history and country stats will be deleted.</p>
         <form className="flex justify-end gap-2 pt-4" method="dialog">
-          <Button className="bg-transparent hover:bg-slate-900/10">
-            Cancel
-          </Button>
-          <Button
-            className="bg-red-700 text-white hover:bg-red-600"
-            onClick={clearProgress}
-          >
+          <Button className="bg-transparent hover:bg-slate-900/10">Cancel</Button>
+          <Button className="bg-red-700 text-white hover:bg-red-600" onClick={clearProgress}>
             Delete
           </Button>
         </form>
@@ -151,13 +136,7 @@ export default function Dashboard() {
           {countryStatsList.length === 0 ? (
             <div className="flex flex-[0.3_0.3_30%] items-center justify-center">
               <div className="rounded-md border-2 border-dashed border-slate-600 p-6 text-center">
-                <img
-                  src={ThinkingFace}
-                  className="mx-auto"
-                  width={96}
-                  height={96}
-                  alt="No records found"
-                />
+                <img src={ThinkingFace} className="mx-auto" width={96} height={96} alt="No records found" />
                 <h3 className="text-lg">No records found</h3>
                 <p>
                   <Link to="/" className="text-blue-500 hover:underline">
@@ -170,10 +149,7 @@ export default function Dashboard() {
           ) : (
             <div className="flex h-fit flex-wrap overflow-y-auto p-2">
               {countryStatsList.map((countryStat) => (
-                <CountryStatsCard
-                  key={countryStat.alpha3}
-                  countryStats={countryStat}
-                />
+                <CountryStatsCard key={countryStat.alpha3} countryStats={countryStat} />
               ))}
             </div>
           )}

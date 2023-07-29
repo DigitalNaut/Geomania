@@ -1,16 +1,9 @@
-import type {
-  DetailedHTMLProps,
-  ButtonHTMLAttributes,
-  PropsWithChildren,
-} from "react";
+import type { DetailedHTMLProps, ButtonHTMLAttributes, PropsWithChildren } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 type ButtonProps = PropsWithChildren<
-  DetailedHTMLProps<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
-  > & {
+  DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> & {
     icon?: IconDefinition;
   }
 >;

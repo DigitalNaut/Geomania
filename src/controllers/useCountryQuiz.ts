@@ -1,35 +1,19 @@
 import { useMapViewport } from "src/hooks/useMapViewport";
-import {
-  type CountryData,
-  type useCountryStore,
-  getCountryCoordinates,
-} from "src/hooks/useCountryStore";
+import { type CountryData, type useCountryStore, getCountryCoordinates } from "src/hooks/useCountryStore";
 import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { useTally } from "src/hooks/useTally";
 import { useInputField } from "src/hooks/useInputField";
 
-export function useCountryQuiz(
-  countryStore: ReturnType<typeof useCountryStore>,
-  setError: (error: Error) => void,
-) {
+export function useCountryQuiz(countryStore: ReturnType<typeof useCountryStore>, setError: (error: Error) => void) {
   const mapControl = useMapViewport();
-  const {
-    storedCountry: countryCorrectAnswer,
-    compareStoredCountry: checkAnswer,
-    getRandomCountryData,
-  } = countryStore;
+  const { storedCountry: countryCorrectAnswer, compareStoredCountry: checkAnswer, getRandomCountryData } = countryStore;
   const {
     inputRef: answerInputRef,
     setInputField: setAnswerInputField,
     focusInputField: focusAnswerInputField,
   } = useInputField();
-  const { pushGuessToHistory, guessHistory, lastGuess, updateCountryStats } =
-    useUserGuessRecordContext();
-  const {
-    tally: userGuessTally,
-    incrementTally: incrementTriesTally,
-    resetTally: resetTriesTally,
-  } = useTally();
+  const { pushGuessToHistory, guessHistory, lastGuess, updateCountryStats } = useUserGuessRecordContext();
+  const { tally: userGuessTally, incrementTally: incrementTriesTally, resetTally: resetTriesTally } = useTally();
 
   function giveHint() {
     if (countryCorrectAnswer.data) {
@@ -71,8 +55,7 @@ export function useCountryQuiz(
 
     const userGuess = answerInputRef.current.value;
     const isCorrect = checkAnswer(userGuess);
-    const isValidNewGuess =
-      userGuess.length > 0 && userGuess !== lastGuess?.text;
+    const isValidNewGuess = userGuess.length > 0 && userGuess !== lastGuess?.text;
 
     if (!isValidNewGuess) return false;
 
