@@ -7,10 +7,7 @@ type CountryStoreContextType = {
   setStoredCountry: Dispatch<SetStateAction<CountryData | null>>;
 };
 
-const countryStoreContext = createContext<CountryStoreContextType>({
-  storedCountry: null,
-  setStoredCountry: () => null,
-});
+const countryStoreContext = createContext<CountryStoreContextType | null>(null);
 
 export default function CountryStoreProvider({ children }: PropsWithChildren) {
   const [storedCountry, setStoredCountry] = useState<CountryData | null>(null);

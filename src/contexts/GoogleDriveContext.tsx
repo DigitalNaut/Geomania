@@ -65,20 +65,7 @@ type GoogleDriveContextType = {
 
 const notReadyMessage = "Google Drive is unavailable.";
 
-const googleDriveContext = createContext<GoogleDriveContextType>({
-  hasDriveAccess: false,
-  uploadFile: () => Promise.reject(notReadyMessage),
-  updateFile: () => Promise.reject(notReadyMessage),
-  fetchFileList: () => Promise.reject(notReadyMessage),
-  fetchFile: () => Promise.reject(notReadyMessage),
-  deleteFile: () => Promise.reject(notReadyMessage),
-  requestDriveAccess: () => null,
-  disconnectDrive: () => null,
-  isDriveLoaded: false,
-  isDriveAuthorizing: false,
-  userDriveTokens: undefined,
-  error: null,
-});
+const googleDriveContext = createContext<GoogleDriveContextType | null>(null);
 
 const scope = "https://www.googleapis.com/auth/drive.appdata";
 const spaces = "appDataFolder";
@@ -113,11 +100,12 @@ export function GoogleDriveProvider({
         apiKey,
         discoveryDocs: [DISCOVERY_DOC],
       });
-      setIsLoaded(true);
     } catch (error) {
       if (error instanceof Error) setError(error);
       else setError(new Error("An unknown error occurred."));
     }
+
+    setIsLoaded(true);
   }
 
   const handleGapiLoaded = () => {
@@ -139,6 +127,7 @@ export function GoogleDriveProvider({
 
   const initDriveImplicitFlow = useGoogleLogin({
     prompt: "",
+    scope,
     onNonOAuthError(error) {
       clearTokensAndAccess();
       setIsDriveAuthorizing(false);
@@ -154,7 +143,6 @@ export function GoogleDriveProvider({
       setIsDriveAuthorizing(false);
       setError(new Error(errorResponse.error_description));
     },
-    scope,
   });
 
   function requestDriveAccess() {
@@ -314,7 +302,7 @@ export function GoogleDriveProvider({
 
 export function useGoogleDrive() {
   const context = useContext(googleDriveContext);
-  if (!context) throw new Error("useGoogleDrive must be used within a GoogleDriveContext");
+  if (!context) throw new Error("useGoogleDrive must be used within a GoogleDriveProvider");
 
   return context;
 }

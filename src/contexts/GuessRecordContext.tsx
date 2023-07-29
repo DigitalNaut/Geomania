@@ -25,13 +25,7 @@ type GuessRecordContextType = {
   clearProgress(): void;
 };
 
-const guessRecordContext = createContext<GuessRecordContextType>({
-  guessHistory: [],
-  pushGuessToHistory: () => null,
-  countryStats: {},
-  updateCountryStats: () => null,
-  clearProgress: () => null,
-});
+const guessRecordContext = createContext<GuessRecordContextType | null>(null);
 
 function useGuessHistory(limit: number) {
   const [guessHistory, setGuessHistory] = useState<UserCountryGuess[]>([]);

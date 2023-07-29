@@ -12,13 +12,7 @@ type UserContext = {
   logout(reason?: string): void;
 };
 
-const userContext = createContext<UserContext>({
-  user: undefined,
-  LoginButton: () => null,
-  LogoutButton: () => null,
-  UserCard: () => null,
-  logout: () => null,
-});
+const userContext = createContext<UserContext | null>(null);
 
 function Notification({ notification, onClick }: { notification?: string; onClick: () => void }) {
   if (!notification) return null;

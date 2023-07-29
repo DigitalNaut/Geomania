@@ -10,11 +10,7 @@ type MapContext = {
   setZoom: Dispatch<SetStateAction<number>>;
 };
 
-const MapContext = createContext<MapContext>({
-  setMap: () => null,
-  zoom: mapDefaults.zoom,
-  setZoom: () => null,
-});
+const MapContext = createContext<MapContext | null>(null);
 
 /**
  * Map Context Provider
