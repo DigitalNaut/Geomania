@@ -70,6 +70,8 @@ export default function DriveAccess() {
     if (driveSettings.autoConnectDrive && !hasDriveAccess) requestDriveAccess();
   }, [requestDriveAccess, hasDriveAccess, isDriveLoaded, error, driveSettings.autoConnectDrive]);
 
+  if (error) return <ErrorNotice retry={handleAccessRequest} error={error} />;
+
   if (!isDriveLoaded) {
     return (
       <InfoNotice>
@@ -79,8 +81,6 @@ export default function DriveAccess() {
       </InfoNotice>
     );
   }
-
-  if (error) return <ErrorNotice retry={handleAccessRequest} error={error} />;
 
   if (isDriveAuthorizing) {
     return (
