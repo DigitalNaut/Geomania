@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "netlify dev",
     "dev:watch": "conc 'pnpm:watch:*'",
     "watch:vite": "vite",
