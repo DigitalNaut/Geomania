@@ -7,7 +7,7 @@ import continents from "src/assets/data/continents.json";
 import countriesMetadata from "src/assets/data/country-metadata.json";
 
 export type CountryData = (typeof countriesMetadata)[number];
-export type CountriesDataByContinent = Record<string, CountryData[]>;
+type CountriesDataByContinent = Record<string, CountryData[]>;
 
 type CountryFilters = Record<string, boolean>;
 

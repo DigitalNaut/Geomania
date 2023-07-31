@@ -13,7 +13,7 @@ const wikidataApi = "https://en.wikipedia.org/w/api.php?format=json&action=query
 const wikipediaLogo =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/16px-Wikipedia-logo-v2.svg.png";
 
-export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }) {
+function CountryWikiInfo({ onError }: { onError: (error: Error) => void }) {
   const { storedCountry } = useCountryStore();
   const { isLoading, error, data } = useQuery({
     queryKey: ["country-info", storedCountry.data, storedCountry.data?.wikipedia, storedCountry.data?.name],
