@@ -17,8 +17,10 @@ export function useLocalStorage<T extends Record<string, unknown>>(key: string, 
     // Load settings from local storage
     const savedSettings = localStorage.getItem(key);
     // If no settings are saved, save the default settings
-    if (!savedSettings) saveData(defaultData);
-    else
+    if (!savedSettings) {
+      if (import.meta.env.DEV) console.log(`Setting up default settings for "${key}"`);
+      saveData(defaultData);
+    } else
       try {
         // If settings are saved, try to parse them
         const parsedSettings = JSON.parse(savedSettings);
@@ -26,7 +28,8 @@ export function useLocalStorage<T extends Record<string, unknown>>(key: string, 
         setData(validatedSettings);
       } catch (e) {
         // If parsing fails, reset to default settings
-        console.error("Could not parse settings from local storage, resetting to default settings");
+        if (import.meta.env.DEV)
+          console.error(`Could not parse settings from local storage for "${key}", resetting to default settings`);
         saveData(defaultData);
       }
   }, [defaultData, key, schema, saveData]);
