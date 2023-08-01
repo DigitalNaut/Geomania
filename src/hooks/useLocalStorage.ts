@@ -8,6 +8,14 @@ function saveSettingsToStorage<T extends Record<string, unknown>>(key: string, c
   };
 }
 
+/**
+ * Save and load data from local storage with a key. Validates the data with a schema.
+ * It holds the data in state and saves it to local storage via the functions.
+ * @param key The key to save the data under in local storage
+ * @param defaultData The default data to use if no data is saved in local storage
+ * @param schema The schema to validate the data with
+ * @returns The data and a function to save the data
+ */
 export function useLocalStorage<T extends Record<string, unknown>>(key: string, defaultData: T, schema: z.Schema) {
   const [data, setData] = useState<T>(defaultData);
 
