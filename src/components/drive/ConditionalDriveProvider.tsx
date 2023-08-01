@@ -7,7 +7,6 @@ import { Spinner } from "src/components/common/Spinner";
 
 export function ConditionalDriveProvider({ children }: PropsWithChildren) {
   const { status, data } = useEdgeKeys();
-  console.log("STATUS:", status);
 
   if (status === "loading") return <Spinner />;
 
