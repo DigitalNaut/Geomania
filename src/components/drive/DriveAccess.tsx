@@ -52,7 +52,8 @@ export default function DriveAccess() {
     useGoogleDrive();
 
   const { driveSettings, setAutoConnectDrive } = DriveSettingsHook();
-  const [rememberAutoConnect, setRememberAutoConnect] = useState(driveSettings.autoConnectDrive);
+  const { autoConnectDrive } = driveSettings;
+  const [rememberAutoConnect, setRememberAutoConnect] = useState(autoConnectDrive);
 
   const handleAccessRequest = () => {
     setAutoConnectDrive(rememberAutoConnect);
@@ -67,8 +68,8 @@ export default function DriveAccess() {
   useEffect(() => {
     if (!isDriveLoaded || error) return;
 
-    if (driveSettings.autoConnectDrive && !hasDriveAccess) requestDriveAccess();
-  }, [requestDriveAccess, hasDriveAccess, isDriveLoaded, error, driveSettings.autoConnectDrive]);
+    if (autoConnectDrive && !hasDriveAccess) requestDriveAccess();
+  }, [requestDriveAccess, hasDriveAccess, autoConnectDrive, isDriveLoaded, error]);
 
   if (error) return <ErrorNotice retry={handleAccessRequest} error={error} />;
 
@@ -103,7 +104,7 @@ export default function DriveAccess() {
         <Button onClick={handleDisconnectDrive}>Disconnect</Button>
       </InfoNotice>
     );
-  } else if (driveSettings.autoConnectDrive) {
+  } else if (autoConnectDrive) {
     return (
       <InfoNotice>
         <span className="flex gap-2">

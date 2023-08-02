@@ -37,7 +37,7 @@ const router = createBrowserRouter(
             </div>
 
             <div className="flex w-full justify-end pl-2 text-sm">
-              <ErrorBoundary fallback={<>Drive not available.</>}>
+              <ErrorBoundary fallback={<span className="px-2 italic text-white/60">Google Drive not available.</span>}>
                 <DriveAccess />
               </ErrorBoundary>
             </div>

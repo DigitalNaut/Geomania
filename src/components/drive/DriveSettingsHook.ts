@@ -1,46 +1,25 @@
-import { useEffect, useState } from "react";
+import { useLocalStorage } from "src/hooks/useLocalStorage";
 import * as z from "zod";
 
-const DriveSettingsSchema = z.object({
+const driveSettingsSchema = z.object({
   autoConnectDrive: z.boolean().default(false),
 });
+const defaultDriveSettings = driveSettingsSchema.parse({});
 const driveSettingsKey = "driveSettings";
-const defaultDriveSettings = DriveSettingsSchema.parse({});
 
-type DriveSettings = z.infer<typeof DriveSettingsSchema>;
+type DriveSettings = z.infer<typeof driveSettingsSchema>;
 
 export function DriveSettingsHook() {
-  const [driveSettings, setDriveSettings] = useState<DriveSettings>(defaultDriveSettings);
+  const { data: driveSettings, saveData: saveDriveSettings } = useLocalStorage<DriveSettings>(
+    driveSettingsKey,
+    defaultDriveSettings,
+    driveSettingsSchema,
+  );
 
-  const updateDriveSettings = (settings: DriveSettings) => {
-    localStorage.setItem(driveSettingsKey, JSON.stringify(settings));
-    setDriveSettings(settings);
-  };
-
-  useEffect(() => {
-    const savedSettings = localStorage.getItem(driveSettingsKey);
-
-    if (savedSettings) {
-      try {
-        const settings = DriveSettingsSchema.parse(JSON.parse(savedSettings));
-        setDriveSettings(settings);
-      } catch (e) {
-        updateDriveSettings(defaultDriveSettings);
-      }
-    }
-  }, []);
-
-  const setAutoConnectDrive = (autoConnectDrive: boolean) =>
-    void updateDriveSettings({ ...driveSettings, autoConnectDrive });
-
-  const toggleAutoConnectDrive = () => void setAutoConnectDrive(!driveSettings.autoConnectDrive);
-
-  const resetDriveSettings = () => void updateDriveSettings(defaultDriveSettings);
+  const setAutoConnectDrive = (autoConnectDrive: boolean) => void saveDriveSettings({ autoConnectDrive });
 
   return {
     driveSettings,
     setAutoConnectDrive,
-    toggleAutoConnectDrive,
-    resetDriveSettings,
   };
 }

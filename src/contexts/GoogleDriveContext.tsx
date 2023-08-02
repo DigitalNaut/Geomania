@@ -28,7 +28,7 @@ type FileDownloadResponse<T extends ResponseType> = T extends keyof FileResponse
   : JSON | GoogleDriveError | false;
 type FileUploadResponse = (FileUploadSuccess & GoogleDriveError) | false;
 type FileDeletedResponse = GoogleDriveError | "";
-export type FilesListResponse = GoogleDriveError & gapi.client.drive.FileList;
+type FilesListResponse = GoogleDriveError & gapi.client.drive.FileList;
 
 type GoogleDriveContextType = {
   uploadFile(
