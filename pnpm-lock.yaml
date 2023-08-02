@@ -29,6 +29,9 @@ dependencies:
   '@tanstack/react-query':
     specifier: ^4.32.1
     version: 4.32.1(react-dom@18.2.0)(react@18.2.0)
+  '@tanstack/react-query-devtools':
+    specifier: ^4.32.1
+    version: 4.32.1(@tanstack/react-query@4.32.1)(react-dom@18.2.0)(react@18.2.0)
   axios:
     specifier: ^1.4.0
     version: 1.4.0(debug@4.3.4)
@@ -99,7 +102,7 @@ devDependencies:
     version: 6.2.1(eslint@8.46.0)(typescript@5.1.6)
   '@vitejs/plugin-react':
     specifier: ^4.0.4
-    version: 4.0.4(vite@4.4.7)
+    version: 4.0.4(vite@4.4.8)
   concurrently:
     specifier: ^8.2.0
     version: 8.2.0
@@ -155,11 +158,11 @@ devDependencies:
     specifier: ^5.1.6
     version: 5.1.6
   vite:
-    specifier: ^4.4.7
-    version: 4.4.7(@types/node@20.4.5)
+    specifier: ^4.4.8
+    version: 4.4.8(@types/node@20.4.5)
   vite-plugin-svgr:
     specifier: ^3.2.0
-    version: 3.2.0(vite@4.4.7)
+    version: 3.2.0(vite@4.4.8)
 
 packages:
 
@@ -806,8 +809,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@grpc/grpc-js@1.8.21:
-    resolution: {integrity: sha512-KeyQeZpxeEBSqFVTi3q2K7PiPXmgBfECc4updA1ejCLjYmoAlvvM3ZMp5ztTDUCUQmoY3CpDxvchjO1+rFkoHg==}
+  /@grpc/grpc-js@1.9.0:
+    resolution: {integrity: sha512-H8+iZh+kCE6VR/Krj6W28Y/ZlxoZ1fOzsNt77nrdE3knkbSelW1Uus192xOFCxHyeszLj8i4APQkSIXjAoOxXg==}
     engines: {node: ^8.13.0 || >=10.10.0}
     dependencies:
       '@grpc/proto-loader': 0.7.8
@@ -830,7 +833,7 @@ packages:
     resolution: {integrity: sha512-6PFX8FGW7uA7vQ3mxNIoN36rH9Zx5kXh4kKP9zu28nynyWyy9JE3l8PNJYd9FS2L/d88ZUpQAiQ1pROaANd5MA==}
     engines: {node: '>=14'}
     dependencies:
-      '@grpc/grpc-js': 1.8.21
+      '@grpc/grpc-js': 1.9.0
       '@opentelemetry/api': 1.4.1
       '@opentelemetry/exporter-metrics-otlp-grpc': 0.36.1(@opentelemetry/api@1.4.1)
       '@opentelemetry/exporter-metrics-otlp-proto': 0.36.1(@opentelemetry/api@1.4.1)
@@ -1002,7 +1005,7 @@ packages:
       '@netlify/framework-info': 9.8.10
       '@netlify/functions-utils': 5.2.19(supports-color@9.4.0)
       '@netlify/git-utils': 5.1.1
-      '@netlify/plugins-list': 6.68.0
+      '@netlify/plugins-list': 6.69.0
       '@netlify/run-utils': 5.1.1
       '@netlify/zip-it-and-ship-it': 9.13.1(supports-color@9.4.0)
       '@opentelemetry/api': 1.4.1
@@ -1507,8 +1510,8 @@ packages:
     resolution: {integrity: sha512-RkucRf8o0vYhCDXCRHWU/EdhkVE3JhkqKmZFvMW6qCPD206GV2Cfo9JGSKb0NdN+nmHSNaYmd+9dvT6I9MP4pw==}
     dev: true
 
-  /@netlify/plugins-list@6.68.0:
-    resolution: {integrity: sha512-OIW7oDTXFKEyzG2DQr6ndLWjYfNnSZAKbldD2dquH3V8Q6DrbGk8Dhv6LkuGOJBgrKS25SyabYOyHIVASQjrFw==}
+  /@netlify/plugins-list@6.69.0:
+    resolution: {integrity: sha512-PZwPO20bfkVid37rahqipHJJvaTcWkAk2wkuA2qEGnbAL1LTXcwEc2ke9BuDt3ls6qjSxfQ7B/OqupnDyuxD+g==}
     engines: {node: ^14.14.0 || >=16.0.0}
     dev: true
 
@@ -1762,7 +1765,7 @@ packages:
     peerDependencies:
       '@opentelemetry/api': ^1.3.0
     dependencies:
-      '@grpc/grpc-js': 1.8.21
+      '@grpc/grpc-js': 1.9.0
       '@opentelemetry/api': 1.4.1
       '@opentelemetry/core': 1.10.1(@opentelemetry/api@1.4.1)
       '@opentelemetry/exporter-metrics-otlp-http': 0.36.1(@opentelemetry/api@1.4.1)
@@ -1808,7 +1811,7 @@ packages:
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
     dependencies:
-      '@grpc/grpc-js': 1.8.21
+      '@grpc/grpc-js': 1.9.0
       '@opentelemetry/api': 1.4.1
       '@opentelemetry/core': 1.10.1(@opentelemetry/api@1.4.1)
       '@opentelemetry/otlp-grpc-exporter-base': 0.36.1(@opentelemetry/api@1.4.1)
@@ -1889,7 +1892,7 @@ packages:
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
     dependencies:
-      '@grpc/grpc-js': 1.8.21
+      '@grpc/grpc-js': 1.9.0
       '@grpc/proto-loader': 0.7.8
       '@opentelemetry/api': 1.4.1
       '@opentelemetry/core': 1.10.1(@opentelemetry/api@1.4.1)
@@ -2422,8 +2425,30 @@ packages:
     resolution: {integrity: sha512-29oveq5n7momN+/d0SheNccnp1qws4JRG/PdeiPHwWAVQ9HxwtZTFxhFJxvMzVk7UsY3LsQB0keIajC+K9ZJ7w==}
     dev: true
 
+  /@tanstack/match-sorter-utils@8.8.4:
+    resolution: {integrity: sha512-rKH8LjZiszWEvmi01NR72QWZ8m4xmXre0OOwlRGnjU01Eqz/QnN+cqpty2PJ0efHblq09+KilvyR7lsbzmXVEw==}
+    engines: {node: '>=12'}
+    dependencies:
+      remove-accents: 0.4.2
+    dev: false
+
   /@tanstack/query-core@4.32.1:
     resolution: {integrity: sha512-VEAGHboOFWN/bvf/7cCoeLQfld0AA8n0V/kfc77W+FvxnnSwJufEh6gfjqpX5bRE/DEYfYDYdNtuL3KM+lIs8Q==}
+    dev: false
+
+  /@tanstack/react-query-devtools@4.32.1(@tanstack/react-query@4.32.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-/ZgxCfGXLIXUvaIRzrNCP+C4iv1bIleNzXCjGKFZ4qKEifnv5A/SpWE2dG4SBjqXVlIkMAP82lesfoHcsOm+zg==}
+    peerDependencies:
+      '@tanstack/react-query': 4.32.1
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@tanstack/match-sorter-utils': 8.8.4
+      '@tanstack/react-query': 4.32.1(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      superjson: 1.13.1
+      use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
   /@tanstack/react-query@4.32.1(react-dom@18.2.0)(react@18.2.0):
@@ -2801,7 +2826,7 @@ packages:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-react@4.0.4(vite@4.4.7):
+  /@vitejs/plugin-react@4.0.4(vite@4.4.8):
     resolution: {integrity: sha512-7wU921ABnNYkETiMaZy7XqpueMnpu5VxvVps13MjmCo+utBdD79sZzrApHawHtVX66cCJQQTXFcjH0y9dSUK8g==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -2811,7 +2836,7 @@ packages:
       '@babel/plugin-transform-react-jsx-self': 7.22.5(@babel/core@7.22.9)
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.22.9)
       react-refresh: 0.14.0
-      vite: 4.4.7(@types/node@20.4.5)
+      vite: 4.4.8(@types/node@20.4.5)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3554,7 +3579,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001518
-      electron-to-chromium: 1.4.479
+      electron-to-chromium: 1.4.480
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
     dev: true
@@ -4068,6 +4093,13 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
+  /copy-anything@3.0.5:
+    resolution: {integrity: sha512-yCEafptTtb4bk7GLEQoM8KVJpxAfdBJYaXyzQEgQQQgYrZiDp8SJmGKlYza6CYjEDNstAdNdKA3UuoULlEbS6w==}
+    engines: {node: '>=12.13'}
+    dependencies:
+      is-what: 4.1.15
+    dev: false
+
   /copy-descriptor@0.1.1:
     resolution: {integrity: sha512-XgZ0pFcakEUlbwQEVNg3+QAis1FyTL3Qel9FYy8pSkQqoG3PNoT0bOCQtOXcOkur21r2Eq2kI+IE+gsmAEVlYw==}
     engines: {node: '>=0.10.0'}
@@ -4541,8 +4573,8 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: true
 
-  /electron-to-chromium@1.4.479:
-    resolution: {integrity: sha512-ABv1nHMIR8I5n3O3Een0gr6i0mfM+YcTZqjHy3pAYaOjgFG+BMquuKrSyfYf5CbEkLr9uM05RA3pOk4udNB/aQ==}
+  /electron-to-chromium@1.4.480:
+    resolution: {integrity: sha512-IXTgg+bITkQv/FLP9FjX6f9KFCs5hQWeh5uNSKxB9mqYj/JXhHDbu+ekS43LVvbkL3eW6/oZy4+r9Om6lan1Uw==}
     dev: true
 
   /elegant-spinner@1.0.1:
@@ -6633,6 +6665,11 @@ packages:
     dependencies:
       call-bind: 1.0.2
     dev: true
+
+  /is-what@4.1.15:
+    resolution: {integrity: sha512-uKua1wfy3Yt+YqsD6mTUEa2zSi3G1oPlqTflgaPJ7z63vUGN5pxFpnQfeSLMFnJDEsdvOtkp1rUWkYjB4YfhgA==}
+    engines: {node: '>=12.13'}
+    dev: false
 
   /is-windows@1.0.2:
     resolution: {integrity: sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA==}
@@ -8867,6 +8904,10 @@ packages:
       rc: 1.2.8
     dev: true
 
+  /remove-accents@0.4.2:
+    resolution: {integrity: sha512-7pXIJqJOq5tFgG1A2Zxti3Ht8jJF337m4sowbuHsW30ZnkQFnDzy9qBNhgzX8ZLW4+UBcXiiR7SwR6pokHsxiA==}
+    dev: false
+
   /remove-trailing-separator@1.1.0:
     resolution: {integrity: sha512-/hS+Y0u3aOfIETiaiirUFwDBDzmXPvO+jAfKTitUngIPzdKc6Z0LoFjM/CK5PL4C+eKwHohlHAb6H0VFfmmUsw==}
     dev: true
@@ -9625,6 +9666,13 @@ packages:
       ts-interface-checker: 0.1.13
     dev: true
 
+  /superjson@1.13.1:
+    resolution: {integrity: sha512-AVH2eknm9DEd3qvxM4Sq+LTCkSXE2ssfh1t11MHMXyYXFQyQ1HLgVvV+guLTsaQnJU3gnaVo34TohHPulY/wLg==}
+    engines: {node: '>=10'}
+    dependencies:
+      copy-anything: 3.0.5
+    dev: false
+
   /supports-color@2.0.0:
     resolution: {integrity: sha512-KKNVtd6pCYgPIKU4cp2733HWYCpplQhddZLBUryaAHou723x+FRzQ5Df824Fj+IyyuiQTRoub4SnIFfIcrp70g==}
     engines: {node: '>=0.8.0'}
@@ -10357,7 +10405,7 @@ packages:
     engines: {node: '>= 0.8'}
     dev: true
 
-  /vite-plugin-svgr@3.2.0(vite@4.4.7):
+  /vite-plugin-svgr@3.2.0(vite@4.4.8):
     resolution: {integrity: sha512-Uvq6niTvhqJU6ga78qLKBFJSDvxWhOnyfQSoKpDPMAGxJPo5S3+9hyjExE5YDj6Lpa4uaLkGc1cBgxXov+LjSw==}
     peerDependencies:
       vite: ^2.6.0 || 3 || 4
@@ -10365,14 +10413,14 @@ packages:
       '@rollup/pluginutils': 5.0.2
       '@svgr/core': 7.0.0
       '@svgr/plugin-jsx': 7.0.0
-      vite: 4.4.7(@types/node@20.4.5)
+      vite: 4.4.8(@types/node@20.4.5)
     transitivePeerDependencies:
       - rollup
       - supports-color
     dev: true
 
-  /vite@4.4.7(@types/node@20.4.5):
-    resolution: {integrity: sha512-6pYf9QJ1mHylfVh39HpuSfMPojPSKVxZvnclX1K1FyZ1PXDOcLBibdq5t1qxJSnL63ca8Wf4zts6mD8u8oc9Fw==}
+  /vite@4.4.8(@types/node@20.4.5):
+    resolution: {integrity: sha512-LONawOUUjxQridNWGQlNizfKH89qPigK36XhMI7COMGztz8KNY0JHim7/xDd71CZwGT4HtSRgI7Hy+RlhG0Gvg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
