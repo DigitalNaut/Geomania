@@ -39,17 +39,17 @@ The country metadata is stored in the `src/assets/data/country-metadata.json` fi
 
 It contains the following fields:
 
-| Field         | Type    | Description                                                                 |
-| ------------- | ------- | --------------------------------------------------------------------------- |
-| `alpha2`      | string  | [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code |
-| `alpha3`      | string  | [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) code |
-| `name`        | string  | Country name                                                                |
-| `island`      | boolean | Is the country an island?                                                   |
-| `territory`   | boolean | Is the country a territory?                                                 |
-| `continent`   | string  | Continent name                                                              |
-| `latitude`    | number  | Latitude of the country's capital city                                      |
-| `longitude`   | number  | Longitude of the country's capital city                                     |
-| `wikipedia`\* | string  | Wikipedia article title                                                     |
+| Field    | Type    | Description                                                                 |
+| -------- | ------- | --------------------------------------------------------------------------- |
+| `a2`     | string  | [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code |
+| `a3`     | string  | [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) code |
+| `name`   | string  | Country name                                                                |
+| `isl`    | boolean | Is the country an island?                                                   |
+| `terr`   | boolean | Is the country a territory?                                                 |
+| `cont`   | string  | Continent name                                                              |
+| `lat`    | number  | Latitude of the country's capital city                                      |
+| `lon`    | number  | Longitude of the country's capital city                                     |
+| `wiki`\* | string  | Wikipedia article title                                                     |
 
 > \* The `wikipedia` field is only present if the Wikipedia article title is different from the country name.
 

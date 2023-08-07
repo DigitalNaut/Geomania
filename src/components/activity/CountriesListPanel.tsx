@@ -34,7 +34,7 @@ export default function CountriesListPanel() {
   useEffect(() => {
     if (!currentCountry.data || !listRef.current) return;
 
-    const countryButton = listRef.current?.querySelector(`#${currentCountry.data?.alpha3}`);
+    const countryButton = listRef.current?.querySelector(`#${currentCountry.data?.a3}`);
 
     countryButton?.scrollIntoView({
       behavior: "smooth",
@@ -64,10 +64,10 @@ export default function CountriesListPanel() {
                 {countryDataByContinent[continent].map((country) => (
                   <button
                     className={`flex items-center gap-2 pl-2 pr-1 text-left -indent-2 ${
-                      country?.alpha3 === currentCountry.data?.alpha3 ? "bg-yellow-700" : ""
+                      country?.a3 === currentCountry.data?.a3 ? "bg-yellow-700" : ""
                     }`}
-                    id={country?.alpha3}
-                    key={country?.alpha3}
+                    id={country?.a3}
+                    key={country?.a3}
                     title={country?.name}
                     onClick={() => handleCountryClick(country)}
                   >

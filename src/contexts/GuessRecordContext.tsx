@@ -6,13 +6,13 @@ export type UserCountryGuess = {
   timestamp: number;
   text: string;
   isCorrect: boolean;
-} & Pick<CountryData, "alpha2" | "alpha3">;
+} & Pick<CountryData, "a2" | "a3">;
 
 export type CountryStats = {
   correctGuesses: number;
   incorrectGuesses: number;
   lastGuessTimestamp: number;
-} & Pick<CountryData, "alpha2" | "alpha3" | "name">;
+} & Pick<CountryData, "a2" | "a3" | "name">;
 
 type UserCountryStats = Record<string, CountryStats>;
 
@@ -66,15 +66,15 @@ function useGuessHistory(limit: number) {
 function useCountryStats() {
   const [countryStats, setCountryStats] = useState<UserCountryStats>({});
 
-  const updateCountryStats: GuessRecordContextType["updateCountryStats"] = ({ alpha2, alpha3, name, isCorrect }) => {
+  const updateCountryStats: GuessRecordContextType["updateCountryStats"] = ({ a2, a3, name, isCorrect }) => {
     setCountryStats((prevStats) => {
-      const country = prevStats[alpha3];
+      const country = prevStats[a3];
       const newStats = {
         ...prevStats,
-        [alpha3]: {
+        [a3]: {
           name,
-          alpha2,
-          alpha3,
+          a2,
+          a3,
           correctGuesses: (country?.correctGuesses || 0) + (isCorrect ? 1 : 0),
           incorrectGuesses: (country?.incorrectGuesses || 0) + (isCorrect ? 0 : 1),
           lastGuessTimestamp: Date.now(),

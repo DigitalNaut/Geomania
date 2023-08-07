@@ -15,7 +15,7 @@ const allCountriesMetadata = countriesMetadata as CountryData[];
 
 const sortCountriesDataByContinent = () =>
   allCountriesMetadata.reduce((groups, country) => {
-    const { continent } = country || {};
+    const { cont: continent } = country || {};
 
     if (continent) {
       if (groups[continent]) groups[continent].push(country);
@@ -35,7 +35,7 @@ function useCountryData() {
   const filteredCountryData = useMemo(
     () =>
       allCountriesMetadata.filter((country) => {
-        const { continent } = country || {};
+        const { cont: continent } = country || {};
         return continent && continentFilters[continent];
       }),
     [continentFilters],
@@ -72,7 +72,7 @@ function normalizeName(text?: string) {
 }
 
 export function getCountryCoordinates(country: CountryData) {
-  return [country.latitude, country.longitude] as LatLngTuple;
+  return [country.lat, country.lon] as LatLngTuple;
 }
 
 export function useCountryStore() {
@@ -82,7 +82,7 @@ export function useCountryStore() {
   function getNextCountryData(): CountryData | null {
     if (!filteredCountryData.length) return null;
 
-    const countryIndex = filteredCountryData.findIndex((country) => country?.alpha3 === storedCountry?.alpha3);
+    const countryIndex = filteredCountryData.findIndex((country) => country?.a3 === storedCountry?.a3);
     const country = filteredCountryData[(countryIndex + 1) % filteredCountryData.length];
 
     if (!country) throw new Error(`No country found for index ${countryIndex}`);
@@ -105,12 +105,12 @@ export function useCountryStore() {
     return country;
   }
 
-  function getCountryDataByCode(alpha3?: string): CountryData | null {
-    if (!filteredCountryData.length || !alpha3) return null;
+  function getCountryDataByCode(a3?: string): CountryData | null {
+    if (!filteredCountryData.length || !a3) return null;
 
-    const country = countriesMetadata.find((country) => country.alpha3 === alpha3);
+    const country = countriesMetadata.find((country) => country.a3 === a3);
 
-    if (!country) throw new Error(`No country found for country code ${alpha3}`);
+    if (!country) throw new Error(`No country found for country code ${a3}`);
 
     setStoredCountry(country);
 

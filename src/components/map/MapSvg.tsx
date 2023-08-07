@@ -38,7 +38,7 @@ export function SvgMap({
   enableOnClick,
 }: {
   highlightAlpha3?: string;
-  onClick: (alpha3: string) => void;
+  onClick: (a3: string) => void;
   enableOnClick: boolean;
 }) {
   const { zoom } = useMapContext();
@@ -53,8 +53,8 @@ export function SvgMap({
 
   const onClickHandler = ({ originalEvent }: { originalEvent: MouseEvent }) => {
     const target = originalEvent.target as SVGPathElement | null;
-    const alpha3 = target?.getAttribute("data-alpha3");
-    if (alpha3) onClick(alpha3);
+    const a3 = target?.getAttribute("data-a3");
+    if (a3) onClick(a3);
   };
   return (
     <SVGOverlay
@@ -81,7 +81,7 @@ export function SvgMap({
       {otherPaths.map((item, index) => (
         <path
           key={index}
-          data-alpha3={item.a3}
+          data-a3={item.a3}
           d={item.path}
           style={{
             stroke: "unset",
@@ -93,7 +93,7 @@ export function SvgMap({
       {/* SVG path for the highlight country must be rendered last to be on top of the other countries */}
       {highlightPath && (
         <path
-          data-alpha3={highlightAlpha3}
+          data-a3={highlightAlpha3}
           d={highlightPath}
           style={{
             stroke: "#fcd34d",

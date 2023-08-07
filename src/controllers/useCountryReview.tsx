@@ -24,9 +24,9 @@ export function useCountryReview(countryStore: ReturnType<typeof useCountryStore
     }
   }
 
-  const handleMapClick = (alpha3?: string) => {
+  const handleMapClick = (a3?: string) => {
     try {
-      const country = getCountryDataByCode(alpha3);
+      const country = getCountryDataByCode(a3);
       if (country) focusUI(country);
       else if (storedCountry.data) focusUI(storedCountry.data);
       else showNextCountry();
