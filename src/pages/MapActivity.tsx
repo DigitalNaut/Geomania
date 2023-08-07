@@ -162,7 +162,7 @@ export default function MapActivity() {
           />
 
           {activityMode && filteredCountryData.length === 0 && (
-            <div className="absolute inset-1/2 z-[1000] mx-auto flex h-max w-max -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md">
+            <div className="absolute inset-1/2 z-[1000] mx-auto flex h-max w-max -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md hover:bg-sky-900">
               <h2 className="text-center text-2xl font-bold">No countries to review</h2>
               <div className="flex flex-col gap-4 text-center">
                 <span>You have disabled all regions.</span>
