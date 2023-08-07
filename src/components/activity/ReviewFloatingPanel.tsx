@@ -48,7 +48,7 @@ function CountryWikiInfo({ onError }: { onError: (error: Error) => void }) {
       </p>
     );
 
-  const page = data ? Object.values(data?.query.pages)[0] : undefined;
+  const page = data?.query?.pages ? Object.values(data.query.pages)[0] : undefined;
 
   if (!page) {
     return <p>Page not found</p>;
