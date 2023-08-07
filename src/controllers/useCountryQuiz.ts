@@ -65,20 +65,20 @@ export function useCountryQuiz(countryStore: ReturnType<typeof useCountryStore>,
     } else incrementTriesTally();
 
     if (countryCorrectAnswer.data) {
-      const { alpha2, alpha3, name } = countryCorrectAnswer.data;
+      const { a2, a3, name } = countryCorrectAnswer.data;
 
       pushGuessToHistory({
         text: userGuess,
         isCorrect,
-        alpha2,
-        alpha3,
+        a2,
+        a3,
       });
 
       updateCountryStats({
         name,
         isCorrect,
-        alpha2,
-        alpha3,
+        a2,
+        a3,
       });
     }
 

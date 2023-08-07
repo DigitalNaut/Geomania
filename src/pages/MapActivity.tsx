@@ -123,7 +123,7 @@ export default function MapActivity() {
             {activityMode.current === "quiz" && <MapClick callback={handleMapClickQuiz} />}
 
             <SvgMap
-              highlightAlpha3={storedCountry.data?.alpha3}
+              highlightAlpha3={storedCountry.data?.a3}
               onClick={handleMapClickReview}
               enableOnClick={activityMode.current === "review"}
             />

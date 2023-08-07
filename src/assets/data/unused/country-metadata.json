@@ -1,12 +1,12 @@
 [
-  { "name": "Bouvet Island", "alpha2": "BV", "alpha3": "BVT", "latitude": -54.423199, "longitude": 3.413194, "continent": "AN", "territory": "NO", "island": true, "geometry": false }, 
-  { "name": "Cocos (Keeling) Islands", "alpha2": "CC", "alpha3": "CCK", "latitude": -12.164165, "longitude": 96.870956, "continent": "AS", "territory": "AU", "island": true, "geometry": false }, 
-  { "name": "Christmas Island", "alpha2": "CX", "alpha3": "CXR", "latitude": -10.447525, "longitude": 105.690449, "continent": "AS", "territory": "AU", "island": true, "geometry": false }, 
-  { "name": "French Guiana", "alpha2": "GF", "alpha3": "GUF", "latitude": 3.933889, "longitude": -53.125782, "continent": "SA", "territory": "FR", "island": false, "geometry": false }, 
-  { "name": "Guadeloupe", "alpha2": "GP", "alpha3": "GLP", "latitude": 16.995971, "longitude": -62.067641, "continent": "NA", "territory": "FALSE", "island": true, "geometry": false }, 
-  { "name": "Martinique", "alpha2": "MQ", "alpha3": "MTQ", "latitude": 14.641528, "longitude": -61.024174, "continent": "NA", "territory": "FR", "island": true, "geometry": false }, 
-  { "name": "Réunion", "alpha2": "RE", "alpha3": "REU", "latitude": -21.115141, "longitude": 55.536384, "continent": "AF", "territory": "FR", "island": true, "geometry": false }, 
-  { "name": "Svalbard and Jan Mayen", "alpha2": "SJ", "alpha3": "SJM", "latitude": 77.553604, "longitude": 23.670272, "continent": "EU", "territory": "NO", "island": true, "geometry": false }, 
-  { "name": "Tokelau", "alpha2": "TK", "alpha3": "TKL", "latitude": -8.967363, "longitude": -171.855881, "continent": "OC", "territory": "NZ", "island": true, "geometry": false }, 
-  { "name": "Mayotte", "alpha2": "YT", "alpha3": "MYT", "latitude": -12.8275, "longitude": 45.166244, "continent": "AF", "territory": "FR", "island": true, "geometry": false }
+  { "name": "Bouvet Island", "a2": "BV", "a3": "BVT", "lat": -54.423199, "lon": 3.413194, "cont": "AN", "terr": "NO", "isl": 1 }, 
+  { "name": "Cocos (Keeling) Islands", "a2": "CC", "a3": "CCK", "lat": -12.164165, "lon": 96.870956, "cont": "AS", "terr": "AU", "isl": 1 }, 
+  { "name": "Christmas Island", "a2": "CX", "a3": "CXR", "lat": -10.447525, "lon": 105.690449, "cont": "AS", "terr": "AU", "isl": 1 }, 
+  { "name": "French Guiana", "a2": "GF", "a3": "GUF", "lat": 3.933889, "lon": -53.125782, "cont": "SA", "terr": "FR", "isl": false }, 
+  { "name": "Guadeloupe", "a2": "GP", "a3": "GLP", "lat": 16.995971, "lon": -62.067641, "cont": "NA", "terr": "FALSE", "isl": 1 }, 
+  { "name": "Martinique", "a2": "MQ", "a3": "MTQ", "lat": 14.641528, "lon": -61.024174, "cont": "NA", "terr": "FR", "isl": 1 }, 
+  { "name": "Réunion", "a2": "RE", "a3": "REU", "lat": -21.115141, "lon": 55.536384, "cont": "AF", "terr": "FR", "isl": 1 }, 
+  { "name": "Svalbard and Jan Mayen", "a2": "SJ", "a3": "SJM", "lat": 77.553604, "lon": 23.670272, "cont": "EU", "terr": "NO", "isl": 1 }, 
+  { "name": "Tokelau", "a2": "TK", "a3": "TKL", "lat": -8.967363, "lon": -171.855881, "cont": "OC", "terr": "NZ", "isl": 1 }, 
+  { "name": "Mayotte", "a2": "YT", "a3": "MYT", "lat": -12.8275, "lon": 45.166244, "cont": "AF", "terr": "FR", "isl": 1 }
 ]

@@ -4,6 +4,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 import MapContextProvider from "src/contexts/MapContext";
 import CountryStoreProvider from "src/contexts/CountryStoreContext";
+import CountryFiltersProvider from "./contexts/CountryFiltersContext";
 import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
 import MapActivity from "src/pages/MapActivity";
 import Settings from "src/pages/Settings";
@@ -62,9 +63,11 @@ const router = createBrowserRouter(
           element={
             <MapContextProvider>
               <CountryStoreProvider>
-                <QueryClientProvider client={queryClient}>
-                  <MapActivity />
-                </QueryClientProvider>
+                <CountryFiltersProvider>
+                  <QueryClientProvider client={queryClient}>
+                    <MapActivity />
+                  </QueryClientProvider>
+                </CountryFiltersProvider>
               </CountryStoreProvider>
             </MapContextProvider>
           }

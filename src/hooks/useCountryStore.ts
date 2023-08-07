@@ -1,64 +1,10 @@
 import type { LatLngTuple } from "leaflet";
 
-import { useMemo, useState } from "react";
-
 import { useCountryStoreContext } from "src/contexts/CountryStoreContext";
-import continents from "src/assets/data/continents.json";
+import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 import countriesMetadata from "src/assets/data/country-metadata.json";
 
 export type CountryData = (typeof countriesMetadata)[number];
-type CountriesDataByContinent = Record<string, CountryData[]>;
-
-type CountryFilters = Record<string, boolean>;
-
-const allCountriesMetadata = countriesMetadata as CountryData[];
-
-const sortCountriesDataByContinent = () =>
-  allCountriesMetadata.reduce((groups, country) => {
-    const { continent } = country || {};
-
-    if (continent) {
-      if (groups[continent]) groups[continent].push(country);
-      else groups[continent] = [country];
-    }
-    return groups;
-  }, {} as CountriesDataByContinent);
-
-function useCountryData() {
-  const [continentFilters, setContinentFilters] = useState(() =>
-    continents.reduce((continents, continent) => {
-      continents[continent] = true;
-      return continents;
-    }, {} as CountryFilters),
-  );
-
-  const filteredCountryData = useMemo(
-    () =>
-      allCountriesMetadata.filter((country) => {
-        const { continent } = country || {};
-        return continent && continentFilters[continent];
-      }),
-    [continentFilters],
-  );
-
-  const countryDataByContinent = useMemo(() => {
-    return sortCountriesDataByContinent();
-  }, []);
-
-  const toggleContinentFilter = (continent: string, toggle: boolean) => {
-    setContinentFilters((currentFilters) => ({
-      ...currentFilters,
-      [continent]: toggle,
-    }));
-  };
-
-  return {
-    toggleContinentFilter,
-    continentFilters,
-    countryDataByContinent,
-    filteredCountryData,
-  };
-}
 
 function randomIndex(length: number) {
   return Math.floor(Math.random() * length);
@@ -72,17 +18,18 @@ function normalizeName(text?: string) {
 }
 
 export function getCountryCoordinates(country: CountryData) {
-  return [country.latitude, country.longitude] as LatLngTuple;
+  return [country.lat, country.lon] as LatLngTuple;
 }
 
 export function useCountryStore() {
   const { storedCountry, setStoredCountry } = useCountryStoreContext();
-  const { toggleContinentFilter, countryDataByContinent, filteredCountryData, continentFilters } = useCountryData();
+  const { continentFilters, toggleContinentFilter, countryDataByContinent, filteredCountryData } =
+    useCountryFiltersContext();
 
   function getNextCountryData(): CountryData | null {
     if (!filteredCountryData.length) return null;
 
-    const countryIndex = filteredCountryData.findIndex((country) => country?.alpha3 === storedCountry?.alpha3);
+    const countryIndex = filteredCountryData.findIndex((country) => country?.a3 === storedCountry?.a3);
     const country = filteredCountryData[(countryIndex + 1) % filteredCountryData.length];
 
     if (!country) throw new Error(`No country found for index ${countryIndex}`);
@@ -105,12 +52,12 @@ export function useCountryStore() {
     return country;
   }
 
-  function getCountryDataByCode(alpha3?: string): CountryData | null {
-    if (!filteredCountryData.length || !alpha3) return null;
+  function getCountryDataByCode(a3?: string): CountryData | null {
+    if (!filteredCountryData.length || !a3) return null;
 
-    const country = countriesMetadata.find((country) => country.alpha3 === alpha3);
+    const country = countriesMetadata.find((country) => country.a3 === a3);
 
-    if (!country) throw new Error(`No country found for country code ${alpha3}`);
+    if (!country) throw new Error(`No country found for country code ${a3}`);
 
     setStoredCountry(country);
 
