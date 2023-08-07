@@ -10,10 +10,10 @@ async function runAsyncCode() {
 
   const svg_a3 = Array.from(svgFile.matchAll(svg_needle)).map((match) => match[1]);
   const svg_admin = Array.from(svgFile.matchAll(svg_needle)).map((match) => match[2]);
-  const data_a3 = data.map(({ alpha3 }) => alpha3);
+  const data_a3 = data.map(({ a3 }) => a3);
 
-  // const inCommon = data.filter(({ alpha3 }) => svg_a3.includes(alpha3)).map(({ alpha3, name }) => [alpha3, name]);
-  const missingInSVG = data.filter(({ alpha3 }) => !svg_a3.includes(alpha3)).map(({ alpha3, name }) => [alpha3, name]);
+  // const inCommon = data.filter(({ a3 }) => svg_a3.includes(a3)).map(({ a3, name }) => [a3, name]);
+  const missingInSVG = data.filter(({ a3 }) => !svg_a3.includes(a3)).map(({ a3, name }) => [a3, name]);
   const missingInData = svg_a3.filter((a3) => !data_a3.includes(a3)).map((a3) => [a3, svg_admin[svg_a3.indexOf(a3)]]);
 
   // console.log(`In common: ${inCommon.length}`);

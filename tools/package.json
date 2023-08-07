@@ -15,12 +15,8 @@
   ],
   "author": "DigitalNaut",
   "license": "CC BY-NC-SA 4.0",
-  "dependencies": {
-    "@types/svg-parser": "^2.0.3",
-    "svg-parser": "^2.0.4"
-  },
   "devDependencies": {
-    "@types/yargs": "^17.0.24",
+    "@types/node": "^20.4.7",
     "eslint": "^8.45.0",
     "prettier": "^3.0.0",
     "ts-node": "^10.9.1",
