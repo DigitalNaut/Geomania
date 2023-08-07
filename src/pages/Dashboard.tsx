@@ -8,6 +8,7 @@ import { type CountryStats, useUserGuessRecordContext } from "src/contexts/Guess
 import { Link } from "react-router-dom";
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg";
 import { Button } from "src/components/common/Button";
+import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
 
 type CountryProgressProps = {
   correct: number;
@@ -47,7 +48,7 @@ function CountryStatsCard({ countryStats }: CountryStatsProps) {
     >
       <img
         className="h-[2.4rem] w-16 p-1 before:block before:h-[2.4rem] before:w-16 before:bg-custom-unknown-flag"
-        src={`https://flagcdn.com/${countryStats.a2.toLocaleLowerCase()}.svg`}
+        src={countryStats.a2 ? `https://flagcdn.com/${countryStats.a2.toLocaleLowerCase()}.svg` : unknownFlag}
         alt={countryStats.a3}
         loading="lazy"
         width={64}
