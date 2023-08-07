@@ -2,6 +2,7 @@ import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import type { PropsWithChildren } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, NavLink } from "react-router-dom";
+import { twMerge } from "tailwind-merge";
 
 import { ReactComponent as Logo } from "src/assets/images/geomaniac-wordmark.min.svg";
 
@@ -35,7 +36,7 @@ type HeaderProps = PropsWithChildren<{
 
 export default function Header({ children, className, title }: HeaderProps): JSX.Element {
   return (
-    <div className={`relative z-[1500] flex items-center gap-2 p-2 shadow-md ${className}`}>
+    <div className={twMerge("relative z-[1500] flex items-center gap-2 p-2 shadow-md", className)}>
       <Link to="/">
         <Logo title={title} width={224} height={36} />
       </Link>

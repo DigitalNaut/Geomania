@@ -81,18 +81,23 @@ export function SvgMap({
         click: enableOnClick ? onClickHandler : () => null,
       }}
     >
-      {otherPaths.map(({ a3, path }, index) => (
-        <path
-          key={index}
-          data-a3={a3}
-          d={path}
-          style={{
-            stroke: "unset",
-            fill: isCountryInFilters(a3) ? "#94a3b8" : "#64748b",
-            strokeWidth: 1 / zoom ** 2,
-          }}
-        />
-      ))}
+      {otherPaths.map(({ a3, path }, index) => {
+        const isIncluded = isCountryInFilters(a3);
+
+        return (
+          <path
+            key={index}
+            data-a3={a3}
+            d={path}
+            style={{
+              strokeOpacity: isIncluded ? 0.50 : 0.15,
+              stroke: "unset",
+              fill: isIncluded ? "#94a3b8" : "#64748b",
+              strokeWidth: 1 / zoom ** 2,
+            }}
+          />
+        );
+      })}
       {/* SVG path for the highlight country must be rendered last to be on top of the other countries */}
       {highlightPath && (
         <path
