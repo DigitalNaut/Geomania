@@ -5,7 +5,7 @@ import continents from "src/assets/data/continents.json";
 import countriesMetadata from "src/assets/data/country-metadata.json";
 
 type CountriesDataByContinent = Record<string, CountryData[]>;
-type CountryFilters = Record<string, boolean>;
+export type CountryFilters = Record<string, boolean>;
 
 const allCountriesMetadata = countriesMetadata as CountryData[];
 
@@ -42,11 +42,25 @@ function useFilteredCountryData() {
     }));
   };
 
+  const resetContinentFilters = () => {
+    setContinentFilters(initialContinentFilters);
+  };
+
+  const isCountryInFilters = (a3: string) => {
+    const country = allCountriesMetadata.find((country) => country.a3 === a3);
+    if (!country) return false;
+
+    const { cont: continent } = country;
+    return continent && continentFilters[continent];
+  };
+
   return {
     toggleContinentFilter,
     continentFilters,
     countryDataByContinent,
     filteredCountryData,
+    isCountryInFilters,
+    resetContinentFilters,
   };
 }
 

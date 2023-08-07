@@ -10,6 +10,7 @@ import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { SvgMap } from "src/components/map/MapSvg";
 import { ActivityButton } from "src/components/activity/ActivityButton";
+import useActivityHelper from "src/controllers/useActivityHelper";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
 import ReviewFloatingPanel from "src/components/activity/ReviewFloatingPanel";
@@ -19,6 +20,7 @@ import MainView from "src/components/layout/MainView";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 import CountriesListPanel from "src/components/activity/CountriesListPanel";
 import ErrorBanner from "src/components/common/ErrorBanner";
+import RegionsToggleList from "src/components/activity/RegionsToggleList";
 
 type ActivityMode = "review" | "quiz";
 
@@ -28,14 +30,14 @@ const correctAnswerAudioSrc = new URL("src/assets/sounds/correct.mp3", import.me
 export default function MapActivity() {
   const { error, setError, dismissError } = useError();
   const [activityMode, setActivityMode] = useState<ActivityMode>();
-  const { storedCountry, resetStore, filteredCountryData } = useCountryStore();
+  const { storedCountry, resetStore, filteredCountryData, resetContinentFilters } = useCountryStore();
 
   const {
     handleMapClick: handleMapClickReview,
     showNextCountry,
     isRandomReviewMode,
     setRandomReviewMode,
-  } = useCountryReview(setError);
+  } = useCountryReview(activityMode === "review", setError);
   const {
     answerInputRef,
     submitAnswer,
@@ -45,6 +47,8 @@ export default function MapActivity() {
     skipCountry,
     handleMapClick: handleMapClickQuiz,
   } = useCountryQuiz(setError);
+
+  useActivityHelper(!!activityMode, isRandomReviewMode);
 
   const { resetView } = useMapViewport();
   const finishActivity = () => {
@@ -156,6 +160,26 @@ export default function MapActivity() {
             disabled={filteredCountryData.length === 0}
             onError={setError}
           />
+
+          {activityMode && filteredCountryData.length === 0 && (
+            <div className="absolute inset-1/2 z-[1000] mx-auto flex h-max w-max -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md">
+              <h2 className="text-center text-2xl font-bold">No countries to review</h2>
+              <div className="flex flex-col gap-4 text-center">
+                <span>You have disabled all regions.</span>
+
+                <RegionsToggleList />
+
+                <button
+                  className="underline"
+                  onClick={() => {
+                    resetContinentFilters();
+                  }}
+                >
+                  Enable all
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {activityMode === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}

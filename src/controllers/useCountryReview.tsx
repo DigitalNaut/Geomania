@@ -3,15 +3,15 @@ import { useState } from "react";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { type CountryData, useCountryStore, getCountryCoordinates } from "src/hooks/useCountryStore";
 
-export function useCountryReview(setError: (error: Error) => void) {
-  const mapControl = useMapViewport();
+export function useCountryReview(enabled: boolean, setError: (error: Error) => void) {
+  const { flyTo } = useMapViewport();
   const [isRandomReviewMode, setRandomReviewMode] = useState(false);
 
   const { storedCountry, getRandomCountryData, getNextCountryData, getCountryDataByCode } = useCountryStore();
 
   function focusUI(nextCountry: CountryData) {
     const destination = getCountryCoordinates(nextCountry);
-    mapControl.flyTo(destination);
+    flyTo(destination);
   }
 
   function showNextCountry() {
