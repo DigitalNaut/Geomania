@@ -26,7 +26,7 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: User
   }, [api, guessHistory, rendered]);
 
   return (
-    <div className="relative flex h-1/5 w-auto flex-col gap-2 sm:h-auto sm:w-[30ch]">
+    <div className="relative flex flex-col gap-2 overflow-y-auto">
       <h2 className="text-center text-xl italic text-slate-300">My Guess History</h2>
       <div
         className="flex flex-1 flex-col overflow-y-auto text-ellipsis px-2"

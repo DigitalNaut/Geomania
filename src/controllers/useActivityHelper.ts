@@ -2,11 +2,13 @@ import { useCallback, useEffect } from "react";
 import { type CountryData, getCountryCoordinates, useCountryStore } from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
 
+export type ActivityMode = "review" | "quiz";
+
 /**
  * This hook helps by providing a way to automatically focus the UI when the activity changes and there are countries to show.
- * @param active Whether to activate the hook or not.
+ * @param activityMode Whether to activate the hook or not.
  */
-export default function useActivityHelper(active: boolean, random: boolean) {
+export default function useActivityHelper(activityMode: ActivityMode | undefined, randomize: boolean) {
   const { flyTo, resetView } = useMapViewport();
   const { storedCountry, getNextCountryData, getRandomCountryData, filteredCountryData, resetStore } =
     useCountryStore();
@@ -20,10 +22,10 @@ export default function useActivityHelper(active: boolean, random: boolean) {
   );
 
   useEffect(() => {
-    if (!active) return;
+    if (!activityMode) return;
 
     if (!storedCountry.data && filteredCountryData.length > 0) {
-      const nextCountry = random ? getRandomCountryData() : getNextCountryData();
+      const nextCountry = randomize || activityMode === "quiz" ? getRandomCountryData() : getNextCountryData();
       if (nextCountry) focusUI(nextCountry);
     }
 
@@ -32,7 +34,7 @@ export default function useActivityHelper(active: boolean, random: boolean) {
       resetView();
     }
   }, [
-    active,
+    activityMode,
     storedCountry,
     filteredCountryData,
     getRandomCountryData,
@@ -40,6 +42,6 @@ export default function useActivityHelper(active: boolean, random: boolean) {
     focusUI,
     resetStore,
     resetView,
-    random,
+    randomize,
   ]);
 }
