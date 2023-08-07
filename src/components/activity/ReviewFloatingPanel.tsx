@@ -39,15 +39,11 @@ function CountryWikiInfo({ onError }: { onError: (error: Error) => void }) {
     if (error) onError(error as Error);
   }, [error, onError]);
 
-  if (isLoading) return <div className={"rounded-md bg-sky-900/60 p-3"}>Loading...</div>;
+  if (isLoading) return <div className="rounded-md bg-sky-900/60 p-3">Loading...</div>;
 
   if (error)
     return (
-      <p
-        className={
-          "pointer-events-auto max-h-[300px] max-w-xl overflow-y-auto break-all rounded-md bg-sky-900/60 p-3 scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700 hover:bg-sky-900"
-        }
-      >
+      <p className="pointer-events-auto max-h-[300px] max-w-xl overflow-y-auto break-all rounded-md bg-sky-900/60 p-3 scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700 hover:bg-sky-900">
         Data unavailable at the moment. An error has occurred.
       </p>
     );

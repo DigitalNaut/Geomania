@@ -1,6 +1,7 @@
 import { type PropsWithChildren } from "react";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { twMerge } from "tailwind-merge";
 
 export function ActivityButton({
   label,
@@ -18,7 +19,7 @@ export function ActivityButton({
       className="w-full flex-1 items-center justify-center gap-3 hover:bg-white/10"
       onClick={onClick}
     >
-      <div className={`m-auto flex w-fit items-center gap-4 rounded-lg p-6 shadow-lg ${className}`}>
+      <div className={twMerge("m-auto flex w-fit items-center gap-4 rounded-lg p-6 shadow-lg", className)}>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl">{label}</h2>
           <p className="inline-block max-w-[40ch] text-base">{children}</p>

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { twMerge } from "tailwind-merge";
 
 import { type CountryData, useCountryStore, getCountryCoordinates } from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
@@ -50,12 +51,12 @@ export default function CountriesListPanel() {
           {continents.map((continent, index) => (
             <details
               key={continent}
-              className={`cursor-pointer ${continentStyles[index % continentStyles.length]}`}
+              className={twMerge("cursor-pointer", continentStyles[index % continentStyles.length])}
               open={continentFilters[continent]}
               onToggle={(event) => toggleContinentFilter(continent, event.currentTarget.open)}
             >
               <summary
-                className={`flex justify-between px-1 italic ${continentFilters[continent] ? "" : "line-through"}`}
+                className={twMerge("flex justify-between px-1 italic", !continentFilters[continent] && "line-through")}
               >
                 <h3 className="text-lg font-bold">{continent}</h3>
                 <span className="text-base">&#40;{countryDataByContinent[continent].length}&#41;</span>
@@ -63,9 +64,10 @@ export default function CountriesListPanel() {
               <div className="flex flex-col gap-1 rounded-sm p-1">
                 {countryDataByContinent[continent].map((country) => (
                   <button
-                    className={`flex items-center gap-2 pl-2 pr-1 text-left -indent-2 ${
-                      country?.a3 === currentCountry.data?.a3 ? "bg-yellow-700" : ""
-                    }`}
+                    className={twMerge(
+                      "flex items-center gap-2 pl-2 pr-1 text-left -indent-2",
+                      country?.a3 === currentCountry.data?.a3 && "bg-yellow-700",
+                    )}
                     id={country?.a3}
                     key={country?.a3}
                     title={country?.name}

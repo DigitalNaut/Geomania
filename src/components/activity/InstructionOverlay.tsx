@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { animated, useSpring } from "@react-spring/web";
+import { twMerge } from "tailwind-merge";
 
 export default function InstructionOverlay({ shouldShow, children }: PropsWithChildren<{ shouldShow: boolean }>) {
   const springs = useSpring({
@@ -10,9 +11,10 @@ export default function InstructionOverlay({ shouldShow, children }: PropsWithCh
 
   return (
     <animated.div
-      className={`absolute inset-0 z-[1000] flex flex-col items-center justify-center rounded-lg bg-gray-900/10 text-xl italic ${
-        shouldShow ? "pointer-events-auto" : "pointer-events-none"
-      }`}
+      className={twMerge(
+        "absolute inset-0 z-[1000] flex flex-col items-center justify-center rounded-lg bg-gray-900/10 text-xl italic",
+        shouldShow ? "pointer-events-auto" : "pointer-events-none",
+      )}
       style={springs}
     >
       {children}

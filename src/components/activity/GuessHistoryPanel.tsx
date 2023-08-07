@@ -2,6 +2,7 @@ import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSpring, animated } from "@react-spring/web";
+import { twMerge } from "tailwind-merge";
 
 import type { UserCountryGuess } from "src/contexts/GuessRecordContext";
 import useScrollToTop from "src/hooks/useScrollToTop";
@@ -45,7 +46,7 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: User
 
               return (
                 <animated.div
-                  className={"flex items-center gap-2 px-1 " + itemStyle}
+                  className={twMerge("flex items-center gap-2 px-1", itemStyle)}
                   style={isLastItem ? springs : {}}
                   key={guess.timestamp}
                   title={guess.text}
