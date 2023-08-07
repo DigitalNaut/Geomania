@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Marker, ZoomControl, Popup } from "react-leaflet";
 
-import { BackControl, MapClick, TileLayersControl } from "src/components/map";
+import { BackControl, MapClick } from "src/components/map";
 import { LeafletMap, markerIcon } from "src/components/map/LeafletMap";
 import { useCountryQuiz } from "src/controllers/useCountryQuiz";
 import { useCountryReview } from "src/controllers/useCountryReview";
@@ -66,8 +66,6 @@ export default function MapActivity() {
           <LeafletMap>
             {activityMode && (
               <>
-                <TileLayersControl />
-
                 <ZoomControl position="topright" />
 
                 <BackControl position="topleft" label="Finish" onClick={finishActivity} />
