@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Marker, ZoomControl, Popup } from "react-leaflet";
+import { twMerge } from "tailwind-merge";
 
 import { BackControl, MapClick } from "src/components/map";
 import { LeafletMap, markerIcon } from "src/components/map/LeafletMap";
@@ -10,7 +11,7 @@ import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { SvgMap } from "src/components/map/MapSvg";
 import { ActivityButton } from "src/components/activity/ActivityButton";
-import useActivityHelper from "src/controllers/useActivityHelper";
+import useActivityHelper, { type ActivityMode } from "src/controllers/useActivityHelper";
 import ErrorBanner from "src/components/common/ErrorBanner";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
@@ -24,8 +25,6 @@ import RegionsDisabledOverlay from "src/components/activity/RegionsToggle";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 import IncorrectSound from "src/assets/sounds/incorrect.mp3?url";
 import CorrectSound from "src/assets/sounds/correct.mp3?url";
-
-type ActivityMode = "review" | "quiz";
 
 const incorrectAnswerAudioSrc = new URL(IncorrectSound, import.meta.url);
 const correctAnswerAudioSrc = new URL(CorrectSound, import.meta.url);
@@ -51,7 +50,7 @@ export default function MapActivity() {
     handleMapClick: handleMapClickQuiz,
   } = useCountryQuiz(setError);
 
-  useActivityHelper(!!activityMode, isRandomReviewMode);
+  useActivityHelper(activityMode, isRandomReviewMode);
 
   const { resetView } = useMapViewport();
   const finishActivity = () => {
@@ -137,7 +136,7 @@ export default function MapActivity() {
           </FloatingHeader>
 
           <QuizFloatingPanel
-            shouldShow={activityMode === "quiz"}
+            shouldShow={activityMode === "quiz" && filteredCountryData.length > 0}
             activity={{
               answerInputRef,
               submitAnswer,
@@ -162,12 +161,13 @@ export default function MapActivity() {
             onError={setError}
           />
 
-          {activityMode && filteredCountryData.length === 0 && <RegionsDisabledOverlay />}
+          {activityMode && <RegionsDisabledOverlay shouldShow={filteredCountryData.length === 0} />}
         </div>
 
-        {activityMode === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
-
-        {activityMode === "review" && <CountriesListPanel />}
+        <div className={twMerge("flex h-1/5 w-max flex-col gap-2 sm:h-auto sm:w-[30ch]", !activityMode && "hidden")}>
+          {activityMode && <CountriesListPanel abridged={activityMode === "quiz"} />}
+          {activityMode === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
+        </div>
       </MainView>
     </>
   );

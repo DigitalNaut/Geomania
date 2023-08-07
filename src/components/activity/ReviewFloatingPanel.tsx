@@ -48,12 +48,9 @@ function CountryWikiInfo({ onError }: { onError: (error: Error) => void }) {
       </p>
     );
 
-  const page = data?.query?.pages ? Object.values(data.query.pages)[0] : undefined;
+  const page = data?.query?.pages && Object.values(data.query.pages)[0];
 
-  if (!page) {
-    return <p>Page not found</p>;
-  }
-
+  if (!page) return <p>Page not found</p>;
   if ("missing" in page) return <p>Data unavailable</p>;
 
   return (

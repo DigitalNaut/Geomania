@@ -4,18 +4,9 @@ import { twMerge } from "tailwind-merge";
 import { type CountryData, useCountryStore, getCountryCoordinates } from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import continents from "src/assets/data/continents.json";
+import Toggle from "src/components/common/Toggle";
 
-const continentStyles = [
-  "bg-green-400/10",
-  "bg-white/10",
-  "bg-red-400/10",
-  "bg-blue-400/10",
-  "bg-orange-400/10",
-  "bg-yellow-400/10",
-  "bg-purple-400/10",
-];
-
-export default function CountriesListPanel() {
+export default function CountriesListPanel({ abridged = false }: { abridged?: boolean }) {
   const {
     setStoredCountry,
     storedCountry: currentCountry,
@@ -44,39 +35,45 @@ export default function CountriesListPanel() {
   }, [currentCountry.data]);
 
   return (
-    <div className="flex h-1/5 w-auto flex-col gap-2 sm:h-auto sm:w-[30ch]">
-      <h2 className="text-center text-xl italic text-slate-300">Countries by Region</h2>
-      <div className="flex flex-1 flex-col overflow-y-auto text-ellipsis px-2">
+    <div className={twMerge("flex h-max flex-col gap-2", !abridged && "overflow-y-auto")}>
+      <h2 className="text-center text-xl text-slate-300">Countries by Region</h2>
+      <div className={twMerge("flex flex-1 flex-col text-ellipsis px-2", !abridged && "overflow-y-auto")}>
         <div className="flex flex-col gap-3" ref={listRef}>
-          {continents.map((continent, index) => (
+          {continents.map((continent) => (
             <details
               key={continent}
-              className={twMerge("cursor-pointer", continentStyles[index % continentStyles.length])}
+              className={"cursor-pointer bg-blue-400/10"}
               open={continentFilters[continent]}
               onToggle={(event) => toggleContinentFilter(continent, event.currentTarget.open)}
             >
-              <summary
-                className={twMerge("flex justify-between px-1 italic", !continentFilters[continent] && "line-through")}
-              >
-                <h3 className="text-lg font-bold">{continent}</h3>
-                <span className="text-base">&#40;{countryDataByContinent[continent].length}&#41;</span>
+              <summary className={"flex justify-between px-1 font-bold"}>
+                <span>{continent}</span>
+                <div className="flex items-center gap-2 text-base">
+                  &#40;{countryDataByContinent[continent].length}&#41;
+                  <Toggle
+                    checked={continentFilters[continent]}
+                    onChange={(toggle) => toggleContinentFilter(continent, toggle)}
+                  />
+                </div>
               </summary>
-              <div className="flex flex-col gap-1 rounded-sm p-1">
-                {countryDataByContinent[continent].map((country) => (
-                  <button
-                    className={twMerge(
-                      "flex items-center gap-2 pl-2 pr-1 text-left -indent-2",
-                      country?.a3 === currentCountry.data?.a3 && "bg-yellow-700",
-                    )}
-                    id={country?.a3}
-                    key={country?.a3}
-                    title={country?.name}
-                    onClick={() => handleCountryClick(country)}
-                  >
-                    {country?.name}
-                  </button>
-                ))}
-              </div>
+              {!abridged && (
+                <div className="flex flex-col gap-1 rounded-sm p-1">
+                  {countryDataByContinent[continent].map((country) => (
+                    <button
+                      className={twMerge(
+                        "flex items-center gap-2 pl-2 pr-1 text-left -indent-2",
+                        country?.a3 === currentCountry.data?.a3 && "bg-yellow-700",
+                      )}
+                      id={country?.a3}
+                      key={country?.a3}
+                      title={country?.name}
+                      onClick={() => handleCountryClick(country)}
+                    >
+                      {country?.name}
+                    </button>
+                  ))}
+                </div>
+              )}
             </details>
           ))}
         </div>

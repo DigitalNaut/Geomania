@@ -10,7 +10,7 @@ export default function Toggle({ id, checked = false, onChange }: ToggleProps) {
   return (
     <button
       id={id}
-      className={twMerge("h-4 w-8 rounded-full transition-colors", checked ? "bg-green-500" : "bg-gray-500")}
+      className={twMerge("h-4 w-8 rounded-full transition-colors", checked ? "bg-blue-500" : "bg-gray-500")}
       onClick={() => {
         onChange?.(!checked);
       }}
