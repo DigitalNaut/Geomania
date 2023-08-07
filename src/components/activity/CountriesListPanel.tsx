@@ -51,7 +51,7 @@ export default function CountriesListPanel() {
             <details
               key={continent}
               className={`cursor-pointer ${continentStyles[index % continentStyles.length]}`}
-              open
+              open={continentFilters[continent]}
               onToggle={(event) => toggleContinentFilter(continent, event.currentTarget.open)}
             >
               <summary

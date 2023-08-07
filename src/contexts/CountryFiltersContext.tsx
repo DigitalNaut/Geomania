@@ -18,13 +18,13 @@ const countryDataByContinent = allCountriesMetadata.reduce((groups, country) => 
   return groups;
 }, {} as CountriesDataByContinent);
 
+const initialContinentFilters = continents.reduce((continents, continent) => {
+  continents[continent] = true;
+  return continents;
+}, {} as CountryFilters);
+
 function useFilteredCountryData() {
-  const [continentFilters, setContinentFilters] = useState(() =>
-    continents.reduce((continents, continent) => {
-      continents[continent] = true;
-      return continents;
-    }, {} as CountryFilters),
-  );
+  const [continentFilters, setContinentFilters] = useState(initialContinentFilters);
 
   const filteredCountryData = useMemo(
     () =>

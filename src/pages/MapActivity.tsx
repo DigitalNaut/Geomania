@@ -1,7 +1,5 @@
-import { useRef } from "react";
+import { useState } from "react";
 import { Marker, ZoomControl, Popup } from "react-leaflet";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import { BackControl, MapClick, TileLayersControl } from "src/components/map";
 import { LeafletMap, markerIcon } from "src/components/map/LeafletMap";
@@ -20,48 +18,24 @@ import InstructionOverlay from "src/components/activity/InstructionOverlay";
 import MainView from "src/components/layout/MainView";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 import CountriesListPanel from "src/components/activity/CountriesListPanel";
+import ErrorBanner from "src/components/common/ErrorBanner";
 
 type ActivityMode = "review" | "quiz";
 
 const incorrectAnswerAudioSrc = new URL("src/assets/sounds/incorrect.mp3", import.meta.url);
 const correctAnswerAudioSrc = new URL("src/assets/sounds/correct.mp3", import.meta.url);
 
-function useActivityMode() {
-  const activityMode = useRef<ActivityMode>();
-
-  const chooseActivity = (activity: ActivityMode, callback: () => void) => {
-    activityMode.current = activity;
-    callback();
-  };
-
-  return { activityMode, chooseActivity };
-}
-
-function ErrorBanner({ error, dismissError }: { error: Error; dismissError: () => void }) {
-  return (
-    <div className="flex w-full flex-[0] justify-center bg-red-800 p-2">
-      <div className="flex gap-6">
-        {error.message}
-        <button role="button" title="Dismiss" onClick={dismissError}>
-          <FontAwesomeIcon icon={faTimes} />
-        </button>
-      </div>
-    </div>
-  );
-}
-
 export default function MapActivity() {
   const { error, setError, dismissError } = useError();
-  const { activityMode, chooseActivity } = useActivityMode();
-  const countryStore = useCountryStore();
-  const { storedCountry, resetStore, filteredCountryData } = countryStore;
+  const [activityMode, setActivityMode] = useState<ActivityMode>();
+  const { storedCountry, resetStore, filteredCountryData } = useCountryStore();
 
   const {
     handleMapClick: handleMapClickReview,
     showNextCountry,
     isRandomReviewMode,
     setRandomReviewMode,
-  } = useCountryReview(countryStore, setError);
+  } = useCountryReview(setError);
   const {
     answerInputRef,
     submitAnswer,
@@ -70,11 +44,11 @@ export default function MapActivity() {
     guessHistory,
     skipCountry,
     handleMapClick: handleMapClickQuiz,
-  } = useCountryQuiz(countryStore, setError);
+  } = useCountryQuiz(setError);
 
   const { resetView } = useMapViewport();
   const finishActivity = () => {
-    activityMode.current = undefined;
+    setActivityMode(undefined);
     resetStore();
     resetView();
   };
@@ -86,7 +60,7 @@ export default function MapActivity() {
       <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
           <LeafletMap>
-            {activityMode.current && (
+            {activityMode && (
               <>
                 <TileLayersControl />
 
@@ -99,7 +73,7 @@ export default function MapActivity() {
             {storedCountry.coordinates && (
               <>
                 <Marker position={storedCountry.coordinates} icon={markerIcon} />
-                {activityMode.current === "review" && (
+                {activityMode === "review" && (
                   <Popup
                     position={storedCountry.coordinates}
                     keepInView
@@ -120,39 +94,45 @@ export default function MapActivity() {
               </>
             )}
 
-            {activityMode.current === "quiz" && <MapClick callback={handleMapClickQuiz} />}
+            {activityMode === "quiz" && <MapClick callback={handleMapClickQuiz} />}
 
             <SvgMap
               highlightAlpha3={storedCountry.data?.a3}
               onClick={handleMapClickReview}
-              enableOnClick={activityMode.current === "review"}
+              enableOnClick={activityMode === "review"}
             />
           </LeafletMap>
 
-          <InstructionOverlay shouldShow={!activityMode.current}>
+          <InstructionOverlay shouldShow={!activityMode}>
             <ActivityButton
               label="🗺 Review"
-              onClick={() => chooseActivity("review", handleMapClickReview)}
+              onClick={() => {
+                setActivityMode("review");
+                handleMapClickReview();
+              }}
               className="bg-gradient-to-br from-blue-600 to-blue-700"
             >
               Learn about the cultures, geography, and history of countries from around the world.
             </ActivityButton>
             <ActivityButton
               label="🏆 Quiz"
-              onClick={() => chooseActivity("quiz", handleMapClickQuiz)}
+              onClick={() => {
+                setActivityMode("quiz");
+                handleMapClickQuiz();
+              }}
               className="bg-gradient-to-br from-yellow-600 to-yellow-700"
             >
               Test your knowledge of countries around the world. Can you guess them all?
             </ActivityButton>
           </InstructionOverlay>
 
-          <FloatingHeader shouldShow={!!activityMode.current} imageSrc={NerdMascot}>
-            {activityMode.current === "quiz" && "Guess the country!"}
-            {activityMode.current === "review" && "Reviewing countries"}
+          <FloatingHeader shouldShow={!!activityMode} imageSrc={NerdMascot}>
+            {activityMode === "quiz" && "Guess the country!"}
+            {activityMode === "review" && "Reviewing countries"}
           </FloatingHeader>
 
           <QuizFloatingPanel
-            shouldShow={activityMode.current === "quiz"}
+            shouldShow={activityMode === "quiz"}
             activity={{
               answerInputRef,
               submitAnswer,
@@ -167,7 +147,7 @@ export default function MapActivity() {
           />
 
           <ReviewFloatingPanel
-            shouldShow={activityMode.current === "review"}
+            shouldShow={activityMode === "review"}
             activity={{
               showNextCountry,
               isRandomReviewMode,
@@ -178,9 +158,9 @@ export default function MapActivity() {
           />
         </div>
 
-        {activityMode.current === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
+        {activityMode === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
 
-        {activityMode.current === "review" && <CountriesListPanel />}
+        {activityMode === "review" && <CountriesListPanel />}
       </MainView>
     </>
   );
