@@ -4,6 +4,7 @@ import { type LatLngBoundsExpression, latLng, latLngBounds } from "leaflet";
 
 import { useMapContext } from "src/contexts/MapContext";
 import mapSvg from "src/assets/images/world-map-mercator.svg?raw";
+import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 
 const viewBoxParser = /viewBox="(.+?)"/g;
 const attributesParser = /<path d="(.+?)" A3="(.+?)" ADMIN="(.+?)"\/>/g;
@@ -42,6 +43,7 @@ export function SvgMap({
   enableOnClick: boolean;
 }) {
   const { zoom } = useMapContext();
+  const { isCountryInFilters } = useCountryFiltersContext();
 
   const [highlightPath, otherPaths] = useMemo(() => {
     const index = svgPaths.findIndex((item) => item.a3 === highlightAlpha3);
@@ -53,9 +55,10 @@ export function SvgMap({
 
   const onClickHandler = ({ originalEvent }: { originalEvent: MouseEvent }) => {
     const target = originalEvent.target as SVGPathElement | null;
-    const a3 = target?.getAttribute("data-a3");
+    const a3 = target?.getAttribute("data-a3"); // data-a3 is set in the SVGOverlay below
     if (a3) onClick(a3);
   };
+
   return (
     <SVGOverlay
       bounds={bounds}
@@ -78,14 +81,14 @@ export function SvgMap({
         click: enableOnClick ? onClickHandler : () => null,
       }}
     >
-      {otherPaths.map((item, index) => (
+      {otherPaths.map(({ a3, path }, index) => (
         <path
           key={index}
-          data-a3={item.a3}
-          d={item.path}
+          data-a3={a3}
+          d={path}
           style={{
             stroke: "unset",
-            fill: "#94a3b8",
+            fill: isCountryInFilters(a3) ? "#94a3b8" : "#64748b",
             strokeWidth: 1 / zoom ** 2,
           }}
         />
