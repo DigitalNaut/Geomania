@@ -52,9 +52,13 @@ const router = createBrowserRouter(
     >
       <Route
         element={
-          <UserGuessRecordProvider historyLimit={200}>
-            <Outlet />
-          </UserGuessRecordProvider>
+          <QueryClientProvider client={queryClient}>
+            <UserGuessRecordProvider historyLimit={200}>
+              <CountryFiltersProvider>
+                <Outlet />
+              </CountryFiltersProvider>
+            </UserGuessRecordProvider>
+          </QueryClientProvider>
         }
       >
         <Route
@@ -63,11 +67,7 @@ const router = createBrowserRouter(
           element={
             <MapContextProvider>
               <CountryStoreProvider>
-                <CountryFiltersProvider>
-                  <QueryClientProvider client={queryClient}>
-                    <MapActivity />
-                  </QueryClientProvider>
-                </CountryFiltersProvider>
+                <MapActivity />
               </CountryStoreProvider>
             </MapContextProvider>
           }

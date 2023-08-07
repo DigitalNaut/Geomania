@@ -23,8 +23,13 @@ export function getCountryCoordinates(country: CountryData) {
 
 export function useCountryStore() {
   const { storedCountry, setStoredCountry } = useCountryStoreContext();
-  const { continentFilters, toggleContinentFilter, countryDataByContinent, filteredCountryData } =
-    useCountryFiltersContext();
+  const {
+    continentFilters,
+    toggleContinentFilter,
+    countryDataByContinent,
+    filteredCountryData,
+    resetContinentFilters,
+  } = useCountryFiltersContext();
 
   function getNextCountryData(): CountryData | null {
     if (!filteredCountryData.length) return null;
@@ -88,5 +93,6 @@ export function useCountryStore() {
     continentFilters,
     countryDataByContinent,
     filteredCountryData,
+    resetContinentFilters,
   };
 }

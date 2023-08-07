@@ -1,12 +1,16 @@
 import { useMapViewport } from "src/hooks/useMapViewport";
-import { type CountryData, type useCountryStore, getCountryCoordinates } from "src/hooks/useCountryStore";
+import { type CountryData, useCountryStore, getCountryCoordinates } from "src/hooks/useCountryStore";
 import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { useTally } from "src/hooks/useTally";
 import { useInputField } from "src/hooks/useInputField";
 
-export function useCountryQuiz(countryStore: ReturnType<typeof useCountryStore>, setError: (error: Error) => void) {
+export function useCountryQuiz(setError: (error: Error) => void) {
   const mapControl = useMapViewport();
-  const { storedCountry: countryCorrectAnswer, compareStoredCountry: checkAnswer, getRandomCountryData } = countryStore;
+  const {
+    storedCountry: countryCorrectAnswer,
+    compareStoredCountry: checkAnswer,
+    getRandomCountryData,
+  } = useCountryStore();
   const {
     inputRef: answerInputRef,
     setInputField: setAnswerInputField,

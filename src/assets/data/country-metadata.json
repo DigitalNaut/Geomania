@@ -172,7 +172,7 @@
   { "a2": "QA", "a3": "QAT", "cont": "Asia", "isl": 0, "lat": 25.354826, "lon": 51.183884, "name": "Qatar", "terr": 0 },
   { "a2": "CG", "a3": "COG", "cont": "Africa", "isl": 0, "lat": -0.228021, "lon": 15.827659, "name": "Republic of the Congo", "terr": 0 },
   { "a2": "RO", "a3": "ROU", "cont": "Europe", "isl": 0, "lat": 45.943161, "lon": 24.96676, "name": "Romania", "terr": 0 },
-  { "a2": "RU", "a3": "RUS", "cont": "Europe", "isl": 0, "lat": 61.52401, "lon": 105.318756, "name": "Russia", "terr": 0 },
+  { "a2": "RU", "a3": "RUS", "cont": "Asia", "isl": 0, "lat": 61.52401, "lon": 105.318756, "name": "Russia", "terr": 0 },
   { "a2": "RW", "a3": "RWA", "cont": "Africa", "isl": 0, "lat": -1.940278, "lon": 29.873888, "name": "Rwanda", "terr": 0 },
   { "a2": "BL", "a3": "BLM", "cont": "North America", "isl": 1, "lat": 17.9, "lon": 62.8333, "name": "Saint Barthélemy", "terr": 0 },
   { "a2": "SH", "a3": "SHN", "cont": "Africa", "isl": 1, "lat": -24.143474, "lon": -10.030696, "name": "Saint Helena, Ascension and Tristan da Cunha", "terr": "GB" },
