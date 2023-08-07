@@ -11,26 +11,29 @@ import { useMapViewport } from "src/hooks/useMapViewport";
 import { SvgMap } from "src/components/map/MapSvg";
 import { ActivityButton } from "src/components/activity/ActivityButton";
 import useActivityHelper from "src/controllers/useActivityHelper";
+import ErrorBanner from "src/components/common/ErrorBanner";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
 import ReviewFloatingPanel from "src/components/activity/ReviewFloatingPanel";
 import FloatingHeader from "src/components/activity/FloatingHeader";
 import InstructionOverlay from "src/components/activity/InstructionOverlay";
 import MainView from "src/components/layout/MainView";
-import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 import CountriesListPanel from "src/components/activity/CountriesListPanel";
-import ErrorBanner from "src/components/common/ErrorBanner";
-import RegionsToggleList from "src/components/activity/RegionsToggleList";
+import RegionsDisabledOverlay from "src/components/activity/RegionsToggle";
+
+import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
+import IncorrectSound from "src/assets/sounds/incorrect.mp3?url";
+import CorrectSound from "src/assets/sounds/correct.mp3?url";
 
 type ActivityMode = "review" | "quiz";
 
-const incorrectAnswerAudioSrc = new URL("src/assets/sounds/incorrect.mp3", import.meta.url);
-const correctAnswerAudioSrc = new URL("src/assets/sounds/correct.mp3", import.meta.url);
+const incorrectAnswerAudioSrc = new URL(IncorrectSound, import.meta.url);
+const correctAnswerAudioSrc = new URL(CorrectSound, import.meta.url);
 
 export default function MapActivity() {
   const { error, setError, dismissError } = useError();
   const [activityMode, setActivityMode] = useState<ActivityMode>();
-  const { storedCountry, resetStore, filteredCountryData, resetContinentFilters } = useCountryStore();
+  const { storedCountry, resetStore, filteredCountryData } = useCountryStore();
 
   const {
     handleMapClick: handleMapClickReview,
@@ -159,25 +162,7 @@ export default function MapActivity() {
             onError={setError}
           />
 
-          {activityMode && filteredCountryData.length === 0 && (
-            <div className="absolute inset-1/2 z-[1000] mx-auto flex h-max w-max -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md hover:bg-sky-900">
-              <h2 className="text-center text-2xl font-bold">No countries to review</h2>
-              <div className="flex flex-col gap-4 text-center">
-                <span>You have disabled all regions.</span>
-
-                <RegionsToggleList />
-
-                <button
-                  className="underline"
-                  onClick={() => {
-                    resetContinentFilters();
-                  }}
-                >
-                  Enable all
-                </button>
-              </div>
-            </div>
-          )}
+          {activityMode && filteredCountryData.length === 0 && <RegionsDisabledOverlay />}
         </div>
 
         {activityMode === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
