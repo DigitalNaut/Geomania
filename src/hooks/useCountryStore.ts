@@ -1,64 +1,10 @@
 import type { LatLngTuple } from "leaflet";
 
-import { useMemo, useState } from "react";
-
 import { useCountryStoreContext } from "src/contexts/CountryStoreContext";
-import continents from "src/assets/data/continents.json";
+import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 import countriesMetadata from "src/assets/data/country-metadata.json";
 
 export type CountryData = (typeof countriesMetadata)[number];
-type CountriesDataByContinent = Record<string, CountryData[]>;
-
-type CountryFilters = Record<string, boolean>;
-
-const allCountriesMetadata = countriesMetadata as CountryData[];
-
-const sortCountriesDataByContinent = () =>
-  allCountriesMetadata.reduce((groups, country) => {
-    const { cont: continent } = country || {};
-
-    if (continent) {
-      if (groups[continent]) groups[continent].push(country);
-      else groups[continent] = [country];
-    }
-    return groups;
-  }, {} as CountriesDataByContinent);
-
-function useCountryData() {
-  const [continentFilters, setContinentFilters] = useState(() =>
-    continents.reduce((continents, continent) => {
-      continents[continent] = true;
-      return continents;
-    }, {} as CountryFilters),
-  );
-
-  const filteredCountryData = useMemo(
-    () =>
-      allCountriesMetadata.filter((country) => {
-        const { cont: continent } = country || {};
-        return continent && continentFilters[continent];
-      }),
-    [continentFilters],
-  );
-
-  const countryDataByContinent = useMemo(() => {
-    return sortCountriesDataByContinent();
-  }, []);
-
-  const toggleContinentFilter = (continent: string, toggle: boolean) => {
-    setContinentFilters((currentFilters) => ({
-      ...currentFilters,
-      [continent]: toggle,
-    }));
-  };
-
-  return {
-    toggleContinentFilter,
-    continentFilters,
-    countryDataByContinent,
-    filteredCountryData,
-  };
-}
 
 function randomIndex(length: number) {
   return Math.floor(Math.random() * length);
@@ -77,7 +23,8 @@ export function getCountryCoordinates(country: CountryData) {
 
 export function useCountryStore() {
   const { storedCountry, setStoredCountry } = useCountryStoreContext();
-  const { toggleContinentFilter, countryDataByContinent, filteredCountryData, continentFilters } = useCountryData();
+  const { continentFilters, toggleContinentFilter, countryDataByContinent, filteredCountryData } =
+    useCountryFiltersContext();
 
   function getNextCountryData(): CountryData | null {
     if (!filteredCountryData.length) return null;
