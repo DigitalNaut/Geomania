@@ -14,7 +14,7 @@ export function Button({ children, className, icon, ...props }: ButtonProps) {
     <button
       role="button"
       className={twMerge(
-        "flex items-center gap-2 rounded-full bg-blue-500 px-4 py-1 hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent",
+        "flex items-center justify-center gap-2 rounded-full bg-blue-500 px-4 py-1 hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent",
         className,
       )}
       {...props}

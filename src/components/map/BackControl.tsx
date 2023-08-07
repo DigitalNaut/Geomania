@@ -1,5 +1,4 @@
 import { faCaretLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Button } from "src/components/common/Button";
 
@@ -25,11 +24,11 @@ export function BackControl({
       <div className="leaflet-control leaflet-bar rounded-full">
         <Button
           className="w-fit bg-white text-base text-slate-950 hover:bg-red-600 hover:text-white"
-          onClick={onClick}
           title="End the activity"
+          icon={faCaretLeft}
+          onClick={onClick}
         >
-          <FontAwesomeIcon icon={faCaretLeft} />
-          <span>{label}</span>
+          {label}
         </Button>
       </div>
     </div>
