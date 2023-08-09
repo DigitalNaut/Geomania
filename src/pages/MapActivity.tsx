@@ -164,7 +164,7 @@ export default function MapActivity() {
           {activityMode && <RegionsDisabledOverlay shouldShow={filteredCountryData.length === 0} />}
         </div>
 
-        <div className={twMerge("flex h-1/5 w-max flex-col gap-2 sm:h-auto sm:w-[30ch]", !activityMode && "hidden")}>
+        <div className={twMerge("flex h-1/5 w-max flex-col gap-6 sm:h-auto sm:w-[30ch]", !activityMode && "hidden")}>
           {activityMode && <CountriesListPanel abridged={activityMode === "quiz"} />}
           {activityMode === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
         </div>

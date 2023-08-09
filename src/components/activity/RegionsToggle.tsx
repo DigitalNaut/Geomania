@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { animated, useSpring } from "@react-spring/web";
 
 import type { CountryFilters } from "src/contexts/CountryFiltersContext";
@@ -22,14 +22,19 @@ function ToggleListItem({ id, checked, onChange, label }: ListItemProps) {
       htmlFor={id}
     >
       <span>{label}</span>
-      <Toggle id={id} checked={checked} onChange={onChange} />
+      <Toggle id={id} value={checked} onChange={onChange} />
     </label>
   );
 }
 
+function createInitialToggles(continentFilters: CountryFilters) {
+  return Object.fromEntries(Object.keys(continentFilters).map((continent) => [continent, false]));
+}
+
 function RegionsToggleList() {
   const { toggleContinentFilter, continentFilters } = useCountryStore();
-  const [selectedContinents, setSelectedContinents] = useState<CountryFilters>(continentFilters);
+  const initialToggles = useMemo(() => createInitialToggles(continentFilters), [continentFilters]);
+  const [selectedContinents, setSelectedContinents] = useState<CountryFilters>(initialToggles);
 
   const allContinentsSelected = Object.values(selectedContinents).every((toggle) => toggle);
   const noContinentsSelected = !Object.values(selectedContinents).some((toggle) => toggle);
@@ -41,6 +46,7 @@ function RegionsToggleList() {
     Object.entries(selectedContinents).forEach(([continent, toggle]) => {
       toggleContinentFilter(continent, toggle);
     });
+    setSelectedContinents(initialToggles);
   };
 
   return (
