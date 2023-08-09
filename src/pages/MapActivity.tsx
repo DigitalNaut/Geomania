@@ -23,11 +23,6 @@ import CountriesListPanel from "src/components/activity/CountriesListPanel";
 import RegionsDisabledOverlay from "src/components/activity/RegionsToggle";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
-import IncorrectSound from "src/assets/sounds/incorrect.mp3?url";
-import CorrectSound from "src/assets/sounds/correct.mp3?url";
-
-const incorrectAnswerAudioSrc = new URL(IncorrectSound, import.meta.url);
-const correctAnswerAudioSrc = new URL(CorrectSound, import.meta.url);
 
 export default function MapActivity() {
   const { error, setError, dismissError } = useError();
@@ -143,10 +138,6 @@ export default function MapActivity() {
               userGuessTally,
               giveHint,
               skipCountry,
-            }}
-            audio={{
-              incorrectAnswerAudioSrc,
-              correctAnswerAudioSrc,
             }}
           />
 
