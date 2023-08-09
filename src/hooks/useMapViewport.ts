@@ -8,20 +8,21 @@ export function useMapViewport() {
   const { map } = useMapContext();
 
   useEffect(() => {
-    map?.setMaxBounds(map.getBounds());
+    if (!map) return;
+    map.setMaxBounds(map.getBounds());
   }, [map]);
 
   function flyTo(destination: LatLngExpression | null, { zoom = 4, animate = true, duration = 0.1 } = {}) {
-    if (!destination) return;
-
-    map?.flyTo(destination, zoom, {
+    if (!destination || !map) return;
+    map.flyTo(destination, zoom, {
       animate,
       duration,
     });
   }
 
   function resetView() {
-    map?.setView(mapDefaults.center, mapDefaults.zoom);
+    if (!map) return;
+    map.setView(mapDefaults.center, mapDefaults.zoom);
   }
 
   return { flyTo, resetView };
