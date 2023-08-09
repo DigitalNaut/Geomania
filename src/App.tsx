@@ -1,7 +1,9 @@
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, Outlet } from "react-router-dom";
 import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ErrorBoundary } from "react-error-boundary";
 
+import { ConditionalDriveProvider } from "src/components/drive/ConditionalDriveProvider";
 import MapContextProvider from "src/contexts/MapContext";
 import CountryStoreProvider from "src/contexts/CountryStoreContext";
 import CountryFiltersProvider from "./contexts/CountryFiltersContext";
@@ -14,8 +16,7 @@ import Header, { HeaderLink } from "src/components/layout/Header";
 import Footer from "src/components/layout/Footer";
 import DriveAccess from "src/components/drive/DriveAccess";
 import StandardLayout from "src/components/layout/StandardLayout";
-import { ConditionalDriveProvider } from "src/components/drive/ConditionalDriveProvider";
-import { ErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "src/components/common/ErrorFallback";
 
 const queryClient = new QueryClient();
 
@@ -52,13 +53,15 @@ const router = createBrowserRouter(
     >
       <Route
         element={
-          <QueryClientProvider client={queryClient}>
-            <UserGuessRecordProvider historyLimit={200}>
-              <CountryFiltersProvider>
-                <Outlet />
-              </CountryFiltersProvider>
-            </UserGuessRecordProvider>
-          </QueryClientProvider>
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <QueryClientProvider client={queryClient}>
+              <UserGuessRecordProvider historyLimit={200}>
+                <CountryFiltersProvider>
+                  <Outlet />
+                </CountryFiltersProvider>
+              </UserGuessRecordProvider>
+            </QueryClientProvider>
+          </ErrorBoundary>
         }
       >
         <Route

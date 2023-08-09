@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { type CountryData, useCountryStore, getCountryCoordinates } from "src/hooks/useCountryStore";
 
-export function useCountryReview(enabled: boolean, setError: (error: Error) => void) {
+export function useCountryReview(setError: (error: Error) => void) {
   const { flyTo } = useMapViewport();
   const [isRandomReviewMode, setRandomReviewMode] = useState(false);
 
@@ -11,7 +11,12 @@ export function useCountryReview(enabled: boolean, setError: (error: Error) => v
 
   function focusUI(nextCountry: CountryData) {
     const destination = getCountryCoordinates(nextCountry);
-    flyTo(destination);
+    try {
+      flyTo(destination);
+    } catch (error) {
+      if (error instanceof Error) setError(error);
+      else setError(new Error("An unknown error occurred."));
+    }
   }
 
   function showNextCountry() {

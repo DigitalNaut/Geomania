@@ -32,15 +32,21 @@ const bottomRightCorner = latLng(93, 172.1);
 const maxBounds = latLngBounds(topLeftCorner, bottomRightCorner);
 
 const bounds: LatLngBoundsExpression = maxBounds;
-
+/**
+ * Renders the map SVG as an overlay on the map.
+ * @param props 
+ * @returns 
+ */
 export function SvgMap({
   highlightAlpha3,
   onClick,
   enableOnClick,
+  disableColorFilter,
 }: {
   highlightAlpha3?: string;
-  onClick: (a3: string) => void;
+  onClick?: (a3: string) => void;
   enableOnClick: boolean;
+  disableColorFilter: boolean;
 }) {
   const { zoom } = useMapContext();
   const { isCountryInFilters } = useCountryFiltersContext();
@@ -56,7 +62,7 @@ export function SvgMap({
   const onClickHandler = ({ originalEvent }: { originalEvent: MouseEvent }) => {
     const target = originalEvent.target as SVGPathElement | null;
     const a3 = target?.getAttribute("data-a3"); // data-a3 is set in the SVGOverlay below
-    if (a3) onClick(a3);
+    if (onClick && a3) onClick(a3);
   };
 
   return (
@@ -82,7 +88,7 @@ export function SvgMap({
       }}
     >
       {otherPaths.map(({ a3, path }, index) => {
-        const isIncluded = isCountryInFilters(a3);
+        const colorFilter = disableColorFilter || isCountryInFilters(a3);
 
         return (
           <path
@@ -90,9 +96,9 @@ export function SvgMap({
             data-a3={a3}
             d={path}
             style={{
-              strokeOpacity: isIncluded ? 0.50 : 0.15,
+              strokeOpacity: colorFilter ? 0.5 : 0.15,
               stroke: "unset",
-              fill: isIncluded ? "#94a3b8" : "#64748b",
+              fill: colorFilter ? "#94a3b8" : "#64748b",
               strokeWidth: 1 / zoom ** 2,
             }}
           />

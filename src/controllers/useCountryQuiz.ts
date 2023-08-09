@@ -16,7 +16,7 @@ export function useCountryQuiz(setError: (error: Error) => void) {
     setInputField: setAnswerInputField,
     focusInputField: focusAnswerInputField,
   } = useInputField();
-  const { pushGuessToHistory, guessHistory, lastGuess, updateCountryStats } = useUserGuessRecordContext();
+  const { pushGuessToHistory, lastGuess, updateCountryStats } = useUserGuessRecordContext();
   const { tally: userGuessTally, incrementTally: incrementTriesTally, resetTally: resetTriesTally } = useTally();
 
   function giveHint() {
@@ -30,7 +30,7 @@ export function useCountryQuiz(setError: (error: Error) => void) {
     focusAnswerInputField();
   }
 
-  const resetUI = () => {
+  const resetInput = () => {
     resetTriesTally();
     setAnswerInputField("");
   };
@@ -64,7 +64,7 @@ export function useCountryQuiz(setError: (error: Error) => void) {
     if (!isValidNewGuess) return false;
 
     if (isCorrect) {
-      resetUI();
+      resetInput();
       showNextCountry();
     } else incrementTriesTally();
 
@@ -95,7 +95,7 @@ export function useCountryQuiz(setError: (error: Error) => void) {
   };
 
   const skipCountry = () => {
-    resetUI();
+    resetInput();
     showNextCountry();
   };
 
@@ -105,8 +105,7 @@ export function useCountryQuiz(setError: (error: Error) => void) {
     userGuessTally,
     giveHint,
 
-    guessHistory,
-    resetUI,
+    resetUI: resetInput,
     showNextCountry,
     skipCountry,
     handleMapClick,

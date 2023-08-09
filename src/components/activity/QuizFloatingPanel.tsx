@@ -1,10 +1,18 @@
-import { type KeyboardEvent, type PropsWithChildren, useCallback, useMemo } from "react";
+import { type KeyboardEvent, type PropsWithChildren, useCallback } from "react";
 import { animated, useSpring, useTrail } from "@react-spring/web";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForward, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 
 import type { useCountryQuiz } from "src/controllers/useCountryQuiz";
 import { ActionButton } from "src/components/common/ActionButton";
+
+import IncorrectSound from "src/assets/sounds/incorrect.mp3?url";
+import CorrectSound from "src/assets/sounds/correct.mp3?url";
+
+const incorrectAnswerAudioSrc = new URL(IncorrectSound, import.meta.url);
+const correctAnswerAudioSrc = new URL(CorrectSound, import.meta.url);
+const incorrectAnswerAudio = new Audio(incorrectAnswerAudioSrc.href);
+const correctAnswerAudio = new Audio(correctAnswerAudioSrc.href);
 
 function useHorizontalShakeAnimation({
   onShakeStart,
@@ -81,21 +89,13 @@ function QuizHeaderSection({
 export default function QuizFloatingPanel({
   shouldShow,
   activity: { answerInputRef, submitAnswer, userGuessTally, giveHint, skipCountry },
-  audio: { incorrectAnswerAudioSrc, correctAnswerAudioSrc },
 }: {
   shouldShow: boolean;
   activity: Pick<
     ReturnType<typeof useCountryQuiz>,
     "answerInputRef" | "skipCountry" | "submitAnswer" | "userGuessTally" | "giveHint"
   >;
-  audio: {
-    incorrectAnswerAudioSrc: URL;
-    correctAnswerAudioSrc: URL;
-  };
 }) {
-  const incorrectAnswerAudio = useMemo(() => new Audio(incorrectAnswerAudioSrc.href), [incorrectAnswerAudioSrc]);
-  const correctAnswerAudio = useMemo(() => new Audio(correctAnswerAudioSrc.href), [correctAnswerAudioSrc]);
-
   const onShakeStart = useCallback(() => {
     if (!answerInputRef.current) return;
     answerInputRef.current.disabled = true;
@@ -107,7 +107,7 @@ export default function QuizFloatingPanel({
     answerInputRef.current.focus();
     answerInputRef.current.select();
     incorrectAnswerAudio.pause();
-  }, [answerInputRef, incorrectAnswerAudio]);
+  }, [answerInputRef]);
 
   const { startShake, xShake } = useHorizontalShakeAnimation({
     onShakeStart,

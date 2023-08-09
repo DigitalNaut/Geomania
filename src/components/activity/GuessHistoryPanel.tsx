@@ -27,7 +27,7 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: User
 
   return (
     <div className="relative flex flex-col gap-2 overflow-y-auto">
-      <h2 className="text-center text-xl italic text-slate-300">My Guess History</h2>
+      <h3 className="text-center text-slate-300">My Guess History</h3>
       <div
         className="flex flex-1 flex-col overflow-y-auto text-ellipsis px-2"
         onScroll={handleScrollEvent}
