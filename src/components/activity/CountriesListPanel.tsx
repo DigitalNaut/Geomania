@@ -33,46 +33,53 @@ export default function CountriesListPanel({ abridged = false }: { abridged?: bo
   return (
     <div className={twMerge("flex h-max flex-col gap-2", !abridged && "overflow-y-auto")}>
       <h3 className="text-center text-slate-300">Countries by Region</h3>
-      <div className={twMerge("flex flex-1 flex-col text-ellipsis px-2", !abridged && "overflow-y-auto")}>
-        <div className="flex flex-col gap-3" ref={listRef}>
-          {continents.map((continent) => (
-            <details
-              key={continent}
-              className={"cursor-pointer rounded-md bg-blue-400/10"}
-              open={continentFilters[continent]}
-              onToggle={(event) => toggleContinentFilter(continent, event.currentTarget.open)}
+
+      <div className={twMerge("flex flex-col overflow-y-auto px-2", !abridged && "pb-[60vh]")} ref={listRef}>
+        {continents.map((continent, index) => (
+          <>
+            <div
+              key={continent + "-summary"}
+              className="sticky flex justify-between bg-slate-900 pb-1 pt-2 font-bold shadow-md"
+              style={{
+                top: `${index * 2.25}rem`,
+              }}
             >
-              <summary className={"flex justify-between px-1 font-bold"}>
-                <span>{continent}</span>
-                <div className="flex items-center gap-2 text-base">
-                  &#40;{countryDataByContinent[continent].length}&#41;
-                  <Toggle
-                    value={continentFilters[continent]}
-                    onChange={(toggle) => toggleContinentFilter(continent, toggle)}
-                  />
-                </div>
-              </summary>
-              {!abridged && (
-                <div className="flex flex-col gap-1 rounded-sm p-1">
-                  {countryDataByContinent[continent].map((country) => (
-                    <button
-                      className={twMerge(
-                        "flex items-center gap-2 pl-2 pr-1 text-left -indent-2 rounded-md",
-                        country?.a3 === storedCountry.data?.a3 && "bg-yellow-700",
-                      )}
-                      id={country?.a3}
-                      key={country?.a3}
-                      title={country?.name}
-                      onClick={() => handleCountryClick(country.a3)}
-                    >
-                      {country?.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </details>
-          ))}
-        </div>
+              <span>{continent}</span>
+              <div className="flex items-center gap-2 text-base">
+                &#40;{countryDataByContinent[continent].length}&#41;
+                <Toggle
+                  value={continentFilters[continent]}
+                  onChange={(toggle) => toggleContinentFilter(continent, toggle)}
+                />
+              </div>
+            </div>
+
+            {!abridged && (
+              <div
+                key={continent + "-details"}
+                className={twMerge(
+                  "flex flex-col rounded-sm bg-slate-800 p-1 pl-2",
+                  continentFilters[continent] ? "flex" : "hidden",
+                )}
+              >
+                {countryDataByContinent[continent].map((country) => (
+                  <button
+                    className={twMerge(
+                      "flex items-center gap-2 pl-4 -ml-2 -mr-1 pr-1 text-left -indent-2 rounded-sm",
+                      country?.a3 === storedCountry.data?.a3 && "bg-yellow-700 py-1",
+                    )}
+                    id={country?.a3}
+                    key={country?.a3}
+                    title={country?.name}
+                    onClick={() => handleCountryClick(country.a3)}
+                  >
+                    {country?.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
+        ))}
       </div>
     </div>
   );
