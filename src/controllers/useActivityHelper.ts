@@ -62,7 +62,6 @@ export default function useActivityHelper(
   useEffect(() => {
     if (!activityMode) return;
 
-    console.log("useActivityHelper", activityMode, randomize, storedCountry?.data?.a3);
     const countryParam = searchParams.get("country");
 
     if (!storedCountry.data) {
