@@ -154,14 +154,14 @@ export default function MapActivityLayout() {
             <ActivityButton
               className="bg-gradient-to-br from-blue-600 to-blue-700"
               label="🗺 Review"
-              onClick={() => setURLSearchParams((prev) => ({ ...prev, activity: "review" }))}
+              onClick={() => setURLSearchParams({ activity: "review" })}
             >
               Learn about the cultures, geography, and history of countries from around the world.
             </ActivityButton>
             <ActivityButton
               className="bg-gradient-to-br from-yellow-600 to-yellow-700"
               label="🏆 Quiz"
-              onClick={() => setURLSearchParams((prev) => ({ ...prev, activity: "quiz" }))}
+              onClick={() => setURLSearchParams({ activity: "quiz" })}
             >
               Test your knowledge of countries around the world. Can you guess them all?
             </ActivityButton>
