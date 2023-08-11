@@ -91,10 +91,7 @@ export default function QuizFloatingPanel({
   activity: { answerInputRef, submitAnswer, userGuessTally, giveHint, skipCountry },
 }: {
   shouldShow: boolean;
-  activity: Pick<
-    ReturnType<typeof useCountryQuiz>,
-    "answerInputRef" | "skipCountry" | "submitAnswer" | "userGuessTally" | "giveHint"
-  >;
+  activity: ReturnType<typeof useCountryQuiz>;
 }) {
   const onShakeStart = useCallback(() => {
     if (!answerInputRef.current) return;

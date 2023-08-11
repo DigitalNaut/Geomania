@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import type { useCountryReview } from "src/controllers/useCountryReview";
 import { ActionButton } from "src/components/common/ActionButton";
 import { useFloatingPanelSlideInAnimation } from "src/components/activity/QuizFloatingPanel";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { RenderDOM } from "src/components/common/RenderDOM";
+import { useMapActivityContext } from "src/contexts/MapActivityContext";
 
 const wikidataApi = "https://en.wikipedia.org/w/api.php?format=json&action=query";
 const wikipediaLogo =
@@ -94,17 +94,18 @@ function CountryWikiInfo({ onError }: { onError: (error: Error) => void }) {
 
 export default function ReviewFloatingPanel({
   shouldShow,
-  activity: { showNextCountry, isRandomReviewMode, setRandomReviewMode },
+  showNextCountry,
   disabled,
   onError,
 }: {
   shouldShow: boolean;
-  activity: Pick<ReturnType<typeof useCountryReview>, "showNextCountry" | "isRandomReviewMode" | "setRandomReviewMode">;
+  showNextCountry: () => void;
   disabled: boolean;
   onError: (error: Error) => void;
 }) {
   const [showDetails, setShowDetails] = useState(false);
   const { firstTrail } = useFloatingPanelSlideInAnimation(shouldShow);
+  const { isRandomReviewMode, setRandomReviewMode } = useMapActivityContext();
 
   return (
     <animated.div

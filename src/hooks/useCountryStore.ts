@@ -28,10 +28,9 @@ export function useCountryStore() {
     toggleContinentFilter,
     countryDataByContinent,
     filteredCountryData,
-    resetContinentFilters,
   } = useCountryFiltersContext();
 
-  function getNextCountryData(): CountryData | null {
+  function setCountryDataNext(): CountryData | null {
     if (!filteredCountryData.length) return null;
 
     const countryIndex = filteredCountryData.findIndex((country) => country?.a3 === storedCountry?.a3);
@@ -44,7 +43,7 @@ export function useCountryStore() {
     return country;
   }
 
-  function getRandomCountryData(): CountryData | null {
+  function setCountryDataRandom(): CountryData | null {
     if (!filteredCountryData.length) return null;
 
     const countryIndex = randomIndex(filteredCountryData.length);
@@ -57,7 +56,7 @@ export function useCountryStore() {
     return country;
   }
 
-  function getCountryDataByCode(a3?: string): CountryData | null {
+  function setCountryDataByCode(a3?: string): CountryData | null {
     if (!filteredCountryData.length || !a3) return null;
 
     const country = filteredCountryData.find((country) => country.a3 === a3);
@@ -83,16 +82,14 @@ export function useCountryStore() {
       data: storedCountry,
       coordinates: storedCountry ? getCountryCoordinates(storedCountry) : null,
     },
-    getNextCountryData,
-    getRandomCountryData,
-    getCountryDataByCode,
+    setCountryDataNext,
+    setCountryDataRandom,
+    setCountryDataByCode,
     compareStoredCountry,
-    setStoredCountry,
     resetStore,
     toggleContinentFilter,
     continentFilters,
     countryDataByContinent,
     filteredCountryData,
-    resetContinentFilters,
   };
 }

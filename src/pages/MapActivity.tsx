@@ -4,14 +4,14 @@ import { useSearchParams } from "react-router-dom";
 import { BackControl, MapClick } from "src/components/map";
 import { LeafletMap, markerIcon } from "src/components/map/LeafletMap";
 import { useCountryQuiz } from "src/controllers/useCountryQuiz";
-import { useCountryReview } from "src/controllers/useCountryReview";
 import { useError } from "src/hooks/useError";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { SvgMap } from "src/components/map/MapSvg";
 import { ActivityButton } from "src/components/activity/ActivityButton";
 import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
-import useActivityHelper, { ActivityMode } from "src/controllers/useActivityHelper";
+import { useMapActivityContext } from "src/contexts/MapActivityContext";
+import useActivityHelper from "src/controllers/useActivityHelper";
 import ErrorBanner from "src/components/common/ErrorBanner";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
@@ -24,42 +24,27 @@ import RegionsDisabledOverlay from "src/components/activity/RegionsToggle";
 import CountryFiltersProvider from "src/contexts/CountryFiltersContext";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
-import { useMemo } from "react";
 
 function MapActivity({
   setError,
-  activityMode,
   onFinishActivity,
 }: {
   setError: (error: Error) => void;
-  activityMode: ActivityMode | null;
   onFinishActivity: () => void;
 }) {
-  const [, setURLSearchParams] = useSearchParams();
-
   const { storedCountry, resetStore, filteredCountryData } = useCountryStore();
-  const { isRandomReviewMode, setRandomReviewMode } = useCountryReview();
-  const { answerInputRef, submitAnswer, userGuessTally, giveHint, skipCountry } = useCountryQuiz(setError);
-  const { showNextCountry, focusUI } = useActivityHelper(activityMode, isRandomReviewMode, setError);
-
+  const { showNextCountry, handleMapClick } = useActivityHelper(setError);
+  const { answerInputRef, submitAnswer, userGuessTally, giveHint, skipCountry } = useCountryQuiz(
+    showNextCountry,
+    setError,
+  );
+  const { activityMode } = useMapActivityContext();
   const { resetView } = useMapViewport();
+
   const finishActivity = () => {
     resetStore();
     resetView();
     onFinishActivity();
-  };
-
-  const handleMapClick = (a3?: string) => {
-    if (activityMode === "quiz") {
-      focusUI();
-      return;
-    }
-
-    if (!a3) return;
-    setURLSearchParams((prev) => {
-      prev.set("country", a3);
-      return prev;
-    });
   };
 
   return (
@@ -83,7 +68,7 @@ function MapActivity({
                     closeOnEscapeKey={false}
                     autoPan={false}
                   >
-                    <h3 className="text-xl">{storedCountry.data?.name}</h3>
+                    <h3 className="text-xl">{storedCountry.data?.name ?? "Unknown"}</h3>
                   </Popup>
                 )}
               </>
@@ -107,11 +92,7 @@ function MapActivity({
 
       <ReviewFloatingPanel
         shouldShow={activityMode === "review"}
-        activity={{
-          showNextCountry,
-          isRandomReviewMode,
-          setRandomReviewMode,
-        }}
+        showNextCountry={showNextCountry}
         disabled={filteredCountryData.length === 0}
         onError={setError}
       />
@@ -121,21 +102,11 @@ function MapActivity({
   );
 }
 
-function isActivityMode(mode: string | null): mode is ActivityMode {
-  if (mode === null) return false;
-  return ActivityMode.includes(mode as ActivityMode);
-}
-
 export default function MapActivityLayout() {
   const { guessHistory } = useUserGuessRecordContext();
   const { error, setError, dismissError } = useError();
-
-  const [searchParams, setURLSearchParams] = useSearchParams();
-  let activityMode = useMemo(() => searchParams.get("activity"), [searchParams]);
-
-  if (!isActivityMode(activityMode)) {
-    activityMode = null;
-  }
+  const [, setURLSearchParams] = useSearchParams();
+  const { activityMode } = useMapActivityContext();
 
   return (
     <CountryFiltersProvider>
@@ -143,7 +114,7 @@ export default function MapActivityLayout() {
 
       <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
-          <MapActivity activityMode={activityMode} onFinishActivity={() => setURLSearchParams()} setError={setError} />
+          <MapActivity onFinishActivity={() => setURLSearchParams()} setError={setError} />
 
           <FloatingHeader shouldShow={!!activityMode} imageSrc={NerdMascot}>
             {activityMode === "quiz" && "Guess the country!"}

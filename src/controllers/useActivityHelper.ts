@@ -1,31 +1,33 @@
 import { useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+
 import { type CountryData, getCountryCoordinates, useCountryStore } from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
-
-export const ActivityMode = ["review", "quiz"] as const;
-export type ActivityMode = (typeof ActivityMode)[number];
+import { useMapActivityContext } from "src/contexts/MapActivityContext";
 
 /**
  * This hook helps by providing a way to automatically focus the UI when the activity changes and there are countries to show.
  * @param activityMode Whether to activate the hook or not.
  */
-export default function useActivityHelper(
-  activityMode: ActivityMode | null,
-  randomize: boolean,
-  setError: (error: Error) => void,
-) {
+export default function useActivityHelper(setError: (error: Error) => void) {
   const { flyTo, resetView } = useMapViewport();
   const [searchParams, setURLSearchParams] = useSearchParams();
+  const { activityMode, isRandomReviewMode } = useMapActivityContext();
   const {
     storedCountry,
-    getNextCountryData,
-    getRandomCountryData,
-    getCountryDataByCode,
+    setCountryDataNext,
+    setCountryDataRandom,
+    setCountryDataByCode,
     filteredCountryData,
     resetStore,
   } = useCountryStore();
 
+  /**
+   * Focuses the UI on the next country by
+   * 1. Getting the next country data
+   * 2. Setting the URL search params
+   * 3. Flying to the country
+   */
   const focusUI = useCallback(
     (nextCountry?: CountryData) => {
       const countryData = nextCountry ?? storedCountry.data;
@@ -49,15 +51,30 @@ export default function useActivityHelper(
     });
   }, [setURLSearchParams]);
 
-  function showNextCountry() {
+  const showNextCountry = () => {
     try {
-      const nextCountry = randomize ? getRandomCountryData() : getNextCountryData();
+      const nextCountry = activityMode === "quiz" || isRandomReviewMode ? setCountryDataRandom() : setCountryDataNext();
       if (nextCountry) focusUI(nextCountry);
+      return nextCountry;
     } catch (error) {
       if (error instanceof Error) setError(error);
       else setError(new Error("An unknown error occurred."));
     }
-  }
+    return null;
+  };
+
+  const handleMapClick = (a3?: string) => {
+    if (activityMode === "quiz") {
+      focusUI();
+      return;
+    }
+
+    if (!a3) return;
+    setURLSearchParams((prev) => {
+      prev.set("country", a3);
+      return prev;
+    });
+  };
 
   useEffect(() => {
     if (!activityMode) return;
@@ -73,9 +90,9 @@ export default function useActivityHelper(
       let countryData: CountryData | null = null;
 
       if (activityMode === "review") {
-        if (countryParam) countryData = getCountryDataByCode(countryParam);
-        else countryData = randomize ? getRandomCountryData() : getNextCountryData();
-      } else if (activityMode === "quiz") countryData = getRandomCountryData();
+        if (countryParam) countryData = setCountryDataByCode(countryParam);
+        else countryData = isRandomReviewMode ? setCountryDataRandom() : setCountryDataNext();
+      } else if (activityMode === "quiz") countryData = setCountryDataRandom();
 
       if (countryData) focusUI(countryData);
       else resetUI();
@@ -84,7 +101,7 @@ export default function useActivityHelper(
         resetStore();
         resetUI();
       } else if (countryParam && countryParam !== storedCountry.data.a3) {
-        const countryData = getCountryDataByCode(countryParam);
+        const countryData = setCountryDataByCode(countryParam);
         if (countryData) focusUI(countryData);
       }
     }
@@ -92,12 +109,11 @@ export default function useActivityHelper(
     activityMode,
     storedCountry,
     filteredCountryData,
-    randomize,
     searchParams,
-
-    getRandomCountryData,
-    getNextCountryData,
-    getCountryDataByCode,
+    isRandomReviewMode,
+    setCountryDataRandom,
+    setCountryDataNext,
+    setCountryDataByCode,
     focusUI,
     resetUI,
     resetStore,
@@ -108,6 +124,6 @@ export default function useActivityHelper(
 
   return {
     showNextCountry,
-    focusUI,
+    handleMapClick,
   };
 }

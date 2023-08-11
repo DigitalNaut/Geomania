@@ -1,16 +1,10 @@
-import { useMapViewport } from "src/hooks/useMapViewport";
-import { type CountryData, useCountryStore, getCountryCoordinates } from "src/hooks/useCountryStore";
+import { type CountryData, useCountryStore } from "src/hooks/useCountryStore";
 import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { useTally } from "src/hooks/useTally";
 import { useInputField } from "src/hooks/useInputField";
 
-export function useCountryQuiz(setError: (error: Error) => void) {
-  const mapControl = useMapViewport();
-  const {
-    storedCountry: countryCorrectAnswer,
-    compareStoredCountry: checkAnswer,
-    getRandomCountryData,
-  } = useCountryStore();
+export function useCountryQuiz(showNextCountry: () => CountryData | null, setError: (error: Error) => void) {
+  const { storedCountry: countryCorrectAnswer, compareStoredCountry: checkAnswer } = useCountryStore();
   const {
     inputRef: answerInputRef,
     setInputField: setAnswerInputField,
@@ -19,7 +13,7 @@ export function useCountryQuiz(setError: (error: Error) => void) {
   const { pushGuessToHistory, lastGuess, updateCountryStats } = useUserGuessRecordContext();
   const { tally: userGuessTally, incrementTally: incrementTriesTally, resetTally: resetTriesTally } = useTally();
 
-  function giveHint() {
+  const giveHint = () => {
     if (countryCorrectAnswer.data) {
       // TODO: Add a better way to provide hints
       //const hint = countryCorrectAnswer.data.name.substring(0, userTries);
@@ -28,28 +22,12 @@ export function useCountryQuiz(setError: (error: Error) => void) {
     }
 
     focusAnswerInputField();
-  }
+  };
 
   const resetInput = () => {
     resetTriesTally();
     setAnswerInputField("");
   };
-
-  function focusUI(nextCountry: CountryData) {
-    const destination = getCountryCoordinates(nextCountry);
-    mapControl.flyTo(destination);
-    focusAnswerInputField();
-  }
-
-  function showNextCountry() {
-    try {
-      const nextCountry = getRandomCountryData();
-      if (nextCountry) focusUI(nextCountry);
-    } catch (error) {
-      if (error instanceof Error) setError(error);
-      else setError(new Error("An unknown error occurred."));
-    }
-  }
 
   const submitAnswer = () => {
     if (!answerInputRef.current) {
@@ -65,7 +43,8 @@ export function useCountryQuiz(setError: (error: Error) => void) {
 
     if (isCorrect) {
       resetInput();
-      showNextCountry();
+      const nextCountry = showNextCountry();
+      if (nextCountry) focusAnswerInputField();
     } else incrementTriesTally();
 
     if (countryCorrectAnswer.data) {
@@ -89,11 +68,10 @@ export function useCountryQuiz(setError: (error: Error) => void) {
     return isCorrect;
   };
 
-
-
   const skipCountry = () => {
     resetInput();
-    showNextCountry();
+    const nextCountry = showNextCountry();
+    if (nextCountry) focusAnswerInputField();
   };
 
   return {
@@ -101,9 +79,6 @@ export function useCountryQuiz(setError: (error: Error) => void) {
     submitAnswer,
     userGuessTally,
     giveHint,
-
-    resetUI: resetInput,
-    showNextCountry,
     skipCountry,
   };
 }

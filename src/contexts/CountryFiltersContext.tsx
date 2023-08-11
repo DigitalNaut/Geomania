@@ -42,10 +42,6 @@ function useFilteredCountryData() {
     }));
   };
 
-  const resetContinentFilters = () => {
-    setContinentFilters(initialContinentFilters);
-  };
-
   const isCountryInFilters = (a3: string) => {
     const country = allCountriesMetadata.find((country) => country.a3 === a3);
     if (!country) return false;
@@ -60,7 +56,6 @@ function useFilteredCountryData() {
     countryDataByContinent,
     filteredCountryData,
     isCountryInFilters,
-    resetContinentFilters,
   };
 }
 
