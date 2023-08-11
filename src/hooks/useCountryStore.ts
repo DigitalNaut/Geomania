@@ -1,8 +1,8 @@
 import type { LatLngTuple } from "leaflet";
 
+import type countriesMetadata from "src/assets/data/country-metadata.json";
 import { useCountryStoreContext } from "src/contexts/CountryStoreContext";
 import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
-import countriesMetadata from "src/assets/data/country-metadata.json";
 
 export type CountryData = (typeof countriesMetadata)[number];
 
@@ -37,7 +37,7 @@ export function useCountryStore() {
     const countryIndex = filteredCountryData.findIndex((country) => country?.a3 === storedCountry?.a3);
     const country = filteredCountryData[(countryIndex + 1) % filteredCountryData.length];
 
-    if (!country) throw new Error(`No country found for index ${countryIndex}`);
+    if (!country) return null;
 
     setStoredCountry(country);
 
@@ -50,7 +50,7 @@ export function useCountryStore() {
     const countryIndex = randomIndex(filteredCountryData.length);
     const country = filteredCountryData[countryIndex];
 
-    if (!country) throw new Error(`No country found for index ${countryIndex}`);
+    if (!country) return null;
 
     setStoredCountry(country);
 
@@ -60,9 +60,9 @@ export function useCountryStore() {
   function getCountryDataByCode(a3?: string): CountryData | null {
     if (!filteredCountryData.length || !a3) return null;
 
-    const country = countriesMetadata.find((country) => country.a3 === a3);
+    const country = filteredCountryData.find((country) => country.a3 === a3);
 
-    if (!country) throw new Error(`No country found for country code ${a3}`);
+    if (!country) return null;
 
     setStoredCountry(country);
 

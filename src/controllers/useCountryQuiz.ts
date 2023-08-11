@@ -89,10 +89,7 @@ export function useCountryQuiz(setError: (error: Error) => void) {
     return isCorrect;
   };
 
-  const handleMapClick = () => {
-    if (countryCorrectAnswer.data) focusUI(countryCorrectAnswer.data);
-    else showNextCountry();
-  };
+
 
   const skipCountry = () => {
     resetInput();
@@ -108,6 +105,5 @@ export function useCountryQuiz(setError: (error: Error) => void) {
     resetUI: resetInput,
     showNextCountry,
     skipCountry,
-    handleMapClick,
   };
 }
