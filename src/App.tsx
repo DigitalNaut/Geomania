@@ -9,6 +9,7 @@ import CountryStoreProvider from "src/contexts/CountryStoreContext";
 import CountryFiltersProvider from "src/contexts/CountryFiltersContext";
 import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
 import MapActivityProvider from "src/contexts/MapActivityContext";
+import UserSettingsProvider from "src/contexts/UserSettingsContext";
 import MapActivity from "src/pages/MapActivity";
 import Settings from "src/pages/Settings";
 import Dashboard from "src/pages/Dashboard";
@@ -89,8 +90,10 @@ const router = createBrowserRouter(
 
 export default function App() {
   return (
-    <ConditionalDriveProvider>
-      <RouterProvider router={router} />
-    </ConditionalDriveProvider>
+    <UserSettingsProvider>
+      <ConditionalDriveProvider>
+        <RouterProvider router={router} />
+      </ConditionalDriveProvider>
+    </UserSettingsProvider>
   );
 }
