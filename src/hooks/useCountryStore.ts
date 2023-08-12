@@ -1,8 +1,8 @@
 import type { LatLngTuple } from "leaflet";
 
+import type countriesMetadata from "src/assets/data/country-metadata.json";
 import { useCountryStoreContext } from "src/contexts/CountryStoreContext";
 import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
-import countriesMetadata from "src/assets/data/country-metadata.json";
 
 export type CountryData = (typeof countriesMetadata)[number];
 
@@ -23,46 +23,41 @@ export function getCountryCoordinates(country: CountryData) {
 
 export function useCountryStore() {
   const { storedCountry, setStoredCountry } = useCountryStoreContext();
-  const {
-    continentFilters,
-    toggleContinentFilter,
-    countryDataByContinent,
-    filteredCountryData,
-    resetContinentFilters,
-  } = useCountryFiltersContext();
+  const { continentFilters, toggleContinentFilter, countryDataByContinent, filteredCountryData } =
+    useCountryFiltersContext();
 
-  function getNextCountryData(): CountryData | null {
+  function setCountryDataNext(): CountryData | null {
     if (!filteredCountryData.length) return null;
 
     const countryIndex = filteredCountryData.findIndex((country) => country?.a3 === storedCountry?.a3);
     const country = filteredCountryData[(countryIndex + 1) % filteredCountryData.length];
 
-    if (!country) throw new Error(`No country found for index ${countryIndex}`);
+    if (!country) return null;
 
     setStoredCountry(country);
 
     return country;
   }
 
-  function getRandomCountryData(): CountryData | null {
+  function setCountryDataRandom(): CountryData | null {
     if (!filteredCountryData.length) return null;
 
     const countryIndex = randomIndex(filteredCountryData.length);
     const country = filteredCountryData[countryIndex];
 
-    if (!country) throw new Error(`No country found for index ${countryIndex}`);
+    if (!country) return null;
 
     setStoredCountry(country);
 
     return country;
   }
 
-  function getCountryDataByCode(a3?: string): CountryData | null {
+  function setCountryDataByCode(a3?: string): CountryData | null {
     if (!filteredCountryData.length || !a3) return null;
 
-    const country = countriesMetadata.find((country) => country.a3 === a3);
+    const country = filteredCountryData.find((country) => country.a3 === a3);
 
-    if (!country) throw new Error(`No country found for country code ${a3}`);
+    if (!country) return null;
 
     setStoredCountry(country);
 
@@ -83,16 +78,14 @@ export function useCountryStore() {
       data: storedCountry,
       coordinates: storedCountry ? getCountryCoordinates(storedCountry) : null,
     },
-    getNextCountryData,
-    getRandomCountryData,
-    getCountryDataByCode,
+    setCountryDataNext,
+    setCountryDataRandom,
+    setCountryDataByCode,
     compareStoredCountry,
-    setStoredCountry,
     resetStore,
     toggleContinentFilter,
     continentFilters,
     countryDataByContinent,
     filteredCountryData,
-    resetContinentFilters,
   };
 }

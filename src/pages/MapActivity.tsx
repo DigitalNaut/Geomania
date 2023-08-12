@@ -1,17 +1,17 @@
-import { useState } from "react";
 import { Marker, ZoomControl, Popup } from "react-leaflet";
+import { useSearchParams } from "react-router-dom";
 
 import { BackControl, MapClick } from "src/components/map";
 import { LeafletMap, markerIcon } from "src/components/map/LeafletMap";
 import { useCountryQuiz } from "src/controllers/useCountryQuiz";
-import { useCountryReview } from "src/controllers/useCountryReview";
 import { useError } from "src/hooks/useError";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { SvgMap } from "src/components/map/MapSvg";
 import { ActivityButton } from "src/components/activity/ActivityButton";
 import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
-import useActivityHelper, { type ActivityMode } from "src/controllers/useActivityHelper";
+import { useMapActivityContext } from "src/contexts/MapActivityContext";
+import useActivityHelper from "src/controllers/useActivityHelper";
 import ErrorBanner from "src/components/common/ErrorBanner";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
@@ -27,37 +27,24 @@ import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
 function MapActivity({
   setError,
-  activityMode,
-  setActivityMode,
+  onFinishActivity,
 }: {
   setError: (error: Error) => void;
-  activityMode?: ActivityMode;
-  setActivityMode: (mode?: ActivityMode) => void;
+  onFinishActivity: () => void;
 }) {
   const { storedCountry, resetStore, filteredCountryData } = useCountryStore();
-
-  const {
-    handleMapClick: handleMapClickReview,
+  const { showNextCountry, handleMapClick } = useActivityHelper(setError);
+  const { answerInputRef, submitAnswer, userGuessTally, giveHint, skipCountry } = useCountryQuiz(
     showNextCountry,
-    isRandomReviewMode,
-    setRandomReviewMode,
-  } = useCountryReview(setError);
-  const {
-    handleMapClick: handleMapClickQuiz,
-    answerInputRef,
-    submitAnswer,
-    userGuessTally,
-    giveHint,
-    skipCountry,
-  } = useCountryQuiz(setError);
-
-  useActivityHelper(activityMode, isRandomReviewMode);
-
+    setError,
+  );
+  const { activityMode } = useMapActivityContext();
   const { resetView } = useMapViewport();
+
   const finishActivity = () => {
-    setActivityMode();
     resetStore();
     resetView();
+    onFinishActivity();
   };
 
   return (
@@ -67,7 +54,7 @@ function MapActivity({
           <>
             <ZoomControl position="topright" />
             <BackControl position="topleft" label="Finish" onClick={finishActivity} />
-            {activityMode === "quiz" && <MapClick callback={handleMapClickQuiz} />}
+            <MapClick callback={handleMapClick} />
             {storedCountry.coordinates && (
               <>
                 <Marker position={storedCountry.coordinates} icon={markerIcon} />
@@ -81,7 +68,7 @@ function MapActivity({
                     closeOnEscapeKey={false}
                     autoPan={false}
                   >
-                    <h3 className="text-xl">{storedCountry.data?.name}</h3>
+                    <h3 className="text-xl">{storedCountry.data?.name ?? "Unknown"}</h3>
                   </Popup>
                 )}
               </>
@@ -89,12 +76,7 @@ function MapActivity({
           </>
         )}
 
-        <SvgMap
-          highlightAlpha3={storedCountry.data?.a3}
-          onClick={handleMapClickReview}
-          enableOnClick={activityMode === "review"}
-          disableColorFilter={!activityMode}
-        />
+        <SvgMap highlightAlpha3={storedCountry.data?.a3} onClick={handleMapClick} disableColorFilter={!activityMode} />
       </LeafletMap>
 
       <QuizFloatingPanel
@@ -110,11 +92,7 @@ function MapActivity({
 
       <ReviewFloatingPanel
         shouldShow={activityMode === "review"}
-        activity={{
-          showNextCountry,
-          isRandomReviewMode,
-          setRandomReviewMode,
-        }}
+        showNextCountry={showNextCountry}
         disabled={filteredCountryData.length === 0}
         onError={setError}
       />
@@ -127,7 +105,8 @@ function MapActivity({
 export default function MapActivityLayout() {
   const { guessHistory } = useUserGuessRecordContext();
   const { error, setError, dismissError } = useError();
-  const [activityMode, setActivityMode] = useState<ActivityMode>();
+  const [, setURLSearchParams] = useSearchParams();
+  const { activityMode } = useMapActivityContext();
 
   return (
     <CountryFiltersProvider>
@@ -135,7 +114,7 @@ export default function MapActivityLayout() {
 
       <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
-          <MapActivity activityMode={activityMode} setActivityMode={setActivityMode} setError={setError} />
+          <MapActivity onFinishActivity={() => setURLSearchParams()} setError={setError} />
 
           <FloatingHeader shouldShow={!!activityMode} imageSrc={NerdMascot}>
             {activityMode === "quiz" && "Guess the country!"}
@@ -146,14 +125,14 @@ export default function MapActivityLayout() {
             <ActivityButton
               className="bg-gradient-to-br from-blue-600 to-blue-700"
               label="🗺 Review"
-              onClick={() => setActivityMode("review")}
+              onClick={() => setURLSearchParams({ activity: "review" })}
             >
               Learn about the cultures, geography, and history of countries from around the world.
             </ActivityButton>
             <ActivityButton
               className="bg-gradient-to-br from-yellow-600 to-yellow-700"
               label="🏆 Quiz"
-              onClick={() => setActivityMode("quiz")}
+              onClick={() => setURLSearchParams({ activity: "quiz" })}
             >
               Test your knowledge of countries around the world. Can you guess them all?
             </ActivityButton>

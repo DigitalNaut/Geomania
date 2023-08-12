@@ -34,18 +34,16 @@ const maxBounds = latLngBounds(topLeftCorner, bottomRightCorner);
 const bounds: LatLngBoundsExpression = maxBounds;
 /**
  * Renders the map SVG as an overlay on the map.
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 export function SvgMap({
   highlightAlpha3,
   onClick,
-  enableOnClick,
   disableColorFilter,
 }: {
   highlightAlpha3?: string;
   onClick?: (a3: string) => void;
-  enableOnClick: boolean;
   disableColorFilter: boolean;
 }) {
   const { zoom } = useMapContext();
@@ -84,7 +82,7 @@ export function SvgMap({
       zIndex={1000}
       className="transition-colors duration-500 ease-in-out"
       eventHandlers={{
-        click: enableOnClick ? onClickHandler : () => null,
+        click: onClickHandler,
       }}
     >
       {otherPaths.map(({ a3, path }, index) => {

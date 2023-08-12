@@ -6,8 +6,10 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ConditionalDriveProvider } from "src/components/drive/ConditionalDriveProvider";
 import MapContextProvider from "src/contexts/MapContext";
 import CountryStoreProvider from "src/contexts/CountryStoreContext";
-import CountryFiltersProvider from "./contexts/CountryFiltersContext";
+import CountryFiltersProvider from "src/contexts/CountryFiltersContext";
 import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
+import MapActivityProvider from "src/contexts/MapActivityContext";
+import UserSettingsProvider from "src/contexts/UserSettingsContext";
 import MapActivity from "src/pages/MapActivity";
 import Settings from "src/pages/Settings";
 import Dashboard from "src/pages/Dashboard";
@@ -70,7 +72,9 @@ const router = createBrowserRouter(
           element={
             <MapContextProvider>
               <CountryStoreProvider>
-                <MapActivity />
+                <MapActivityProvider>
+                  <MapActivity />
+                </MapActivityProvider>
               </CountryStoreProvider>
             </MapContextProvider>
           }
@@ -86,8 +90,10 @@ const router = createBrowserRouter(
 
 export default function App() {
   return (
-    <ConditionalDriveProvider>
-      <RouterProvider router={router} />
-    </ConditionalDriveProvider>
+    <UserSettingsProvider>
+      <ConditionalDriveProvider>
+        <RouterProvider router={router} />
+      </ConditionalDriveProvider>
+    </UserSettingsProvider>
   );
 }
