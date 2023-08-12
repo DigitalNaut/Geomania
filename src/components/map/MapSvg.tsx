@@ -34,8 +34,8 @@ const maxBounds = latLngBounds(topLeftCorner, bottomRightCorner);
 const bounds: LatLngBoundsExpression = maxBounds;
 /**
  * Renders the map SVG as an overlay on the map.
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 export function SvgMap({
   highlightAlpha3,
