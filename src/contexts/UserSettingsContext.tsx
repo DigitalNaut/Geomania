@@ -11,7 +11,8 @@ type ActionType = {
 
 type UserSettingsContext = {
   userSettings: UserSettings;
-  setUserSettings: Dispatch<ActionType>;
+  setSetting: Dispatch<Partial<UserSettings>>;
+  resetSettings: () => void;
 };
 
 const userSettingsContext = createContext<UserSettingsContext | null>(null);
@@ -39,11 +40,15 @@ const reducer = (state: UserSettings, { type, payload }: ActionType): UserSettin
 export default function UserSettingsProvider({ children }: PropsWithChildren) {
   const [userSettings, setUserSettings] = useReducer(reducer, defaultUserSettings);
 
+  const setSetting = (payload: Partial<UserSettings>) => setUserSettings({ type: "set", payload });
+  const resetSettings = () => setUserSettings({ type: "reset", payload: {} });
+
   return (
     <userSettingsContext.Provider
       value={{
         userSettings,
-        setUserSettings,
+        setSetting,
+        resetSettings,
       }}
     >
       {children}
