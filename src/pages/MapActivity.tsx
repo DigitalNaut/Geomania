@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from "react";
 import { Marker, ZoomControl, Popup } from "react-leaflet";
 import { useSearchParams } from "react-router-dom";
 
@@ -21,9 +22,9 @@ import InstructionOverlay from "src/components/activity/InstructionOverlay";
 import MainView from "src/components/layout/MainView";
 import CountriesListPanel from "src/components/activity/CountriesListPanel";
 import RegionsDisabledOverlay from "src/components/activity/RegionsToggle";
-import CountryFiltersProvider from "src/contexts/CountryFiltersContext";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
+import { useHeaderControllerContext } from "src/contexts/HeaderControllerContext";
 
 function MapActivity({
   setError,
@@ -40,12 +41,20 @@ function MapActivity({
   );
   const { activityMode } = useMapActivityContext();
   const { resetView } = useMapViewport();
+  const { onClickCallback } = useHeaderControllerContext();
 
-  const finishActivity = () => {
+  const finishActivity = useCallback(() => {
     resetStore();
     resetView();
     onFinishActivity();
-  };
+  }, [onFinishActivity, resetStore, resetView]);
+
+  useEffect(() => {
+    // Make header behave as "Finish" button
+    onClickCallback.current = () => finishActivity();
+    // Reset header callback on unload
+    return () => (onClickCallback.current = undefined);
+  }, [finishActivity, onClickCallback]);
 
   return (
     <>
@@ -109,7 +118,7 @@ export default function MapActivityLayout() {
   const { activityMode } = useMapActivityContext();
 
   return (
-    <CountryFiltersProvider>
+    <>
       {error && <ErrorBanner error={error} dismissError={dismissError} />}
 
       <MainView>
@@ -146,6 +155,6 @@ export default function MapActivityLayout() {
           </div>
         )}
       </MainView>
-    </CountryFiltersProvider>
+    </>
   );
 }
