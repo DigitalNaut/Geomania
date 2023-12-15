@@ -8,7 +8,7 @@ import { Spinner } from "src/components/common/Spinner";
 export function ConditionalDriveProvider({ children }: PropsWithChildren) {
   const { status, data } = useEdgeKeys();
 
-  if (status === "loading") return <Spinner />;
+  if (status === "pending") return <Spinner />;
 
   const { clientId, apiKey } = data || {};
   const isDriveEnabled = !!clientId && !!apiKey;

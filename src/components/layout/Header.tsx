@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
-import { ReactComponent as Logo } from "src/assets/images/geomaniac-wordmark.min.svg";
+import Logo from "src/assets/images/geomaniac-wordmark.min.svg?react";
 
 type HeaderLinkProps = PropsWithChildren<{
   to: string;

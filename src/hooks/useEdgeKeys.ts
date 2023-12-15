@@ -11,7 +11,7 @@ export function useEdgeKeys() {
       if (error instanceof Error && error.message === "Unauthorized") return false;
       else return failureCount < 2;
     },
-    useErrorBoundary(error) {
+    throwOnError(error) {
       if (error instanceof AxiosError && error.response?.status !== undefined) return error.response.status >= 500;
       else return false;
     },

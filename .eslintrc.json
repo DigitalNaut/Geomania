@@ -45,7 +45,6 @@
     "react-hooks/exhaustive-deps": "warn",
     "no-use-before-define": "warn",
     "no-duplicate-imports": "error",
-    "@tanstack/query/exhaustive-deps": "warn",
-    "@tanstack/query/prefer-query-object-syntax": "warn"
+    "@tanstack/query/exhaustive-deps": "warn"
   }
 }

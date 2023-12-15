@@ -3,11 +3,11 @@ import { animated, useSpring } from "@react-spring/web";
 
 import { faBroom } from "@fortawesome/free-solid-svg-icons";
 
-import MainView from "src/components/layout/MainView";
 import { type CountryStats, useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { Link } from "react-router-dom";
-import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg";
 import { Button } from "src/components/common/Button";
+import MainView from "src/components/layout/MainView";
+import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg?url";
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
 
 type CountryProgressProps = {
@@ -140,7 +140,7 @@ export default function Dashboard() {
                 <img src={ThinkingFace} className="mx-auto" width={96} height={96} alt="No records found" />
                 <h3 className="text-lg">No records found</h3>
                 <p>
-                  <Link to="/" className="text-blue-500 hover:underline">
+                  <Link to="/?activity=quiz" className="text-blue-500 hover:underline">
                     Play the map
                   </Link>
                   &nbsp;to start recording your progress.
