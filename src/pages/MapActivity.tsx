@@ -154,7 +154,7 @@ export default function MapActivityLayout() {
 
         {activityMode && (
           <div className="flex h-1/5 w-max flex-col gap-6 sm:h-auto sm:w-[30ch]">
-            <CountriesListPanel abridged={activityMode === "quiz"} />
+            <CountriesListPanel isAbridged={activityMode === "quiz"} />
             {activityMode === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
           </div>
         )}
