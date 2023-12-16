@@ -5,7 +5,7 @@ import { faBroom } from "@fortawesome/free-solid-svg-icons";
 
 import { type CountryStats, useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { Link } from "react-router-dom";
-import { Button } from "src/components/common/Button";
+import Button from "src/components/common/Button";
 import MainView from "src/components/layout/MainView";
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg?url";
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
@@ -125,10 +125,10 @@ export default function Dashboard() {
           <Button
             className="w-max bg-transparent hover:bg-slate-400/40"
             onClick={showDialog}
-            icon={faBroom}
             disabled={countryStatsList.length === 0}
           >
-            Clear progress
+            <Button.Icon icon={faBroom} />
+            <span>Clear progress</span>
           </Button>
         </div>
 

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faSpinner, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 import { useGoogleDrive } from "src/contexts/GoogleDriveContext";
-import { Button } from "src/components/common/Button";
+import Button from "src/components/common/Button";
 
 import { DriveSettingsHook } from "./DriveSettingsHook";
 

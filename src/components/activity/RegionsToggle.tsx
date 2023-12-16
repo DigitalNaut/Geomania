@@ -3,7 +3,7 @@ import { animated, useSpring } from "@react-spring/web";
 
 import type { CountryFilters } from "src/contexts/CountryFiltersContext";
 import { useCountryStore } from "src/hooks/useCountryStore";
-import { Button } from "src/components/common/Button";
+import Button from "src/components/common/Button";
 import continents from "src/assets/data/continents.json";
 import Toggle from "src/components/common/Toggle";
 import { twMerge } from "tailwind-merge";

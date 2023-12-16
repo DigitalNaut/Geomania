@@ -3,13 +3,9 @@ import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { twMerge } from "tailwind-merge";
 
-type ButtonProps = PropsWithChildren<
-  DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> & {
-    icon?: IconDefinition;
-  }
->;
+type ButtonProps = PropsWithChildren<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>>;
 
-export function Button({ children, className, icon, ...props }: ButtonProps) {
+function Button({ children, className, ...props }: ButtonProps) {
   return (
     <button
       role="button"
@@ -19,8 +15,17 @@ export function Button({ children, className, icon, ...props }: ButtonProps) {
       )}
       {...props}
     >
-      {icon && <FontAwesomeIcon icon={icon} />}
       {children}
     </button>
   );
 }
+
+type IconProps = {
+  icon: IconDefinition;
+};
+
+Button.Icon = function Icon({ icon }: IconProps) {
+  return <FontAwesomeIcon icon={icon} />;
+};
+
+export default Button;

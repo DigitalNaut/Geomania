@@ -8,12 +8,12 @@ import { Spinner } from "src/components/common/Spinner";
 export function ConditionalDriveProvider({ children }: PropsWithChildren) {
   const { status, data } = useEdgeKeys();
 
-  if (status === "pending") return <Spinner />;
+  if (status === "pending") return <Spinner message="Drive" />;
 
   const { clientId, apiKey } = data || {};
   const isDriveEnabled = !!clientId && !!apiKey;
 
-  if (status === "error" || !isDriveEnabled) return children;
+  if (!isDriveEnabled) return children;
 
   return (
     <GoogleOAuthProvider

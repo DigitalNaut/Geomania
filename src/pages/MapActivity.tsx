@@ -119,7 +119,11 @@ export default function MapActivityLayout() {
 
   return (
     <>
-      {error && <ErrorBanner error={error} dismissError={dismissError} />}
+      {error && (
+        <ErrorBanner error={error}>
+          <ErrorBanner.Button dismissError={dismissError} />
+        </ErrorBanner>
+      )}
 
       <MainView>
         <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">

@@ -1,7 +1,7 @@
 import { useUserSettingsContext } from "src/contexts/UserSettingsContext";
 import Toggle from "src/components/common/Toggle";
 import MainView from "src/components/layout/MainView";
-import { Button } from "src/components/common/Button";
+import Button from "src/components/common/Button";
 
 function SettingToggle({
   label,
