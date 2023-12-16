@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { Marker, ZoomControl, Popup } from "react-leaflet";
 import { useSearchParams } from "react-router-dom";
 
@@ -24,7 +24,7 @@ import CountriesListPanel from "src/components/activity/CountriesListPanel";
 import RegionsDisabledOverlay from "src/components/activity/RegionsToggle";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
-import { useHeaderControllerContext } from "src/contexts/HeaderControllerContext";
+import useHeaderController from "src/hooks/useHeaderController";
 
 function MapActivity({
   setError,
@@ -41,7 +41,6 @@ function MapActivity({
   );
   const { activityMode } = useMapActivityContext();
   const { resetView } = useMapViewport();
-  const { onClickCallback } = useHeaderControllerContext();
 
   const finishActivity = useCallback(() => {
     resetStore();
@@ -49,12 +48,7 @@ function MapActivity({
     onFinishActivity();
   }, [onFinishActivity, resetStore, resetView]);
 
-  useEffect(() => {
-    // Make header behave as "Finish" button
-    onClickCallback.current = () => finishActivity();
-    // Reset header callback on unload
-    return () => (onClickCallback.current = undefined);
-  }, [finishActivity, onClickCallback]);
+  useHeaderController(finishActivity);
 
   return (
     <>
