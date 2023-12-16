@@ -1,9 +1,9 @@
-import { type CountryData, useCountryStore } from "src/hooks/useCountryStore";
+import { type NullableCountryData, useCountryStore } from "src/hooks/useCountryStore";
 import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { useTally } from "src/hooks/useTally";
 import { useInputField } from "src/hooks/useInputField";
 
-export function useCountryQuiz(showNextCountry: () => CountryData | null, setError: (error: Error) => void) {
+export function useCountryQuiz(showNextCountry: () => NullableCountryData, setError: (error: Error) => void) {
   const { storedCountry: countryCorrectAnswer, compareStoredCountry: checkAnswer } = useCountryStore();
   const {
     inputRef: answerInputRef,

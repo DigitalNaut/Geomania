@@ -5,6 +5,8 @@ import { useCountryStoreContext } from "src/contexts/CountryStoreContext";
 import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 
 export type CountryData = (typeof countriesMetadata)[number];
+export type NullableCountryData = CountryData | null;
+export type CountryDataList = CountryData[];
 
 function randomIndex(length: number) {
   return Math.floor(Math.random() * length);
@@ -26,7 +28,7 @@ export function useCountryStore() {
   const { continentFilters, toggleContinentFilter, countryDataByContinent, filteredCountryData } =
     useCountryFiltersContext();
 
-  function setCountryDataNext(): CountryData | null {
+  function setCountryDataNext(): NullableCountryData {
     if (!filteredCountryData.length) return null;
 
     const countryIndex = filteredCountryData.findIndex((country) => country?.a3 === storedCountry?.a3);
@@ -39,7 +41,7 @@ export function useCountryStore() {
     return country;
   }
 
-  function setCountryDataRandom(): CountryData | null {
+  function setCountryDataRandom(): NullableCountryData {
     if (!filteredCountryData.length) return null;
 
     const countryIndex = randomIndex(filteredCountryData.length);
@@ -52,7 +54,7 @@ export function useCountryStore() {
     return country;
   }
 
-  function setCountryDataByCode(a3?: string): CountryData | null {
+  function setCountryDataByCode(a3?: string): NullableCountryData {
     if (!filteredCountryData.length || !a3) return null;
 
     const country = filteredCountryData.find((country) => country.a3 === a3);

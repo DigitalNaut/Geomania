@@ -1,7 +1,12 @@
 import { useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { type CountryData, getCountryCoordinates, useCountryStore } from "src/hooks/useCountryStore";
+import {
+  type CountryData,
+  type NullableCountryData,
+  getCountryCoordinates,
+  useCountryStore,
+} from "src/hooks/useCountryStore";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { useMapActivityContext } from "src/contexts/MapActivityContext";
 
@@ -87,7 +92,7 @@ export default function useActivityHelper(setError: (error: Error) => void) {
         return;
       }
 
-      let countryData: CountryData | null = null;
+      let countryData: NullableCountryData = null;
 
       if (activityMode === "review") {
         if (countryParam) countryData = setCountryDataByCode(countryParam);

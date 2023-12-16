@@ -1,16 +1,16 @@
 import { type Dispatch, type SetStateAction, type PropsWithChildren, useState, createContext, useContext } from "react";
 
-import type { CountryData } from "src/hooks/useCountryStore";
+import { type NullableCountryData } from "src/hooks/useCountryStore";
 
 type CountryStoreContextType = {
-  storedCountry: CountryData | null;
-  setStoredCountry: Dispatch<SetStateAction<CountryData | null>>;
+  storedCountry: NullableCountryData;
+  setStoredCountry: Dispatch<SetStateAction<NullableCountryData>>;
 };
 
 const countryStoreContext = createContext<CountryStoreContextType | null>(null);
 
 export default function CountryStoreProvider({ children }: PropsWithChildren) {
-  const [storedCountry, setStoredCountry] = useState<CountryData | null>(null);
+  const [storedCountry, setStoredCountry] = useState<NullableCountryData>(null);
 
   return (
     <countryStoreContext.Provider

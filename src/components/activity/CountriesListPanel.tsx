@@ -1,13 +1,18 @@
 import { useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 
-import { type CountryData, useCountryStore } from "src/hooks/useCountryStore";
+import {
+  type NullableCountryData,
+  type CountryData,
+  type CountryDataList,
+  useCountryStore,
+} from "src/hooks/useCountryStore";
 import continents from "src/assets/data/continents.json";
 import Toggle from "src/components/common/Toggle";
 import { useSearchParams } from "react-router-dom";
 
 type CountryListEntryProps = {
-  storedCountry: CountryData | null;
+  storedCountry: NullableCountryData;
   countryClickCallback(a3: string): void;
 };
 
@@ -36,7 +41,7 @@ type ContinentListEntryProps = CountryListEntryProps & {
   isContinentAbridged: boolean;
   index: number;
   continent: string;
-  continentCountries: CountryData[];
+  continentCountries: CountryDataList;
   isContinentToggled: boolean;
   toggleContinentCallback(continent: string, toggle: boolean): void;
 };

@@ -1,14 +1,12 @@
 import { type MutableRefObject, type PropsWithChildren, createContext, useContext, useRef } from "react";
 
-type Callback = undefined | (() => void);
+type Callback = (() => void) | undefined;
 
 type HeaderControllerContext = {
   onClickCallback: MutableRefObject<Callback>;
 };
 
-const userSettingsContext = createContext<HeaderControllerContext>({
-  onClickCallback: { current: undefined },
-});
+const userSettingsContext = createContext<HeaderControllerContext | null>(null);
 
 export default function HeaderControllerProvider({ children }: PropsWithChildren) {
   const onClickCallback = useRef<Callback>();

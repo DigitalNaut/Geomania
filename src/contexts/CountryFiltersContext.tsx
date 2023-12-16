@@ -1,13 +1,13 @@
 import { type PropsWithChildren, createContext, useContext, useMemo, useState } from "react";
 
-import { type CountryData } from "src/hooks/useCountryStore";
+import { type CountryDataList } from "src/hooks/useCountryStore";
 import continents from "src/assets/data/continents.json";
 import countriesMetadata from "src/assets/data/country-metadata.json";
 
-type CountriesDataByContinent = Record<string, CountryData[]>;
+type CountriesDataByContinent = Record<string, CountryDataList>;
 export type CountryFilters = Record<string, boolean>;
 
-const allCountriesMetadata = countriesMetadata as CountryData[];
+const allCountriesMetadata = countriesMetadata as CountryDataList;
 
 const countryDataByContinent = allCountriesMetadata.reduce((groups, country) => {
   const { cont: continent } = country;
