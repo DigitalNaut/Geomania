@@ -1,4 +1,4 @@
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, Outlet } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
@@ -17,47 +17,46 @@ import Dashboard from "src/pages/Dashboard";
 import PageNotFound from "src/pages/PageNotFound";
 import Header from "src/components/layout/Header";
 import Footer from "src/components/layout/Footer";
-// import DriveAccess from "src/components/drive/DriveAccess";
+import DriveAccess from "src/components/drive/DriveAccess";
 import StandardLayout from "src/components/layout/StandardLayout";
 import ErrorFallback from "src/components/common/ErrorFallback";
 
 const queryClient = new QueryClient();
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route
-      element={
-        <StandardLayout>
-          <Header>
-            <Header.Logo title="Geomaniac" />
+const router = createBrowserRouter([
+  {
+    element: (
+      <StandardLayout>
+        <Header>
+          <Header.Logo title="Geomaniac" />
 
-            <div className="flex flex-1 gap-2 pl-6">
-              <Header.Link to="/" icon={faMap}>
-                Map
-              </Header.Link>
-              <Header.Link to="dashboard" icon={faChartLine}>
-                Dashboard
-              </Header.Link>
-              <Header.Link to="settings" icon={faCog}>
-                Settings
-              </Header.Link>
-            </div>
+          <div className="flex flex-1 gap-2 pl-6">
+            <Header.Link to="/" icon={faMap}>
+              Map
+            </Header.Link>
+            <Header.Link to="dashboard" icon={faChartLine}>
+              Dashboard
+            </Header.Link>
+            <Header.Link to="settings" icon={faCog}>
+              Settings
+            </Header.Link>
+          </div>
 
-            <div className="flex w-full justify-end pl-2 text-sm">
-              <ErrorBoundary fallback={<span className="px-2 italic text-white/60">Google Drive not available.</span>}>
-                {/* <DriveAccess /> */}
-              </ErrorBoundary>
-            </div>
-          </Header>
+          <div className="flex w-full justify-end pl-2 text-sm">
+            <ErrorBoundary fallback={<span className="px-2 italic text-white/60">Google Drive not available.</span>}>
+              <DriveAccess />
+            </ErrorBoundary>
+          </div>
+        </Header>
 
-          <Outlet />
+        <Outlet />
 
-          <Footer />
-        </StandardLayout>
-      }
-    >
-      <Route
-        element={
+        <Footer />
+      </StandardLayout>
+    ),
+    children: [
+      {
+        element: (
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <QueryClientProvider client={queryClient}>
               <UserGuessRecordProvider historyLimit={200}>
@@ -67,29 +66,38 @@ const router = createBrowserRouter(
               </UserGuessRecordProvider>
             </QueryClientProvider>
           </ErrorBoundary>
-        }
-      >
-        <Route
-          path="/"
-          index
-          element={
-            <MapContextProvider>
-              <CountryStoreProvider>
-                <MapActivityProvider>
-                  <MapActivity />
-                </MapActivityProvider>
-              </CountryStoreProvider>
-            </MapContextProvider>
-          }
-        />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Route>
-
-      <Route path="*" element={<PageNotFound />} />
-    </Route>,
-  ),
-);
+        ),
+        children: [
+          {
+            path: "/",
+            index: true,
+            element: (
+              <MapContextProvider>
+                <CountryStoreProvider>
+                  <MapActivityProvider>
+                    <MapActivity />
+                  </MapActivityProvider>
+                </CountryStoreProvider>
+              </MapContextProvider>
+            ),
+          },
+          {
+            path: "/settings",
+            element: <Settings />,
+          },
+          {
+            path: "/dashboard",
+            element: <Dashboard />,
+          },
+        ],
+      },
+      {
+        path: "*",
+        element: <PageNotFound />,
+      },
+    ],
+  },
+]);
 
 export default function App() {
   return (
