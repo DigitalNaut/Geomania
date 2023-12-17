@@ -1,12 +1,11 @@
 import type { PropsWithChildren } from "react";
+import { twMerge } from "tailwind-merge";
 
 import { useUserSettingsContext } from "src/contexts/UserSettingsContext";
 import { DriveAccessButton } from "src/components/drive/DriveAccess";
 import MainView from "src/components/layout/MainView";
 import Toggle from "src/components/common/Toggle";
 import Button from "src/components/common/Button";
-import DriveSettingsHook from "src/components/drive/DriveSettingsHook";
-import { twMerge } from "tailwind-merge";
 
 function SettingInfo({
   label,
@@ -38,11 +37,9 @@ function SettingsSection({ children }: PropsWithChildren) {
 
 export default function Settings() {
   const { userSettings, setUserSetting, resetUserSettings } = useUserSettingsContext();
-  const { driveSettings, setAutoConnectDrive, resetDriveSettings } = DriveSettingsHook();
 
   const reset = () => {
     resetUserSettings();
-    resetDriveSettings();
   };
 
   return (
@@ -86,7 +83,10 @@ export default function Settings() {
             </SettingInfo>
 
             <SettingInfo small label="Auto connect">
-              <Toggle value={driveSettings.autoConnectDrive} onChange={(value) => setAutoConnectDrive(value)} />
+              <Toggle
+                value={userSettings.autoConnectDrive}
+                onChange={(value) => setUserSetting({ autoConnectDrive: value })}
+              />
             </SettingInfo>
           </SettingsSection>
 

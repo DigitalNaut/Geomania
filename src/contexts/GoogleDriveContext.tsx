@@ -8,7 +8,6 @@ import {
 } from "@react-oauth/google";
 
 import { Script } from "src/components/common/Script";
-import DriveSettingsHook from "src/components/drive/DriveSettingsHook";
 
 type DriveAccessValidator = { hasAccess: true; error: undefined } | { hasAccess: false; error: Error };
 
@@ -61,8 +60,10 @@ function ConditionalHook({ onHasAccess, onNonOAuthError, onSuccess, onError }: C
 export function GoogleDriveProvider({
   children,
   apiKey,
+  onUserDisconnect,
 }: PropsWithChildren<{
   apiKey?: string;
+  onUserDisconnect?: () => void;
 }>) {
   const [isDriveLoaded, setIsLoaded] = useState(false);
   const [isDriveAuthorizing, setIsDriveAuthorizing] = useState(false);
@@ -70,7 +71,6 @@ export function GoogleDriveProvider({
   const [userDriveTokens, setUserTokens] = useState<TokenResponse>();
   const [tokensExpirationDate, setTokensExpirationDate] = useState<Date>();
   const [error, setError] = useState<Error | NonOAuthError | null>(null);
-  const { setAutoConnectDrive } = DriveSettingsHook();
 
   const { scriptLoadedSuccessfully } = useGoogleOAuth();
 
@@ -113,20 +113,24 @@ export function GoogleDriveProvider({
     if (isDriveAuthorizing) return;
 
     setError(null);
-
+    
+    clearTokensAndAccess();
     setIsDriveAuthorizing(true);
     initDriveImplicitFlow.current();
+
+    console.log("Requesting drive access...");
   }
 
   function disconnectDrive() {
     if (!isDriveLoaded) throw new Error(notReadyMessage);
 
     if (isDriveAuthorizing) return;
+    
+    setError(null);
 
     clearTokensAndAccess();
     setIsDriveAuthorizing(false);
-    setError(null);
-    setAutoConnectDrive(false);
+    onUserDisconnect?.();
   }
 
   function validateDriveAccess(): DriveAccessValidator {
@@ -147,21 +151,24 @@ export function GoogleDriveProvider({
   }
 
   function onNonOAuthError(error: NonOAuthError) {
+    setError(error);
+
     clearTokensAndAccess();
     setIsDriveAuthorizing(false);
-    setError(error);
   }
 
   function onSuccess(tokenResponse: TokenResponse) {
+    setError(null);
+
     setTokensAndAccess(tokenResponse);
     setIsDriveAuthorizing(false);
-    setError(null);
   }
 
   function onError(errorResponse: Pick<TokenResponse, "error" | "error_description" | "error_uri">) {
+    setError(new Error(errorResponse.error_description));
+    
     clearTokensAndAccess();
     setIsDriveAuthorizing(false);
-    setError(new Error(errorResponse.error_description));
   }
 
   return (

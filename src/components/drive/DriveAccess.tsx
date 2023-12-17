@@ -5,9 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 import { useGoogleDriveContext } from "src/contexts/GoogleDriveContext";
+import { useUserSettingsContext } from "src/contexts/UserSettingsContext";
 import Button from "src/components/common/Button";
-
-import DriveSettingsHook from "./DriveSettingsHook";
 
 function AuthErrorMessage({ error }: { error: NonOAuthError }) {
   return (
@@ -46,43 +45,34 @@ function DriveIcon() {
 }
 
 function useDriveAccess() {
-  const { requestDriveAccess, disconnectDrive, isDriveLoaded, isDriveAuthorizing, hasDriveAccess, error } =
-    useGoogleDriveContext();
-
-  const { driveSettings, setAutoConnectDrive } = DriveSettingsHook();
-  const { autoConnectDrive } = driveSettings;
-
-  const handleAccessRequest = () => {
-    requestDriveAccess();
-  };
+  const { requestDriveAccess, disconnectDrive, isDriveLoaded, hasDriveAccess, error } = useGoogleDriveContext();
+  const { userSettings, setUserSetting } = useUserSettingsContext();
 
   const handleDisconnectDrive = () => {
-    setAutoConnectDrive(false);
+    setUserSetting({ autoConnectDrive: false });
     disconnectDrive();
   };
 
   useEffect(() => {
     if (!isDriveLoaded || error) return;
 
-    if (autoConnectDrive && !hasDriveAccess) requestDriveAccess();
-  }, [requestDriveAccess, hasDriveAccess, autoConnectDrive, isDriveLoaded, error]);
+    if (userSettings.autoConnectDrive && !hasDriveAccess)
+      // TODO: Remove workaround
+      // * Firefox throws an error "Should not already be working." but works in Chrome.
+      // * This is an open bug in react. The blocking call `window.open` within the useState hook messes with React's synchronization of the state.
+      // ? See: https://github.com/facebook/react/issues/17355
+      // ? See: https://stackoverflow.com/questions/76944918/should-not-already-be-working-on-window-open-in-simple-react-app
+      setTimeout(() => requestDriveAccess(), 0);
+  }, [requestDriveAccess, hasDriveAccess, userSettings.autoConnectDrive, isDriveLoaded, error]);
 
   return {
-    handleAccessRequest,
-    isDriveLoaded,
-    isDriveAuthorizing,
-    hasDriveAccess,
-    error,
-    driveSettings,
-    setAutoConnectDrive,
     handleDisconnectDrive,
   };
 }
 
 export function DriveAccessButton() {
-  const { handleAccessRequest, handleDisconnectDrive, isDriveLoaded, isDriveAuthorizing, hasDriveAccess, error } =
-    useDriveAccess();
-  const { driveSettings } = DriveSettingsHook();
+  const { isDriveAuthorizing, isDriveLoaded, hasDriveAccess, requestDriveAccess, error } = useGoogleDriveContext();
+  const { handleDisconnectDrive } = useDriveAccess();
 
   let content: JSX.Element;
 
@@ -90,7 +80,7 @@ export function DriveAccessButton() {
     content = (
       <>
         <ErrorNotice error={error} />
-        <Button onClick={handleAccessRequest}>Connect</Button>
+        <Button onClick={requestDriveAccess}>Connect</Button>
       </>
     );
   } else if (!isDriveLoaded) {
@@ -111,22 +101,15 @@ export function DriveAccessButton() {
         Disconnect
       </Button>
     );
-  } else if (driveSettings.autoConnectDrive) {
-    content = (
-      <>
-        Connecting... <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
-      </>
-    );
   } else {
-    content = <Button onClick={handleAccessRequest}>Connect</Button>;
+    content = <Button onClick={requestDriveAccess}>Connect</Button>;
   }
 
   return <InfoNotice>{content}</InfoNotice>;
 }
 
 export function DriveAccessStatus() {
-  const { isDriveLoaded, isDriveAuthorizing, hasDriveAccess, error } = useDriveAccess();
-  const { driveSettings } = DriveSettingsHook();
+  const { isDriveAuthorizing, isDriveLoaded, hasDriveAccess, error } = useGoogleDriveContext();
 
   let content: JSX.Element;
 
@@ -157,13 +140,6 @@ export function DriveAccessStatus() {
       <>
         <DriveIcon />
         Connected
-      </>
-    );
-  } else if (driveSettings.autoConnectDrive) {
-    content = (
-      <>
-        <DriveIcon />
-        Connecting...
       </>
     );
   } else {

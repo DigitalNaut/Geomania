@@ -1,8 +1,14 @@
-import { type PropsWithChildren, type Dispatch, createContext, useContext, useReducer } from "react";
+import { type PropsWithChildren, type Dispatch, createContext, useContext, useReducer, useEffect } from "react";
+import { z } from "zod";
 
-type UserSettings = {
-  reducedMotion: boolean;
-};
+import { useLocalStorage } from "src/hooks/useLocalStorage";
+
+const userSettingsSchema = z.object({
+  reducedMotion: z.boolean().default(false),
+  autoConnectDrive: z.boolean().default(false),
+});
+
+type UserSettings = z.infer<typeof userSettingsSchema>;
 
 type ActionType = {
   type: "set" | "reset";
@@ -15,11 +21,9 @@ type UserSettingsContext = {
   resetUserSettings: () => void;
 };
 
+const userSettingsKey = "userSettings";
+const defaultUserSettings = userSettingsSchema.parse({});
 const userSettingsContext = createContext<UserSettingsContext | null>(null);
-
-const defaultUserSettings: UserSettings = {
-  reducedMotion: false,
-};
 
 const reducer = (state: UserSettings, { type, payload }: ActionType): UserSettings => {
   switch (type) {
@@ -38,10 +42,28 @@ const reducer = (state: UserSettings, { type, payload }: ActionType): UserSettin
 };
 
 export default function UserSettingsProvider({ children }: PropsWithChildren) {
+  const { data: savedUserSettings, saveData: saveUserSettings } = useLocalStorage<UserSettings>(
+    userSettingsKey,
+    defaultUserSettings,
+    userSettingsSchema,
+  );
   const [userSettings, setUserSettings] = useReducer(reducer, defaultUserSettings);
 
-  const setUserSetting = (payload: Partial<UserSettings>) => setUserSettings({ type: "set", payload });
-  const resetUserSettings = () => setUserSettings({ type: "reset", payload: {} });
+  const setUserSetting = (payload: Partial<UserSettings>) => {
+    setUserSettings({ type: "set", payload });
+    saveUserSettings({ ...userSettings, ...payload });
+  };
+
+  const resetUserSettings = () => {
+    setUserSettings({ type: "reset", payload: {} });
+    saveUserSettings(defaultUserSettings);
+  };
+
+  useEffect(() => {
+    if (savedUserSettings) {
+      setUserSettings({ type: "set", payload: savedUserSettings });
+    }
+  }, [savedUserSettings]);
 
   return (
     <userSettingsContext.Provider

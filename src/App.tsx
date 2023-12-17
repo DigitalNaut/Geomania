@@ -3,7 +3,7 @@ import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { NetlifyDriveIntegrationProvider } from "src/components/drive/NetlifyDriveIntegration";
+import { ManagedDriveProvider } from "src/components/drive/DriveIntegration";
 import { DriveAccessStatus } from "src/components/drive/DriveAccess";
 import HeaderControllerProvider from "./contexts/HeaderControllerContext";
 import MapContextProvider from "src/contexts/MapContext";
@@ -101,9 +101,9 @@ export default function App() {
   return (
     <HeaderControllerProvider>
       <UserSettingsProvider>
-        <NetlifyDriveIntegrationProvider>
+        <ManagedDriveProvider>
           <RouterProvider router={router} />
-        </NetlifyDriveIntegrationProvider>
+        </ManagedDriveProvider>
       </UserSettingsProvider>
     </HeaderControllerProvider>
   );
