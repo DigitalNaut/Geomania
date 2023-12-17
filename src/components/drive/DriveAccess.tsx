@@ -100,6 +100,7 @@ export function DriveAccessButton() {
 }
 
 export function DriveAccessStatus() {
+  useDriveAccess();
   const { isDriveAuthorizing, isDriveLoaded, hasDriveAccess, error } = useGoogleDriveContext();
 
   let content: JSX.Element;

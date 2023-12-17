@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
+import { faChartLine, faCog, faFlask, faMap } from "@fortawesome/free-solid-svg-icons";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -16,6 +16,7 @@ import MapActivity from "src/pages/MapActivity";
 import Settings from "src/pages/Settings";
 import Dashboard from "src/pages/Dashboard";
 import PageNotFound from "src/pages/PageNotFound";
+import DriveTestPage from "src/pages/DriveTesting";
 import Header from "src/components/layout/Header";
 import Footer from "src/components/layout/Footer";
 import StandardLayout from "src/components/layout/StandardLayout";
@@ -40,6 +41,11 @@ const router = createBrowserRouter([
             <Header.Link to="settings" icon={faCog}>
               Settings
             </Header.Link>
+            {import.meta.env.DEV && (
+              <Header.Link to="drive" icon={faFlask}>
+                Drive
+              </Header.Link>
+            )}
           </div>
 
           <div className="flex w-full justify-end pl-2 text-sm">
@@ -86,6 +92,10 @@ const router = createBrowserRouter([
           {
             path: "/dashboard",
             element: <Dashboard />,
+          },
+          {
+            path: "/drive",
+            element: <DriveTestPage />,
           },
         ],
       },

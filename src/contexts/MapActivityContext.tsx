@@ -10,7 +10,7 @@ import {
 import { useSearchParams } from "react-router-dom";
 
 const ActivityMode = ["review", "quiz"] as const;
-export type ActivityMode = (typeof ActivityMode)[number];
+type ActivityMode = (typeof ActivityMode)[number];
 
 type MapActivityContext = {
   isRandomReviewMode: boolean;

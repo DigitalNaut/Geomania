@@ -117,8 +117,6 @@ export function GoogleDriveProvider({
     clearTokensAndAccess();
     setIsDriveAuthorizing(true);
     initDriveImplicitFlow.current();
-
-    console.log("Requesting drive access...");
   }
 
   function disconnectDrive() {

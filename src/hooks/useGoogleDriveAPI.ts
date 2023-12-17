@@ -28,7 +28,7 @@ type FileDownloadResponse<T extends ResponseType> = T extends keyof FileResponse
   : JSON | GoogleDriveError | false;
 type FileUploadResponse = (FileUploadSuccess & GoogleDriveError) | false;
 type FileDeletedResponse = GoogleDriveError | "";
-type FilesListResponse = GoogleDriveError & gapi.client.drive.FileList;
+export type FilesListResponse = GoogleDriveError & gapi.client.drive.FileList;
 
 const spaces = "appDataFolder";
 const DRIVE_API_URL = "https://www.googleapis.com/drive/v3/files";
