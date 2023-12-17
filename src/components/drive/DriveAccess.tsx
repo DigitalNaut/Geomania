@@ -7,6 +7,7 @@ import { faSpinner, faTriangleExclamation } from "@fortawesome/free-solid-svg-ic
 import { useGoogleDriveContext } from "src/contexts/GoogleDriveContext";
 import { useUserSettingsContext } from "src/contexts/UserSettingsContext";
 import Button from "src/components/common/Button";
+import DriveIcon from "src/components/drive/DriveIcon";
 
 function AuthErrorMessage({ error }: { error: NonOAuthError }) {
   return (
@@ -32,16 +33,6 @@ function ErrorNotice({ error }: { error: NonOAuthError | Error }) {
 
 function InfoNotice({ children }: PropsWithChildren) {
   return <div className="flex items-center gap-1">{children}</div>;
-}
-
-function DriveIcon() {
-  return (
-    <img
-      className="mx-1 inline-block h-4 w-4"
-      src="https://fonts.gstatic.com/s/i/productlogos/drive_2020q4/v8/web-16dp/logo_drive_2020q4_color_2x_web_16dp.png"
-      alt="Google Drive"
-    />
-  );
 }
 
 function useDriveAccess() {

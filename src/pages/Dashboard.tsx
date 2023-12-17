@@ -112,10 +112,10 @@ export default function Dashboard() {
         <h2 className="pb-2 text-xl font-bold">All progress will be lost</h2>
         <p className="text-sm">Your user guess history and country stats will be deleted.</p>
         <form className="flex justify-end gap-2 pt-4" method="dialog">
-          <Button className="bg-transparent hover:bg-slate-900/10">Cancel</Button>
-          <Button className="bg-red-700 text-white hover:bg-red-600" onClick={clearProgress}>
-            Delete
+          <Button styles="danger" onClick={clearProgress}>
+            Delete progress
           </Button>
+          <Button styles="secondary">Cancel</Button>
         </form>
       </animated.dialog>
 

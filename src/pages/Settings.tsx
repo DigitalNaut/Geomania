@@ -6,6 +6,7 @@ import { DriveAccessButton } from "src/components/drive/DriveAccess";
 import MainView from "src/components/layout/MainView";
 import Toggle from "src/components/common/Toggle";
 import Button from "src/components/common/Button";
+import DriveIcon from "src/components/drive/DriveIcon";
 
 function SettingInfo({
   label,
@@ -14,7 +15,7 @@ function SettingInfo({
   small,
   children,
 }: PropsWithChildren<{
-  label: string;
+  label: JSX.Element | string;
   description?: JSX.Element | string;
   info?: JSX.Element | string;
   small?: true;
@@ -22,7 +23,7 @@ function SettingInfo({
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between gap-2">
-        <span className={twMerge(small ? "text-md" : "text-lg")}>{label}</span>
+        <div className={twMerge(small ? "text-md" : "text-lg")}>{label}</div>
         {children}
       </div>
       <div className="text-sm">{description}</div>
@@ -61,7 +62,12 @@ export default function Settings() {
 
           <SettingsSection>
             <SettingInfo
-              label="Google Drive"
+              label={
+                <span className="flex items-center gap-1">
+                  <DriveIcon />
+                  Google Drive
+                </span>
+              }
               description="Connect your Google Drive account to store your progress and settings."
               info={
                 <>
