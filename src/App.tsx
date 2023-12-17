@@ -3,7 +3,8 @@ import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { ConditionalDriveProvider } from "src/components/drive/ConditionalDriveProvider";
+import { NetlifyDriveIntegrationProvider } from "src/components/drive/NetlifyDriveIntegration";
+import { DriveAccessStatus } from "src/components/drive/DriveAccess";
 import HeaderControllerProvider from "./contexts/HeaderControllerContext";
 import MapContextProvider from "src/contexts/MapContext";
 import CountryStoreProvider from "src/contexts/CountryStoreContext";
@@ -17,7 +18,6 @@ import Dashboard from "src/pages/Dashboard";
 import PageNotFound from "src/pages/PageNotFound";
 import Header from "src/components/layout/Header";
 import Footer from "src/components/layout/Footer";
-import DriveAccess from "src/components/drive/DriveAccess";
 import StandardLayout from "src/components/layout/StandardLayout";
 import ErrorFallback from "src/components/common/ErrorFallback";
 
@@ -43,9 +43,7 @@ const router = createBrowserRouter([
           </div>
 
           <div className="flex w-full justify-end pl-2 text-sm">
-            <ErrorBoundary fallback={<span className="px-2 italic text-white/60">Google Drive not available.</span>}>
-              <DriveAccess />
-            </ErrorBoundary>
+            <DriveAccessStatus />
           </div>
         </Header>
 
@@ -103,9 +101,9 @@ export default function App() {
   return (
     <HeaderControllerProvider>
       <UserSettingsProvider>
-        <ConditionalDriveProvider>
+        <NetlifyDriveIntegrationProvider>
           <RouterProvider router={router} />
-        </ConditionalDriveProvider>
+        </NetlifyDriveIntegrationProvider>
       </UserSettingsProvider>
     </HeaderControllerProvider>
   );

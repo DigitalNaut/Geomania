@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 
 import { type EdgeKeys } from "netlify/edge-functions/keys";
 
-export function useEdgeKeys() {
+export default function useEdgeKeys() {
   return useQuery({
     queryKey: ["keys"],
     queryFn: async () => axios.get("/api/keys").then((res) => res.data as EdgeKeys),
