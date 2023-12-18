@@ -36,7 +36,7 @@ function InfoNotice({ children }: PropsWithChildren) {
 }
 
 function useDriveAccess() {
-  const { requestDriveAccess, disconnectDrive, isDriveLoaded, hasDriveAccess, error } = useGoogleDriveContext();
+  const { requestDriveAccess, disconnectDrive, state } = useGoogleDriveContext();
   const { userSettings, setUserSetting } = useUserSettingsContext();
 
   const handleDisconnectDrive = () => {
@@ -45,16 +45,16 @@ function useDriveAccess() {
   };
 
   useEffect(() => {
-    if (!isDriveLoaded || error) return;
+    if (state !== "loaded" || !userSettings.autoConnectDrive) return;
 
-    if (userSettings.autoConnectDrive && !hasDriveAccess)
-      // TODO: Remove workaround
-      // * Firefox throws an error "Should not already be working." but works in Chrome.
-      // * This is an open bug in react. The blocking call `window.open` within the useState hook messes with React's synchronization of the state.
-      // ? See: https://github.com/facebook/react/issues/17355
-      // ? See: https://stackoverflow.com/questions/76944918/should-not-already-be-working-on-window-open-in-simple-react-app
-      setTimeout(() => requestDriveAccess(), 0);
-  }, [requestDriveAccess, hasDriveAccess, userSettings.autoConnectDrive, isDriveLoaded, error]);
+    // TODO: Remove workaround
+    // * Firefox throws an error "Should not already be working." but works in Chrome.
+    // * This is an open bug in react. The blocking call `window.open` within the useState hook messes with React's synchronization of the state.
+    // ? See: https://github.com/facebook/react/issues/17355
+    // ? See: https://stackoverflow.com/questions/76944918/should-not-already-be-working-on-window-open-in-simple-react-app
+
+    setTimeout(() => requestDriveAccess(), 0);
+  }, [requestDriveAccess, state, userSettings.autoConnectDrive]);
 
   return {
     handleDisconnectDrive,
@@ -62,10 +62,11 @@ function useDriveAccess() {
 }
 
 export function DriveAccessButton() {
-  const { isDriveAuthorizing, isDriveLoaded, hasDriveAccess, requestDriveAccess, error } = useGoogleDriveContext();
+  const { state, requestDriveAccess, error } = useGoogleDriveContext();
   const { handleDisconnectDrive } = useDriveAccess();
+  const { userSettings } = useUserSettingsContext();
 
-  let content: JSX.Element;
+  let content: JSX.Element | null = null;
 
   if (error) {
     content = (
@@ -74,26 +75,26 @@ export function DriveAccessButton() {
         <Button onClick={requestDriveAccess}>Connect</Button>
       </>
     );
-  } else if (!isDriveLoaded) {
-    content = (
-      <>
-        Loading... <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
-      </>
-    );
-  } else if (isDriveAuthorizing) {
-    content = (
-      <>
-        Authorizing... <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
-      </>
-    );
-  } else if (hasDriveAccess) {
+  } else if (state === "access") {
     content = (
       <Button onClick={handleDisconnectDrive} styles="secondary">
         Disconnect
       </Button>
     );
-  } else {
+  } else if (state === "authorizing") {
+    content = (
+      <>
+        Authorizing... <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+      </>
+    );
+  } else if (!userSettings.autoConnectDrive && state === "loaded") {
     content = <Button onClick={requestDriveAccess}>Connect</Button>;
+  } else if (userSettings.autoConnectDrive || state === "idle") {
+    content = (
+      <>
+        Loading... <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+      </>
+    );
   }
 
   return <InfoNotice>{content}</InfoNotice>;
@@ -101,9 +102,10 @@ export function DriveAccessButton() {
 
 export function DriveAccessStatus() {
   useDriveAccess();
-  const { isDriveAuthorizing, isDriveLoaded, hasDriveAccess, error } = useGoogleDriveContext();
+  const { state, error } = useGoogleDriveContext();
+  const { userSettings } = useUserSettingsContext();
 
-  let content: JSX.Element;
+  let content: JSX.Element | null = null;
 
   if (error) {
     content = (
@@ -113,31 +115,31 @@ export function DriveAccessStatus() {
         <FontAwesomeIcon className="mr-2 text-yellow-400" icon={faTriangleExclamation} />
       </>
     );
-  } else if (!isDriveLoaded) {
-    content = (
-      <>
-        <DriveIcon />
-        Loading...
-      </>
-    );
-  } else if (isDriveAuthorizing) {
-    content = (
-      <>
-        <DriveIcon />
-        Authorizing...
-      </>
-    );
-  } else if (hasDriveAccess) {
+  } else if (state === "access") {
     content = (
       <>
         <DriveIcon />
         Connected
       </>
     );
-  } else {
+  } else if (state === "authorizing") {
+    content = (
+      <>
+        <DriveIcon />
+        Authorizing...
+      </>
+    );
+  } else if (!userSettings.autoConnectDrive && state === "loaded") {
     content = (
       <>
         Use <DriveIcon /> Google Drive
+      </>
+    );
+  } else if (userSettings.autoConnectDrive || state === "idle") {
+    content = (
+      <>
+        <DriveIcon />
+        Loading...
       </>
     );
   }
