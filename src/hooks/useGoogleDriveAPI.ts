@@ -59,95 +59,90 @@ type DeleteFile = (
 export function useGoogleDriveAPI() {
   const { validateDriveAccess, userDriveTokens } = useGoogleDriveContext();
 
-  const uploadFile: UploadFile = async ({ file, metadata }, config) => {
-    const { hasAccess, error } = validateDriveAccess();
-    if (!hasAccess) return Promise.reject(error);
+  const withValidation = async <T extends () => Promise<AxiosResponse>>(execute: T) => {
+    const validation = validateDriveAccess();
+    if (!validation.hasAccess) return Promise.reject(validation.error);
 
-    metadata.parents = [spaces];
-
-    const body = new FormData();
-    body.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
-    body.append("file", file);
-
-    const request = axios.post<FileUploadResponse>(DRIVE_API_UPLOAD_URL, body, {
-      params: { uploadType: "multipart" },
-      headers: {
-        Authorization: `Bearer ${userDriveTokens?.access_token}`,
-      },
-      ...config,
-    });
-
-    return request;
+    return execute();
   };
 
-  const updateFile: UpdateFile = async ({ id, file, metadata }, config) => {
-    const { hasAccess, error } = validateDriveAccess();
-    if (!hasAccess) return Promise.reject(error);
+  const uploadFile: UploadFile = async ({ file, metadata }, config) =>
+    withValidation(() => {
+      metadata.parents = [spaces];
 
-    const formBody = new FormData();
-    formBody.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
-    formBody.append("file", file);
+      const body = new FormData();
+      body.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
+      body.append("file", file);
 
-    const request = axios.patch<FileUploadResponse>(`${DRIVE_API_UPLOAD_URL}/${id}`, formBody, {
-      params: { uploadType: "multipart" },
-      headers: {
-        Authorization: `Bearer ${userDriveTokens?.access_token}`,
-      },
-      ...config,
+      const request = axios.post<FileUploadResponse>(DRIVE_API_UPLOAD_URL, body, {
+        params: { uploadType: "multipart" },
+        headers: {
+          Authorization: `Bearer ${userDriveTokens?.access_token}`,
+        },
+        ...config,
+      });
+
+      return request;
     });
 
-    return request;
-  };
+  const updateFile: UpdateFile = async ({ id, file, metadata }, config) =>
+    withValidation(() => {
+      const formBody = new FormData();
+      formBody.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
+      formBody.append("file", file);
 
-  const fetchFile: FetchFile = async ({ id }, { params, ...config }: AxiosRequestConfig = {}) => {
-    const { hasAccess, error } = validateDriveAccess();
-    if (!hasAccess) return Promise.reject(error);
+      const request = axios.patch<FileUploadResponse>(`${DRIVE_API_UPLOAD_URL}/${id}`, formBody, {
+        params: { uploadType: "multipart" },
+        headers: {
+          Authorization: `Bearer ${userDriveTokens?.access_token}`,
+        },
+        ...config,
+      });
 
-    const request = axios.get(`${DRIVE_API_URL}/${id}`, {
-      params: { alt: "media", ...params },
-      responseType: "arraybuffer",
-      headers: {
-        authorization: `Bearer ${userDriveTokens?.access_token}`,
-      },
-      ...config,
+      return request;
     });
 
-    return request;
-  };
+  const fetchFile: FetchFile = async ({ id }, { params, ...config }: AxiosRequestConfig = {}) =>
+    withValidation(() => {
+      const request = axios.get(`${DRIVE_API_URL}/${id}`, {
+        params: { alt: "media", ...params },
+        responseType: "arraybuffer",
+        headers: {
+          authorization: `Bearer ${userDriveTokens?.access_token}`,
+        },
+        ...config,
+      });
 
-  const fetchFileList: FetchFileList = async ({ params, ...config }: AxiosRequestConfig = {}) => {
-    const { hasAccess, error } = validateDriveAccess();
-    if (!hasAccess) return Promise.reject(error);
-
-    console.log("Drive access validated. Requesting data...");
-
-    const request = axios.get(DRIVE_API_URL, {
-      params: {
-        pageSize: 10,
-        fields: "files(id, name, mimeType, hasThumbnail, thumbnailLink, iconLink, size)",
-        spaces,
-        oauth_token: userDriveTokens?.access_token,
-        ...params,
-      },
-      ...config,
+      return request;
     });
 
-    return request;
-  };
+  const fetchFileList: FetchFileList = async ({ params, ...config }: AxiosRequestConfig = {}) =>
+    withValidation(() => {
+      const request = axios.get(DRIVE_API_URL, {
+        params: {
+          pageSize: 10,
+          fields: "files(id, name, mimeType, hasThumbnail, thumbnailLink, iconLink, size)",
+          spaces,
+          oauth_token: userDriveTokens?.access_token,
+          ...params,
+        },
+        ...config,
+      });
 
-  const deleteFile: DeleteFile = async ({ id }, config) => {
-    const { hasAccess, error } = validateDriveAccess();
-    if (!hasAccess) return Promise.reject(error);
-
-    const request = axios.delete(`${DRIVE_API_URL}/${id}`, {
-      headers: {
-        authorization: `Bearer ${userDriveTokens?.access_token}`,
-      },
-      ...config,
+      return request;
     });
 
-    return request;
-  };
+  const deleteFile: DeleteFile = async ({ id }, config) =>
+    withValidation(() => {
+      const request = axios.delete(`${DRIVE_API_URL}/${id}`, {
+        headers: {
+          authorization: `Bearer ${userDriveTokens?.access_token}`,
+        },
+        ...config,
+      });
+
+      return request;
+    });
 
   return {
     uploadFile,

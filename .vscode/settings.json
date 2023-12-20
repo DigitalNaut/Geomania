@@ -27,7 +27,8 @@
     "tanstack",
     "typecheck",
     "wikipedia",
-    "wordmark"
+    "wordmark",
+    "Xmark"
   ],
   "dotenv.enableAutocloaking": false,
   "deno.enable": true,

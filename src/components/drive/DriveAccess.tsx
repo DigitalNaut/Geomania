@@ -23,7 +23,7 @@ function AuthErrorMessage({ error }: { error: NonOAuthError }) {
   );
 }
 
-function ErrorNotice({ error }: { error: NonOAuthError | Error }) {
+function ErrorLabel({ error }: { error: NonOAuthError | Error }) {
   return (
     <div className="flex items-center gap-2 px-2 text-red-400">
       {error instanceof Error ? <span>Error: {error.message}</span> : <AuthErrorMessage error={error} />}
@@ -31,7 +31,7 @@ function ErrorNotice({ error }: { error: NonOAuthError | Error }) {
   );
 }
 
-function InfoNotice({ children }: PropsWithChildren) {
+function InfoLabel({ children }: PropsWithChildren) {
   return <div className="flex items-center gap-1">{children}</div>;
 }
 
@@ -45,7 +45,7 @@ function useDriveAccess() {
   };
 
   useEffect(() => {
-    if (state !== "loaded" || !userSettings.autoConnectDrive) return;
+    if (state.status !== "loaded" || !userSettings.autoConnectDrive) return;
 
     // TODO: Remove workaround
     // * Firefox throws an error "Should not already be working." but works in Chrome.
@@ -62,34 +62,35 @@ function useDriveAccess() {
 }
 
 export function DriveAccessButton() {
-  const { state, requestDriveAccess, error } = useGoogleDriveContext();
+  const { state, requestDriveAccess } = useGoogleDriveContext();
+  const { status } = state;
   const { handleDisconnectDrive } = useDriveAccess();
   const { userSettings } = useUserSettingsContext();
 
   let content: JSX.Element | null = null;
 
-  if (error) {
+  if (status === "error") {
     content = (
       <>
-        <ErrorNotice error={error} />
+        <ErrorLabel error={state.error} />
         <Button onClick={requestDriveAccess}>Connect</Button>
       </>
     );
-  } else if (state === "access") {
+  } else if (status === "access") {
     content = (
       <Button onClick={handleDisconnectDrive} styles="secondary">
         Disconnect
       </Button>
     );
-  } else if (state === "authorizing") {
+  } else if (status === "unauthorized") {
     content = (
       <>
         Authorizing... <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
       </>
     );
-  } else if (!userSettings.autoConnectDrive && state === "loaded") {
+  } else if (!userSettings.autoConnectDrive && status === "loaded") {
     content = <Button onClick={requestDriveAccess}>Connect</Button>;
-  } else if (userSettings.autoConnectDrive || state === "idle") {
+  } else if (userSettings.autoConnectDrive || status === "idle") {
     content = (
       <>
         Loading... <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
@@ -97,17 +98,18 @@ export function DriveAccessButton() {
     );
   }
 
-  return <InfoNotice>{content}</InfoNotice>;
+  return <InfoLabel>{content}</InfoLabel>;
 }
 
 export function DriveAccessStatus() {
   useDriveAccess();
-  const { state, error } = useGoogleDriveContext();
+  const { state } = useGoogleDriveContext();
+  const { status } = state;
   const { userSettings } = useUserSettingsContext();
 
   let content: JSX.Element | null = null;
 
-  if (error) {
+  if (status === "error") {
     content = (
       <>
         <DriveIcon />
@@ -115,27 +117,27 @@ export function DriveAccessStatus() {
         <FontAwesomeIcon className="mr-2 text-yellow-400" icon={faTriangleExclamation} />
       </>
     );
-  } else if (state === "access") {
+  } else if (status === "access") {
     content = (
       <>
         <DriveIcon />
         Connected
       </>
     );
-  } else if (state === "authorizing") {
+  } else if (status === "unauthorized") {
     content = (
       <>
         <DriveIcon />
         Authorizing...
       </>
     );
-  } else if (!userSettings.autoConnectDrive && state === "loaded") {
+  } else if (!userSettings.autoConnectDrive && status === "loaded") {
     content = (
       <>
         Use <DriveIcon /> Google Drive
       </>
     );
-  } else if (userSettings.autoConnectDrive || state === "idle") {
+  } else if (userSettings.autoConnectDrive || status === "idle") {
     content = (
       <>
         <DriveIcon />
@@ -145,10 +147,10 @@ export function DriveAccessStatus() {
   }
 
   return (
-    <InfoNotice>
+    <InfoLabel>
       <Link to="/settings">
         <span className="flex items-center text-sm">{content}</span>
       </Link>
-    </InfoNotice>
+    </InfoLabel>
   );
 }

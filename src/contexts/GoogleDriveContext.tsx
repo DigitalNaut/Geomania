@@ -9,9 +9,22 @@ import {
 
 import { Script } from "src/components/common/Script";
 
-type DriveAccessValidator = { hasAccess: true; error: undefined } | { hasAccess: false; error: Error };
+type DriveState =
+  | {
+      status: "idle";
+      loaded: false;
+    }
+  | {
+      status: "loaded" | "unauthorized" | "access";
+      loaded: true;
+    }
+  | {
+      status: "error";
+      loaded: boolean;
+      error: Error | NonOAuthError;
+    };
 
-type DriveState = "idle" | "loaded" | "authorizing" | "access" | "error";
+type DriveAccessValidator = { hasAccess: true } | { hasAccess: false; error: Error };
 
 type GoogleDriveContextType = {
   requestDriveAccess(): void;
@@ -19,7 +32,6 @@ type GoogleDriveContextType = {
   validateDriveAccess(): DriveAccessValidator;
   state: DriveState;
   userDriveTokens?: TokenResponse;
-  error: Error | NonOAuthError | null;
 };
 
 const googleDriveContext = createContext<GoogleDriveContextType | null>(null);
@@ -32,42 +44,59 @@ const discoveryDocs = [DISCOVERY_DOC];
 type ConditionalHookProps = {
   callback: MutableRefObject<() => void>;
   onSuccess?: (tokenResponse: Omit<TokenResponse, "error" | "error_description" | "error_uri">) => void;
-  onError?: (errorResponse: Pick<TokenResponse, "error" | "error_description" | "error_uri">) => void;
-  onNonOAuthError?: (nonOAuthError: NonOAuthError) => void;
+  onError?: (errorResponse: NonOAuthError | Pick<TokenResponse, "error" | "error_description" | "error_uri">) => void;
 };
 
-function ImplicitFlow({ callback, onNonOAuthError, onSuccess, onError }: ConditionalHookProps) {
+function ImplicitFlow({ callback, onSuccess, onError }: ConditionalHookProps) {
   callback.current = useGoogleLogin({
     prompt: "",
     scope,
-    onNonOAuthError,
     onSuccess,
     onError,
+    onNonOAuthError: onError,
   });
 
   return null;
 }
 
-function useDriveStateMachine() {
-  const [state, setState] = useState<DriveState>("idle");
-  const [error, setError] = useState<Error | NonOAuthError | null>(null);
+function useDriveState() {
+  const [state, setState] = useState<DriveState>({ status: "idle", loaded: false });
 
-  const changeState = (newState: DriveState, error: Error | NonOAuthError | null = null) => {
+  const raiseError = (error: Error | NonOAuthError) =>
+    void setState((prevState) => ({
+      status: "error",
+      loaded: prevState.loaded,
+      error,
+    }));
+
+  const changeStatus = (newStatus: (DriveState & { loaded: true; error: undefined })["status"]) => {
+    const { status } = state;
+
+    if (status === newStatus) return;
+
     if (
-      state !== newState &&
-      ((state === "idle" && newState !== "loaded") ||
-        (state === "loaded" && newState !== "authorizing") ||
-        (state === "authorizing" && newState !== "access") ||
-        (state === "access" && newState !== "loaded"))
+      (status === "idle" && newStatus !== "loaded") ||
+      (status === "loaded" && newStatus !== "unauthorized") ||
+      (status === "unauthorized" && newStatus !== "access") ||
+      (status === "access" && newStatus !== "loaded")
     ) {
-      error = new Error(`Invalid state transition from ${state} to ${newState}`);
+      raiseError(new Error(`Invalid state transition from ${state} to ${newStatus}`));
     }
 
-    setState(newState);
-    setError(error);
+    setState({ status: newStatus, loaded: true });
   };
 
-  return { state, changeState, error, setError };
+  return { state, changeStatus, raiseError };
+}
+
+async function loadGapiScripts() {
+  return new Promise((resolve) => {
+    gapi.load("client", resolve);
+  });
+}
+
+async function initGapiClient(apiKey?: string) {
+  return gapi.client.init({ apiKey, discoveryDocs });
 }
 
 /**
@@ -86,7 +115,8 @@ export function GoogleDriveProvider({
   apiKey?: string;
   onUserDisconnect?: () => void;
 }>) {
-  const { state, changeState, error, setError } = useDriveStateMachine();
+  const { state, changeStatus, raiseError } = useDriveState();
+  const { status } = state;
   const initDriveImplicitFlow = useRef<() => void>(() => null);
 
   const [userDriveTokens, setUserTokens] = useState<TokenResponse>();
@@ -94,29 +124,16 @@ export function GoogleDriveProvider({
 
   const { scriptLoadedSuccessfully } = useGoogleOAuth();
 
-  async function loadGapiScripts() {
-    return new Promise((resolve) => {
-      gapi.load("client", resolve);
-    });
-  }
-
-  async function initGapiClient() {
-    return gapi.client.init({ apiKey, discoveryDocs });
-  }
-
   async function handleGapiLoaded() {
-    if (state !== "idle") return;
+    if (status !== "idle") return;
 
     try {
-      changeState("idle");
       await loadGapiScripts();
-      await initGapiClient();
-      changeState("loaded");
+      await initGapiClient(apiKey);
+      changeStatus("loaded");
     } catch (error) {
-      if (error instanceof Error) setError(error);
-      else setError(new Error("An unknown error occurred."));
-
-      changeState("error");
+      if (error instanceof Error) raiseError(error);
+      else raiseError(new Error("An unknown error occurred."));
     }
   }
 
@@ -130,29 +147,35 @@ export function GoogleDriveProvider({
   }
 
   function requestDriveAccess() {
-    if (state !== "loaded") return;
+    if (status !== "loaded") return;
 
-    setError(null);
-    changeState("authorizing");
+    changeStatus("unauthorized");
 
     clearTokensAndAccess();
     initDriveImplicitFlow.current();
   }
 
-  function disconnectDrive() {
-    if (state !== "access") return;
+  function onSuccess(tokenResponse: TokenResponse) {
+    if (hasGrantedAnyScopeGoogle(tokenResponse, scope)) {
+      setTokensAndAccess(tokenResponse);
+      changeStatus("access");
+    } else {
+      clearTokensAndAccess();
+      raiseError(new Error("Unauthorized."));
+    }
+  }
 
-    setError(null);
-    changeState("loaded");
+  function onError(errorResponse: NonOAuthError | Pick<TokenResponse, "error" | "error_description" | "error_uri">) {
+    if ("type" in errorResponse) raiseError(errorResponse);
+    else raiseError(new Error(errorResponse.error_description));
 
     clearTokensAndAccess();
-    onUserDisconnect?.();
   }
 
   function validateDriveAccess(): DriveAccessValidator {
     let errorMessage = "";
 
-    if (state !== "access") {
+    if (status !== "access") {
       errorMessage = "No access.";
     } else if (!userDriveTokens) {
       clearTokensAndAccess();
@@ -160,55 +183,32 @@ export function GoogleDriveProvider({
     } else if (!tokensExpirationDate || new Date() > tokensExpirationDate) {
       clearTokensAndAccess();
       errorMessage = "Session expired.";
-    } else if (!hasGrantedAnyScopeGoogle(userDriveTokens, scope)) {
-      errorMessage = "Unauthorized.";
     }
 
     if (errorMessage) return { hasAccess: false, error: new Error(errorMessage) };
 
-    return { hasAccess: true, error: undefined };
+    return { hasAccess: true };
   }
 
-  function onSuccess(tokenResponse: TokenResponse) {
-    setError(null);
+  function disconnectDrive() {
+    if (status !== "access") return;
 
-    if (hasGrantedAnyScopeGoogle(tokenResponse, scope)) {
-      setTokensAndAccess(tokenResponse);
-      changeState("access");
-    } else {
-      clearTokensAndAccess();
-      changeState("error");
-      setError(new Error("Unauthorized."));
-    }
-  }
-
-  function onNonOAuthError(error: NonOAuthError) {
-    setError(error);
+    changeStatus("loaded");
 
     clearTokensAndAccess();
-    changeState("error");
-  }
-
-  function onError(errorResponse: Pick<TokenResponse, "error" | "error_description" | "error_uri">) {
-    setError(new Error(errorResponse.error_description));
-
-    clearTokensAndAccess();
-    changeState("error");
+    onUserDisconnect?.();
   }
 
   return (
     <googleDriveContext.Provider
-      value={{ validateDriveAccess, requestDriveAccess, disconnectDrive, state, userDriveTokens, error }}
+      value={{ validateDriveAccess, requestDriveAccess, disconnectDrive, state, userDriveTokens }}
     >
       <Script src="https://apis.google.com/js/api.js" onLoad={handleGapiLoaded} />
+
       {scriptLoadedSuccessfully && apiKey && (
-        <ImplicitFlow
-          callback={initDriveImplicitFlow}
-          onSuccess={onSuccess}
-          onError={onError}
-          onNonOAuthError={onNonOAuthError}
-        />
+        <ImplicitFlow callback={initDriveImplicitFlow} onSuccess={onSuccess} onError={onError} />
       )}
+
       {children}
     </googleDriveContext.Provider>
   );

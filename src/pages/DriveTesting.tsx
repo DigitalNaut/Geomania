@@ -1,10 +1,11 @@
 import { type MouseEventHandler, useEffect, useRef, useState, useCallback } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import MainView from "src/components/layout/MainView";
 import Button from "src/components/common/Button";
 import { type FilesListResponse, useGoogleDriveAPI } from "src/hooks/useGoogleDriveAPI";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { DriveAccessButton } from "src/components/drive/DriveAccess";
 
 export default function DriveTestPage() {
   const [filesList, setFilesList] = useState<FilesListResponse>();
@@ -61,6 +62,7 @@ export default function DriveTestPage() {
     <MainView className="gap-2 sm:flex-col">
       <h1 className="text-2xl">Drive Test Page</h1>
       <section className="flex flex-col gap-1 bg-white/5 p-2">
+        <DriveAccessButton />
         <h2 className="text-lg">Files on Drive: {filesList?.files?.length || "No files"}</h2>
         <div className="flex max-w-lg flex-col gap-2 p-2">
           {filesList?.files?.map((file, index) => (
