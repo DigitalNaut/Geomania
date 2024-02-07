@@ -20,7 +20,7 @@ The world map requires a few processing steps:
 
 3. Finally, we need to convert the GeoJSON to SVG but keep the country attributes.
 
-   - Get my [GeoJSON to SVG converter](github.com/digitalNaut/geojson2svg). Follow the instructions to set up. It's as easy as `npm install` in a terminal with [Node.js](https://nodejs.org/en/) installed.
+   - Get my [GeoJSON to SVG converter](https://github.com/digitalNaut/geojson2svg). Follow the instructions to set up. It's as easy as `npm install` in a terminal with [Node.js](https://nodejs.org/en/) installed.
    - Drop the "map.geojson" file into the `/in` folder and run
 
    ```bash
