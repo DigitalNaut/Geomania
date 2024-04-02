@@ -7,6 +7,22 @@ import Button from "src/components/common/Button";
 import { type FilesListResponse, useGoogleDriveAPI } from "src/hooks/useGoogleDriveAPI";
 import { DriveAccessButton } from "src/components/drive/DriveAccess";
 
+import mapSvg from "src/assets/images/world-map-mercator.svg?raw";
+import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
+import allFeaturesData from "src/assets/data/features-data.json";
+
+function useMapSvg() {
+  const parser = new DOMParser();
+
+  const svg = parser.parseFromString(mapSvg, "image/svg+xml");
+
+  const paths = Array.from(svg.querySelectorAll("path"));
+
+  return {
+    paths,
+  };
+}
+
 export default function DriveTestPage() {
   const [filesList, setFilesList] = useState<FilesListResponse>();
   const [isBusy, setIsBusy] = useState(false);
@@ -58,12 +74,14 @@ export default function DriveTestPage() {
     setIsBusy(false);
   };
 
+  const { paths } = useMapSvg();
+
   return (
     <MainView className="gap-2 sm:flex-col">
       <h1 className="text-2xl">Drive Test Page</h1>
       <section className="flex flex-col gap-1 bg-white/5 p-2">
         <DriveAccessButton />
-        <h2 className="text-lg">Files on Drive: {filesList?.files?.length || "No files"}</h2>
+        <h2 className="text-lg">Files on Drive: {filesList?.files?.length ?? "No files"}</h2>
         <div className="flex max-w-lg flex-col gap-2 p-2">
           {filesList?.files?.map((file, index) => (
             <div key={file.name} className="flex items-center justify-between gap-2 px-2 py-1 hover:bg-white/5">
@@ -94,6 +112,34 @@ export default function DriveTestPage() {
             </Button>
           </>
         )}
+      </section>
+
+      <section>
+        <h2>Flags</h2>
+        <div className="flex flex-wrap gap-2 p-2">
+          {paths.map((path) => {
+            const pathA3 = path.id;
+            const a2 = allFeaturesData.find((f) => f.GU_A3 === pathA3)?.ISO_A2_EH;
+
+            if (!a2) return <>Mismatch for {pathA3}</>;
+
+            return (
+              <div key={path.id} className="flex flex-col items-center gap-1" title={pathA3}>
+                <img
+                  className="h-[2.4rem] w-16 p-1 before:block before:h-[2.4rem] before:w-16 before:bg-custom-unknown-flag"
+                  src={a2 === "-99" ? unknownFlag : `https://flagcdn.com/${a2.toLocaleLowerCase()}.svg`}
+                  loading="lazy"
+                  width={64}
+                  height={38.4}
+                  onError={() => {
+                    console.log(`Failed to load flag for ${a2}`);
+                  }}
+                />
+                <span className="max-w-16 truncate text-sm text-slate-500">{pathA3}</span>
+              </div>
+            );
+          })}
+        </div>
       </section>
     </MainView>
   );

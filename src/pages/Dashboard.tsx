@@ -3,7 +3,7 @@ import { animated, useSpring } from "@react-spring/web";
 
 import { faBroom } from "@fortawesome/free-solid-svg-icons";
 
-import { type CountryStats, useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
+import { type GuessStats, useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { Link } from "react-router-dom";
 import Button from "src/components/common/Button";
 import MainView from "src/components/layout/MainView";
@@ -37,25 +37,27 @@ function CountryProgress({ correct, incorrect }: CountryProgressProps) {
 }
 
 type CountryStatsProps = {
-  countryStats: CountryStats;
+  countryStats: GuessStats;
 };
 
 function CountryStatsCard({ countryStats }: CountryStatsProps) {
   return (
     <div
       className="flex gap-2 rounded-md p-4 hover:bg-white/10"
-      title={`${countryStats.name}\nCorrect: ${countryStats.correctGuesses}\nIncorrect: ${countryStats.incorrectGuesses}`}
+      title={`${countryStats.GEOUNIT}\nCorrect: ${countryStats.correctGuesses}\nIncorrect: ${countryStats.incorrectGuesses}`}
     >
       <img
         className="h-[2.4rem] w-16 p-1 before:block before:h-[2.4rem] before:w-16 before:bg-custom-unknown-flag"
-        src={countryStats.a2 ? `https://flagcdn.com/${countryStats.a2.toLocaleLowerCase()}.svg` : unknownFlag}
-        alt={countryStats.a3}
+        src={
+          countryStats.ISO_A2_EH ? `https://flagcdn.com/${countryStats.ISO_A2_EH.toLocaleLowerCase()}.svg` : unknownFlag
+        }
+        alt={countryStats.GU_A3}
         loading="lazy"
         width={64}
         height={38.4}
       />
       <div>
-        <div className="line-clamp-2 w-32 text-ellipsis text-sm">{countryStats.name}</div>
+        <div className="line-clamp-2 w-32 text-ellipsis text-sm">{countryStats.GEOUNIT}</div>
         <CountryProgress correct={countryStats.correctGuesses} incorrect={countryStats.incorrectGuesses} />
       </div>
     </div>
@@ -85,10 +87,10 @@ function useAnimatedDialog(ref: React.RefObject<HTMLDialogElement>) {
 function useDashboard() {
   const { countryStats, clearProgress } = useUserGuessRecordContext();
 
-  const countryStatsList: CountryStats[] | undefined = useMemo(() => {
+  const countryStatsList: GuessStats[] | undefined = useMemo(() => {
     const countryValues = Object.values(countryStats);
 
-    return countryValues.sort((a, b) => a.name.localeCompare(b.name));
+    return countryValues.sort((a, b) => a.GEOUNIT.localeCompare(b.GEOUNIT));
   }, [countryStats]);
 
   return {
@@ -150,7 +152,7 @@ export default function Dashboard() {
           ) : (
             <div className="flex h-fit flex-wrap overflow-y-auto p-2">
               {countryStatsList.map((countryStat) => (
-                <CountryStatsCard key={countryStat.a3} countryStats={countryStat} />
+                <CountryStatsCard key={countryStat.GU_A3} countryStats={countryStat} />
               ))}
             </div>
           )}

@@ -1,118 +1,172 @@
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { SVGOverlay } from "react-leaflet";
-import { type LatLngBoundsExpression, latLng, latLngBounds } from "leaflet";
+import { type LeafletMouseEventHandlerFn } from "leaflet";
 
 import { useMapContext } from "src/contexts/MapContext";
-import mapSvg from "src/assets/images/world-map-mercator.svg?raw";
+import { useSvgAttributes } from "src/hooks/useSVGAttributes";
 import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
+import mapSvg from "src/assets/images/world-map-mercator.svg?raw";
 
-const viewBoxParser = /viewBox="(.+?)"/g;
-const attributesParser = /<path d="(.+?)" A3="(.+?)" ADMIN="(.+?)"\/>/g;
-const widthParser = /width="(.+?)"/g;
-const heightParser = /height="(.+?)"/g;
-const strokeParser = /stroke="(.+?)"/g;
-const fillParser = /fill="(.+?)"/g;
-const strokeLinecapParser = /stroke-linecap="(.+?)"/g;
-const strokeLinejoinParser = /stroke-linejoin="(.+?)"/g;
-const strokeWidthParser = /stroke-width="(.+?)"/g;
+type PathProperties = {
+  style: string;
+  highlight?: boolean;
+};
 
-const width = widthParser.exec(mapSvg)?.[1] || "250";
-const height = heightParser.exec(mapSvg)?.[1] || "250";
-const viewBox = viewBoxParser.exec(mapSvg)?.[1] || "0 0 250 250";
-const stroke = strokeParser.exec(mapSvg)?.[1] || "#fff";
-const fill = fillParser.exec(mapSvg)?.[1] || "#7c7c7c";
-const strokeLinecap = strokeLinecapParser.exec(mapSvg)?.[1] || "round";
-const strokeLinejoin = strokeLinejoinParser.exec(mapSvg)?.[1] || "round";
-const strokeWidth = strokeWidthParser.exec(mapSvg)?.[1] || "0.01";
+type StyledPath = {
+  path: SVGPathElement;
+} & PathProperties;
 
-const svgPaths = [...mapSvg.matchAll(attributesParser)].map(([, path, a3, admin]) => ({ path, a3, admin }));
+export type VisitedCountry = {
+  a3: string;
+} & PathProperties;
 
-const topLeftCorner = latLng(-84.267, -180.5);
-const bottomRightCorner = latLng(93, 172.1);
-const maxBounds = latLngBounds(topLeftCorner, bottomRightCorner);
+// TODO: Refactor
+// Style presets for the map
+// Geounit presets
+const lighterBlueGray = "#94a3b8";
+const darkerBlueGray = "#64748b";
+const halfOpaque = 0.5;
+const seeThrough = 0.15;
 
-const bounds: LatLngBoundsExpression = maxBounds;
 /**
  * Renders the map SVG as an overlay on the map.
  * @param props
  * @returns
  */
-export function SvgMap({
-  highlightAlpha3,
+export default function SvgMap({
+  selectedPaths,
   onClick,
   disableColorFilter,
+  hidden,
 }: {
-  highlightAlpha3?: string;
+  selectedPaths?: VisitedCountry[];
   onClick?: (a3: string) => void;
   disableColorFilter: boolean;
+  hidden?: boolean;
 }) {
   const { zoom } = useMapContext();
   const { isCountryInFilters } = useCountryFiltersContext();
 
-  const [highlightPath, otherPaths] = useMemo(() => {
-    const index = svgPaths.findIndex((item) => item.a3 === highlightAlpha3);
-    if (index === -1) return [undefined, svgPaths];
+  const { paths, bounds, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"], {
+    topLeftCorner: [-83.05, -180.6],
+    bottomRightCorner: [83.09, 180.6],
+  });
 
-    const otherPaths = svgPaths.filter((_, i) => i !== index);
-    return [svgPaths[index].path, otherPaths];
-  }, [highlightAlpha3]);
+  const [styledPaths, otherPaths] = useMemo(() => {
+    if (!paths) return [[], []];
+    if (!selectedPaths) return [[], paths];
 
-  const onClickHandler = ({ originalEvent }: { originalEvent: MouseEvent }) => {
-    const target = originalEvent.target as SVGPathElement | null;
+    const styledList: StyledPath[] = [];
+    const otherList: SVGPathElement[] = [];
+
+    for (const path of paths) {
+      const pathMatch = selectedPaths.find((item) => item.a3 === path.id);
+
+      if (pathMatch) styledList.push({ path, style: pathMatch?.style, highlight: pathMatch?.highlight });
+      else otherList.push(path);
+    }
+
+    return [styledList, otherList];
+  }, [selectedPaths, paths]);
+
+  const click: LeafletMouseEventHandlerFn = ({ originalEvent }) => {
+    const target = originalEvent.target as HTMLElement | null;
     const a3 = target?.getAttribute("data-a3"); // data-a3 is set in the SVGOverlay below
-    if (onClick && a3) onClick(a3);
+
+    if (a3) onClick?.(a3);
   };
+
+  const adjustForZoom = (value: number) => value / zoom ** 2;
+
+  if (hidden) return null;
 
   return (
     <SVGOverlay
       bounds={bounds}
       attributes={{
-        xmlns: "http://www.w3.org/2000/svg",
         width,
         height,
-        fill,
-        stroke,
-        strokeLinecap,
-        strokeLinejoin,
-        strokeWidth,
+        fill: "white",
+        stroke: "white",
+        strokeLinecap: "round",
+        strokeLinejoin: "round",
+        strokeWidth: "0.01",
         viewBox,
       }}
       opacity={1}
       interactive
       zIndex={1000}
       className="transition-colors duration-500 ease-in-out"
-      eventHandlers={{
-        click: onClickHandler,
-      }}
+      eventHandlers={{ click }}
     >
-      {otherPaths.map(({ a3, path }, index) => {
-        const colorFilter = disableColorFilter || isCountryInFilters(a3);
+      {otherPaths.map((path, index) => {
+        const colorFilter = disableColorFilter || isCountryInFilters(path.id);
 
         return (
           <path
             key={index}
-            data-a3={a3}
-            d={path}
+            data-a3={path.id}
+            d={path.getAttribute("d") ?? ""}
             style={{
-              strokeOpacity: colorFilter ? 0.5 : 0.15,
-              stroke: "unset",
-              fill: colorFilter ? "#94a3b8" : "#64748b",
-              strokeWidth: 1 / zoom ** 2,
+              strokeOpacity: colorFilter ? halfOpaque : seeThrough,
+              fill: colorFilter ? lighterBlueGray : darkerBlueGray,
+              strokeWidth: adjustForZoom(3),
             }}
           />
         );
       })}
-      {/* SVG path for the highlight country must be rendered last to be on top of the other countries */}
-      {highlightPath && (
-        <path
-          data-a3={highlightAlpha3}
-          d={highlightPath}
-          style={{
-            stroke: "#fcd34d",
-            fill: "#fcd34d",
-            strokeWidth: 2 / zoom ** 2,
-          }}
-        />
+
+      {styledPaths?.length > 0 && (
+        <>
+          <defs>
+            <linearGradient id="gradient">
+              <stop offset="0%" stopColor="white" stopOpacity="0%" />
+              <stop offset="50%" stopColor="white" stopOpacity="100%" />
+              <stop offset="100%" stopColor="white" stopOpacity="0%" />
+            </linearGradient>
+            <rect id="line" width="4" height="32" fill="url(#gradient)" stroke="none" />
+            <pattern
+              id="pattern"
+              width="8"
+              height="32"
+              patternUnits="userSpaceOnUse"
+              patternTransform="rotate(45 50 50)"
+            >
+              <rect id="bg" className="fill-none stroke-none" x="0" y="0" width="8" height="32" />
+              <g>
+                <animateTransform
+                  attributeName="transform"
+                  type="translate"
+                  from="1"
+                  to="9"
+                  dur="1s"
+                  repeatCount="indefinite"
+                />
+                <use xlinkHref="#line" />
+                <use xlinkHref="#line" x="-8" />
+              </g>
+            </pattern>
+          </defs>
+
+          {styledPaths.map(({ path, style, highlight }) => (
+            <Fragment key={path.id}>
+              <path
+                data-a3={path.id}
+                d={path.getAttribute("d") ?? ""}
+                className={style}
+                style={{
+                  strokeWidth: adjustForZoom(2),
+                }}
+              />
+              {highlight && (
+                <path
+                  d={path.getAttribute("d") ?? ""}
+                  className="pointer-events-none animate-scrollDash border-none fill-[url(#pattern)] stroke-none [stroke-dashoffset:_16]"
+                />
+              )}
+            </Fragment>
+          ))}
+        </>
       )}
     </SVGOverlay>
   );

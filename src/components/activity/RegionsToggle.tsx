@@ -1,10 +1,8 @@
 import { useState, useMemo } from "react";
 import { animated, useSpring } from "@react-spring/web";
 
-import type { CountryFilters } from "src/contexts/CountryFiltersContext";
-import { useCountryStore } from "src/hooks/useCountryStore";
+import { continents, useCountryFiltersContext, type CountryFilters } from "src/contexts/CountryFiltersContext";
 import Button from "src/components/common/Button";
-import continents from "src/assets/data/continents.json";
 import Toggle from "src/components/common/Toggle";
 import { twMerge } from "tailwind-merge";
 
@@ -32,7 +30,7 @@ function createInitialToggles(continentFilters: CountryFilters) {
 }
 
 function RegionsToggleList() {
-  const { toggleContinentFilter, continentFilters } = useCountryStore();
+  const { toggleContinentFilter, continentFilters } = useCountryFiltersContext();
   const initialToggles = useMemo(() => createInitialToggles(continentFilters), [continentFilters]);
   const [selectedContinents, setSelectedContinents] = useState<CountryFilters>(initialToggles);
 

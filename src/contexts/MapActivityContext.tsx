@@ -8,38 +8,71 @@ import {
   useMemo,
 } from "react";
 import { useSearchParams } from "react-router-dom";
+import { z } from "zod";
 
-const ActivityMode = ["review", "quiz"] as const;
-type ActivityMode = (typeof ActivityMode)[number];
+const ActivitySchema = z.enum(["review", "quiz"]);
+const ReviewKindSchema = z.enum(["countries"]);
+export type ReviewKind = z.infer<typeof ReviewKindSchema>;
+const QuizKindSchema = z.enum(["typing", "pointing"]);
+export type QuizKind = z.infer<typeof QuizKindSchema>;
+
+export type Activity =
+  | {
+      mode: "review";
+      kind: ReviewKind;
+    }
+  | {
+      mode: "quiz";
+      kind: QuizKind;
+    };
 
 type MapActivityContext = {
   isRandomReviewMode: boolean;
   setRandomReviewMode: Dispatch<SetStateAction<boolean>>;
-  activityMode: ActivityMode | null;
+  activity?: Activity;
 };
 
 const MapActivityContext = createContext<MapActivityContext | null>(null);
 
-function isActivityMode(mode: string | null): mode is ActivityMode {
-  if (mode === null) return false;
-  return ActivityMode.includes(mode as ActivityMode);
+function validateReviewKind(kind: string | null): kind is ReviewKind {
+  return kind !== null && ReviewKindSchema.safeParse(kind).success;
+}
+
+function validateQuizKind(kind: string | null): kind is QuizKind {
+  return kind !== null && QuizKindSchema.safeParse(kind).success;
+}
+
+function validateActivity(mode: string | null, kind: string | null): Activity | undefined {
+  if (!ActivitySchema.safeParse(mode).success) return undefined;
+
+  if (mode === "review" && validateReviewKind(kind)) return { mode: "review", kind };
+  else if (mode === "quiz" && validateQuizKind(kind)) return { mode: "quiz", kind };
+
+  return undefined;
 }
 
 export default function MapActivityProvider({ children }: PropsWithChildren) {
-  const [isRandomReviewMode, setRandomReviewMode] = useState(false);
-  const [searchParams] = useSearchParams();
-  let activityMode = useMemo(() => searchParams.get("activity"), [searchParams]);
+  const [searchParams, setURLSearchParams] = useSearchParams();
+  const activityMode = useMemo(() => searchParams.get("activity"), [searchParams]);
+  const activityKind = useMemo(() => searchParams.get("kind"), [searchParams]);
+  const isRandomReview = useMemo(() => /^true$/i.test(searchParams.get("random") || ""), [searchParams]);
+  const [isRandomReviewMode, setRandomReviewMode] = useState(() => isRandomReview);
 
-  if (!isActivityMode(activityMode)) {
-    activityMode = null;
-  }
+  const activity = validateActivity(activityMode, activityKind);
+
+  const setReviewMode: Dispatch<SetStateAction<boolean>> = (value) => {
+    setRandomReviewMode(value);
+    if (value) searchParams.set("random", "true");
+    else searchParams.delete("random");
+    setURLSearchParams(searchParams);
+  };
 
   return (
     <MapActivityContext.Provider
       value={{
         isRandomReviewMode,
-        setRandomReviewMode,
-        activityMode,
+        setRandomReviewMode: setReviewMode,
+        activity,
       }}
     >
       {children}

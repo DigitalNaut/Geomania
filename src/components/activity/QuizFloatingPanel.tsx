@@ -1,18 +1,13 @@
-import { type KeyboardEvent, type PropsWithChildren, useCallback } from "react";
+import { type KeyboardEvent, type PropsWithChildren, type RefObject, useCallback, useMemo } from "react";
 import { animated, useSpring, useTrail } from "@react-spring/web";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faForward, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { faForwardStep, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 
-import type { useCountryQuiz } from "src/controllers/useCountryQuiz";
 import { ActionButton } from "src/components/common/ActionButton";
+import { type NullableCountryData, useCountryStore } from "src/hooks/useCountryStore";
+import { type QuizKind } from "src/contexts/MapActivityContext";
 
-import IncorrectSound from "src/assets/sounds/incorrect.mp3?url";
-import CorrectSound from "src/assets/sounds/correct.mp3?url";
-
-const incorrectAnswerAudioSrc = new URL(IncorrectSound, import.meta.url);
-const correctAnswerAudioSrc = new URL(CorrectSound, import.meta.url);
-const incorrectAnswerAudio = new Audio(incorrectAnswerAudioSrc.href);
-const correctAnswerAudio = new Audio(correctAnswerAudioSrc.href);
+import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
 
 function useHorizontalShakeAnimation({
   onShakeStart,
@@ -72,7 +67,7 @@ function QuizHeaderSection({
 }>) {
   return (
     <div className="flex gap-2 rounded-md bg-slate-800">
-      <p className="p-2">{children}</p>
+      <div className="p-2">{children}</div>
       <button
         className="flex items-center gap-1 p-2 underline"
         role="button"
@@ -80,31 +75,65 @@ function QuizHeaderSection({
         onClick={skipCountryHandler}
       >
         <span>Skip</span>
-        <FontAwesomeIcon icon={faForward} />
+        <FontAwesomeIcon icon={faForwardStep} />
       </button>
     </div>
   );
 }
 
+function QuizPointerSection({ children }: PropsWithChildren) {
+  return (
+    <div className="flex items-center gap-4 rounded-md bg-white/50 px-8 py-6 text-xl text-slate-800 shadow-xl backdrop-blur-xl">
+      {children}
+    </div>
+  );
+}
+
+function CountryFlag({ a2 }: { a2?: string }) {
+  return (
+    <img
+      className="h-[2.4rem] w-16 p-1 shadow-md before:block before:h-[2.4rem] before:w-16 before:bg-custom-unknown-flag"
+      src={!a2 || a2 === "-99" ? unknownFlag : `https://flagcdn.com/${a2.toLocaleLowerCase()}.svg`}
+      loading="lazy"
+      width={64}
+      height={38.4}
+      onError={() => {
+        console.log(`Failed to load flag for ${a2}`);
+      }}
+    />
+  );
+}
+
 export default function QuizFloatingPanel({
   shouldShow,
-  activity: { answerInputRef, submitAnswer, userGuessTally, giveHint, skipCountry },
+  mode,
+  userGuessTally,
+  inputRef,
+  submitAnswer,
+  skipCountry,
+  giveHint,
 }: {
   shouldShow: boolean;
-  activity: ReturnType<typeof useCountryQuiz>;
+  mode?: QuizKind;
+  userGuessTally: number;
+  inputRef: RefObject<HTMLInputElement>;
+  submitAnswer?: (text: string) => NullableCountryData;
+  skipCountry: () => void;
+  giveHint: () => void;
 }) {
+  const { storedCountry } = useCountryStore();
+
   const onShakeStart = useCallback(() => {
-    if (!answerInputRef.current) return;
-    answerInputRef.current.disabled = true;
-  }, [answerInputRef]);
+    if (!inputRef.current) return;
+    inputRef.current.disabled = true;
+  }, [inputRef]);
 
   const onShakeEnd = useCallback(() => {
-    if (!answerInputRef.current) return;
-    answerInputRef.current.disabled = false;
-    answerInputRef.current.focus();
-    answerInputRef.current.select();
-    incorrectAnswerAudio.pause();
-  }, [answerInputRef]);
+    if (!inputRef.current) return;
+    inputRef.current.disabled = false;
+    inputRef.current.focus();
+    inputRef.current.select();
+  }, [inputRef]);
 
   const { startShake, xShake } = useHorizontalShakeAnimation({
     onShakeStart,
@@ -114,16 +143,9 @@ export default function QuizFloatingPanel({
   const { firstTrail, secondTrail } = useFloatingPanelSlideInAnimation(shouldShow);
 
   const handleSubmit = () => {
-    const isCorrectAnswer = submitAnswer();
+    const isCorrectAnswer = submitAnswer?.(inputRef.current?.value ?? "");
 
-    if (isCorrectAnswer) {
-      correctAnswerAudio.currentTime = 0;
-      correctAnswerAudio.play();
-    } else {
-      incorrectAnswerAudio.currentTime = 0;
-      incorrectAnswerAudio.play();
-      startShake();
-    }
+    if (!isCorrectAnswer) startShake();
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -132,43 +154,71 @@ export default function QuizFloatingPanel({
     }
   };
 
+  const a2 = useMemo(() => storedCountry.data?.ISO_A2_EH, [storedCountry.data?.ISO_A2_EH]);
+
   return (
     <animated.div
-      className="absolute inset-x-0 bottom-8 z-[1000] mx-auto flex h-fit w-fit flex-col items-center gap-2 rounded-md text-center"
+      className="absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 text-center"
       style={firstTrail}
     >
       <animated.div style={secondTrail}>
-        <QuizHeaderSection skipCountryHandler={skipCountry}>Which country is this?</QuizHeaderSection>
+        {mode === "typing" && (
+          <QuizHeaderSection skipCountryHandler={skipCountry}>Which country is this?</QuizHeaderSection>
+        )}
+        {mode === "pointing" && (
+          <QuizPointerSection>
+            <span>
+              Click on <strong>{storedCountry.data?.GEOUNIT}</strong>
+            </span>
+            <CountryFlag a2={a2} />
+          </QuizPointerSection>
+        )}
       </animated.div>
 
       <div className="flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
-        <div className="rounded-md bg-red-500">
-          <animated.div className="flex w-full justify-center overflow-hidden rounded-md" style={{ x: xShake }}>
-            <input
-              className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
-              ref={answerInputRef}
-              onKeyDown={handleKeyDown}
-              placeholder="Enter country name"
-              disabled={!shouldShow}
-              maxLength={50}
-            />
-            <ActionButton disabled={!shouldShow} onClick={handleSubmit}>
-              Submit
-            </ActionButton>
-          </animated.div>
-        </div>
+        {mode === "typing" && (
+          <div className="rounded-md bg-red-500">
+            <animated.div className="flex w-full justify-center overflow-hidden rounded-md" style={{ x: xShake }}>
+              <input
+                className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
+                ref={inputRef}
+                onKeyDown={handleKeyDown}
+                placeholder="Enter country name"
+                disabled={!shouldShow}
+                maxLength={50}
+              />
+              <ActionButton disabled={!shouldShow} onClick={handleSubmit}>
+                Submit
+              </ActionButton>
+            </animated.div>
+          </div>
+        )}
 
-        <div className="flex w-full justify-between rounded-md p-2">
-          <span className="whitespace-nowrap">Guesses: {userGuessTally}</span>
+        <div className="flex w-full items-center justify-between gap-4 rounded-md px-1 drop-shadow">
+          <span className="whitespace-nowrap px-6 py-4">Guesses: {userGuessTally}</span>
 
-          <button
-            className="flex items-center gap-1 underline disabled:cursor-not-allowed disabled:opacity-50"
-            type="button"
-            onClick={giveHint}
-          >
-            <FontAwesomeIcon icon={faQuestionCircle} />
-            <span>Hint!</span>
-          </button>
+          {mode === "typing" && (
+            <button
+              className="flex items-center gap-1 p-4 underline disabled:cursor-not-allowed disabled:opacity-50"
+              type="button"
+              onClick={giveHint}
+            >
+              <FontAwesomeIcon icon={faQuestionCircle} />
+              <span>Hint!</span>
+            </button>
+          )}
+
+          {mode === "pointing" && (
+            <button
+              className="flex h-full items-center justify-center gap-2 rounded-md bg-white px-4 py-2 text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              role="button"
+              title="Skip country"
+              onClick={skipCountry}
+            >
+              <span className="no-underline">Skip</span>
+              <FontAwesomeIcon icon={faForwardStep} />
+            </button>
+          )}
         </div>
       </div>
     </animated.div>

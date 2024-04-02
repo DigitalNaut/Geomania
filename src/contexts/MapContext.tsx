@@ -14,7 +14,7 @@ const MapContext = createContext<MapContext | null>(null);
 
 /**
  * Map Context Provider
- * Holds the map instance and the data for the current country
+ * Holds the map instance
  */
 export default function MapContextProvider({ children }: PropsWithChildren) {
   const [map, setMap] = useState<MapContext["map"]>();

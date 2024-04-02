@@ -63,7 +63,7 @@ const router = createBrowserRouter([
         element: (
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <QueryClientProvider client={queryClient}>
-              <UserGuessRecordProvider historyLimit={200}>
+              <UserGuessRecordProvider historyLimit={10}>
                 <CountryFiltersProvider>
                   <Outlet />
                 </CountryFiltersProvider>

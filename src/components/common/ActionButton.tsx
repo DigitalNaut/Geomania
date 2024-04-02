@@ -5,7 +5,7 @@ type ActionButtonProps = Omit<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonE
 
 export function ActionButton({ children, className, disabled, onClick, ...props }: ActionButtonProps) {
   return (
-    <div className="relative bg-clip-content">
+    <div className="relative">
       {disabled && (
         <div className={twMerge("absolute h-full w-full bg-green-900", disabled ? "opacity-70" : "opacity-0")} />
       )}

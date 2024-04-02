@@ -18,7 +18,7 @@ export function ManagedDriveProvider({ children }: PropsWithChildren) {
 
   return (
     <GoogleOAuthProvider
-      clientId={data?.clientId || ""}
+      clientId={data?.clientId ?? ""}
       onScriptLoadError={() => {
         throw new Error("Google OAuth script failed to load.");
       }}

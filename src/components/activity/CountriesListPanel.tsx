@@ -7,7 +7,7 @@ import {
   type CountryDataList,
   useCountryStore,
 } from "src/hooks/useCountryStore";
-import continents from "src/assets/data/continents.json";
+import { continents, useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 import Toggle from "src/components/common/Toggle";
 import { useSearchParams } from "react-router-dom";
 
@@ -23,16 +23,15 @@ function CountryListEntry({
 }: CountryListEntryProps & { country: CountryData }) {
   return (
     <button
+      id={country?.GU_A3}
       className={twMerge(
         "flex items-center gap-2 pl-4 -ml-2 -mr-1 pr-1 text-left -indent-2 rounded-sm",
-        country?.a3 === storedCountry?.a3 && "bg-yellow-700 py-1",
+        country?.GU_A3 === storedCountry?.GU_A3 && "bg-yellow-700 py-1",
       )}
-      id={country?.a3}
-      key={country?.a3 + "-country"}
-      title={country?.name}
-      onClick={() => countryClickCallback(country.a3)}
+      title={country?.GEOUNIT}
+      onClick={() => countryClickCallback(country.GU_A3)}
     >
-      {country?.name}
+      {country?.GEOUNIT}
     </button>
   );
 }
@@ -59,7 +58,6 @@ function ContinentListEntry({
   return (
     <>
       <div
-        key={continent + "-summary"}
         className="sticky flex justify-between bg-slate-900 pb-1 pt-2 font-bold shadow-md"
         style={{
           top: `${index * 2.25}rem`,
@@ -78,7 +76,7 @@ function ContinentListEntry({
         >
           {continentCountries.map((country) => (
             <CountryListEntry
-              key={country.a3}
+              key={country.GU_A3}
               country={country}
               countryClickCallback={countryClickCallback}
               storedCountry={storedCountry}
@@ -91,7 +89,8 @@ function ContinentListEntry({
 }
 
 export default function CountriesListPanel({ isAbridged = false }: { isAbridged?: boolean }) {
-  const { storedCountry, toggleContinentFilter, countryDataByContinent, continentFilters } = useCountryStore();
+  const { toggleContinentFilter, countryDataByContinent, continentFilters } = useCountryFiltersContext();
+  const { storedCountry } = useCountryStore();
   const listRef = useRef<HTMLDivElement>(null);
   const [, setURLSearchParams] = useSearchParams();
 
@@ -106,7 +105,7 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
   useEffect(() => {
     if (!storedCountry.data || !listRef.current) return;
 
-    const countryButton = listRef.current?.querySelector(`#${storedCountry.data?.a3}`);
+    const countryButton = listRef.current?.querySelector(`#${storedCountry.data?.GU_A3}`);
 
     countryButton?.scrollIntoView({
       behavior: "smooth",
@@ -115,10 +114,10 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
   }, [storedCountry.data]);
 
   return (
-    <div className={twMerge("flex h-max flex-col gap-2", !isAbridged && "overflow-y-auto")}>
+    <div className={twMerge("flex h-max flex-col gap-2 px-2", !isAbridged && "overflow-y-auto")}>
       <h3 className="text-center text-slate-300">Countries by Region</h3>
 
-      <div className={twMerge("flex flex-col overflow-y-auto px-2", !isAbridged && "pb-[60vh]")} ref={listRef}>
+      <div className={twMerge("flex flex-col overflow-y-auto px-2", !isAbridged && "pb-[40vh]")} ref={listRef}>
         {continents.map((continent, index) => (
           <ContinentListEntry
             key={continent}
