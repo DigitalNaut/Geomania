@@ -1,21 +1,17 @@
-import { type PropsWithChildren, useState, useEffect } from "react";
 import type { NonOAuthError } from "@react-oauth/google";
+import { type PropsWithChildren, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faSpinner, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faSpinner, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
-import { useGoogleDrive } from "src/contexts/GoogleDriveContext";
-import { Button } from "src/components/common/Button";
+import { useGoogleDriveContext } from "src/contexts/GoogleDriveContext";
+import { useUserSettingsContext } from "src/contexts/UserSettingsContext";
+import Button from "src/components/common/Button";
+import DriveIcon from "src/components/drive/DriveIcon";
 
-import { DriveSettingsHook } from "./DriveSettingsHook";
-
-type NonDriveErrorMessageProps = {
-  error: NonOAuthError;
-};
-
-function PopupErrorMessage({ error }: NonDriveErrorMessageProps) {
+function AuthErrorMessage({ error }: { error: NonOAuthError }) {
   return (
     <span className="flex items-center gap-2">
-      <FontAwesomeIcon className="text-yellow-300" icon={faTriangleExclamation} />
       {error.type === "popup_closed" ? (
         <span>Popup window closed before authorization completed.</span>
       ) : error.type === "popup_failed_to_open" ? (
@@ -27,114 +23,134 @@ function PopupErrorMessage({ error }: NonDriveErrorMessageProps) {
   );
 }
 
-type ErrorNoticeProps = {
-  retry: () => void;
-  error: NonOAuthError | Error;
-};
-
-function ErrorNotice({ retry, error }: ErrorNoticeProps) {
+function ErrorLabel({ error }: { error: NonOAuthError | Error }) {
   return (
-    <div className="flex items-center rounded-md bg-red-900">
-      <div className="flex items-center gap-2 px-2">
-        {error instanceof Error ? <span>Error: {error.message}</span> : <PopupErrorMessage error={error} />}
-      </div>
-      <Button onClick={retry}>Retry</Button>
+    <div className="flex items-center gap-2 px-2 text-red-400">
+      {error instanceof Error ? <span>Error: {error.message}</span> : <AuthErrorMessage error={error} />}
     </div>
   );
 }
 
-function InfoNotice({ children }: PropsWithChildren) {
-  return <div className="flex min-w-fit flex-col items-center gap-1">{children}</div>;
+function InfoLabel({ children }: PropsWithChildren) {
+  return <div className="flex items-center gap-1">{children}</div>;
 }
 
-export default function DriveAccess() {
-  const { requestDriveAccess, disconnectDrive, isDriveLoaded, isDriveAuthorizing, hasDriveAccess, error } =
-    useGoogleDrive();
-
-  const { driveSettings, setAutoConnectDrive } = DriveSettingsHook();
-  const { autoConnectDrive } = driveSettings;
-  const [rememberAutoConnect, setRememberAutoConnect] = useState(autoConnectDrive);
-
-  const handleAccessRequest = () => {
-    setAutoConnectDrive(rememberAutoConnect);
-    requestDriveAccess();
-  };
+function useDriveAccess() {
+  const { requestDriveAccess, disconnectDrive, state } = useGoogleDriveContext();
+  const { userSettings, setUserSetting } = useUserSettingsContext();
 
   const handleDisconnectDrive = () => {
-    setAutoConnectDrive(false);
+    setUserSetting({ autoConnectDrive: false });
     disconnectDrive();
   };
 
   useEffect(() => {
-    if (!isDriveLoaded || error) return;
+    if (state.status !== "loaded" || !userSettings.autoConnectDrive) return;
 
-    if (autoConnectDrive && !hasDriveAccess) requestDriveAccess();
-  }, [requestDriveAccess, hasDriveAccess, autoConnectDrive, isDriveLoaded, error]);
+    // TODO: Remove workaround
+    // * Firefox throws an error "Should not already be working." but works in Chrome.
+    // * This is an open bug in react. The blocking call `window.open` within the useState hook messes with React's synchronization of the state.
+    // ? See: https://github.com/facebook/react/issues/17355
+    // ? See: https://stackoverflow.com/questions/76944918/should-not-already-be-working-on-window-open-in-simple-react-app
 
-  if (error) return <ErrorNotice retry={handleAccessRequest} error={error} />;
+    setTimeout(() => requestDriveAccess(), 0);
+  }, [requestDriveAccess, state, userSettings.autoConnectDrive]);
 
-  if (!isDriveLoaded) {
-    return (
-      <InfoNotice>
-        <span className="flex items-center gap-2">
-          Loading Drive... <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
-        </span>
-      </InfoNotice>
+  return {
+    handleDisconnectDrive,
+  };
+}
+
+export function DriveAccessButton() {
+  const { state, requestDriveAccess } = useGoogleDriveContext();
+  const { status } = state;
+  const { handleDisconnectDrive } = useDriveAccess();
+  const { userSettings } = useUserSettingsContext();
+
+  let content: JSX.Element | null = null;
+
+  if (status === "error") {
+    content = (
+      <>
+        <ErrorLabel error={state.error} />
+        <Button onClick={requestDriveAccess}>Connect</Button>
+      </>
+    );
+  } else if (status === "access") {
+    content = (
+      <Button onClick={handleDisconnectDrive} styles="secondary">
+        Disconnect
+      </Button>
+    );
+  } else if (status === "unauthorized") {
+    content = (
+      <>
+        Authorizing... <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+      </>
+    );
+  } else if (!userSettings.autoConnectDrive && status === "loaded") {
+    content = <Button onClick={requestDriveAccess}>Connect</Button>;
+  } else if (userSettings.autoConnectDrive || status === "idle") {
+    content = (
+      <>
+        Loading... <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
+      </>
     );
   }
 
-  if (isDriveAuthorizing) {
-    return (
-      <InfoNotice>
-        <span className="flex items-center gap-2">
-          Authorizing Google Drive
-          <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
-        </span>
-      </InfoNotice>
-    );
-  }
+  return <InfoLabel>{content}</InfoLabel>;
+}
 
-  if (hasDriveAccess) {
-    return (
-      <InfoNotice>
-        <span className="flex items-center gap-2">
-          Connected to Drive
-          <FontAwesomeIcon icon={faCheck} />
-        </span>
-        <Button onClick={handleDisconnectDrive}>Disconnect</Button>
-      </InfoNotice>
+export function DriveAccessStatus() {
+  useDriveAccess();
+  const { state } = useGoogleDriveContext();
+  const { status } = state;
+  const { userSettings } = useUserSettingsContext();
+
+  let content: JSX.Element | null = null;
+
+  if (status === "error") {
+    content = (
+      <>
+        <DriveIcon />
+        Drive error
+        <FontAwesomeIcon className="mr-2 text-yellow-400" icon={faTriangleExclamation} />
+      </>
     );
-  } else if (autoConnectDrive) {
-    return (
-      <InfoNotice>
-        <span className="flex gap-2">
-          Connecting to Drive
-          <FontAwesomeIcon className="fa-spin" icon={faSpinner} />
-        </span>
-      </InfoNotice>
+  } else if (status === "access") {
+    content = (
+      <>
+        <DriveIcon />
+        Connected
+      </>
+    );
+  } else if (status === "unauthorized") {
+    content = (
+      <>
+        <DriveIcon />
+        Authorizing...
+      </>
+    );
+  } else if (!userSettings.autoConnectDrive && status === "loaded") {
+    content = (
+      <>
+        Use <DriveIcon /> Google Drive
+      </>
+    );
+  } else if (userSettings.autoConnectDrive || status === "idle") {
+    content = (
+      <>
+        <DriveIcon />
+        Loading...
+      </>
     );
   }
 
   return (
-    <InfoNotice>
-      <label htmlFor="drive-checkbox">
-        <input
-          id="drive-checkbox"
-          type="checkbox"
-          checked={rememberAutoConnect}
-          onChange={(e) => setRememberAutoConnect(e.target.checked)}
-        />
-        &nbsp;Remember this choice
-      </label>
-      <Button onClick={handleAccessRequest}>
-        Save to
-        <img
-          className="mx-1 inline-block h-4 w-4"
-          src="https://fonts.gstatic.com/s/i/productlogos/drive_2020q4/v8/web-16dp/logo_drive_2020q4_color_2x_web_16dp.png"
-          alt="Google Drive"
-        />
-        Google Drive
-      </Button>
-    </InfoNotice>
+    <InfoLabel>
+      <Link to="/settings">
+        <span className="flex items-center text-sm">{content}</span>
+      </Link>
+    </InfoLabel>
   );
 }

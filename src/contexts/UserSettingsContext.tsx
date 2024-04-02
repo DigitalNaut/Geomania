@@ -1,8 +1,14 @@
-import { type PropsWithChildren, type Dispatch, createContext, useContext, useReducer } from "react";
+import { type PropsWithChildren, type Dispatch, createContext, useContext, useReducer, useEffect } from "react";
+import { z } from "zod";
 
-type UserSettings = {
-  reducedMotion: boolean;
-};
+import { useLocalStorage } from "src/hooks/useLocalStorage";
+
+const userSettingsSchema = z.object({
+  reducedMotion: z.boolean().default(false),
+  autoConnectDrive: z.boolean().default(false),
+});
+
+type UserSettings = z.infer<typeof userSettingsSchema>;
 
 type ActionType = {
   type: "set" | "reset";
@@ -11,15 +17,13 @@ type ActionType = {
 
 type UserSettingsContext = {
   userSettings: UserSettings;
-  setSetting: Dispatch<Partial<UserSettings>>;
-  resetSettings: () => void;
+  setUserSetting: Dispatch<Partial<UserSettings>>;
+  resetUserSettings: () => void;
 };
 
+const userSettingsKey = "userSettings";
+const defaultUserSettings = userSettingsSchema.parse({});
 const userSettingsContext = createContext<UserSettingsContext | null>(null);
-
-const defaultUserSettings: UserSettings = {
-  reducedMotion: false,
-};
 
 const reducer = (state: UserSettings, { type, payload }: ActionType): UserSettings => {
   switch (type) {
@@ -38,17 +42,35 @@ const reducer = (state: UserSettings, { type, payload }: ActionType): UserSettin
 };
 
 export default function UserSettingsProvider({ children }: PropsWithChildren) {
+  const { data: savedUserSettings, saveData: saveUserSettings } = useLocalStorage<UserSettings>(
+    userSettingsKey,
+    defaultUserSettings,
+    userSettingsSchema,
+  );
   const [userSettings, setUserSettings] = useReducer(reducer, defaultUserSettings);
 
-  const setSetting = (payload: Partial<UserSettings>) => setUserSettings({ type: "set", payload });
-  const resetSettings = () => setUserSettings({ type: "reset", payload: {} });
+  const setUserSetting = (payload: Partial<UserSettings>) => {
+    setUserSettings({ type: "set", payload });
+    saveUserSettings({ ...userSettings, ...payload });
+  };
+
+  const resetUserSettings = () => {
+    setUserSettings({ type: "reset", payload: {} });
+    saveUserSettings(defaultUserSettings);
+  };
+
+  useEffect(() => {
+    if (savedUserSettings) {
+      setUserSettings({ type: "set", payload: savedUserSettings });
+    }
+  }, [savedUserSettings]);
 
   return (
     <userSettingsContext.Provider
       value={{
         userSettings,
-        setSetting,
-        resetSettings,
+        setUserSetting,
+        resetUserSettings,
       }}
     >
       {children}

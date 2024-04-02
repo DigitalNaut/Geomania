@@ -1,45 +1,106 @@
-import { useUserSettingsContext } from "src/contexts/UserSettingsContext";
-import Toggle from "src/components/common/Toggle";
-import MainView from "src/components/layout/MainView";
-import { Button } from "src/components/common/Button";
+import type { PropsWithChildren } from "react";
+import { twMerge } from "tailwind-merge";
 
-function SettingToggle({
+import { useUserSettingsContext } from "src/contexts/UserSettingsContext";
+import { DriveAccessButton } from "src/components/drive/DriveAccess";
+import MainView from "src/components/layout/MainView";
+import Toggle from "src/components/common/Toggle";
+import Button from "src/components/common/Button";
+import DriveIcon from "src/components/drive/DriveIcon";
+
+function SettingInfo({
   label,
   description,
-  value,
-  onChange,
-}: {
-  label: string;
-  description?: string;
-  value: boolean;
-  onChange: (value: boolean) => void;
-}) {
+  info,
+  small,
+  children,
+}: PropsWithChildren<{
+  label: JSX.Element | string;
+  description?: JSX.Element | string;
+  info?: JSX.Element | string;
+  small?: true;
+}>) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between gap-2">
-        {label}
-        <Toggle value={value} onChange={onChange} />
+        <div className={twMerge(small ? "text-md" : "text-lg")}>{label}</div>
+        {children}
       </div>
-      <span className="text-sm italic">{description}</span>
+      <div className="text-sm">{description}</div>
+      <div className="text-sm italic">{info}</div>
     </div>
   );
 }
 
+function SettingsSection({ children }: PropsWithChildren) {
+  return <div className="flex flex-col gap-4 rounded-md bg-white/5 px-3 py-4">{children}</div>;
+}
+
 export default function Settings() {
-  const { userSettings, setSetting, resetSettings } = useUserSettingsContext();
+  const { userSettings, setUserSetting, resetUserSettings } = useUserSettingsContext();
+
+  const reset = () => {
+    resetUserSettings();
+  };
 
   return (
     <MainView className="sm:flex-col">
-      <h1 className="w-full p-2 text-center text-xl">Preferences</h1>
+      <h1 className="w-full p-2 text-center text-xl font-bold">Preferences</h1>
       <div className="flex w-full flex-1 gap-2 overflow-y-auto p-4">
         <div className="mx-auto flex flex-col gap-4 rounded-md bg-slate-800 p-8 shadow-2xl">
-          <SettingToggle
-            label="Reduced motion"
-            description="Use snappy transitions and animations to reduce motion sickness."
-            value={userSettings.reducedMotion}
-            onChange={(value) => setSetting({ reducedMotion: value })}
-          />
-          <Button onClick={resetSettings}>Restore defaults</Button>
+          <SettingsSection>
+            <SettingInfo
+              label="Reduced motion"
+              description="Use snappy transitions and animations to reduce motion sickness."
+            >
+              <Toggle
+                value={userSettings.reducedMotion}
+                onChange={(value) => setUserSetting({ reducedMotion: value })}
+              />
+            </SettingInfo>
+          </SettingsSection>
+
+          <SettingsSection>
+            <SettingInfo
+              label={
+                <span className="flex items-center gap-1">
+                  <DriveIcon />
+                  Google Drive
+                </span>
+              }
+              description="Connect your Google Drive account to store your progress and settings."
+              info={
+                <>
+                  No personal data or identifying information is stored. You can manage the stored information on your
+                  Google Drive
+                  <a
+                    className="mx-[0.25em] text-blue-300 underline hover:text-blue-100"
+                    href="https://drive.google.com/drive/settings"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    account settings
+                  </a>
+                  under the &ldquo;Manage apps&rdquo; tab.
+                </>
+              }
+            >
+              <DriveAccessButton />
+            </SettingInfo>
+
+            <SettingInfo small label="Auto connect">
+              <Toggle
+                value={userSettings.autoConnectDrive}
+                onChange={(value) => setUserSetting({ autoConnectDrive: value })}
+              />
+            </SettingInfo>
+          </SettingsSection>
+
+          <div className="mt-4 flex w-full justify-end">
+            <Button onClick={reset} styles="secondary">
+              Restore defaults
+            </Button>
+          </div>
         </div>
       </div>
     </MainView>

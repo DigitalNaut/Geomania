@@ -4,16 +4,21 @@ type ToggleProps = {
   id?: string;
   value?: boolean;
   onChange?: (value: boolean) => void;
+  disabled?: boolean;
 };
 
-export default function Toggle({ id, value = false, onChange }: ToggleProps) {
+export default function Toggle({ id, value = false, onChange, disabled }: ToggleProps) {
   return (
     <button
       id={id}
-      className={twMerge("h-4 w-8 rounded-full transition-colors", value ? "bg-blue-500" : "bg-gray-500")}
+      className={twMerge(
+        "h-4 w-8 rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+        value ? "bg-blue-500" : "bg-gray-500",
+      )}
       onClick={() => {
         onChange?.(!value);
       }}
+      disabled={disabled}
     >
       <div
         className={twMerge(

@@ -1,6 +1,6 @@
 import { faCaretLeft } from "@fortawesome/free-solid-svg-icons";
 
-import { Button } from "src/components/common/Button";
+import Button from "src/components/common/Button";
 
 const POSITION_CLASSES = {
   bottomleft: "leaflet-bottom leaflet-left",
@@ -18,17 +18,17 @@ export function BackControl({
   onClick: () => void;
   label?: string;
 }) {
-  const positionClass = (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright;
+  const positionClass = (position && POSITION_CLASSES[position]) ?? POSITION_CLASSES.topright;
   return (
     <div className={positionClass}>
       <div className="leaflet-control leaflet-bar rounded-full">
         <Button
           className="w-fit bg-white text-base text-slate-950 hover:bg-red-600 hover:text-white"
           title="End the activity"
-          icon={faCaretLeft}
           onClick={onClick}
         >
-          {label}
+          <Button.Icon icon={faCaretLeft} />
+          <span>{label}</span>
         </Button>
       </div>
     </div>

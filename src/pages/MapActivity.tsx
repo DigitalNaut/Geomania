@@ -1,29 +1,30 @@
 import { Marker, ZoomControl, Popup } from "react-leaflet";
+import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { BackControl, MapClick } from "src/components/map";
+import { ActivityButton, ActivitySection } from "src/components/activity/ActivityButton";
+import { BackControl } from "src/components/map";
 import { LeafletMap, markerIcon } from "src/components/map/LeafletMap";
-import { useCountryQuiz } from "src/controllers/useCountryQuiz";
-import { useError } from "src/hooks/useError";
 import { useCountryStore } from "src/hooks/useCountryStore";
-import { useMapViewport } from "src/hooks/useMapViewport";
-import { SvgMap } from "src/components/map/MapSvg";
-import { ActivityButton } from "src/components/activity/ActivityButton";
-import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
+import { useError } from "src/hooks/useError";
 import { useMapActivityContext } from "src/contexts/MapActivityContext";
-import useActivityHelper from "src/controllers/useActivityHelper";
+import { useMapViewport } from "src/hooks/useMapViewport";
+import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
+import CountriesListPanel from "src/components/activity/CountriesListPanel";
 import ErrorBanner from "src/components/common/ErrorBanner";
-import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
-import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
-import ReviewFloatingPanel from "src/components/activity/ReviewFloatingPanel";
 import FloatingHeader from "src/components/activity/FloatingHeader";
+import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import InstructionOverlay from "src/components/activity/InstructionOverlay";
 import MainView from "src/components/layout/MainView";
-import CountriesListPanel from "src/components/activity/CountriesListPanel";
+import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
 import RegionsDisabledOverlay from "src/components/activity/RegionsToggle";
-import CountryFiltersProvider from "src/contexts/CountryFiltersContext";
+import ReviewFloatingPanel from "src/components/activity/ReviewFloatingPanel";
+import SvgMap from "src/components/map/MapSvg";
+import useActivityCoordinator from "src/controllers/useActivityCoordinator";
 
+import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
+import useHeaderController from "src/hooks/useHeaderController";
 
 function MapActivity({
   setError,
@@ -32,33 +33,36 @@ function MapActivity({
   setError: (error: Error) => void;
   onFinishActivity: () => void;
 }) {
-  const { storedCountry, resetStore, filteredCountryData } = useCountryStore();
-  const { showNextCountry, handleMapClick } = useActivityHelper(setError);
-  const { answerInputRef, submitAnswer, userGuessTally, giveHint, skipCountry } = useCountryQuiz(
-    showNextCountry,
-    setError,
-  );
-  const { activityMode } = useMapActivityContext();
+  const { filteredCountryData } = useCountryFiltersContext();
+  const { storedCountry, resetStore } = useCountryStore();
+  const { activity } = useMapActivityContext();
   const { resetView } = useMapViewport();
+  const { handleMapClick, visitedCountries, guessTally, giveHint, inputRef, nextCountry, submitAnswer } =
+    useActivityCoordinator();
 
-  const finishActivity = () => {
+  const finishActivity = useCallback(() => {
     resetStore();
     resetView();
     onFinishActivity();
-  };
+  }, [onFinishActivity, resetStore, resetView]);
+
+  useHeaderController(finishActivity);
 
   return (
     <>
-      <LeafletMap>
-        {activityMode && (
+      <LeafletMap showTileLayers={activity?.mode === "review"}>
+        {activity && (
           <>
             <ZoomControl position="topright" />
             <BackControl position="topleft" label="Finish" onClick={finishActivity} />
-            <MapClick callback={handleMapClick} />
+
             {storedCountry.coordinates && (
               <>
-                <Marker position={storedCountry.coordinates} icon={markerIcon} />
-                {activityMode === "review" && (
+                {activity?.mode !== "quiz" || activity.kind === "typing" ? (
+                  <Marker position={storedCountry.coordinates} icon={markerIcon} />
+                ) : null}
+
+                {activity.mode === "review" && (
                   <Popup
                     position={storedCountry.coordinates}
                     keepInView
@@ -68,7 +72,7 @@ function MapActivity({
                     closeOnEscapeKey={false}
                     autoPan={false}
                   >
-                    <h3 className="text-xl">{storedCountry.data?.name ?? "Unknown"}</h3>
+                    <h3 className="text-xl">{storedCountry.data?.GEOUNIT ?? "Unknown"}</h3>
                   </Popup>
                 )}
               </>
@@ -76,76 +80,91 @@ function MapActivity({
           </>
         )}
 
-        <SvgMap highlightAlpha3={storedCountry.data?.a3} onClick={handleMapClick} disableColorFilter={!activityMode} />
+        <SvgMap selectedPaths={visitedCountries} onClick={handleMapClick} disableColorFilter={!activity} />
       </LeafletMap>
 
       <QuizFloatingPanel
-        shouldShow={activityMode === "quiz" && filteredCountryData.length > 0}
-        activity={{
-          answerInputRef,
-          submitAnswer,
-          userGuessTally,
-          giveHint,
-          skipCountry,
-        }}
+        shouldShow={activity?.mode === "quiz" && filteredCountryData.length > 0}
+        mode={activity?.mode === "quiz" ? activity.kind : undefined}
+        giveHint={giveHint}
+        inputRef={inputRef}
+        skipCountry={nextCountry}
+        submitAnswer={submitAnswer}
+        userGuessTally={guessTally}
       />
 
       <ReviewFloatingPanel
-        shouldShow={activityMode === "review"}
-        showNextCountry={showNextCountry}
+        shouldShow={activity?.mode === "review"}
+        showNextCountry={nextCountry}
         disabled={filteredCountryData.length === 0}
         onError={setError}
       />
 
-      {activityMode && <RegionsDisabledOverlay shouldShow={filteredCountryData.length === 0} />}
+      {activity && <RegionsDisabledOverlay shouldShow={filteredCountryData.length === 0} />}
     </>
   );
 }
 
+// Main activity layout view
 export default function MapActivityLayout() {
   const { guessHistory } = useUserGuessRecordContext();
   const { error, setError, dismissError } = useError();
   const [, setURLSearchParams] = useSearchParams();
-  const { activityMode } = useMapActivityContext();
+  const { activity } = useMapActivityContext();
 
   return (
-    <CountryFiltersProvider>
-      {error && <ErrorBanner error={error} dismissError={dismissError} />}
+    <>
+      {error && (
+        <ErrorBanner error={error}>
+          <ErrorBanner.Button dismissError={dismissError} />
+        </ErrorBanner>
+      )}
 
       <MainView>
-        <div className="relative h-full w-full overflow-hidden rounded-lg shadow-inner">
+        <div className="relative size-full rounded-lg shadow-inner [overflow:clip]">
           <MapActivity onFinishActivity={() => setURLSearchParams()} setError={setError} />
 
-          <FloatingHeader shouldShow={!!activityMode} imageSrc={NerdMascot}>
-            {activityMode === "quiz" && "Guess the country!"}
-            {activityMode === "review" && "Reviewing countries"}
+          <FloatingHeader shouldShow={!!activity?.mode} imageSrc={NerdMascot}>
+            {activity?.mode === "quiz" && "Guess the country!"}
+            {activity?.mode === "review" && "Reviewing countries"}
           </FloatingHeader>
 
-          <InstructionOverlay shouldShow={!activityMode}>
-            <ActivityButton
-              className="bg-gradient-to-br from-blue-600 to-blue-700"
-              label="🗺 Review"
-              onClick={() => setURLSearchParams({ activity: "review" })}
-            >
-              Learn about the cultures, geography, and history of countries from around the world.
-            </ActivityButton>
-            <ActivityButton
-              className="bg-gradient-to-br from-yellow-600 to-yellow-700"
-              label="🏆 Quiz"
-              onClick={() => setURLSearchParams({ activity: "quiz" })}
-            >
-              Test your knowledge of countries around the world. Can you guess them all?
-            </ActivityButton>
+          <InstructionOverlay shouldShow={!activity?.mode}>
+            <ActivitySection>
+              <ActivityButton
+                className="bg-gradient-to-br from-blue-600 to-blue-700"
+                label="🗺 Review"
+                onClick={() => setURLSearchParams({ activity: "review", kind: "countries" })}
+              >
+                Learn about the cultures, geography, and history of countries from around the world.
+              </ActivityButton>
+            </ActivitySection>
+            <ActivitySection>
+              <ActivityButton
+                className="bg-gradient-to-br from-pink-600 to-pink-700"
+                label="⌨ Typing Quiz"
+                onClick={() => setURLSearchParams({ activity: "quiz", kind: "typing" })}
+              >
+                Type the name of the country.
+              </ActivityButton>
+              <ActivityButton
+                className="bg-gradient-to-br from-green-600 to-green-700"
+                label="👆 Choosing Quiz"
+                onClick={() => setURLSearchParams({ activity: "quiz", kind: "pointing" })}
+              >
+                Choose the correct country on the map.
+              </ActivityButton>
+            </ActivitySection>
           </InstructionOverlay>
         </div>
 
-        {activityMode && (
+        {activity?.mode && (
           <div className="flex h-1/5 w-max flex-col gap-6 sm:h-auto sm:w-[30ch]">
-            <CountriesListPanel abridged={activityMode === "quiz"} />
-            {activityMode === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
+            <CountriesListPanel isAbridged={activity.mode === "quiz"} />
+            {activity.mode === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
           </div>
         )}
       </MainView>
-    </CountryFiltersProvider>
+    </>
   );
 }

@@ -11,6 +11,7 @@
     "gapi",
     "Gapi",
     "geomaniac",
+    "geounit",
     "GQIS",
     "inprop",
     "merc",
@@ -27,10 +28,13 @@
     "tanstack",
     "typecheck",
     "wikipedia",
-    "wordmark"
+    "wordmark",
+    "Xmark",
+    "zoomend"
   ],
   "dotenv.enableAutocloaking": false,
   "deno.enable": true,
+  "deno.lint": true,
   "deno.enablePaths": ["netlify/edge-functions"],
   "deno.unstable": true,
   "deno.importMap": ".netlify/edge-functions-import-map.json",

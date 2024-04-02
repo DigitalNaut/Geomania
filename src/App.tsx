@@ -1,9 +1,11 @@
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, Outlet } from "react-router-dom";
-import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import { faChartLine, faCog, faFlask, faMap } from "@fortawesome/free-solid-svg-icons";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { ConditionalDriveProvider } from "src/components/drive/ConditionalDriveProvider";
+import { ManagedDriveProvider } from "src/components/drive/DriveIntegration";
+import { DriveAccessStatus } from "src/components/drive/DriveAccess";
+import HeaderControllerProvider from "./contexts/HeaderControllerContext";
 import MapContextProvider from "src/contexts/MapContext";
 import CountryStoreProvider from "src/contexts/CountryStoreContext";
 import CountryFiltersProvider from "src/contexts/CountryFiltersContext";
@@ -14,86 +16,105 @@ import MapActivity from "src/pages/MapActivity";
 import Settings from "src/pages/Settings";
 import Dashboard from "src/pages/Dashboard";
 import PageNotFound from "src/pages/PageNotFound";
-import Header, { HeaderLink } from "src/components/layout/Header";
+import DriveTestPage from "src/pages/DriveTesting";
+import Header from "src/components/layout/Header";
 import Footer from "src/components/layout/Footer";
-import DriveAccess from "src/components/drive/DriveAccess";
 import StandardLayout from "src/components/layout/StandardLayout";
 import ErrorFallback from "src/components/common/ErrorFallback";
 
 const queryClient = new QueryClient();
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route
-      element={
-        <StandardLayout>
-          <Header>
-            <div className="flex flex-1 gap-2 pl-6">
-              <HeaderLink to="/" icon={faMap}>
-                Map
-              </HeaderLink>
-              <HeaderLink to="dashboard" icon={faChartLine}>
-                Dashboard
-              </HeaderLink>
-              <HeaderLink to="settings" icon={faCog}>
-                Settings
-              </HeaderLink>
-            </div>
+const router = createBrowserRouter([
+  {
+    element: (
+      <StandardLayout>
+        <Header>
+          <Header.Logo title="Geomaniac" />
 
-            <div className="flex w-full justify-end pl-2 text-sm">
-              <ErrorBoundary fallback={<span className="px-2 italic text-white/60">Google Drive not available.</span>}>
-                <DriveAccess />
-              </ErrorBoundary>
-            </div>
-          </Header>
+          <div className="flex flex-1 gap-2 pl-6">
+            <Header.Link to="/" icon={faMap}>
+              Map
+            </Header.Link>
+            <Header.Link to="dashboard" icon={faChartLine}>
+              Dashboard
+            </Header.Link>
+            <Header.Link to="settings" icon={faCog}>
+              Settings
+            </Header.Link>
+            {import.meta.env.DEV && (
+              <Header.Link to="drive" icon={faFlask}>
+                Drive
+              </Header.Link>
+            )}
+          </div>
 
-          <Outlet />
+          <div className="flex w-full justify-end pl-2 text-sm">
+            <DriveAccessStatus />
+          </div>
+        </Header>
 
-          <Footer />
-        </StandardLayout>
-      }
-    >
-      <Route
-        element={
+        <Outlet />
+
+        <Footer />
+      </StandardLayout>
+    ),
+    children: [
+      {
+        element: (
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <QueryClientProvider client={queryClient}>
-              <UserGuessRecordProvider historyLimit={200}>
+              <UserGuessRecordProvider historyLimit={10}>
                 <CountryFiltersProvider>
                   <Outlet />
                 </CountryFiltersProvider>
               </UserGuessRecordProvider>
             </QueryClientProvider>
           </ErrorBoundary>
-        }
-      >
-        <Route
-          path="/"
-          index
-          element={
-            <MapContextProvider>
-              <CountryStoreProvider>
-                <MapActivityProvider>
-                  <MapActivity />
-                </MapActivityProvider>
-              </CountryStoreProvider>
-            </MapContextProvider>
-          }
-        />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Route>
-
-      <Route path="*" element={<PageNotFound />} />
-    </Route>,
-  ),
-);
+        ),
+        children: [
+          {
+            path: "/",
+            index: true,
+            element: (
+              <MapContextProvider>
+                <CountryStoreProvider>
+                  <MapActivityProvider>
+                    <MapActivity />
+                  </MapActivityProvider>
+                </CountryStoreProvider>
+              </MapContextProvider>
+            ),
+          },
+          {
+            path: "/settings",
+            element: <Settings />,
+          },
+          {
+            path: "/dashboard",
+            element: <Dashboard />,
+          },
+          {
+            path: "/drive",
+            element: <DriveTestPage />,
+          },
+        ],
+      },
+      {
+        path: "*",
+        element: <PageNotFound />,
+      },
+    ],
+  },
+]);
 
 export default function App() {
   return (
-    <UserSettingsProvider>
-      <ConditionalDriveProvider>
-        <RouterProvider router={router} />
-      </ConditionalDriveProvider>
-    </UserSettingsProvider>
+    <HeaderControllerProvider>
+      <UserSettingsProvider>
+        <ManagedDriveProvider>
+          <RouterProvider router={router} />
+        </ManagedDriveProvider>
+      </UserSettingsProvider>
+    </HeaderControllerProvider>
   );
 }

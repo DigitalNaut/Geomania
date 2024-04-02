@@ -1,35 +1,33 @@
 import { type PropsWithChildren, createContext, useContext, useMemo, useState } from "react";
 
-import { type CountryData } from "src/hooks/useCountryStore";
-import continents from "src/assets/data/continents.json";
-import countriesMetadata from "src/assets/data/country-metadata.json";
+import { type CountryDataList } from "src/hooks/useCountryStore";
+import allFeaturesData from "src/assets/data/features-data.json";
 
-type CountriesDataByContinent = Record<string, CountryData[]>;
-export type CountryFilters = Record<string, boolean>;
+const countryDataByContinent = allFeaturesData.reduce(
+  (groups, country) => {
+    const { CONTINENT: continent } = country;
 
-const allCountriesMetadata = countriesMetadata as CountryData[];
+    groups[continent] ??= [];
+    groups[continent].push(country);
 
-const countryDataByContinent = allCountriesMetadata.reduce((groups, country) => {
-  const { cont: continent } = country;
+    return groups;
+  },
+  {} as Record<string, CountryDataList>,
+);
 
-  if (groups[continent]) groups[continent].push(country);
-  else groups[continent] = [country];
+export const continents = Object.keys(countryDataByContinent);
 
-  return groups;
-}, {} as CountriesDataByContinent);
+const initialContinentFilters = Object.fromEntries(continents.map((continent) => [continent, true]));
 
-const initialContinentFilters = continents.reduce((continents, continent) => {
-  continents[continent] = true;
-  return continents;
-}, {} as CountryFilters);
+export type CountryFilters = typeof initialContinentFilters;
 
 function useFilteredCountryData() {
   const [continentFilters, setContinentFilters] = useState(initialContinentFilters);
 
   const filteredCountryData = useMemo(
     () =>
-      allCountriesMetadata.filter((country) => {
-        const { cont: continent } = country || {};
+      allFeaturesData.filter((country) => {
+        const { CONTINENT: continent } = country ?? {};
         return continent && continentFilters[continent];
       }),
     [continentFilters],
@@ -43,11 +41,14 @@ function useFilteredCountryData() {
   };
 
   const isCountryInFilters = (a3: string) => {
-    const country = allCountriesMetadata.find((country) => country.a3 === a3);
+    const country = allFeaturesData.find((country) => country.GU_A3 === a3);
     if (!country) return false;
 
-    const { cont: continent } = country;
-    return continent && continentFilters[continent];
+    const { CONTINENT: continent } = country;
+
+    if (!continent) return false;
+
+    return continentFilters[continent];
   };
 
   return {

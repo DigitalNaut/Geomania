@@ -1,41 +1,58 @@
-import { type PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
+import { type PropsWithChildren, createContext, useContext, useEffect, useState, useMemo } from "react";
 
 import type { CountryData } from "src/hooks/useCountryStore";
+import { z } from "zod";
 
-export type UserCountryGuess = {
-  timestamp: number;
-  text: string;
-  isCorrect: boolean;
-} & Pick<CountryData, "a2" | "a3">;
+const CountryGuessSchema = z.object({
+  timestamp: z.number(),
+  text: z.string(),
+  isCorrect: z.boolean(),
+  GU_A3: z.string(),
+  ISO_A2_EH: z.string(),
+});
 
-export type CountryStats = {
+export type CountryGuess = z.infer<typeof CountryGuessSchema>;
+
+type CountryStat = Omit<CountryGuess, "timestamp" | "text"> & Pick<CountryData, "GEOUNIT">;
+
+export type GuessStats = {
   correctGuesses: number;
   incorrectGuesses: number;
   lastGuessTimestamp: number;
-} & Pick<CountryData, "a2" | "a3" | "name">;
+} & Pick<CountryData, "GU_A3" | "ISO_A2_EH" | "GEOUNIT">;
 
-type UserCountryStats = Record<string, CountryStats>;
+type CountryStats = Record<string, GuessStats>;
 
 type GuessRecordContextType = {
-  guessHistory: UserCountryGuess[];
-  lastGuess?: UserCountryGuess;
-  pushGuessToHistory(newGuess: Omit<UserCountryGuess, "timestamp">): void;
-  countryStats: UserCountryStats;
-  updateCountryStats(stats: Omit<UserCountryGuess, "timestamp" | "text"> & Pick<CountryData, "name">): void;
+  guessHistory: CountryGuess[];
+  lastGuess?: CountryGuess;
+  createRecord(record: Omit<CountryGuess, "timestamp"> & Pick<CountryData, "GEOUNIT">): void;
+  countryStats: CountryStats;
   clearProgress(): void;
 };
 
 const guessRecordContext = createContext<GuessRecordContextType | null>(null);
 
 function useGuessHistory(limit: number) {
-  const [guessHistory, setGuessHistory] = useState<UserCountryGuess[]>([]);
+  const [guessHistory, setGuessHistory] = useState<CountryGuess[]>([]);
 
-  function saveToLocalStorage(history: UserCountryGuess[]) {
+  useEffect(() => {
+    const history = localStorage.getItem("guessHistory") ?? "";
+
+    try {
+      const validHistory = z.array(CountryGuessSchema).parse(JSON.parse(history));
+      setGuessHistory(validHistory);
+    } catch {
+      localStorage.removeItem("guessHistory");
+    }
+  }, []);
+
+  function saveToLocalStorage(history: CountryGuess[]) {
     localStorage.setItem("guessHistory", JSON.stringify(history));
   }
 
-  const pushGuessToHistory: GuessRecordContextType["pushGuessToHistory"] = (newGuess) => {
-    const timestampedGuess: UserCountryGuess = {
+  const pushGuessToHistory = (newGuess: Omit<CountryGuess, "timestamp">) => {
+    const timestampedGuess: CountryGuess = {
       ...newGuess,
       timestamp: Date.now(),
     };
@@ -50,11 +67,6 @@ function useGuessHistory(limit: number) {
     });
   };
 
-  useEffect(() => {
-    const history = localStorage.getItem("guessHistory");
-    if (history) setGuessHistory(JSON.parse(history));
-  }, []);
-
   const clearGuessHistory = () => {
     localStorage.removeItem("guessHistory");
     setGuessHistory([]);
@@ -64,19 +76,19 @@ function useGuessHistory(limit: number) {
 }
 
 function useCountryStats() {
-  const [countryStats, setCountryStats] = useState<UserCountryStats>({});
+  const [countryStats, setCountryStats] = useState<CountryStats>({});
 
-  const updateCountryStats: GuessRecordContextType["updateCountryStats"] = ({ a2, a3, name, isCorrect }) => {
+  const pushCountryStat = ({ ISO_A2_EH, GU_A3, GEOUNIT, isCorrect }: CountryStat) => {
     setCountryStats((prevStats) => {
-      const country = prevStats[a3];
+      const country = prevStats[GU_A3];
       const newStats = {
         ...prevStats,
-        [a3]: {
-          name,
-          a2,
-          a3,
-          correctGuesses: (country?.correctGuesses || 0) + (isCorrect ? 1 : 0),
-          incorrectGuesses: (country?.incorrectGuesses || 0) + (isCorrect ? 0 : 1),
+        [GU_A3]: {
+          GEOUNIT,
+          ISO_A2_EH,
+          GU_A3,
+          correctGuesses: (country?.correctGuesses ?? 0) + (isCorrect ? 1 : 0),
+          incorrectGuesses: (country?.incorrectGuesses ?? 0) + (isCorrect ? 0 : 1),
           lastGuessTimestamp: Date.now(),
         },
       };
@@ -97,7 +109,7 @@ function useCountryStats() {
     setCountryStats({});
   };
 
-  return { countryStats, updateCountryStats, clearCountryStats };
+  return { countryStats, pushCountryStat, clearCountryStats };
 }
 
 export default function UserGuessRecordProvider({
@@ -107,22 +119,44 @@ export default function UserGuessRecordProvider({
   historyLimit: number;
 }>) {
   const { guessHistory, pushGuessToHistory, clearGuessHistory } = useGuessHistory(historyLimit);
-  const { countryStats, updateCountryStats, clearCountryStats } = useCountryStats();
+  const { countryStats, pushCountryStat, clearCountryStats } = useCountryStats();
+
+  const lastGuess = useMemo(() => guessHistory[guessHistory.length - 1], [guessHistory]);
 
   const clearProgress = () => {
     clearGuessHistory();
     clearCountryStats();
   };
 
+  const createRecord = ({
+    text,
+    GEOUNIT,
+    isCorrect,
+    GU_A3,
+    ISO_A2_EH,
+  }: Omit<CountryGuess, "timestamp"> & Pick<CountryData, "GEOUNIT">) => {
+    pushGuessToHistory({
+      text,
+      isCorrect,
+      ISO_A2_EH,
+      GU_A3,
+    });
+
+    pushCountryStat({
+      GEOUNIT,
+      isCorrect,
+      ISO_A2_EH,
+      GU_A3,
+    });
+  };
+
   return (
     <guessRecordContext.Provider
       value={{
+        createRecord,
         guessHistory,
-        pushGuessToHistory,
-        lastGuess: guessHistory[guessHistory.length - 1],
-
+        lastGuess,
         countryStats,
-        updateCountryStats,
         clearProgress,
       }}
     >

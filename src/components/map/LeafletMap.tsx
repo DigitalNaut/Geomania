@@ -1,20 +1,26 @@
-import { useEffect, type PropsWithChildren } from "react";
-import { MapContainer, useMapEvents } from "react-leaflet";
-import { type LatLngTuple, icon } from "leaflet";
+import { useEffect, type PropsWithChildren, type ComponentProps } from "react";
+import { MapContainer as LeafletMapContainer, useMapEvents } from "react-leaflet";
+import { icon } from "leaflet";
 
-import "leaflet/dist/leaflet.css";
+import type { Required } from "src/types/utility";
 import { useMapContext } from "src/contexts/MapContext";
+import { TileLayersControl } from "./TileLayersControl";
+import "leaflet/dist/leaflet.css";
 
 // * On Styling layers: https://leafletjs.com/examples/choropleth/
 // * On Markers: https://codesandbox.io/s/react-leaflet-v3-x-geojson-with-typescript-not-rendering-geojson-points-v28ly?file=/src/Map.tsx
 
-export const mapDefaults = {
-  center: [0, 0] as LatLngTuple,
+export const mapDefaults: Required<
+  ComponentProps<typeof LeafletMapContainer>,
+  "center" | "zoom" | "minZoom" | "maxZoom" | "zoomControl" | "maxBoundsViscosity"
+> = {
+  center: [0, 0],
   zoom: 2,
   minZoom: 2,
-  maxZoom: 6,
-  boundsViscosity: 1,
-};
+  maxZoom: 7,
+  zoomControl: false,
+  maxBoundsViscosity: 0.5,
+} as const;
 
 function MapEvents() {
   const { setMap, setZoom } = useMapContext();
@@ -31,21 +37,21 @@ function MapEvents() {
   return null;
 }
 
-export function LeafletMap({ children }: PropsWithChildren) {
+type Props = PropsWithChildren<{
+  showTileLayers?: boolean;
+}>;
+
+export function LeafletMap({ children, showTileLayers }: Props) {
   return (
-    <MapContainer
+    <LeafletMapContainer
       className="bg-gradient-to-br from-sky-700 to-sky-800"
-      center={mapDefaults.center}
-      zoom={mapDefaults.zoom}
-      minZoom={mapDefaults.minZoom}
-      maxZoom={mapDefaults.maxZoom}
-      zoomControl={false}
-      maxBoundsViscosity={mapDefaults.boundsViscosity}
+      {...mapDefaults}
       style={{ width: "100%", height: "100%" }}
     >
       <MapEvents />
       {children}
-    </MapContainer>
+      {showTileLayers && <TileLayersControl />}
+    </LeafletMapContainer>
   );
 }
 

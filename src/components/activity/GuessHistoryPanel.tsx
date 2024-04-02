@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSpring, animated } from "@react-spring/web";
 import { twMerge } from "tailwind-merge";
 
-import type { UserCountryGuess } from "src/contexts/GuessRecordContext";
+import type { CountryGuess } from "src/contexts/GuessRecordContext";
 import useScrollToTop from "src/hooks/useScrollToTop";
 
 let itemStyle: string;
@@ -15,7 +15,7 @@ const props = {
   config: { duration: 200 },
 };
 
-export default function GuessHistoryPanel({ guessHistory }: { guessHistory: UserCountryGuess[] }) {
+export default function GuessHistoryPanel({ guessHistory }: { guessHistory: CountryGuess[] }) {
   const { isScrolledToBottom, handleScrollEvent, scrollToTop, scrollElementRef } = useScrollToTop();
   const [rendered, setRendered] = useState(false);
   const [springs, api] = useSpring(() => ({}));
@@ -27,7 +27,7 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: User
 
   return (
     <div className="relative flex flex-col gap-2 overflow-y-auto">
-      <h3 className="text-center text-slate-300">My Guess History</h3>
+      <h3 className="text-center text-slate-300">Last {guessHistory.length} guesses</h3>
       <div
         className="flex flex-1 flex-col overflow-y-auto text-ellipsis px-2"
         onScroll={handleScrollEvent}

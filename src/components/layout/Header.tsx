@@ -4,18 +4,49 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
-import { ReactComponent as Logo } from "src/assets/images/geomaniac-wordmark.min.svg";
+import LogoImage from "src/assets/images/geomaniac-wordmark.min.svg?react";
+import { useHeaderControllerContext } from "src/contexts/HeaderControllerContext";
+
+type HeaderProps = PropsWithChildren<{
+  className?: string;
+  title?: string;
+}>;
+
+function Header({ children, className }: HeaderProps): JSX.Element {
+  return (
+    <div className={twMerge("relative z-[1500] flex items-center gap-2 p-2 shadow-md", className)}>{children}</div>
+  );
+}
+
+type TitleProps = PropsWithChildren<{
+  title: string;
+}>;
+
+Header.Logo = function Logo({ title }: TitleProps) {
+  const { onClickCallback } = useHeaderControllerContext();
+
+  return (
+    <Link
+      to="/"
+      onClick={() => {
+        onClickCallback.current?.();
+      }}
+    >
+      <LogoImage title={title} width={224} height={36} />
+    </Link>
+  );
+};
+
+const headerLinkBaseStyle = "flex items-center gap-1 px-3 py-1 border-b-2";
+const headerLinkActiveStyle = "border-slate-200 text-slate-200";
+const headerLinkInactiveStyle = "hover:border-slate-500 border-transparent";
 
 type HeaderLinkProps = PropsWithChildren<{
   to: string;
   icon: IconDefinition;
 }>;
 
-const headerLinkBaseStyle = "flex items-center gap-1 px-3 py-1 border-b-2";
-const headerLinkActiveStyle = "border-slate-200 text-slate-200";
-const headerLinkInactiveStyle = "hover:border-slate-500 border-transparent";
-
-export function HeaderLink({ to, children, icon }: HeaderLinkProps) {
+Header.Link = function Link({ to, children, icon }: HeaderLinkProps) {
   return (
     <NavLink
       className={({ isActive }) =>
@@ -27,20 +58,6 @@ export function HeaderLink({ to, children, icon }: HeaderLinkProps) {
       {children}
     </NavLink>
   );
-}
+};
 
-type HeaderProps = PropsWithChildren<{
-  className?: string;
-  title?: string;
-}>;
-
-export default function Header({ children, className, title }: HeaderProps): JSX.Element {
-  return (
-    <div className={twMerge("relative z-[1500] flex items-center gap-2 p-2 shadow-md", className)}>
-      <Link to="/">
-        <Logo title={title} width={224} height={36} />
-      </Link>
-      {children}
-    </div>
-  );
-}
+export default Header;
