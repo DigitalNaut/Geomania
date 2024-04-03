@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { ActivityButton, ActivitySection } from "src/components/activity/ActivityButton";
-import { BackControl } from "src/components/map";
+import { BackControl } from "src/components/map/BackControl";
 import { LeafletMap, markerIcon } from "src/components/map/LeafletMap";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useError } from "src/hooks/useError";
