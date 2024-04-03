@@ -16,7 +16,7 @@ export function useVisitedCountries() {
     });
   };
 
-  const filterVisitedCountry = (a3: string) => {
+  const setVisitedCountry = (a3: string) => {
     let changed = false;
 
     setVisitedCountries(function (prevVisited) {
@@ -28,5 +28,5 @@ export function useVisitedCountries() {
     return changed;
   };
 
-  return { visitedCountries, pushVisitedCountry, filterVisitedCountry };
+  return { visitedCountries, pushVisitedCountry, setVisitedCountry };
 }
