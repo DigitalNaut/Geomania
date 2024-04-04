@@ -8,6 +8,7 @@ import { type NullableCountryData, useCountryStore } from "src/hooks/useCountryS
 import { type QuizKind } from "src/contexts/MapActivityContext";
 
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
+import { InlineButton } from "./InlineButton";
 
 function useHorizontalShakeAnimation({
   onShakeStart,
@@ -209,15 +210,10 @@ export default function QuizFloatingPanel({
           )}
 
           {mode === "pointing" && (
-            <button
-              className="flex h-full items-center justify-center gap-2 rounded-md bg-white px-4 py-2 text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
-              role="button"
-              title="Skip country"
-              onClick={skipCountry}
-            >
+            <InlineButton onClick={skipCountry}>
               <span className="no-underline">Skip</span>
               <FontAwesomeIcon icon={faForwardStep} />
-            </button>
+            </InlineButton>
           )}
         </div>
       </div>

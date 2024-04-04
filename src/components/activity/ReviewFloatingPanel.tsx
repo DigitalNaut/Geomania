@@ -5,6 +5,7 @@ import { ActionButton } from "src/components/common/ActionButton";
 import { useFloatingPanelSlideInAnimation } from "src/components/activity/QuizFloatingPanel";
 import { useMapActivityContext } from "src/contexts/MapActivityContext";
 import { CountryWikiInfo } from "src/components/info/CountryWikiInfo";
+import { InlineButton } from "./InlineButton";
 
 export default function ReviewFloatingPanel({
   shouldShow,
@@ -55,14 +56,7 @@ export default function ReviewFloatingPanel({
               <input id="randomMode" type="checkbox" checked={isRandomReviewMode} onChange={onChange} />
               Random mode
             </label>
-            <button
-              className="flex h-full items-center justify-center gap-2 rounded-md bg-white px-4 py-2 text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
-              role="button"
-              title="Reset visited"
-              onClick={onReset}
-            >
-              <span className="no-underline">Reset</span>
-            </button>
+            <InlineButton onClick={onReset}>Reset</InlineButton>
           </div>
         </animated.div>
       </div>
