@@ -63,7 +63,7 @@ function ContinentListEntry({
           top: `${index * 2.25}rem`,
         }}
       >
-        <span>{continent}</span>
+        <span className="truncate">{continent}</span>
         <div className="flex items-center gap-2 text-base">
           &#40;{continentCountries.length}&#41;
           <Toggle value={isContinentToggled} onChange={(toggle) => toggleContinentCallback(continent, toggle)} />
@@ -114,7 +114,7 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
   }, [storedCountry.data]);
 
   return (
-    <div className={twMerge("flex h-max flex-col gap-2 px-2", !isAbridged && "overflow-y-auto")}>
+    <div className={twMerge("flex h-max flex-col gap-2 pl-2", !isAbridged && "overflow-y-auto")}>
       <h3 className="text-center text-slate-300">Countries by Region</h3>
 
       <div className={twMerge("flex flex-col overflow-y-auto px-2", !isAbridged && "pb-[40vh]")} ref={listRef}>

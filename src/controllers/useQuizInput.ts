@@ -67,7 +67,7 @@ export function useQuizInput() {
     return showNextCountry();
   };
 
-  const visitedCountriesHighlight = useMemo(() => {
+  const visitedCountriesWithHighlight = useMemo(() => {
     if (!correctAnswer.data) return visitedCountries;
     return [...visitedCountries, { a3: correctAnswer.data.GU_A3, style: highlightStyle, highlight: true }];
   }, [correctAnswer.data, visitedCountries]);
@@ -78,6 +78,6 @@ export function useQuizInput() {
     giveHint,
     nextCountry,
     userGuessTally,
-    visitedCountries: visitedCountriesHighlight,
+    visitedCountries: visitedCountriesWithHighlight,
   };
 }

@@ -37,7 +37,12 @@ export default function useActivityCoordinator() {
     nextCountry: nextInputCountry,
     visitedCountries: visitedInput,
   } = useQuizInput();
-  const { nextCountry: nextReviewCountry, clickCountry: clickReview, visitedCountries: visitedReview } = useReview();
+  const {
+    nextCountry: nextReviewCountry,
+    clickCountry: clickReview,
+    visitedCountries: visitedReview,
+    resetVisitedCountries: resetVisited,
+  } = useReview();
 
   const visitedCountries = useMemo<VisitedCountry[]>(() => {
     switch (activity?.mode) {
@@ -237,6 +242,7 @@ export default function useActivityCoordinator() {
     giveHint,
     handleMapClick,
     visitedCountries,
+    resetVisited,
     guessTally,
     nextCountry,
     submitAnswer,

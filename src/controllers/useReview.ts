@@ -1,15 +1,17 @@
 import { useMemo } from "react";
+import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 
 import { useMapActivityContext } from "src/contexts/MapActivityContext";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useVisitedCountries } from "src/hooks/useVisitedCountries";
 
-const visitedStyle = "fill-yellow-300 stroke-yellow-50";
+const visitedStyle = "fill-lime-600 stroke-lime-200";
 const highlightStyle = "fill-yellow-500 stroke-yellow-200";
 
 export function useReview() {
+  const { isCountryInFilters } = useCountryFiltersContext();
   const { setCountryDataNext, setCountryDataRandom, setCountryDataByCode, storedCountry } = useCountryStore();
-  const { visitedCountries, pushVisitedCountry, setVisitedCountry } = useVisitedCountries();
+  const { visitedCountries, pushVisitedCountry, setVisitedCountry, resetVisitedCountries } = useVisitedCountries();
   const { isRandomReviewMode } = useMapActivityContext();
 
   function pushStoredCountry() {
@@ -30,14 +32,18 @@ export function useReview() {
     return next;
   };
 
-  const visitedCountriesHighlight = useMemo(() => {
+  const visitedCountriesWithHighlight = useMemo(() => {
     if (!storedCountry.data) return visitedCountries;
-    return [...visitedCountries, { a3: storedCountry.data.GU_A3, style: highlightStyle, highlight: true }];
-  }, [storedCountry.data, visitedCountries]);
+
+    const filteredVisitedCountries = visitedCountries.filter((country) => isCountryInFilters(country.a3));
+
+    return [...filteredVisitedCountries, { a3: storedCountry.data.GU_A3, style: highlightStyle, highlight: true }];
+  }, [isCountryInFilters, storedCountry.data, visitedCountries]);
 
   return {
     clickCountry,
     nextCountry,
-    visitedCountries: visitedCountriesHighlight,
+    visitedCountries: visitedCountriesWithHighlight,
+    resetVisitedCountries,
   };
 }

@@ -37,7 +37,7 @@ function MapActivity({
   const { storedCountry, resetStore } = useCountryStore();
   const { activity } = useMapActivityContext();
   const { resetView } = useMapViewport();
-  const { handleMapClick, visitedCountries, guessTally, giveHint, inputRef, nextCountry, submitAnswer } =
+  const { handleMapClick, visitedCountries, guessTally, giveHint, inputRef, nextCountry, submitAnswer, resetVisited } =
     useActivityCoordinator();
 
   const finishActivity = useCallback(() => {
@@ -97,6 +97,7 @@ function MapActivity({
         shouldShow={activity?.mode === "review"}
         showNextCountry={nextCountry}
         disabled={filteredCountryData.length === 0}
+        onReset={resetVisited}
         onError={setError}
       />
 

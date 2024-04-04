@@ -1,4 +1,4 @@
-import { type PropsWithChildren, createContext, useContext, useMemo, useState } from "react";
+import { type PropsWithChildren, createContext, useContext, useMemo, useState, useCallback } from "react";
 
 import { type CountryDataList } from "src/hooks/useCountryStore";
 import allFeaturesData from "src/assets/data/features-data.json";
@@ -40,16 +40,19 @@ function useFilteredCountryData() {
     }));
   };
 
-  const isCountryInFilters = (a3: string) => {
-    const country = allFeaturesData.find((country) => country.GU_A3 === a3);
-    if (!country) return false;
+  const isCountryInFilters = useCallback(
+    (a3: string) => {
+      const country = allFeaturesData.find((country) => country.GU_A3 === a3);
+      if (!country) return false;
 
-    const { CONTINENT: continent } = country;
+      const { CONTINENT: continent } = country;
 
-    if (!continent) return false;
+      if (!continent) return false;
 
-    return continentFilters[continent];
-  };
+      return continentFilters[continent];
+    },
+    [continentFilters],
+  );
 
   return {
     toggleContinentFilter,
