@@ -12,7 +12,7 @@ import Toggle from "src/components/common/Toggle";
 import { useSearchParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InlineButton } from "src/components/activity/InlineButton";
-import { faGlobe, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 
 type CountryListEntryProps = {
   storedCountry: NullableCountryData;
@@ -92,7 +92,8 @@ function ContinentListEntry({
 }
 
 export default function CountriesListPanel({ isAbridged = false }: { isAbridged?: boolean }) {
-  const { toggleContinentFilter, countryDataByContinent, continentFilters } = useCountryFiltersContext();
+  const { toggleContinentFilter, countryDataByContinent, continentFilters, toggleAllContinentFilters } =
+    useCountryFiltersContext();
   const { storedCountry } = useCountryStore();
   const listRef = useRef<HTMLDivElement>(null);
   const [, setURLSearchParams] = useSearchParams();
@@ -120,30 +121,17 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
     <div className={twMerge("flex h-max flex-col gap-2 pl-2", !isAbridged && "overflow-y-auto")}>
       <h3 className="text-center text-slate-300">Countries by Region</h3>
 
-      <div className="flex items-center gap-2 text-base">
-        <span className="grow">View</span>
-        <InlineButton
-          small
-          onClick={() => {
-            continents.forEach((continent) => {
-              toggleContinentFilter(continent, true);
-            });
-          }}
-        >
-          <FontAwesomeIcon icon={faGlobe} />
-          <span>Worldwide</span>
-        </InlineButton>
-        <InlineButton
-          small
-          onClick={() => {
-            continents.forEach((continent) => {
-              toggleContinentFilter(continent, false);
-            });
-          }}
-        >
-          <FontAwesomeIcon icon={faXmark} />
-          <span>None</span>
-        </InlineButton>
+      <div className="flex grow items-center justify-center gap-2 text-sm">
+        <span>Toggle</span>
+        <div className="flex">
+          <InlineButton className="rounded-e-none border-e-2" small onClick={() => toggleAllContinentFilters(true)}>
+            <FontAwesomeIcon icon={faGlobe} />
+            <span>All</span>
+          </InlineButton>
+          <InlineButton className="rounded-s-none border-s-2" small onClick={() => toggleAllContinentFilters(false)}>
+            <span>None</span>
+          </InlineButton>
+        </div>
       </div>
 
       <div className={twMerge("flex flex-col overflow-y-auto px-2", !isAbridged && "pb-[40vh]")} ref={listRef}>

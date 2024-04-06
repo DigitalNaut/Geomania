@@ -40,6 +40,12 @@ function useFilteredCountryData() {
     }));
   };
 
+  const toggleAllContinentFilters = (value: boolean) => {
+    continents.forEach((continent) => {
+      toggleContinentFilter(continent, value);
+    });
+  };
+
   const isCountryInFilters = useCallback(
     (a3: string) => {
       const country = allFeaturesData.find((country) => country.GU_A3 === a3);
@@ -55,6 +61,7 @@ function useFilteredCountryData() {
   );
 
   return {
+    toggleAllContinentFilters,
     toggleContinentFilter,
     continentFilters,
     countryDataByContinent,
