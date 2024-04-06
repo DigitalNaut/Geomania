@@ -4,7 +4,8 @@ import { useSearchParams } from "react-router-dom";
 
 import { ActivityButton, ActivitySection } from "src/components/activity/ActivityButton";
 import { BackControl } from "src/components/map/BackControl";
-import { LeafletMap, markerIcon } from "src/components/map/LeafletMap";
+import { LeafletMap } from "src/components/map/LeafletMap";
+import { markerIcon } from "src/components/map/MarkerIcon";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useError } from "src/hooks/useError";
 import { useMapActivityContext } from "src/contexts/MapActivityContext";
@@ -36,7 +37,7 @@ function MapActivity({
   const { filteredCountryData } = useCountryFiltersContext();
   const { storedCountry, resetStore } = useCountryStore();
   const { activity } = useMapActivityContext();
-  const { resetView } = useMapViewport();
+  const { resetView } = useMapViewport({ options: { padding: 0.5 } });
   const { handleMapClick, visitedCountries, guessTally, giveHint, inputRef, nextCountry, submitAnswer, resetVisited } =
     useActivityCoordinator();
 

@@ -1,6 +1,5 @@
 import { useEffect, type PropsWithChildren, type ComponentProps } from "react";
 import { MapContainer as LeafletMapContainer, useMapEvents } from "react-leaflet";
-import { icon } from "leaflet";
 
 import type { Required } from "src/types/utility";
 import { useMapContext } from "src/contexts/MapContext";
@@ -43,20 +42,10 @@ type Props = PropsWithChildren<{
 
 export function LeafletMap({ children, showTileLayers }: Props) {
   return (
-    <LeafletMapContainer
-      className="bg-gradient-to-br from-sky-700 to-sky-800"
-      {...mapDefaults}
-      style={{ width: "100%", height: "100%" }}
-    >
+    <LeafletMapContainer className="size-full bg-gradient-to-br from-sky-700 to-sky-800" {...mapDefaults}>
       <MapEvents />
       {children}
       {showTileLayers && <TileLayersControl />}
     </LeafletMapContainer>
   );
 }
-
-export const markerIcon = icon({
-  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-  iconSize: [25, 41],
-  iconAnchor: [12.5, 41],
-});

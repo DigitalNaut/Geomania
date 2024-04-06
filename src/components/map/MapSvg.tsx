@@ -1,10 +1,10 @@
-import { Fragment, useMemo } from "react";
-import { SVGOverlay } from "react-leaflet";
+import { Fragment, useCallback, useMemo } from "react";
+import { SVGOverlay, type SVGOverlayProps } from "react-leaflet";
 import { type LeafletMouseEventHandlerFn } from "leaflet";
 
+import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 import { useMapContext } from "src/contexts/MapContext";
 import { useSvgAttributes } from "src/hooks/useSVGAttributes";
-import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 import mapSvg from "src/assets/images/world-map-mercator.svg?raw";
 
 type PathProperties = {
@@ -28,6 +28,19 @@ const darkerBlueGray = "#64748b";
 const halfOpaque = 0.5;
 const seeThrough = 0.15;
 
+const svgAttributes: SVGOverlayProps["attributes"] = {
+  fill: "white",
+  stroke: "white",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  strokeWidth: "0.01",
+};
+
+const svgCorners: Parameters<typeof useSvgAttributes>[2] = {
+  topLeftCorner: [-83.05, -180.6],
+  bottomRightCorner: [83.09, 180.6],
+};
+
 /**
  * Renders the map SVG as an overlay on the map.
  * @param props
@@ -47,19 +60,22 @@ export default function SvgMap({
   const { zoom } = useMapContext();
   const { isCountryInFilters } = useCountryFiltersContext();
 
-  const { paths, bounds, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"], {
-    topLeftCorner: [-83.05, -180.6],
-    bottomRightCorner: [83.09, 180.6],
-  });
+  const {
+    paths: allPaths,
+    bounds,
+    width,
+    height,
+    viewBox,
+  } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"], svgCorners);
 
   const [styledPaths, otherPaths] = useMemo(() => {
-    if (!paths) return [[], []];
-    if (!selectedPaths) return [[], paths];
+    if (!allPaths) return [[], []];
+    if (!selectedPaths) return [[], allPaths];
 
     const styledList: StyledPath[] = [];
     const otherList: SVGPathElement[] = [];
 
-    for (const path of paths) {
+    for (const path of allPaths) {
       const pathMatch = selectedPaths.find((item) => item.a3 === path.id);
 
       if (pathMatch) styledList.push({ path, style: pathMatch?.style, highlight: pathMatch?.highlight });
@@ -67,16 +83,16 @@ export default function SvgMap({
     }
 
     return [styledList, otherList];
-  }, [selectedPaths, paths]);
+  }, [selectedPaths, allPaths]);
 
   const click: LeafletMouseEventHandlerFn = ({ originalEvent }) => {
     const target = originalEvent.target as HTMLElement | null;
-    const a3 = target?.getAttribute("data-a3"); // data-a3 is set in the SVGOverlay below
+    const a3 = target?.getAttribute("data-a3"); // Set in the path elements below
 
     if (a3) onClick?.(a3);
   };
 
-  const adjustForZoom = (value: number) => value / zoom ** 2;
+  const adjustForZoom = useCallback((value: number) => value / zoom ** 2, [zoom]);
 
   if (hidden) return null;
 
@@ -84,13 +100,9 @@ export default function SvgMap({
     <SVGOverlay
       bounds={bounds}
       attributes={{
+        ...svgAttributes,
         width,
         height,
-        fill: "white",
-        stroke: "white",
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
-        strokeWidth: "0.01",
         viewBox,
       }}
       opacity={1}
@@ -100,8 +112,7 @@ export default function SvgMap({
       eventHandlers={{ click }}
     >
       {otherPaths.map((path, index) => {
-        const colorFilter = disableColorFilter || isCountryInFilters(path.id);
-
+        const colorFilter = disableColorFilter || isCountryInFilters(path.id); // If
         return (
           <path
             key={index}
@@ -119,19 +130,13 @@ export default function SvgMap({
       {styledPaths?.length > 0 && (
         <>
           <defs>
-            <linearGradient id="gradient">
+            <linearGradient id="gradient" colorInterpolation="linearRGB">
               <stop offset="0%" stopColor="white" stopOpacity="0%" />
-              <stop offset="50%" stopColor="white" stopOpacity="100%" />
+              <stop offset="95%" stopColor="white" stopOpacity="25%" />
               <stop offset="100%" stopColor="white" stopOpacity="0%" />
             </linearGradient>
             <rect id="line" width="4" height="32" fill="url(#gradient)" stroke="none" />
-            <pattern
-              id="pattern"
-              width="8"
-              height="32"
-              patternUnits="userSpaceOnUse"
-              patternTransform="rotate(45 50 50)"
-            >
+            <pattern id="waves" width="8" height="32" patternUnits="userSpaceOnUse" patternTransform="rotate(45 50 50)">
               <rect id="bg" className="fill-none stroke-none" x="0" y="0" width="8" height="32" />
               <g>
                 <animateTransform
@@ -146,26 +151,56 @@ export default function SvgMap({
                 <use xlinkHref="#line" x="-8" />
               </g>
             </pattern>
+
+            <circle width="9" height="9" r="1" stroke="none" className="fill-white/[6%]" />
+            <pattern
+              id="land"
+              patternUnits="userSpaceOnUse"
+              opacity="0.5"
+              width="9"
+              height="9"
+              patternTransform="scale(0.25) rotate(45 3 3)"
+            >
+              <circle width="3" height="3" r="1" stroke="none" className="fill-white/[6%]" cx="2" cy="2" />
+              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[9%]" cx="5" cy="2" />
+              <circle width="3" height="3" r="1" stroke="none" className="fill-white/[6%]" cx="8" cy="2" />
+              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[9%]" cx="2" cy="5" />
+              <circle width="3" height="3" r="1.25" stroke="none" className="fill-white/[6%]" cx="5" cy="5" />
+              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[6%]" cx="8" cy="5" />
+              <circle width="3" height="3" r="1" stroke="none" className="fill-white/[6%]" cx="2" cy="8" />
+              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[9%]" cx="5" cy="8" />
+              <circle width="3" height="3" r="1" stroke="none" className="fill-white/[6%]" cx="8" cy="8" />
+            </pattern>
           </defs>
 
-          {styledPaths.map(({ path, style, highlight }) => (
-            <Fragment key={path.id}>
-              <path
-                data-a3={path.id}
-                d={path.getAttribute("d") ?? ""}
-                className={style}
-                style={{
-                  strokeWidth: adjustForZoom(2),
-                }}
-              />
-              {highlight && (
+          {styledPaths.map(({ path, style, highlight }) => {
+            const { id } = path;
+            const d = path.getAttribute("d") ?? "";
+            return (
+              <Fragment key={id}>
                 <path
-                  d={path.getAttribute("d") ?? ""}
-                  className="pointer-events-none animate-scrollDash border-none fill-[url(#pattern)] stroke-none [stroke-dashoffset:_16]"
+                  data-a3={id}
+                  d={d}
+                  className={style}
+                  style={{
+                    strokeWidth: adjustForZoom(2),
+                  }}
                 />
-              )}
-            </Fragment>
-          ))}
+                {highlight && (
+                  <path
+                    d={d}
+                    data-a3={id}
+                    pointerEvents="none"
+                    className="animate-scrollDash fill-[url(#waves)] [stroke-dasharray:1] [stroke-dashoffset:_8]"
+                    style={{
+                      strokeWidth: adjustForZoom(4),
+                    }}
+                  />
+                )}
+                <path d={d} data-a3={id} pointerEvents="none" className="fill-[url(#land)] stroke-none" />
+              </Fragment>
+            );
+          })}
         </>
       )}
     </SVGOverlay>
