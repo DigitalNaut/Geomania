@@ -6,7 +6,7 @@ import { useCountryStore } from "src/hooks/useCountryStore";
 import { useVisitedCountries } from "src/hooks/useVisitedCountries";
 
 const visitedStyle = "fill-lime-700 stroke-lime-200";
-const highlightStyle = "fill-amber-500 stroke-amber-200";
+const highlightStyle = "fill-lime-500 stroke-lime-200";
 
 export function useReview() {
   const { isCountryInFilters } = useCountryFiltersContext();

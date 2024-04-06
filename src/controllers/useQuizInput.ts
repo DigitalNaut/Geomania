@@ -1,14 +1,10 @@
-import { useCountryStore } from "src/hooks/useCountryStore";
-import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
-import { useInputField } from "src/hooks/useInputField";
-import { useQuiz } from "src/controllers/useQuiz";
 import { useMemo } from "react";
 
-const styles = {
-  perfectStyle: "fill-green-600 stroke-green-400",
-  correctStyle: "fill-green-700 stroke-green-400",
-  incorrectStyle: "fill-green-800 stroke-green-400",
-};
+import { qualifyScore } from "src/controllers/scores";
+import { useCountryStore } from "src/hooks/useCountryStore";
+import { useInputField } from "src/hooks/useInputField";
+import { useQuiz } from "src/controllers/useQuiz";
+import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 
 const highlightStyle = "fill-yellow-400";
 
@@ -53,8 +49,7 @@ export function useQuizInput() {
 
     if (!isCorrect) return null;
 
-    const style =
-      styles[userGuessTally === 0 ? "perfectStyle" : userGuessTally <= 2 ? "correctStyle" : "incorrectStyle"];
+    const style = qualifyScore(userGuessTally);
     pushVisitedCountry(correctAnswer.data.GU_A3, style);
 
     resetInput();

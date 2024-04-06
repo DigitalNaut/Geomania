@@ -176,7 +176,7 @@ export default function QuizFloatingPanel({
         )}
       </animated.div>
 
-      <div className="flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
+      <div className="flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 p-2 drop-shadow-lg">
         {mode === "typing" && (
           <div className="rounded-md bg-red-500">
             <animated.div className="flex w-full justify-center overflow-hidden rounded-md" style={{ x: xShake }}>

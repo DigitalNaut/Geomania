@@ -1371,8 +1371,8 @@ packages:
       '@types/gapi.client.discovery-v1': 0.0.4
     dev: true
 
-  /@maxim_mazurok/gapi.client.drive-v3@0.0.20240327:
-    resolution: {integrity: sha512-W4GiS7q7V2RKsg4+uRwU4UY1uIJ7kNixZKnQg6RKry2FFjbNpN2fuqq84Akxcj7imv99tZ/qAw8txJlPMpbcbg==}
+  /@maxim_mazurok/gapi.client.drive-v3@0.0.20240402:
+    resolution: {integrity: sha512-X3iFcwHBe01g/ea5REFSBdaoTqhdMemyrHQdM4UiSPNlkanuC3YT5bR4KOzxFJndPyeXrx1PZ7ZbtxBbMDS3Qw==}
     dependencies:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
@@ -2696,7 +2696,7 @@ packages:
   /@types/gapi.client.drive-v3@0.0.4:
     resolution: {integrity: sha512-jE37dJ0EzAdY0aJPFOp20xmec/aO0P4HtUIA9k07RMPyedFDOcuMlSac1r0PklwQdgXF7BHaMoObNHNAnwSQUQ==}
     dependencies:
-      '@maxim_mazurok/gapi.client.drive-v3': 0.0.20240327
+      '@maxim_mazurok/gapi.client.drive-v3': 0.0.20240402
     dev: true
 
   /@types/gapi.client@1.0.8:
