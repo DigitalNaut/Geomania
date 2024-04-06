@@ -73,7 +73,16 @@ function MapActivity({
                     closeOnEscapeKey={false}
                     autoPan={false}
                   >
-                    <h3 className="text-xl">{storedCountry.data?.GEOUNIT ?? "Unknown"}</h3>
+                    {storedCountry.data ? (
+                      <div className="flex flex-col justify-center gap-1 text-center">
+                        <h2 className="text-xl">{storedCountry.data.GEOUNIT}</h2>
+                        {storedCountry.data.ADM0_DIF || storedCountry.data.GEOU_DIF ? (
+                          <h3 className="text-sm">({storedCountry.data.SOVEREIGNT})</h3>
+                        ) : null}
+                      </div>
+                    ) : (
+                      "Unknown"
+                    )}
                   </Popup>
                 )}
               </>

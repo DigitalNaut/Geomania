@@ -1,9 +1,19 @@
 import { type PropsWithChildren } from "react";
+import { twMerge } from "tailwind-merge";
 
-export function InlineButton({ children, onClick }: PropsWithChildren<{ onClick: () => void }>) {
+export function InlineButton({
+  children,
+  onClick,
+  className,
+  small,
+}: PropsWithChildren<{ onClick: () => void; className?: string; small?: true }>) {
   return (
     <button
-      className="flex h-full items-center justify-center gap-2 rounded-md bg-white px-4 py-2 text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+      className={twMerge(
+        "flex h-full items-center justify-center gap-2 rounded-md bg-white px-4 py-2 text-slate-800 disabled:cursor-not-allowed disabled:opacity-50",
+        small ? "px-1 py-0 gap-1" : "text-base",
+        className,
+      )}
       role="button"
       title="Reset visited"
       onClick={onClick}
