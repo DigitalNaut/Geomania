@@ -1,26 +1,28 @@
+import { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import { faChartLine, faCog, faFlask, faMap } from "@fortawesome/free-solid-svg-icons";
+import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { ManagedDriveProvider } from "src/components/drive/DriveIntegration";
 import { DriveAccessStatus } from "src/components/drive/DriveAccess";
-import HeaderControllerProvider from "./contexts/HeaderControllerContext";
-import MapContextProvider from "src/contexts/MapContext";
-import CountryStoreProvider from "src/contexts/CountryStoreContext";
+import { ManagedDriveProvider } from "src/components/drive/DriveIntegration";
+import { Spinner } from "src/components/common/Spinner";
 import CountryFiltersProvider from "src/contexts/CountryFiltersContext";
-import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
-import MapActivityProvider from "src/contexts/MapActivityContext";
-import UserSettingsProvider from "src/contexts/UserSettingsContext";
-import MapActivity from "src/pages/MapActivity";
-import Settings from "src/pages/Settings";
-import Dashboard from "src/pages/Dashboard";
-import PageNotFound from "src/pages/PageNotFound";
-import DriveTestPage from "src/pages/DriveTesting";
-import Header from "src/components/layout/Header";
-import Footer from "src/components/layout/Footer";
-import StandardLayout from "src/components/layout/StandardLayout";
+import CountryStoreProvider from "src/contexts/CountryStoreContext";
 import ErrorFallback from "src/components/common/ErrorFallback";
+import Footer from "src/components/layout/Footer";
+import Header from "src/components/layout/Header";
+import HeaderControllerProvider from "./contexts/HeaderControllerContext";
+import MapActivityProvider from "src/contexts/MapActivityContext";
+import MapContextProvider from "src/contexts/MapContext";
+import StandardLayout from "src/components/layout/StandardLayout";
+import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
+import UserSettingsProvider from "src/contexts/UserSettingsContext";
+
+const LazyMapActivity = lazy(() => import("src/pages/MapActivity"));
+const LazySettings = lazy(() => import("src/pages/Settings"));
+const LazyDashboard = lazy(() => import("src/pages/Dashboard"));
+const LazyPageNotFound = lazy(() => import("src/pages/PageNotFound"));
 
 const queryClient = new QueryClient();
 
@@ -41,11 +43,11 @@ const router = createBrowserRouter([
             <Header.Link to="settings" icon={faCog}>
               Settings
             </Header.Link>
-            {import.meta.env.DEV && (
+            {/* {import.meta.env.DEV && (
               <Header.Link to="drive" icon={faFlask}>
                 Drive
               </Header.Link>
-            )}
+            )} */}
           </div>
 
           <div className="flex w-full justify-end pl-2 text-sm">
@@ -65,7 +67,9 @@ const router = createBrowserRouter([
             <QueryClientProvider client={queryClient}>
               <UserGuessRecordProvider historyLimit={10}>
                 <CountryFiltersProvider>
-                  <Outlet />
+                  <Suspense fallback={<Spinner cover />}>
+                    <Outlet />
+                  </Suspense>
                 </CountryFiltersProvider>
               </UserGuessRecordProvider>
             </QueryClientProvider>
@@ -79,7 +83,7 @@ const router = createBrowserRouter([
               <MapContextProvider>
                 <CountryStoreProvider>
                   <MapActivityProvider>
-                    <MapActivity />
+                    <LazyMapActivity />
                   </MapActivityProvider>
                 </CountryStoreProvider>
               </MapContextProvider>
@@ -87,21 +91,21 @@ const router = createBrowserRouter([
           },
           {
             path: "/settings",
-            element: <Settings />,
+            element: <LazySettings />,
           },
           {
             path: "/dashboard",
-            element: <Dashboard />,
+            element: <LazyDashboard />,
           },
-          {
-            path: "/drive",
-            element: <DriveTestPage />,
-          },
+          // {
+          //   path: "/drive",
+          //   element: <DriveTestPage />,
+          // },
         ],
       },
       {
         path: "*",
-        element: <PageNotFound />,
+        element: <LazyPageNotFound />,
       },
     ],
   },
