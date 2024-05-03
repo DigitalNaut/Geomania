@@ -42,9 +42,10 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.23.0",
     "tailwind-merge": "^2.3.0",
-    "zod": "^3.23.5"
+    "zod": "^3.23.6"
   },
   "devDependencies": {
+    "@netlify/edge-functions": "^2.6.0",
     "@netlify/functions": "^2.6.0",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.13",
