@@ -45,8 +45,8 @@
     "zod": "^3.23.6"
   },
   "devDependencies": {
-    "@netlify/edge-functions": "^2.6.0",
-    "@netlify/functions": "^2.6.0",
+    "@netlify/edge-functions": "^2.6.1",
+    "@netlify/functions": "^2.6.3",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.13",
     "@tanstack/eslint-plugin-query": "^5.32.1",
@@ -81,6 +81,6 @@
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
     "vite-plugin-svgr": "^4.2.0",
-    "vitest": "^1.5.3"
+    "vitest": "^1.6.0"
   }
 }

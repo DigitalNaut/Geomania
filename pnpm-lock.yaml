@@ -67,11 +67,11 @@ importers:
         version: 3.23.6
     devDependencies:
       '@netlify/edge-functions':
-        specifier: ^2.6.0
-        version: 2.6.0
+        specifier: ^2.6.1
+        version: 2.6.1
       '@netlify/functions':
-        specifier: ^2.6.0
-        version: 2.6.0
+        specifier: ^2.6.3
+        version: 2.6.3(@opentelemetry/api@1.8.0)
       '@tailwindcss/line-clamp':
         specifier: ^0.4.4
         version: 0.4.4(tailwindcss@3.4.3(ts-node@10.9.2(@types/node@20.12.8)(typescript@5.4.5)))
@@ -175,8 +175,8 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@20.12.8))
       vitest:
-        specifier: ^1.5.3
-        version: 1.5.3(@types/node@20.12.8)
+        specifier: ^1.6.0
+        version: 1.6.0(@types/node@20.12.8)
 
 packages:
 
@@ -739,8 +739,8 @@ packages:
   '@maxim_mazurok/gapi.client.discovery-v1@0.1.20200806':
     resolution: {integrity: sha512-Wl6UfmZVDdWbY3PUu8E2ULk9RPLjnMqp/iOA4tcK8Ne+U/GmlnWP/e34IaZNGArfl7iXJNOG+/3Rj9L9jQyF9Q==}
 
-  '@maxim_mazurok/gapi.client.drive-v3@0.0.20240426':
-    resolution: {integrity: sha512-mloEtB7UonUQpC3+XNFnHKDzsL4ZU8VfE0vKat5uk5OCg2Sbp656fDRJr3CwqsUZsy4TQj87FzRBniOcEgIZ5A==}
+  '@maxim_mazurok/gapi.client.drive-v3@0.0.20240429':
+    resolution: {integrity: sha512-62jed8xP8M36uugA3Rou4GpiUJ2kit9iMLnMA4ScEKnuVaoUAznzFYblplmDvMyjAFl5/k6mrnshCTV8br5Taw==}
 
   '@mswjs/interceptors@0.27.2':
     resolution: {integrity: sha512-mE6PhwcoW70EX8+h+Y/4dLfHk33GFt/y5PzDJz56ktMyaVGFXMJ5BYLbUjdmGEABfE0x5GgAGyKbrbkYww2s3A==}
@@ -785,8 +785,8 @@ packages:
   '@netlify/edge-functions@2.5.1':
     resolution: {integrity: sha512-6YGlbzxPaSqc/D2LhP4T4PXrim/vRmqpO1RwQKqVod6WCWlkdtJcAd3mGoI7efrjfND8twh7TqXtL7RRCI23qA==}
 
-  '@netlify/edge-functions@2.6.0':
-    resolution: {integrity: sha512-BcTl+11j0dUNEvrGoC0Dcuade5zPdd849ozgo+lloq0MZuGzBybmBHNPaWKB1WNfZeyeZB4DIarFAZHRxn8PSw==}
+  '@netlify/edge-functions@2.6.1':
+    resolution: {integrity: sha512-ENuf1ce4MXu0XusfWYfpKVeUwNp4yfkZTevzNQ8Sx3K8RGE2qgt/44HUMHRj2u15mcM6SJKvvDB1az8oilCG2g==}
 
   '@netlify/framework-info@9.8.11':
     resolution: {integrity: sha512-8NuvzQQVeU36PRilWqijiIWmjy6JZcqbKooGQ4bNgH/26YNdS+tN5gOWGWVYnRHgdmBUCycyYrM5h1Srwnq3hQ==}
@@ -796,8 +796,8 @@ packages:
     resolution: {integrity: sha512-4xTb/zuUT5SFpZH+RGKUV6pwrYyGS3L4emcrVi5u/nbJ/8yU8v8MdUdTGxoUhyeFw1kIp5C6vsru1fpU0ti0XA==}
     engines: {node: ^14.16.0 || >=16.0.0}
 
-  '@netlify/functions@2.6.0':
-    resolution: {integrity: sha512-vU20tij0fb4nRGACqb+5SQvKd50JYyTyEhQetCMHdakcJFzjLDivvRR16u1G2Oy4A7xNAtGJF1uz8reeOtTVcQ==}
+  '@netlify/functions@2.6.3':
+    resolution: {integrity: sha512-7Z9gWyAuPI2NnBOvpYPD66KIWOgNznLz9BkyZ0c7qeRE6p23UCMVZ2VsrJpjPDgoJtKplGSBzASl6fQD7iEeWw==}
     engines: {node: '>=14.0.0'}
 
   '@netlify/git-utils@5.1.1':
@@ -900,10 +900,6 @@ packages:
   '@netlify/run-utils@5.1.1':
     resolution: {integrity: sha512-V2B8ZB19heVKa715uOeDkztxLH7uaqZ+9U5fV7BRzbQ2514DO5Vxj9hG0irzuRLfZXZZjp/chPUesv4VVsce/A==}
     engines: {node: ^14.16.0 || >=16.0.0}
-
-  '@netlify/serverless-functions-api@1.14.0':
-    resolution: {integrity: sha512-HUNETLNvNiC2J+SB/YuRwJA9+agPrc0azSoWVk8H85GC+YE114hcS5JW+dstpKwVerp2xILE3vNWN7IMXP5Q5Q==}
-    engines: {node: ^14.18.0 || >=16.0.0}
 
   '@netlify/serverless-functions-api@1.18.0':
     resolution: {integrity: sha512-VCU5btoGZ8M6iI7HSwpfZXCpBLKWFmRtq5xYt0K7dY96BZWVBmaZY6Tn+w4L2DrGXwAsIeOFNp8CHjVXfuCAkg==}
@@ -1654,20 +1650,20 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0
 
-  '@vitest/expect@1.5.3':
-    resolution: {integrity: sha512-y+waPz31pOFr3rD7vWTbwiLe5+MgsMm40jTZbQE8p8/qXyBX3CQsIXRx9XK12IbY7q/t5a5aM/ckt33b4PxK2g==}
+  '@vitest/expect@1.6.0':
+    resolution: {integrity: sha512-ixEvFVQjycy/oNgHjqsL6AZCDduC+tflRluaHIzKIsdbzkLn2U/iBnVeJwB6HsIjQBdfMR8Z0tRxKUsvFJEeWQ==}
 
-  '@vitest/runner@1.5.3':
-    resolution: {integrity: sha512-7PlfuReN8692IKQIdCxwir1AOaP5THfNkp0Uc4BKr2na+9lALNit7ub9l3/R7MP8aV61+mHKRGiqEKRIwu6iiQ==}
+  '@vitest/runner@1.6.0':
+    resolution: {integrity: sha512-P4xgwPjwesuBiHisAVz/LSSZtDjOTPYZVmNAnpHHSR6ONrf8eCJOFRvUwdHn30F5M1fxhqtl7QZQUk2dprIXAg==}
 
-  '@vitest/snapshot@1.5.3':
-    resolution: {integrity: sha512-K3mvIsjyKYBhNIDujMD2gfQEzddLe51nNOAf45yKRt/QFJcUIeTQd2trRvv6M6oCBHNVnZwFWbQ4yj96ibiDsA==}
+  '@vitest/snapshot@1.6.0':
+    resolution: {integrity: sha512-+Hx43f8Chus+DCmygqqfetcAZrDJwvTj0ymqjQq4CvmpKFSTVteEOBzCusu1x2tt4OJcvBflyHUE0DZSLgEMtQ==}
 
-  '@vitest/spy@1.5.3':
-    resolution: {integrity: sha512-Llj7Jgs6lbnL55WoshJUUacdJfjU2honvGcAJBxhra5TPEzTJH8ZuhI3p/JwqqfnTr4PmP7nDmOXP53MS7GJlg==}
+  '@vitest/spy@1.6.0':
+    resolution: {integrity: sha512-leUTap6B/cqi/bQkXUu6bQV5TZPx7pmMBKBQiI0rJA8c3pB56ZsaTbREnF7CJfmvAS4V2cXIBAh/3rVwrrCYgw==}
 
-  '@vitest/utils@1.5.3':
-    resolution: {integrity: sha512-rE9DTN1BRhzkzqNQO+kw8ZgfeEBCLXiHJwetk668shmNBpSagQxneT5eSqEBLP+cqSiAeecvQmbpFfdMyLcIQA==}
+  '@vitest/utils@1.6.0':
+    resolution: {integrity: sha512-21cPiuGMoMZwiOHa2i4LXkMkMkCGzA+MVFV70jRwHo95dL4x/ts5GZhML1QWuy7yfp3WzK3lRvZi3JnXTYqrBw==}
 
   '@xhmikosr/archive-type@6.0.1':
     resolution: {integrity: sha512-PB3NeJL8xARZt52yDBupK0dNPn8uIVQDe15qNehUpoeeLWCZyAOam4vGXnoZGz2N9D1VXtjievJuCsXam2TmbQ==}
@@ -6134,8 +6130,8 @@ packages:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
 
-  vite-node@1.5.3:
-    resolution: {integrity: sha512-axFo00qiCpU/JLd8N1gu9iEYL3xTbMbMrbe5nDp9GL0nb6gurIdZLkkFogZXWnE8Oyy5kfSLwNVIcVsnhE7lgQ==}
+  vite-node@1.6.0:
+    resolution: {integrity: sha512-de6HJgzC+TFzOu0NTC4RAIsyf/DY/ibWDYQUcuEA84EMHhcefTUGkjFHKKEJhQN4A+6I0u++kr3l36ZF2d7XRw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
 
@@ -6172,15 +6168,15 @@ packages:
       terser:
         optional: true
 
-  vitest@1.5.3:
-    resolution: {integrity: sha512-2oM7nLXylw3mQlW6GXnRriw+7YvZFk/YNV8AxIC3Z3MfFbuziLGWP9GPxxu/7nRlXhqyxBikpamr+lEEj1sUEw==}
+  vitest@1.6.0:
+    resolution: {integrity: sha512-H5r/dN06swuFnzNFhq/dnz37bPXnq8xB2xB5JOVk8K09rUtoeNN+LHWkoQ0A/i3hvbUKKcCei9KpbxqHMLhLLA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
       '@edge-runtime/vm': '*'
       '@types/node': ^18.0.0 || >=20.0.0
-      '@vitest/browser': 1.5.3
-      '@vitest/ui': 1.5.3
+      '@vitest/browser': 1.6.0
+      '@vitest/ui': 1.6.0
       happy-dom: '*'
       jsdom: '*'
     peerDependenciesMeta:
@@ -6871,7 +6867,7 @@ snapshots:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
 
-  '@maxim_mazurok/gapi.client.drive-v3@0.0.20240426':
+  '@maxim_mazurok/gapi.client.drive-v3@0.0.20240429':
     dependencies:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
@@ -7038,7 +7034,7 @@ snapshots:
 
   '@netlify/edge-functions@2.5.1': {}
 
-  '@netlify/edge-functions@2.6.0': {}
+  '@netlify/edge-functions@2.6.1': {}
 
   '@netlify/framework-info@9.8.11':
     dependencies:
@@ -7063,9 +7059,11 @@ snapshots:
       - encoding
       - supports-color
 
-  '@netlify/functions@2.6.0':
+  '@netlify/functions@2.6.3(@opentelemetry/api@1.8.0)':
     dependencies:
-      '@netlify/serverless-functions-api': 1.14.0
+      '@netlify/serverless-functions-api': 1.18.0(@opentelemetry/api@1.8.0)
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
 
   '@netlify/git-utils@5.1.1':
     dependencies:
@@ -7139,11 +7137,6 @@ snapshots:
   '@netlify/run-utils@5.1.1':
     dependencies:
       execa: 6.1.0
-
-  '@netlify/serverless-functions-api@1.14.0':
-    dependencies:
-      '@netlify/node-cookies': 0.1.0
-      urlpattern-polyfill: 8.0.2
 
   '@netlify/serverless-functions-api@1.18.0(@opentelemetry/api@1.8.0)':
     dependencies:
@@ -7721,7 +7714,7 @@ snapshots:
 
   '@types/gapi.client.drive-v3@0.0.4':
     dependencies:
-      '@maxim_mazurok/gapi.client.drive-v3': 0.0.20240426
+      '@maxim_mazurok/gapi.client.drive-v3': 0.0.20240429
 
   '@types/gapi.client@1.0.8': {}
 
@@ -7987,29 +7980,29 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/expect@1.5.3':
+  '@vitest/expect@1.6.0':
     dependencies:
-      '@vitest/spy': 1.5.3
-      '@vitest/utils': 1.5.3
+      '@vitest/spy': 1.6.0
+      '@vitest/utils': 1.6.0
       chai: 4.4.1
 
-  '@vitest/runner@1.5.3':
+  '@vitest/runner@1.6.0':
     dependencies:
-      '@vitest/utils': 1.5.3
+      '@vitest/utils': 1.6.0
       p-limit: 5.0.0
       pathe: 1.1.2
 
-  '@vitest/snapshot@1.5.3':
+  '@vitest/snapshot@1.6.0':
     dependencies:
       magic-string: 0.30.10
       pathe: 1.1.2
       pretty-format: 29.7.0
 
-  '@vitest/spy@1.5.3':
+  '@vitest/spy@1.6.0':
     dependencies:
       tinyspy: 2.2.1
 
-  '@vitest/utils@1.5.3':
+  '@vitest/utils@1.6.0':
     dependencies:
       diff-sequences: 29.6.3
       estree-walker: 3.0.3
@@ -13106,7 +13099,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-node@1.5.3(@types/node@20.12.8):
+  vite-node@1.6.0(@types/node@20.12.8):
     dependencies:
       cac: 6.7.14
       debug: 4.3.4(supports-color@9.4.0)
@@ -13143,13 +13136,13 @@ snapshots:
       '@types/node': 20.12.8
       fsevents: 2.3.3
 
-  vitest@1.5.3(@types/node@20.12.8):
+  vitest@1.6.0(@types/node@20.12.8):
     dependencies:
-      '@vitest/expect': 1.5.3
-      '@vitest/runner': 1.5.3
-      '@vitest/snapshot': 1.5.3
-      '@vitest/spy': 1.5.3
-      '@vitest/utils': 1.5.3
+      '@vitest/expect': 1.6.0
+      '@vitest/runner': 1.6.0
+      '@vitest/snapshot': 1.6.0
+      '@vitest/spy': 1.6.0
+      '@vitest/utils': 1.6.0
       acorn-walk: 8.3.2
       chai: 4.4.1
       debug: 4.3.4(supports-color@9.4.0)
@@ -13163,7 +13156,7 @@ snapshots:
       tinybench: 2.8.0
       tinypool: 0.8.4
       vite: 5.2.11(@types/node@20.12.8)
-      vite-node: 1.5.3(@types/node@20.12.8)
+      vite-node: 1.6.0(@types/node@20.12.8)
       why-is-node-running: 2.2.2
     optionalDependencies:
       '@types/node': 20.12.8
