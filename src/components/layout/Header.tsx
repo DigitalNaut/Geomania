@@ -12,9 +12,9 @@ type HeaderProps = PropsWithChildren<{
   title?: string;
 }>;
 
-function Header({ children, className }: HeaderProps): JSX.Element {
+function Nav({ children, className }: HeaderProps): JSX.Element {
   return (
-    <div className={twMerge("relative z-[1500] flex items-center gap-2 p-2 shadow-md", className)}>{children}</div>
+    <nav className={twMerge("relative z-[1500] flex items-center gap-2 p-2 shadow-md", className)}>{children}</nav>
   );
 }
 
@@ -22,7 +22,7 @@ type TitleProps = PropsWithChildren<{
   title: string;
 }>;
 
-Header.Logo = function Logo({ title }: TitleProps) {
+Nav.Logo = function Logo({ title }: TitleProps) {
   const { onClickCallback } = useHeaderControllerContext();
 
   return (
@@ -46,7 +46,7 @@ type HeaderLinkProps = PropsWithChildren<{
   icon: IconDefinition;
 }>;
 
-Header.Link = function Link({ to, children, icon }: HeaderLinkProps) {
+Nav.Link = function Link({ to, children, icon }: HeaderLinkProps) {
   return (
     <NavLink
       className={({ isActive }) =>
@@ -60,4 +60,4 @@ Header.Link = function Link({ to, children, icon }: HeaderLinkProps) {
   );
 };
 
-export default Header;
+export default Nav;

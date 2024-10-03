@@ -11,7 +11,7 @@ import CountryFiltersProvider from "src/contexts/CountryFiltersContext";
 import CountryStoreProvider from "src/contexts/CountryStoreContext";
 import ErrorFallback from "src/components/common/ErrorFallback";
 import Footer from "src/components/layout/Footer";
-import Header from "src/components/layout/Header";
+import Nav from "src/components/layout/Header";
 import HeaderControllerProvider from "./contexts/HeaderControllerContext";
 import MapActivityProvider from "src/contexts/MapActivityContext";
 import MapContextProvider from "src/contexts/MapContext";
@@ -30,19 +30,19 @@ const router = createBrowserRouter([
   {
     element: (
       <StandardLayout>
-        <Header>
-          <Header.Logo title="Geomaniac" />
+        <Nav>
+          <Nav.Logo title="Geomaniac" />
 
           <div className="flex flex-1 gap-2 pl-6">
-            <Header.Link to="/" icon={faMap}>
+            <Nav.Link to="/" icon={faMap}>
               Map
-            </Header.Link>
-            <Header.Link to="dashboard" icon={faChartLine}>
+            </Nav.Link>
+            <Nav.Link to="dashboard" icon={faChartLine}>
               Dashboard
-            </Header.Link>
-            <Header.Link to="settings" icon={faCog}>
+            </Nav.Link>
+            <Nav.Link to="settings" icon={faCog}>
               Settings
-            </Header.Link>
+            </Nav.Link>
             {/* {import.meta.env.DEV && (
               <Header.Link to="drive" icon={faFlask}>
                 Drive
@@ -53,7 +53,7 @@ const router = createBrowserRouter([
           <div className="flex w-full justify-end pl-2 text-sm">
             <DriveAccessStatus />
           </div>
-        </Header>
+        </Nav>
 
         <Outlet />
 

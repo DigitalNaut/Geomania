@@ -5,7 +5,6 @@ import { twMerge } from "tailwind-merge";
 export default function InstructionOverlay({ shouldShow, children }: PropsWithChildren<{ shouldShow: boolean }>) {
   const springs = useSpring({
     opacity: shouldShow ? 1 : 0,
-    transform: shouldShow ? "scale(1)" : "scale(1.5)",
     config: { duration: 200 },
   });
 
