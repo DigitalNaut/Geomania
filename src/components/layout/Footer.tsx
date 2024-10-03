@@ -1,4 +1,4 @@
-import { twMerge } from "tailwind-merge";
+import { cn } from "src/utils/styles";
 
 export default function Footer() {
   return (
@@ -10,7 +10,7 @@ export default function Footer() {
         </a>
         .
       </span>
-      <div className={twMerge("flex gap-2", import.meta.env.DEV && "text-yellow-400")}>
+      <div className={cn("flex gap-2", { "text-yellow-400": import.meta.env.DEV })}>
         {import.meta.env.DEV && <span>DEV</span>}
         <span>v{import.meta.env.PACKAGE_VERSION}</span>
       </div>

@@ -1,18 +1,19 @@
 import { useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 
+import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSearchParams } from "react-router-dom";
+import { InlineButton } from "src/components/activity/InlineButton";
+import Toggle from "src/components/common/Toggle";
+import { continents, useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 import {
-  type NullableCountryData,
   type CountryData,
   type CountryDataList,
+  type NullableCountryData,
   useCountryStore,
 } from "src/hooks/useCountryStore";
-import { continents, useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
-import Toggle from "src/components/common/Toggle";
-import { useSearchParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { InlineButton } from "src/components/activity/InlineButton";
-import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { cn } from "src/utils/styles";
 
 type CountryListEntryProps = {
   storedCountry: NullableCountryData;
@@ -27,10 +28,9 @@ function CountryListEntry({
   return (
     <button
       id={country?.GU_A3}
-      className={twMerge(
-        "flex items-center gap-2 pl-4 -ml-2 -mr-1 pr-1 text-left -indent-2 rounded-sm",
-        country?.GU_A3 === storedCountry?.GU_A3 && "bg-yellow-700 py-1",
-      )}
+      className={cn("flex items-center gap-2 pl-4 -ml-2 -mr-1 pr-1 text-left -indent-2 rounded-sm", {
+        "bg-yellow-700 py-1": country?.GU_A3 === storedCountry?.GU_A3,
+      })}
       title={country?.GEOUNIT}
       onClick={() => countryClickCallback(country.GU_A3)}
     >
@@ -118,7 +118,7 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
   }, [storedCountry.data]);
 
   return (
-    <div className={twMerge("flex h-max flex-col gap-2 pl-2", !isAbridged && "overflow-y-auto")}>
+    <div className={cn("flex h-max flex-col gap-2 pl-2", { "overflow-y-auto": !isAbridged })}>
       <h3 className="text-center text-slate-300">Countries by Region</h3>
 
       <div className="flex grow items-center justify-center gap-2 text-sm">
@@ -134,7 +134,7 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
         </div>
       </div>
 
-      <div className={twMerge("flex flex-col px-2", !isAbridged && "pb-[40vh]")} ref={listRef}>
+      <div className={cn("flex flex-col px-2", { "pb-[40vh]": !isAbridged })} ref={listRef}>
         {continents.map((continent, index) => (
           <ContinentListEntry
             key={continent}

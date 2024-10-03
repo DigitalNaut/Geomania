@@ -1,6 +1,7 @@
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { twMerge } from "tailwind-merge";
+
+import { cn } from "src/utils/styles";
 
 type SpinnerProps = {
   message?: string;
@@ -11,9 +12,9 @@ type SpinnerProps = {
 export function Spinner({ message, className, cover }: SpinnerProps) {
   return (
     <div
-      className={twMerge(
+      className={cn(
         "flex items-center justify-center gap-2 text-white",
-        cover && "flex h-full items-center justify-center",
+        { "flex h-full items-center justify-center": cover },
         className,
       )}
     >

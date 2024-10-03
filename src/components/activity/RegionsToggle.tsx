@@ -1,10 +1,10 @@
-import { useState, useMemo } from "react";
 import { animated, useSpring } from "@react-spring/web";
+import { useMemo, useState } from "react";
 
-import { continents, useCountryFiltersContext, type CountryFilters } from "src/contexts/CountryFiltersContext";
 import Button from "src/components/common/Button";
 import Toggle from "src/components/common/Toggle";
-import { twMerge } from "tailwind-merge";
+import { continents, useCountryFiltersContext, type CountryFilters } from "src/contexts/CountryFiltersContext";
+import { cn } from "src/utils/styles";
 
 type ListItemProps = {
   id: string;
@@ -83,9 +83,9 @@ export default function RegionsDisabledOverlay({ shouldShow }: { shouldShow: boo
 
   return (
     <animated.div
-      className={twMerge(
+      className={cn(
         "absolute inset-1/2 z-[1000] mx-auto flex h-max w-max -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md hover:bg-sky-900",
-        !shouldShow && "pointer-events-none",
+        { "pointer-events-none": !shouldShow },
       )}
       style={springs}
     >
