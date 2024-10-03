@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { animated, useSpring } from "@react-spring/web";
+import { useMemo } from "react";
 
 export default function FloatingHeader({
   shouldShow,
@@ -9,10 +10,16 @@ export default function FloatingHeader({
   shouldShow: boolean;
   imageSrc?: string;
 }>) {
-  const springs = useSpring({
-    opacity: shouldShow ? 1 : 0,
-    transform: shouldShow ? "translateY(0%)" : "translateY(-100%)",
-  });
+  // arguments
+  const spring: Parameters<typeof useSpring>[0] = useMemo(
+    () => ({
+      opacity: shouldShow ? 1 : 0,
+      transform: shouldShow ? "translateY(0%)" : "translateY(100%)",
+    }),
+    [shouldShow],
+  );
+
+  const springs = useSpring(spring);
 
   return (
     <animated.div

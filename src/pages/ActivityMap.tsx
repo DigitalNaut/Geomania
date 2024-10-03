@@ -26,6 +26,7 @@ import useActivityCoordinator from "src/controllers/useActivityCoordinator";
 import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 import useHeaderController from "src/hooks/useHeaderController";
+import { useMemo } from "react";
 
 function MapActivity({
   setError,
@@ -116,12 +117,33 @@ function MapActivity({
   );
 }
 
+type ActivityType =
+  | {
+      activity: "quiz";
+      kind: "typing" | "pointing";
+    }
+  | {
+      activity: "review";
+      kind: "countries";
+    }
+  | undefined;
+
+type Activities = { [key: string]: ActivityType };
+
+const activities: Activities = {
+  "review-countries": { activity: "review", kind: "countries" },
+  "quiz-typing": { activity: "quiz", kind: "typing" },
+  "quiz-pointing": { activity: "quiz", kind: "pointing" },
+};
+
 // Main activity layout view
-export default function MapActivityLayout() {
+export default function ActivityMapLayout() {
   const { guessHistory } = useUserGuessRecordContext();
   const { error, setError, dismissError } = useError();
   const [, setURLSearchParams] = useSearchParams();
   const { activity } = useMapActivityContext();
+
+  const isActivityModeUndefined = useMemo(() => !activity || !activity.mode, [activity, activity?.mode]);
 
   return (
     <>
@@ -133,19 +155,19 @@ export default function MapActivityLayout() {
 
       <MainView>
         <div className="relative size-full rounded-lg shadow-inner [overflow:clip]">
-          <MapActivity onFinishActivity={() => setURLSearchParams()} setError={setError} />
+          <MapActivity onFinishActivity={() => setURLSearchParams(undefined)} setError={setError} />
 
-          <FloatingHeader shouldShow={!!activity?.mode} imageSrc={NerdMascot}>
+          <FloatingHeader shouldShow={!isActivityModeUndefined} imageSrc={NerdMascot}>
             {activity?.mode === "quiz" && "Guess the country!"}
             {activity?.mode === "review" && "Reviewing countries"}
           </FloatingHeader>
 
-          <InstructionOverlay shouldShow={!activity?.mode}>
+          <InstructionOverlay shouldShow={isActivityModeUndefined}>
             <ActivitySection>
               <ActivityButton
                 className="bg-gradient-to-br from-blue-600 to-blue-700"
                 label="🗺 Review"
-                onClick={() => setURLSearchParams({ activity: "review", kind: "countries" })}
+                onClick={() => setURLSearchParams(activities["review-countries"])}
               >
                 Learn about the cultures, geography, and history of countries from around the world.
               </ActivityButton>
@@ -154,14 +176,14 @@ export default function MapActivityLayout() {
               <ActivityButton
                 className="bg-gradient-to-br from-pink-600 to-pink-700"
                 label="⌨ Typing Quiz"
-                onClick={() => setURLSearchParams({ activity: "quiz", kind: "typing" })}
+                onClick={() => setURLSearchParams(activities["quiz-typing"])}
               >
                 Type the name of the country.
               </ActivityButton>
               <ActivityButton
                 className="bg-gradient-to-br from-green-600 to-green-700"
                 label="👆 Choosing Quiz"
-                onClick={() => setURLSearchParams({ activity: "quiz", kind: "pointing" })}
+                onClick={() => setURLSearchParams(activities["quiz-pointing"])}
               >
                 Choose the correct country on the map.
               </ActivityButton>

@@ -19,7 +19,7 @@ import StandardLayout from "src/components/layout/StandardLayout";
 import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
 import UserSettingsProvider from "src/contexts/UserSettingsContext";
 
-const LazyMapActivity = lazy(() => import("src/pages/MapActivity"));
+const LazyMapActivity = lazy(() => import("src/pages/ActivityMap"));
 const LazySettings = lazy(() => import("src/pages/Settings"));
 const LazyDashboard = lazy(() => import("src/pages/Dashboard"));
 const LazyPageNotFound = lazy(() => import("src/pages/PageNotFound"));
