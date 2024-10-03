@@ -24,6 +24,7 @@
     "preinstall",
     "signin",
     "signout",
+    "SOVEREIGNT",
     "svgr",
     "tailwindcss",
     "tanstack",
