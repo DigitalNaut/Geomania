@@ -1,19 +1,16 @@
 const neutralStyle = "fill-slate-800 stroke-slate-400";
 
-const scoreStyles = [
-  "fill-lime-400 stroke-lime-400",
-  "fill-green-400 stroke-green-400",
-  "fill-yellow-600 stroke-yellow-400",
-  "fill-orange-800 stroke-orange-400",
-  "fill-red-900 stroke-red-400",
-] as const;
+const perfectScoreStyle = "fill-lime-500 stroke-lime-400/25";
+const greatScoreStyle = "fill-lime-600 stroke-lime-500/25";
+const goodScoreStyle = "fill-lime-700 stroke-lime-600/25";
+const okScoreStyle = "fill-yellow-700 stroke-yellow-600/25";
+const badScoreStyle = "fill-amber-700 stroke-amber-600/25";
+
+const scoreStyles = [perfectScoreStyle, greatScoreStyle, goodScoreStyle, okScoreStyle, badScoreStyle] as const;
 
 export function qualifyScore(score: number) {
-  const clampedScore = Math.min(score, scoreStyles.length - 1);
+  const roundedScore = Math.round(score);
+  const isScoreInRange = roundedScore >= 0 && roundedScore < scoreStyles.length;
 
-  if (clampedScore > scoreStyles.length - 1 || clampedScore < 0) {
-    return neutralStyle;
-  }
-
-  return scoreStyles[clampedScore];
+  return isScoreInRange ? scoreStyles[roundedScore] : neutralStyle;
 }

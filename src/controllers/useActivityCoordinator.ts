@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { mapDefaults } from "src/components/map/LeafletMap";
+import { mapDefaults } from "src/components/map/LeafletMapFrame";
 import { type NullableCountryData, getCountryCoordinates, useCountryStore } from "src/hooks/useCountryStore";
 import { type VisitedCountry } from "src/components/map/MapSvg";
 import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
@@ -20,7 +20,7 @@ export default function useActivityCoordinator() {
   const [searchParams, setURLSearchParams] = useSearchParams();
   const { activity } = useMapActivityContext();
   const { storedCountry, setCountryDataByCode, resetStore } = useCountryStore();
-  const { filteredCountryData, isCountryInFilters } = useCountryFiltersContext();
+  const { filteredCountryData, isCountryInData } = useCountryFiltersContext();
 
   const {
     submitClick,
@@ -45,7 +45,7 @@ export default function useActivityCoordinator() {
   } = useReview();
 
   const visitedCountries = useMemo<VisitedCountry[]>(() => {
-    switch (activity?.mode) {
+    switch (activity?.activity) {
       case "quiz":
         switch (activity.kind) {
           case "pointing":
@@ -67,7 +67,7 @@ export default function useActivityCoordinator() {
   }, [activity, visitedClick, visitedInput, visitedReview]);
 
   const guessTally = useMemo(() => {
-    if (activity?.mode === "quiz")
+    if (activity?.activity === "quiz")
       switch (activity.kind) {
         case "pointing":
           return clickGuessTally;
@@ -91,7 +91,7 @@ export default function useActivityCoordinator() {
 
       const destination = getCountryCoordinates(nextCountry);
       setURLSearchParams((prev) => {
-        if (activity?.mode === "review") prev.set("country", nextCountry.GU_A3);
+        if (activity?.activity === "review") prev.set("country", nextCountry.GU_A3);
         else prev.delete("country");
         return prev;
       });
@@ -105,7 +105,7 @@ export default function useActivityCoordinator() {
           delay,
         );
     },
-    [activity?.mode, flyTo, setURLSearchParams],
+    [activity?.activity, flyTo, setURLSearchParams],
   );
 
   const resetUI = useCallback(() => {
@@ -128,7 +128,7 @@ export default function useActivityCoordinator() {
 
       let countryData: NullableCountryData = null;
 
-      switch (activity.mode) {
+      switch (activity.activity) {
         case "review":
           if (countryParam) countryData = setCountryDataByCode(countryParam);
           else countryData = nextReviewCountry();
@@ -146,7 +146,7 @@ export default function useActivityCoordinator() {
           }
       }
 
-      if (countryData && activity.mode === "quiz" && activity.kind !== "pointing") focusUI(countryData);
+      if (countryData && activity.activity === "quiz" && activity.kind !== "pointing") focusUI(countryData);
       else resetUI();
     } else {
       if (filteredCountryData.length === 0 || !filteredCountryData.includes(storedCountry.data)) {
@@ -154,7 +154,7 @@ export default function useActivityCoordinator() {
         resetUI();
       } else if (countryParam && countryParam !== storedCountry.data.GU_A3) {
         const countryData = setCountryDataByCode(countryParam);
-        if (countryData && activity.mode === "quiz" && activity.kind !== "pointing") focusUI(countryData);
+        if (countryData && activity.activity === "quiz" && activity.kind !== "pointing") focusUI(countryData);
       }
     }
   }, [
@@ -174,9 +174,9 @@ export default function useActivityCoordinator() {
 
   const handleMapClick = (a3?: string) => {
     if (!activity || !a3) return;
-    if (!isCountryInFilters(a3)) return;
+    if (!isCountryInData(a3)) return;
 
-    if (activity.mode === "review") {
+    if (activity.activity === "review") {
       focusUI(clickReview(a3), 100, false);
       return;
     }
@@ -194,7 +194,7 @@ export default function useActivityCoordinator() {
   };
 
   const giveHint = () => {
-    if (!activity || activity.mode === "review") return;
+    if (!activity || activity.activity === "review") return;
 
     switch (activity.kind) {
       case "typing":
@@ -210,7 +210,7 @@ export default function useActivityCoordinator() {
   const nextCountry = () => {
     if (!activity) return;
 
-    if (activity.mode === "review") {
+    if (activity.activity === "review") {
       focusUI(nextReviewCountry());
       return;
     }
@@ -229,7 +229,7 @@ export default function useActivityCoordinator() {
   };
 
   const submitAnswer = () => {
-    if (!activity || activity.mode === "review" || activity.kind === "pointing") return null;
+    if (!activity || activity.activity === "review" || activity.kind === "pointing") return null;
 
     const nextCountry = submitInput();
     focusUI(nextCountry, 100);

@@ -1,23 +1,27 @@
 import { type PropsWithChildren, createContext, useContext, useMemo, useState, useCallback } from "react";
 
-import { type CountryDataList } from "src/hooks/useCountryStore";
+import type { CountryData, CountryDataList } from "src/hooks/useCountryStore";
 import allFeaturesData from "src/assets/data/features-data.json";
 
-const countryDataByContinent = allFeaturesData.reduce(
-  (groups, country) => {
-    const { CONTINENT: continent } = country;
+const countryDataByContinent = allFeaturesData.reduce((groups, country) => {
+  const { CONTINENT: continent } = country;
 
-    groups[continent] ??= [];
-    groups[continent].push(country);
+  if (!groups.has(continent)) groups.set(continent, []);
 
-    return groups;
-  },
-  {} as Record<string, CountryDataList>,
+  const group = groups.get(continent)!;
+
+  group.push(country);
+
+  return groups;
+}, new Map<string, CountryDataList>());
+
+const optimizedAllFeaturesData: Map<string, CountryData> = new Map(
+  allFeaturesData.map((country) => [country.GU_A3, country]),
 );
 
-export const continents = Object.keys(countryDataByContinent);
+export const continents = [...countryDataByContinent.keys()];
 
-const initialContinentFilters = Object.fromEntries(continents.map((continent) => [continent, true]));
+const initialContinentFilters = Object.fromEntries(continents.map((continent) => [continent, false]));
 
 export type CountryFilters = typeof initialContinentFilters;
 
@@ -46,14 +50,13 @@ function useFilteredCountryData() {
     });
   };
 
-  const isCountryInFilters = useCallback(
-    (a3: string) => {
-      const country = allFeaturesData.find((country) => country.GU_A3 === a3);
+  const isCountryInData = useCallback(
+    (targetA3: string) => {
+      const country = optimizedAllFeaturesData.get(targetA3);
+
       if (!country) return false;
 
       const { CONTINENT: continent } = country;
-
-      if (!continent) return false;
 
       return continentFilters[continent];
     },
@@ -66,7 +69,7 @@ function useFilteredCountryData() {
     continentFilters,
     countryDataByContinent,
     filteredCountryData,
-    isCountryInFilters,
+    isCountryInData,
   };
 }
 

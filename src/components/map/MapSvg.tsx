@@ -20,14 +20,7 @@ export type VisitedCountry = {
   a3: string;
 } & PathProperties;
 
-// TODO: Refactor
-// Style presets for the map
 // Geounit presets
-const lighterBlueGray = "#94a3b8";
-const darkerBlueGray = "#64748b";
-const halfOpaque = 0.5;
-const seeThrough = 0.15;
-
 const svgAttributes: SVGOverlayProps["attributes"] = {
   fill: "white",
   stroke: "white",
@@ -41,6 +34,13 @@ const svgCorners: Parameters<typeof useSvgAttributes>[2] = {
   bottomRightCorner: [83.09, 180.6],
 };
 
+export type SvgMapColorTheme = {
+  country: {
+    active: { fill: string; stroke: string };
+    inactive: { fill: string; stroke: string };
+  };
+};
+
 /**
  * Renders the map SVG as an overlay on the map.
  * @param props
@@ -48,17 +48,17 @@ const svgCorners: Parameters<typeof useSvgAttributes>[2] = {
  */
 export default function SvgMap({
   selectedPaths,
-  onClick,
-  disableColorFilter,
   hidden,
+  colorTheme,
+  onClick,
 }: {
   selectedPaths?: VisitedCountry[];
-  onClick?: (a3: string) => void;
-  disableColorFilter: boolean;
   hidden?: boolean;
+  colorTheme: SvgMapColorTheme;
+  onClick?: (a3: string) => void;
 }) {
   const { zoom } = useMapContext();
-  const { isCountryInFilters } = useCountryFiltersContext();
+  const { isCountryInData } = useCountryFiltersContext();
 
   const {
     paths: allPaths,
@@ -75,8 +75,10 @@ export default function SvgMap({
     const styledList: StyledPath[] = [];
     const otherList: SVGPathElement[] = [];
 
+    const selectedPathsMap = new Map(selectedPaths.map((path) => [path.a3, path]));
+
     for (const path of allPaths) {
-      const pathMatch = selectedPaths.find((item) => item.a3 === path.id);
+      const pathMatch = selectedPathsMap.get(path.id);
 
       if (pathMatch) styledList.push({ path, style: pathMatch?.style, highlight: pathMatch?.highlight });
       else otherList.push(path);
@@ -112,15 +114,15 @@ export default function SvgMap({
       eventHandlers={{ click }}
     >
       {otherPaths.map((path, index) => {
-        const colorFilter = disableColorFilter || isCountryInFilters(path.id); // If
+        const isActive = isCountryInData(path.id);
         return (
           <path
             key={index}
             data-a3={path.id}
             d={path.getAttribute("d") ?? ""}
             style={{
-              strokeOpacity: colorFilter ? halfOpaque : seeThrough,
-              fill: colorFilter ? lighterBlueGray : darkerBlueGray,
+              stroke: isActive ? colorTheme.country.active.stroke : colorTheme.country.inactive.stroke,
+              fill: isActive ? colorTheme.country.active.fill : colorTheme.country.inactive.fill,
               strokeWidth: adjustForZoom(3),
             }}
           />
@@ -161,21 +163,24 @@ export default function SvgMap({
               height="9"
               patternTransform="scale(0.25) rotate(45 3 3)"
             >
-              <circle width="3" height="3" r="1" stroke="none" className="fill-white/[6%]" cx="2" cy="2" />
-              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[9%]" cx="5" cy="2" />
-              <circle width="3" height="3" r="1" stroke="none" className="fill-white/[6%]" cx="8" cy="2" />
-              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[9%]" cx="2" cy="5" />
-              <circle width="3" height="3" r="1.25" stroke="none" className="fill-white/[6%]" cx="5" cy="5" />
-              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[6%]" cx="8" cy="5" />
-              <circle width="3" height="3" r="1" stroke="none" className="fill-white/[6%]" cx="2" cy="8" />
-              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[9%]" cx="5" cy="8" />
-              <circle width="3" height="3" r="1" stroke="none" className="fill-white/[6%]" cx="8" cy="8" />
+              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[6%]" cx="2" cy="2" />
+              <circle width="3" height="3" r="0.5" stroke="none" className="fill-white/[9%]" cx="5" cy="2" />
+              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[6%]" cx="8" cy="2" />
+              <circle width="3" height="3" r="0.5" stroke="none" className="fill-white/[9%]" cx="2" cy="5" />
+              <circle width="3" height="3" r="0.75.25" stroke="none" className="fill-white/[6%]" cx="5" cy="5" />
+              <circle width="3" height="3" r="0.5" stroke="none" className="fill-white/[6%]" cx="8" cy="5" />
+              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[6%]" cx="2" cy="8" />
+              <circle width="3" height="3" r="0.5" stroke="none" className="fill-white/[9%]" cx="5" cy="8" />
+              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[6%]" cx="8" cy="8" />
             </pattern>
           </defs>
 
           {styledPaths.map(({ path, style, highlight }) => {
             const { id } = path;
-            const d = path.getAttribute("d") ?? "";
+            const d = path.getAttribute("d");
+
+            if (!d) return null;
+
             return (
               <Fragment key={id}>
                 <path

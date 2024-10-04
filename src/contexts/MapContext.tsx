@@ -1,7 +1,7 @@
 import { type Dispatch, type SetStateAction, type PropsWithChildren, createContext, useContext, useState } from "react";
 import type { Map } from "leaflet";
 
-import { mapDefaults } from "src/components/map/LeafletMap";
+import { mapDefaults } from "src/components/map/LeafletMapFrame";
 
 type MapContext = {
   map?: Map;

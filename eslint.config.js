@@ -26,7 +26,7 @@ export default tsEslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
-      "no-console": "error",
+      "no-console": "warn",
       "@typescript-eslint/consistent-type-imports": "error",
 
       "no-relative-import-paths/no-relative-import-paths": ["warn", { allowSameFolder: true }],

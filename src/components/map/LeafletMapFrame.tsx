@@ -5,6 +5,7 @@ import type { Required } from "src/types/utility";
 import { useMapContext } from "src/contexts/MapContext";
 import { TileLayersControl } from "./TileLayersControl";
 import "leaflet/dist/leaflet.css";
+import { cn } from "src/utils/styles";
 
 // * On Styling layers: https://leafletjs.com/examples/choropleth/
 // * On Markers: https://codesandbox.io/s/react-leaflet-v3-x-geojson-with-typescript-not-rendering-geojson-points-v28ly?file=/src/Map.tsx
@@ -36,16 +37,22 @@ function MapEvents() {
   return null;
 }
 
-type Props = PropsWithChildren<{
-  showTileLayers?: boolean;
-}>;
-
-export function LeafletMap({ children, showTileLayers }: Props) {
+export function LeafletMapFrame({
+  children,
+  className,
+  showControls,
+}: PropsWithChildren<{
+  showControls?: boolean;
+  className?: string;
+}>) {
   return (
-    <LeafletMapContainer className="size-full bg-gradient-to-br from-sky-700 to-sky-800" {...mapDefaults}>
+    <LeafletMapContainer
+      className={cn("size-full bg-gradient-to-br from-sky-700 to-sky-800", className)}
+      {...mapDefaults}
+    >
       <MapEvents />
       {children}
-      {showTileLayers && <TileLayersControl />}
+      {showControls && <TileLayersControl />}
     </LeafletMapContainer>
   );
 }

@@ -13,11 +13,13 @@ import ReviewFloatingPanel from "src/components/activity/ReviewFloatingPanel";
 import ErrorBanner from "src/components/common/ErrorBanner";
 import MainView from "src/components/layout/MainView";
 import { BackControl } from "src/components/map/BackControl";
-import { LeafletMap } from "src/components/map/LeafletMap";
+import { LeafletMapFrame } from "src/components/map/LeafletMapFrame";
+import type { SvgMapColorTheme } from "src/components/map/MapSvg";
 import SvgMap from "src/components/map/MapSvg";
 import { markerIcon } from "src/components/map/MarkerIcon";
 import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
 import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
+import type { ActivityType } from "src/contexts/MapActivityContext";
 import { useMapActivityContext } from "src/contexts/MapActivityContext";
 import useActivityCoordinator from "src/controllers/useActivityCoordinator";
 import { useCountryStore } from "src/hooks/useCountryStore";
@@ -27,7 +29,37 @@ import { useMapViewport } from "src/hooks/useMapViewport";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
-function MapActivity({
+const mapActivityTheme: Map<ActivityType["activity"] | "default", SvgMapColorTheme> = new Map([
+  [
+    "review",
+    {
+      country: {
+        active: { fill: "#0241637F", stroke: "#FFFFFF2F" },
+        inactive: { fill: "#0241633F", stroke: "#FFFFFF00" },
+      },
+    },
+  ],
+  [
+    "quiz",
+    {
+      country: {
+        active: { fill: "#FFFFFF2F", stroke: "#FFFFFF1F" },
+        inactive: { fill: "#4755693F", stroke: "#FFFFFF00" },
+      },
+    },
+  ],
+  [
+    "default",
+    {
+      country: {
+        active: { fill: "#0241633F", stroke: "#FFFFFF00" },
+        inactive: { fill: "#0241631F", stroke: "#FFFFFF00" },
+      },
+    },
+  ],
+]);
+
+function ActivityMap({
   setError,
   onFinishActivity,
 }: {
@@ -49,9 +81,11 @@ function MapActivity({
 
   useHeaderController(finishActivity);
 
+  const colorTheme = useMemo(() => mapActivityTheme.get(activity?.activity || "default")!, [activity]);
+
   return (
     <>
-      <LeafletMap showTileLayers={activity?.mode === "review"}>
+      <LeafletMapFrame showControls={activity?.activity === "review"}>
         {activity && (
           <>
             <ZoomControl position="topright" />
@@ -59,11 +93,11 @@ function MapActivity({
 
             {storedCountry.coordinates && (
               <>
-                {activity?.mode !== "quiz" || activity.kind === "typing" ? (
+                {activity?.activity !== "quiz" || activity.kind === "typing" ? (
                   <Marker position={storedCountry.coordinates} icon={markerIcon} />
                 ) : null}
 
-                {activity.mode === "review" && (
+                {activity.activity === "review" && (
                   <Popup
                     position={storedCountry.coordinates}
                     keepInView
@@ -90,12 +124,12 @@ function MapActivity({
           </>
         )}
 
-        <SvgMap selectedPaths={visitedCountries} onClick={handleMapClick} disableColorFilter={!activity} />
-      </LeafletMap>
+        <SvgMap selectedPaths={visitedCountries} onClick={handleMapClick} colorTheme={colorTheme} />
+      </LeafletMapFrame>
 
       <QuizFloatingPanel
-        shouldShow={activity?.mode === "quiz" && filteredCountryData.length > 0}
-        mode={activity?.mode === "quiz" ? activity.kind : undefined}
+        shouldShow={activity?.activity === "quiz" && filteredCountryData.length > 0}
+        mode={activity?.activity === "quiz" ? activity.kind : undefined}
         giveHint={giveHint}
         inputRef={inputRef}
         skipCountry={nextCountry}
@@ -104,7 +138,7 @@ function MapActivity({
       />
 
       <ReviewFloatingPanel
-        shouldShow={activity?.mode === "review"}
+        shouldShow={activity?.activity === "review"}
         showNextCountry={nextCountry}
         disabled={filteredCountryData.length === 0}
         onReset={resetVisited}
@@ -115,17 +149,6 @@ function MapActivity({
     </>
   );
 }
-
-type ActivityType =
-  | {
-      activity: "quiz";
-      kind: "typing" | "pointing";
-    }
-  | {
-      activity: "review";
-      kind: "countries";
-    }
-  | undefined;
 
 type Activities = { [key: string]: ActivityType };
 
@@ -142,7 +165,7 @@ export default function ActivityMapLayout() {
   const [, setURLSearchParams] = useSearchParams();
   const { activity } = useMapActivityContext();
 
-  const isActivityModeUndefined = useMemo(() => !activity || !activity.mode, [activity, activity?.mode]);
+  const isActivityModeUndefined = useMemo(() => !activity || !activity.activity, [activity]);
 
   return (
     <>
@@ -182,18 +205,18 @@ export default function ActivityMapLayout() {
         </InstructionOverlay>
 
         <FloatingHeader shouldShow={!isActivityModeUndefined} imageSrc={NerdMascot}>
-          {activity?.mode === "quiz" && <span>Guess the country!</span>}
-          {activity?.mode === "review" && <span>Reviewing countries</span>}
+          {activity?.activity === "quiz" && <span>Guess the country!</span>}
+          {activity?.activity === "review" && <span>Reviewing countries</span>}
         </FloatingHeader>
 
-        <div className="relative flex-1 rounded-lg shadow-inner overflow-clip m-2">
-          <MapActivity onFinishActivity={() => setURLSearchParams(undefined)} setError={setError} />
+        <div className="relative m-2 flex-1 overflow-hidden rounded-lg shadow-inner">
+          <ActivityMap onFinishActivity={() => setURLSearchParams(undefined)} setError={setError} />
         </div>
 
-        {activity?.mode && (
-          <div className="flex h-1/5 w-max flex-col gap-6 sm:h-auto sm:w-[30ch] overflow-y-auto">
-            <CountriesListPanel isAbridged={activity.mode === "quiz"} />
-            {activity.mode === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
+        {activity?.activity && (
+          <div className="flex h-1/5 w-max flex-col gap-6 overflow-y-auto sm:h-auto sm:w-[30ch]">
+            <CountriesListPanel isAbridged={activity.activity === "quiz"} />
+            {activity.activity === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
           </div>
         )}
       </MainView>

@@ -10,26 +10,27 @@ import {
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
-const ActivitySchema = z.enum(["review", "quiz"]);
+const ActivityModeSchema = z.enum(["review", "quiz"]);
+export type ActivityMode = z.infer<typeof ActivityModeSchema>;
 const ReviewKindSchema = z.enum(["countries"]);
 export type ReviewKind = z.infer<typeof ReviewKindSchema>;
 const QuizKindSchema = z.enum(["typing", "pointing"]);
 export type QuizKind = z.infer<typeof QuizKindSchema>;
 
-export type Activity =
+export type ActivityType =
   | {
-      mode: "review";
+      activity: "review";
       kind: ReviewKind;
     }
   | {
-      mode: "quiz";
+      activity: "quiz";
       kind: QuizKind;
     };
 
 type MapActivityContext = {
   isRandomReviewMode: boolean;
   setRandomReviewMode: Dispatch<SetStateAction<boolean>>;
-  activity?: Activity;
+  activity?: ActivityType;
 };
 
 const MapActivityContext = createContext<MapActivityContext | null>(null);
@@ -42,11 +43,11 @@ function validateQuizKind(kind: string | null): kind is QuizKind {
   return kind !== null && QuizKindSchema.safeParse(kind).success;
 }
 
-function validateActivity(mode: string | null, kind: string | null): Activity | undefined {
-  if (!ActivitySchema.safeParse(mode).success) return undefined;
+function validateActivity(mode: string | null, kind: string | null): ActivityType | undefined {
+  if (!ActivityModeSchema.safeParse(mode).success) return undefined;
 
-  if (mode === "review" && validateReviewKind(kind)) return { mode: "review", kind };
-  else if (mode === "quiz" && validateQuizKind(kind)) return { mode: "quiz", kind };
+  if (mode === "review" && validateReviewKind(kind)) return { activity: "review", kind };
+  else if (mode === "quiz" && validateQuizKind(kind)) return { activity: "quiz", kind };
 
   return undefined;
 }
