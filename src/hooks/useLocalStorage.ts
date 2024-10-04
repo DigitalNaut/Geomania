@@ -34,7 +34,7 @@ export function useLocalStorage<T extends Record<string, unknown>>(key: string, 
         const parsedSettings = JSON.parse(savedSettings);
         const validatedSettings = schema.parse(parsedSettings);
         setData(validatedSettings);
-      } catch (e) {
+      } catch (_) {
         // If parsing fails, reset to default settings
         if (import.meta.env.DEV)
           console.error(`Could not parse settings from local storage for "${key}", resetting to default settings`);

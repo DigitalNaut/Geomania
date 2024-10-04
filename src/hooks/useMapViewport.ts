@@ -37,8 +37,6 @@ export function useMapViewport({ options }: { options?: options } = {}) {
       animate,
       duration,
     });
-
-    map.flyToBounds;
   }
 
   function resetView() {
