@@ -1,3 +1,4 @@
+import type { RefObject } from "react";
 import { useMemo, useRef } from "react";
 import { animated, useSpring } from "@react-spring/web";
 
@@ -64,7 +65,7 @@ function CountryStatsCard({ countryStats }: CountryStatsProps) {
   );
 }
 
-function useAnimatedDialog(ref: React.RefObject<HTMLDialogElement>) {
+function useAnimatedDialog(ref: RefObject<HTMLDialogElement>) {
   const [dialogSprings, dialogSpringsApi] = useSpring(() => ({
     from: { opacity: 0, transform: "translateY(-1rem)" },
     to: { opacity: 1, transform: "translateY(0)" },
