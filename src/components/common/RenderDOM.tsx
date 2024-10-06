@@ -1,18 +1,20 @@
-import { createElement } from "react";
+import { createElement, useMemo } from "react";
 
 function filterText(text: string) {
-  return `<div>${text
+  const replacedText = text
     .replace(/<(link|meta).+?>/g, "")
     .replace(/\\n/g, "")
-    .replace(/\n/g, "")}</div>`;
+    .replace(/\n/g, "");
+  return `<div>${replacedText}</div>`;
 }
 
-export function RenderDOM({ input }: { input?: string }) {
-  if (!input) return "";
+const domParser = new DOMParser();
 
-  const filteredInput = filterText(input);
-  const root = new DOMParser();
-  const doc = root.parseFromString(filteredInput, "application/xhtml+xml");
+export function RenderDOM({ input }: { input: string }) {
+  const doc = useMemo(() => {
+    const filteredInput = filterText(input);
+    return domParser.parseFromString(filteredInput, "application/xhtml+xml");
+  }, [input]);
 
   const errorNode = doc.querySelector("parsererror");
   if (errorNode) {
@@ -27,6 +29,6 @@ export function RenderDOM({ input }: { input?: string }) {
   return Object.values(htmlSections).map((node, key) =>
     node instanceof Element && node.tagName && node.textContent?.length
       ? createElement(node.tagName, { key, ...node.attributes }, <RenderDOM input={node.innerHTML} />)
-      : node.textContent ?? "",
+      : (node.textContent ?? ""),
   );
 }
