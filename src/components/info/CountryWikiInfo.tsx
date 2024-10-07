@@ -92,8 +92,9 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
               />
             )}
           </span>
+
+          <RenderDOM input={page.extract} />
         </div>
-        <RenderDOM input={page.extract} />
       </div>
       <span className="flex justify-end">
         <a
