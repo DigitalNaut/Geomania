@@ -17,7 +17,7 @@ export function ActivityButton({
     <button
       role="button"
       className={twJoin(
-        "flex shrink max-w-[40ch] w-max items-center justify-center gap-4 rounded-lg p-6 shadow-l",
+        "flex max-w-[40ch] w-max items-center justify-center gap-4 rounded-lg p-6 shadow-l",
         className,
       )}
       onClick={onClick}

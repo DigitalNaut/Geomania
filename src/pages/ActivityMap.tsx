@@ -196,7 +196,7 @@ export default function ActivityMapLayout() {
             </ActivityButton>
             <ActivityButton
               className="bg-gradient-to-br from-green-600 to-green-700"
-              label="👆 Choosing Quiz"
+              label="👆 Point & Click"
               onClick={() => setURLSearchParams(activities["quiz-pointing"])}
             >
               Choose the correct country on the map.
