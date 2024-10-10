@@ -14,5 +14,10 @@
     "outDir": "dist",
     "resolvePackageJsonExports": true
   },
-  "lib": ["ESNext"]
+  "include": [
+    "src"
+  ],
+  "lib": [
+    "ESNext"
+  ]
 }
