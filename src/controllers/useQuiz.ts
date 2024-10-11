@@ -1,5 +1,5 @@
 import { useCountryStore } from "src/hooks/useCountryStore";
-import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
+import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
 import { useTally } from "src/hooks/useTally";
 
 import IncorrectSound from "src/assets/sounds/incorrect.mp3?url";
@@ -21,7 +21,7 @@ export function useQuiz() {
 
   const { storedCountry: correctAnswer, compareStoredCountry: checkAnswer } = useCountryStore();
 
-  const { createRecord } = useUserGuessRecordContext();
+  const { createRecord } = useUserGuessRecord();
   const { tally, upTally, resetTally } = useTally();
 
   const submitAnswer = (userGuess: string) => {

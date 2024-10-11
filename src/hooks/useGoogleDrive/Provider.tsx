@@ -1,103 +1,13 @@
-import { type MutableRefObject, type PropsWithChildren, useState, createContext, useContext, useRef } from "react";
-import {
-  type NonOAuthError,
-  type TokenResponse,
-  useGoogleLogin,
-  hasGrantedAnyScopeGoogle,
-  useGoogleOAuth,
-} from "@react-oauth/google";
+import type { NonOAuthError, TokenResponse } from "@react-oauth/google";
+import { hasGrantedAnyScopeGoogle, useGoogleOAuth } from "@react-oauth/google";
+import type { PropsWithChildren } from "react";
+import { useRef, useState } from "react";
 
 import { Script } from "src/components/common/Script";
-
-type DriveState =
-  | {
-      status: "idle";
-      loaded: false;
-    }
-  | {
-      status: "loaded" | "unauthorized" | "access";
-      loaded: true;
-    }
-  | {
-      status: "error";
-      loaded: boolean;
-      error: Error | NonOAuthError;
-    };
-
-type DriveAccessValidator = { hasAccess: true } | { hasAccess: false; error: Error };
-
-type GoogleDriveContextType = {
-  requestDriveAccess(): void;
-  disconnectDrive(): void;
-  validateDriveAccess(): DriveAccessValidator;
-  state: DriveState;
-  userDriveTokens?: TokenResponse;
-};
-
-const googleDriveContext = createContext<GoogleDriveContextType | null>(null);
-
-// See: https://developers.google.com/identity/protocols/oauth2/scopes#drive
-const scope = "https://www.googleapis.com/auth/drive.appdata";
-const DISCOVERY_DOC = "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest";
-const discoveryDocs = [DISCOVERY_DOC];
-
-type ConditionalHookProps = {
-  callback: MutableRefObject<() => void>;
-  onSuccess?: (tokenResponse: Omit<TokenResponse, "error" | "error_description" | "error_uri">) => void;
-  onError?: (errorResponse: NonOAuthError | Pick<TokenResponse, "error" | "error_description" | "error_uri">) => void;
-};
-
-function ImplicitFlow({ callback, onSuccess, onError }: ConditionalHookProps) {
-  callback.current = useGoogleLogin({
-    prompt: "",
-    scope,
-    onSuccess,
-    onError,
-    onNonOAuthError: onError,
-  });
-
-  return null;
-}
-
-function useDriveState() {
-  const [state, setState] = useState<DriveState>({ status: "idle", loaded: false });
-
-  const raiseError = (error: Error | NonOAuthError) =>
-    void setState((prevState) => ({
-      status: "error",
-      loaded: prevState.loaded,
-      error,
-    }));
-
-  const changeStatus = (newStatus: (DriveState & { loaded: true; error: undefined })["status"]) => {
-    const { status } = state;
-
-    if (status === newStatus) return;
-
-    if (
-      (status === "idle" && newStatus !== "loaded") ||
-      (status === "loaded" && newStatus !== "unauthorized") ||
-      (status === "unauthorized" && newStatus !== "access") ||
-      (status === "access" && newStatus !== "loaded")
-    ) {
-      raiseError(new Error(`Invalid state transition from ${state} to ${newStatus}`));
-    }
-
-    setState({ status: newStatus, loaded: true });
-  };
-
-  return { state, changeStatus, raiseError };
-}
-
-async function loadGapiScripts() {
-  return new Promise((resolve) => {
-    gapi.load("client", resolve);
-  });
-}
-
-async function initGapiClient(apiKey?: string) {
-  return gapi.client.init({ apiKey, discoveryDocs });
-}
+import { scope } from "./defaults";
+import type { DriveAccessValidator } from "./types";
+import { ImplicitFlow, initGapiClient, loadGapiScripts, useDriveState } from "./hooks";
+import { Provider } from ".";
 
 /**
  * Provides a Google Drive API context for child components. Children components can access the
@@ -200,9 +110,7 @@ export function GoogleDriveProvider({
   }
 
   return (
-    <googleDriveContext.Provider
-      value={{ validateDriveAccess, requestDriveAccess, disconnectDrive, state, userDriveTokens }}
-    >
+    <Provider value={{ validateDriveAccess, requestDriveAccess, disconnectDrive, state, userDriveTokens }}>
       <Script src="https://apis.google.com/js/api.js" onLoad={handleGapiLoaded} />
 
       {scriptLoadedSuccessfully && apiKey && (
@@ -210,14 +118,6 @@ export function GoogleDriveProvider({
       )}
 
       {children}
-    </googleDriveContext.Provider>
+    </Provider>
   );
-}
-
-export function useGoogleDriveContext() {
-  const context = useContext(googleDriveContext);
-
-  if (!context) throw new Error("useGoogleDrive must be used within a GoogleDriveProvider");
-
-  return context;
 }

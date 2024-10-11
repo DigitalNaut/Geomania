@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
+import { useCountryFilters } from "src/hooks/useCountryFilters";
 
-import { useMapActivityContext } from "src/contexts/MapActivityContext";
+import { useMapActivity } from "src/hooks/useMapActivity";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useVisitedCountries } from "src/hooks/useVisitedCountries";
 
@@ -9,10 +9,10 @@ const visitedStyle = "fill-lime-700 stroke-lime-200";
 const highlightStyle = "fill-lime-500 stroke-lime-200";
 
 export function useReview() {
-  const { isCountryInData } = useCountryFiltersContext();
+  const { isCountryInData } = useCountryFilters();
   const { setCountryDataNext, setCountryDataRandom, setCountryDataByCode, storedCountry } = useCountryStore();
   const { visitedCountries, pushVisitedCountry, setVisitedCountry, resetVisitedCountries } = useVisitedCountries();
-  const { isRandomReviewMode } = useMapActivityContext();
+  const { isRandomReviewMode } = useMapActivity();
 
   function pushStoredCountry() {
     if (!storedCountry.data) return;

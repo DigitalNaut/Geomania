@@ -1,64 +1,16 @@
-import { type KeyboardEvent, type PropsWithChildren, type RefObject, useCallback, useMemo } from "react";
-import { animated, useSpring, useTrail } from "@react-spring/web";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForwardStep, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { animated } from "@react-spring/web";
+import { type KeyboardEvent, type PropsWithChildren, type RefObject, useCallback, useMemo, useState } from "react";
 
+import { InlineButton } from "src/components/activity/InlineButton";
 import { ActionButton } from "src/components/common/ActionButton";
-import { type NullableCountryData, useCountryStore } from "src/hooks/useCountryStore";
-import { type QuizKind } from "src/contexts/MapActivityContext";
+import type { QuizKind } from "src/hooks/useMapActivity/types";
+import type { NullableCountryData } from "src/hooks/useCountryStore/types";
+import { useCountryStore } from "src/hooks/useCountryStore";
 
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
-import { InlineButton } from "./InlineButton";
-
-function useHorizontalShakeAnimation({
-  onShakeStart,
-  onShakeEnd,
-  shakeAmount = 7,
-  shakeDuration = 400,
-}: {
-  onShakeStart: () => void;
-  onShakeEnd: () => void;
-  shakeAmount?: number;
-  shakeDuration?: number;
-}) {
-  const [{ x }, errorShakeApi] = useSpring(() => ({
-    from: { x: 0 },
-  }));
-
-  const shakeXStart = -shakeAmount;
-  const shakeXEnd = shakeAmount;
-
-  const xShake = x.to(
-    [0, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 1],
-    [0, shakeXEnd, shakeXStart, shakeXEnd, shakeXStart, shakeXEnd, shakeXStart, 0],
-  );
-
-  const startShake = () =>
-    errorShakeApi.start({
-      from: { x: 0 },
-      to: { x: 1 },
-      config: { duration: shakeDuration },
-      onStart: onShakeStart,
-      onRest: onShakeEnd,
-    });
-
-  return {
-    startShake,
-    xShake,
-  };
-}
-
-export function useFloatingPanelSlideInAnimation(shouldShow: boolean) {
-  const [firstTrail, secondTrail] = useTrail(2, {
-    opacity: shouldShow ? 1 : 0,
-    transform: shouldShow ? "translateY(0%)" : "translateY(100%)",
-  });
-
-  return {
-    firstTrail,
-    secondTrail,
-  };
-}
+import { useFloatingPanelSlideInAnimation, useHorizontalShakeAnimation } from "./hooks";
 
 function QuizHeaderSection({
   children,
@@ -91,15 +43,23 @@ function QuizPointerSection({ children }: PropsWithChildren) {
 }
 
 function CountryFlag({ a2 }: { a2?: string }) {
+  const [error, setError] = useState<Error | null>(null);
+
+  const src = useMemo(() => (a2 ? `https://flagcdn.com/${a2.toLocaleLowerCase()}.svg` : undefined), [a2]);
+
+  if (error) {
+    return <img className="h-[2.4rem] w-16 p-1" src={unknownFlag} loading="lazy" width={64} height={38.4} />;
+  }
+
   return (
     <img
       className="h-[2.4rem] w-16 p-1 shadow-md before:block before:h-[2.4rem] before:w-16 before:bg-custom-unknown-flag"
-      src={!a2 || a2 === "-99" ? unknownFlag : `https://flagcdn.com/${a2.toLocaleLowerCase()}.svg`}
+      src={src}
       loading="lazy"
       width={64}
       height={38.4}
       onError={() => {
-        console.log(`Failed to load flag for ${a2}`);
+        setError(new Error(`Failed to load flag for ${a2}`));
       }}
     />
   );

@@ -1,18 +1,12 @@
-import { type CredentialResponse, GoogleLogin, googleLogout } from "@react-oauth/google";
-import { type PropsWithChildren, createContext, useContext, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDoorOpen, faInfoCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { CredentialResponse } from "@react-oauth/google";
+import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import type { PropsWithChildren } from "react";
+import { useState } from "react";
 
-type UserContext = {
-  user?: GoogleUserCredential | null;
-  LoginButton(): JSX.Element | null;
-  LogoutButton(): JSX.Element | null;
-  UserCard(props: PropsWithChildren): JSX.Element | null;
-  logout(reason?: string): void;
-};
-
-const userContext = createContext<UserContext | null>(null);
+import { Provider, useUser } from ".";
 
 function Notification({ notification, onClick }: { notification?: string; onClick: () => void }) {
   if (!notification) return null;
@@ -30,12 +24,6 @@ function Notification({ notification, onClick }: { notification?: string; onClic
       </div>
     </div>
   );
-}
-
-export function useUser() {
-  const context = useContext(userContext);
-  if (!context) throw new Error("useUser must be used within a UserProvider");
-  return context;
 }
 
 function LogoutButton() {
@@ -130,7 +118,7 @@ export function UserProvider({ children }: PropsWithChildren) {
   }
 
   return (
-    <userContext.Provider
+    <Provider
       value={{
         user,
         UserCard,
@@ -141,6 +129,6 @@ export function UserProvider({ children }: PropsWithChildren) {
     >
       {children}
       <Notification notification={notification} onClick={() => setNotification(undefined)} />
-    </userContext.Provider>
+    </Provider>
   );
 }

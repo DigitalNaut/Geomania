@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { mapDefaults } from "src/components/map/LeafletMapFrame";
-import { type NullableCountryData, getCountryCoordinates, useCountryStore } from "src/hooks/useCountryStore";
-import { type VisitedCountry } from "src/components/map/MapSvg";
-import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
-import { useMapActivityContext } from "src/contexts/MapActivityContext";
-import { useMapViewport } from "src/hooks/useMapViewport";
+import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
+import type { VisitedCountry } from "src/components/map/MapSvg";
+import { useMapActivity } from "src/hooks/useMapActivity";
 import { useQuizClick } from "src/controllers/useQuizClick";
 import { useQuizInput } from "src/controllers/useQuizInput";
 import { useReview } from "src/controllers/useReview";
+import { useCountryFilters } from "src/hooks/useCountryFilters";
+import { getCountryCoordinates, useCountryStore } from "src/hooks/useCountryStore";
+import type { NullableCountryData } from "src/hooks/useCountryStore/types";
+import { useMapViewport } from "src/hooks/useMapViewport";
 
 /**
  * This hook helps by providing a way to automatically focus the UI when the activity changes and there are countries to show.
@@ -18,9 +19,9 @@ import { useReview } from "src/controllers/useReview";
 export default function useActivityCoordinator() {
   const { flyTo, resetView } = useMapViewport();
   const [searchParams, setURLSearchParams] = useSearchParams();
-  const { activity } = useMapActivityContext();
+  const { activity } = useMapActivity();
   const { storedCountry, setCountryDataByCode, resetStore } = useCountryStore();
-  const { filteredCountryData, isCountryInData } = useCountryFiltersContext();
+  const { filteredCountryData, isCountryInData } = useCountryFilters();
 
   const {
     submitClick,

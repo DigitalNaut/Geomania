@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
-import { useGoogleDriveContext } from "src/contexts/GoogleDriveContext";
-import { useUserSettingsContext } from "src/contexts/UserSettingsContext";
+import { useGoogleDriveContext } from "src/hooks/useGoogleDrive";
+import { useUserSettingsContext } from "src/hooks/useUserSettings";
 import Button from "src/components/common/Button";
 import DriveIcon from "src/components/drive/DriveIcon";
 

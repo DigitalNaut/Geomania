@@ -2,8 +2,8 @@ import { type ChangeEventHandler, useState } from "react";
 import { animated } from "@react-spring/web";
 
 import { ActionButton } from "src/components/common/ActionButton";
-import { useFloatingPanelSlideInAnimation } from "src/components/activity/QuizFloatingPanel";
-import { useMapActivityContext } from "src/contexts/MapActivityContext";
+import { useFloatingPanelSlideInAnimation } from "src/components/activity/QuizFloatingPanel/hooks";
+import { useMapActivity } from "src/hooks/useMapActivity";
 import { CountryWikiInfo } from "src/components/info/CountryWikiInfo";
 import { InlineButton } from "./InlineButton";
 
@@ -22,7 +22,7 @@ export default function ReviewFloatingPanel({
 }) {
   const [showDetails, setShowDetails] = useState(false);
   const { firstTrail } = useFloatingPanelSlideInAnimation(shouldShow);
-  const { isRandomReviewMode, setRandomReviewMode } = useMapActivityContext();
+  const { isRandomReviewMode, setRandomReviewMode } = useMapActivity();
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => setRandomReviewMode(event.currentTarget.checked);
 
@@ -33,11 +33,11 @@ export default function ReviewFloatingPanel({
     >
       {!disabled && (
         <details
-          className="pointer-events-auto rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md hover:bg-sky-900"
+          className="pointer-events-auto rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
           open={showDetails}
           onToggle={(event) => setShowDetails(event.currentTarget.open)}
         >
-          <summary className="cursor-pointer">Wikipedia summary</summary>
+          <summary className="cursor-pointer pr-3">Wikipedia summary</summary>
           {shouldShow && showDetails && <CountryWikiInfo onError={onError} />}
         </details>
       )}

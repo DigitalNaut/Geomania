@@ -11,7 +11,7 @@ function filterText(text: string) {
 const domParser = new DOMParser();
 
 function useDOMParser(input = "") {
-  const [error, setError] = useState<Error | null>(new Error("A contrived error "));
+  const [error, setError] = useState<Error | null>(null);
 
   const doc = useMemo(() => {
     const filteredInput = filterText(input);

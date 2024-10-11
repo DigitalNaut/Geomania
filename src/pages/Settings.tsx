@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
 
-import { useUserSettingsContext } from "src/contexts/UserSettingsContext";
+import { useUserSettingsContext } from "src/hooks/useUserSettings";
 import { DriveAccessButton } from "src/components/drive/DriveAccess";
 import MainView from "src/components/layout/MainView";
 import Toggle from "src/components/common/Toggle";

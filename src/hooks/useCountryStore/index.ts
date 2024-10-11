@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
 import { type LatLngTuple } from "leaflet";
 
-import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
-import { useCountryStoreContext } from "src/contexts/CountryStoreContext";
-import type featuresData from "src/assets/data/features-data.json";
-
-export type CountryDataList = typeof featuresData;
-export type CountryData = CountryDataList[number];
-export type NullableCountryData = CountryData | null;
+import { useCountryFilters } from "src/hooks/useCountryFilters";
+import { useCountryStoreContext } from "./hooks";
+import type { CountryData, CountryDataList, NullableCountryData } from "./types";
 
 function normalizeName(name?: string) {
   return name
@@ -23,7 +19,7 @@ export function getCountryCoordinates(country: CountryData): LatLngTuple {
 }
 
 export function useCountryStore() {
-  const { filteredCountryData } = useCountryFiltersContext();
+  const { filteredCountryData } = useCountryFilters();
   const { storedCountry, setStoredCountry } = useCountryStoreContext();
 
   const resetWorkingList = () => [...filteredCountryData];
@@ -110,3 +106,5 @@ export function useCountryStore() {
     resetStore,
   };
 }
+
+export { CountryStoreProvider } from "./Provider";

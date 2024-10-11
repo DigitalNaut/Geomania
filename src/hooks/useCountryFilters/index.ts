@@ -1,31 +1,18 @@
-import { type PropsWithChildren, createContext, useContext, useMemo, useState, useCallback } from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
-import type { CountryData, CountryDataList } from "src/hooks/useCountryStore";
 import allFeaturesData from "src/assets/data/features-data.json";
-
-const countryDataByContinent = allFeaturesData.reduce((groups, country) => {
-  const { CONTINENT: continent } = country;
-
-  if (!groups.has(continent)) groups.set(continent, []);
-
-  const group = groups.get(continent)!;
-
-  group.push(country);
-
-  return groups;
-}, new Map<string, CountryDataList>());
-
-const optimizedAllFeaturesData: Map<string, CountryData> = new Map(
-  allFeaturesData.map((country) => [country.GU_A3, country]),
-);
-
-export const continents = [...countryDataByContinent.keys()];
+import type { CountryData } from "src/hooks/useCountryStore/types";
+import { continents, countryDataByContinent } from "./data";
 
 const initialContinentFilters = Object.fromEntries(continents.map((continent) => [continent, false]));
 
 export type CountryFilters = typeof initialContinentFilters;
 
-function useFilteredCountryData() {
+const optimizedAllFeaturesData: Map<string, CountryData> = new Map(
+  allFeaturesData.map((country) => [country.GU_A3, country]),
+);
+
+export function useFilteredCountryData() {
   const [continentFilters, setContinentFilters] = useState(initialContinentFilters);
 
   const filteredCountryData = useMemo(
@@ -75,17 +62,13 @@ function useFilteredCountryData() {
 
 const filteredCountryDataContext = createContext<ReturnType<typeof useFilteredCountryData> | null>(null);
 
-export default function CountryFiltersProvider({ children }: PropsWithChildren) {
-  const filteredCountryData = useFilteredCountryData();
+export const Provider = filteredCountryDataContext.Provider;
 
-  return (
-    <filteredCountryDataContext.Provider value={filteredCountryData}>{children}</filteredCountryDataContext.Provider>
-  );
-}
-
-export function useCountryFiltersContext() {
+export function useCountryFilters() {
   const context = useContext(filteredCountryDataContext);
   if (!context) throw new Error("useCountryFiltersContext must be used within a CountryFiltersProvider");
 
   return context;
 }
+
+export { CountryFiltersProvider } from "./Provider";

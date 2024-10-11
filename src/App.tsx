@@ -1,25 +1,23 @@
-import { Suspense, lazy } from "react";
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
-import { DriveAccessStatus } from "src/components/drive/DriveAccess";
-import { ManagedDriveProvider } from "src/components/drive/DriveIntegration";
-import { Spinner } from "src/components/common/Spinner";
-import CountryFiltersProvider from "src/contexts/CountryFiltersContext";
-import CountryStoreProvider from "src/contexts/CountryStoreContext";
 import ErrorFallback from "src/components/common/ErrorFallback";
+import { Spinner } from "src/components/common/Spinner";
 import Footer from "src/components/layout/Footer";
 import Nav from "src/components/layout/Header";
-import HeaderControllerProvider from "./contexts/HeaderControllerContext";
-import MapActivityProvider from "src/contexts/MapActivityContext";
-import MapContextProvider from "src/contexts/MapContext";
 import StandardLayout from "src/components/layout/StandardLayout";
-import UserGuessRecordProvider from "src/contexts/GuessRecordContext";
-import UserSettingsProvider from "src/contexts/UserSettingsContext";
+import { CountryFiltersProvider } from "src/hooks/useCountryFilters";
+import { CountryStoreProvider } from "src/hooks/useCountryStore";
+import { HeaderControllerProvider } from "src/hooks/useHeaderController";
+import { MapActivityProvider } from "src/hooks/useMapActivity";
+import { MapContextProvider } from "src/hooks/useMapContext";
+import { UserGuessRecordProvider } from "src/hooks/useUserGuessRecord";
+import { UserSettingsProvider } from "src/hooks/useUserSettings";
 
-const LazyMapActivity = lazy(() => import("src/pages/ActivityMap"));
+const LazyActivityMap = lazy(() => import("src/pages/ActivityMap"));
 const LazySettings = lazy(() => import("src/pages/Settings"));
 const LazyDashboard = lazy(() => import("src/pages/Dashboard"));
 const LazyPageNotFound = lazy(() => import("src/pages/PageNotFound"));
@@ -43,15 +41,6 @@ const router = createBrowserRouter([
             <Nav.Link to="settings" icon={faCog}>
               Settings
             </Nav.Link>
-            {/* {import.meta.env.DEV && (
-              <Header.Link to="drive" icon={faFlask}>
-                Drive
-              </Header.Link>
-            )} */}
-          </div>
-
-          <div className="flex w-full justify-end pl-2 text-sm">
-            <DriveAccessStatus />
           </div>
         </Nav>
 
@@ -85,7 +74,7 @@ const router = createBrowserRouter([
             index: true,
             element: (
               <MapContextProvider>
-                <LazyMapActivity />
+                <LazyActivityMap />
               </MapContextProvider>
             ),
           },
@@ -97,10 +86,6 @@ const router = createBrowserRouter([
             path: "/dashboard",
             element: <LazyDashboard />,
           },
-          // {
-          //   path: "/drive",
-          //   element: <DriveTestPage />,
-          // },
         ],
       },
       {
@@ -115,9 +100,7 @@ export default function App() {
   return (
     <HeaderControllerProvider>
       <UserSettingsProvider>
-        <ManagedDriveProvider>
-          <RouterProvider router={router} />
-        </ManagedDriveProvider>
+        <RouterProvider router={router} />
       </UserSettingsProvider>
     </HeaderControllerProvider>
   );

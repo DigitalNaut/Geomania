@@ -1,9 +1,9 @@
 import type { LatLngExpression } from "leaflet";
 import { useEffect } from "react";
 
-import { mapDefaults } from "src/components/map/LeafletMapFrame";
-import { useMapContext } from "src/contexts/MapContext";
-import { useUserSettingsContext } from "src/contexts/UserSettingsContext";
+import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
+import { useUserSettingsContext } from "src/hooks/useUserSettings";
+import { useMapContext } from "./useMapContext";
 
 type options = {
   padding: number;

@@ -1,6 +1,6 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse, type ResponseType } from "axios";
 
-import { useGoogleDriveContext } from "src/contexts/GoogleDriveContext";
+import { useGoogleDriveContext } from "src/hooks/useGoogleDrive";
 
 type MetadataType = {
   name: string;

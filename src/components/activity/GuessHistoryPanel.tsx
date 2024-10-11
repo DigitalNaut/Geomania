@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSpring, animated } from "@react-spring/web";
 import { twMerge } from "tailwind-merge";
 
-import type { CountryGuess } from "src/contexts/GuessRecordContext";
+import type { CountryGuess } from "src/hooks/useUserGuessRecord/types";
 import useScrollToTop from "src/hooks/useScrollToTop";
 
 let itemStyle: string;

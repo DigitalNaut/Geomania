@@ -1,8 +1,8 @@
 import { type PropsWithChildren } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-import { GoogleDriveProvider } from "src/contexts/GoogleDriveContext";
-import { useUserSettingsContext } from "src/contexts/UserSettingsContext";
+import { GoogleDriveProvider } from "src/hooks/useGoogleDrive";
+import { useUserSettingsContext } from "src/hooks/useUserSettings";
 import useEdgeKeys from "src/hooks/useEdgeKeys";
 
 /**

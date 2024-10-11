@@ -3,7 +3,8 @@ import { useMemo, useState } from "react";
 
 import Button from "src/components/common/Button";
 import Toggle from "src/components/common/Toggle";
-import { continents, useCountryFiltersContext, type CountryFilters } from "src/contexts/CountryFiltersContext";
+import { useCountryFilters, type CountryFilters } from "src/hooks/useCountryFilters";
+import { continents } from "src/hooks/useCountryFilters/data";
 import { cn } from "src/utils/styles";
 
 type ListItemProps = {
@@ -30,7 +31,7 @@ function createInitialToggles(continentFilters: CountryFilters) {
 }
 
 function RegionsToggleList() {
-  const { toggleContinentFilter, continentFilters } = useCountryFiltersContext();
+  const { toggleContinentFilter, continentFilters } = useCountryFilters();
   const initialToggles = useMemo(() => createInitialToggles(continentFilters), [continentFilters]);
   const [selectedContinents, setSelectedContinents] = useState<CountryFilters>(initialToggles);
 

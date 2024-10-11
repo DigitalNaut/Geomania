@@ -1,11 +1,12 @@
 import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import type { PropsWithChildren } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { PropsWithChildren } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
+import { useHeaderControllerContext } from "src/hooks/useHeaderController";
+
 import LogoImage from "src/assets/images/geomaniac-wordmark.min.svg?react";
-import { useHeaderControllerContext } from "src/contexts/HeaderControllerContext";
 
 type HeaderProps = PropsWithChildren<{
   className?: string;

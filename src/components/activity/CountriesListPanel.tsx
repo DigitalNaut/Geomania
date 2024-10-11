@@ -6,13 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSearchParams } from "react-router-dom";
 import { InlineButton } from "src/components/activity/InlineButton";
 import Toggle from "src/components/common/Toggle";
-import { continents, useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
-import {
-  type CountryData,
-  type CountryDataList,
-  type NullableCountryData,
-  useCountryStore,
-} from "src/hooks/useCountryStore";
+import { useCountryFilters } from "src/hooks/useCountryFilters";
+import { continents } from "src/hooks/useCountryFilters/data";
+import { useCountryStore } from "src/hooks/useCountryStore";
+import { type CountryData, type CountryDataList, type NullableCountryData } from "src/hooks/useCountryStore/types";
+
 import { cn } from "src/utils/styles";
 
 type CountryListEntryProps = {
@@ -93,7 +91,7 @@ function ContinentListEntry({
 
 export default function CountriesListPanel({ isAbridged = false }: { isAbridged?: boolean }) {
   const { toggleContinentFilter, countryDataByContinent, continentFilters, toggleAllContinentFilters } =
-    useCountryFiltersContext();
+    useCountryFilters();
   const { storedCountry } = useCountryStore();
   const listRef = useRef<HTMLDivElement>(null);
   const [, setURLSearchParams] = useSearchParams();

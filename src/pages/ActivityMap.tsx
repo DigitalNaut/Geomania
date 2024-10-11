@@ -17,19 +17,20 @@ import { LeafletMapFrame } from "src/components/map/LeafletMapFrame";
 import type { SvgMapColorTheme } from "src/components/map/MapSvg";
 import SvgMap from "src/components/map/MapSvg";
 import { markerIcon } from "src/components/map/MarkerIcon";
-import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
-import { useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
-import type { ActivityType } from "src/contexts/MapActivityContext";
-import { useMapActivityContext } from "src/contexts/MapActivityContext";
 import useActivityCoordinator from "src/controllers/useActivityCoordinator";
+import { useCountryFilters } from "src/hooks/useCountryFilters";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useError } from "src/hooks/useError";
 import useHeaderController from "src/hooks/useHeaderController";
+import { useMapActivity } from "src/hooks/useMapActivity";
+import type { ActivityType, ActivityMode } from "src/hooks/useMapActivity/types";
 import { useMapViewport } from "src/hooks/useMapViewport";
+import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
+import { cn } from "src/utils/styles";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
-const mapActivityTheme: Map<ActivityType["activity"] | "default", SvgMapColorTheme> = new Map([
+const mapActivityTheme: Map<ActivityMode | "default", SvgMapColorTheme> = new Map([
   [
     "review",
     {
@@ -43,7 +44,7 @@ const mapActivityTheme: Map<ActivityType["activity"] | "default", SvgMapColorThe
     "quiz",
     {
       country: {
-        active: { fill: "#FFFFFF2F", stroke: "#FFFFFF1F" },
+        active: { fill: "#0241637F", stroke: "#FFFFFF1F" },
         inactive: { fill: "#4755693F", stroke: "#FFFFFF00" },
       },
     },
@@ -66,9 +67,9 @@ function ActivityMap({
   setError: (error: Error) => void;
   onFinishActivity: () => void;
 }) {
-  const { filteredCountryData } = useCountryFiltersContext();
+  const { filteredCountryData } = useCountryFilters();
   const { storedCountry, resetStore } = useCountryStore();
-  const { activity } = useMapActivityContext();
+  const { activity } = useMapActivity();
   const { resetView } = useMapViewport({ options: { padding: 0.5 } });
   const { handleMapClick, visitedCountries, guessTally, giveHint, inputRef, nextCountry, submitAnswer, resetVisited } =
     useActivityCoordinator();
@@ -84,7 +85,11 @@ function ActivityMap({
   const colorTheme = useMemo(() => mapActivityTheme.get(activity?.activity || "default")!, [activity]);
 
   return (
-    <>
+    <div
+      className={cn("size-full bg-gradient-to-br from-sky-700 to-sky-800", {
+        "blur-sm": !activity,
+      })}
+    >
       <LeafletMapFrame showControls={activity?.activity === "review"}>
         {activity && (
           <>
@@ -146,7 +151,7 @@ function ActivityMap({
       />
 
       {activity && <RegionsDisabledOverlay shouldShow={filteredCountryData.length === 0} />}
-    </>
+    </div>
   );
 }
 
@@ -160,10 +165,10 @@ const activities: Activities = {
 
 // Main activity layout view
 export default function ActivityMapLayout() {
-  const { guessHistory } = useUserGuessRecordContext();
+  const { guessHistory } = useUserGuessRecord();
   const { error, setError, dismissError } = useError();
   const [, setURLSearchParams] = useSearchParams();
-  const { activity } = useMapActivityContext();
+  const { activity } = useMapActivity();
 
   const isActivityModeUndefined = useMemo(() => !activity || !activity.activity, [activity]);
 

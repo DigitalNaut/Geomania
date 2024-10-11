@@ -1,15 +1,15 @@
+import { faBroom } from "@fortawesome/free-solid-svg-icons";
+import { animated, useSpring } from "@react-spring/web";
 import type { RefObject } from "react";
 import { useMemo, useRef } from "react";
-import { animated, useSpring } from "@react-spring/web";
 
-import { faBroom } from "@fortawesome/free-solid-svg-icons";
-
-import { type GuessStats, useUserGuessRecordContext } from "src/contexts/GuessRecordContext";
 import { Link } from "react-router-dom";
-import Button from "src/components/common/Button";
-import MainView from "src/components/layout/MainView";
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg?url";
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
+import Button from "src/components/common/Button";
+import MainView from "src/components/layout/MainView";
+import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
+import type { GuessStats } from "src/hooks/useUserGuessRecord/types";
 
 type CountryProgressProps = {
   correct: number;
@@ -86,7 +86,7 @@ function useAnimatedDialog(ref: RefObject<HTMLDialogElement>) {
 }
 
 function useDashboard() {
-  const { countryStats, clearProgress } = useUserGuessRecordContext();
+  const { countryStats, clearProgress } = useUserGuessRecord();
 
   const countryStatsList: GuessStats[] | undefined = useMemo(() => {
     const countryValues = Object.values(countryStats);

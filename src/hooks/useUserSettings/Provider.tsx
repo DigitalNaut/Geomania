@@ -1,29 +1,11 @@
-import { type PropsWithChildren, type Dispatch, createContext, useContext, useReducer, useEffect } from "react";
-import { z } from "zod";
+import type { PropsWithChildren } from "react";
+import { useEffect, useReducer } from "react";
 
 import { useLocalStorage } from "src/hooks/useLocalStorage";
-
-const userSettingsSchema = z.object({
-  reducedMotion: z.boolean().default(false),
-  autoConnectDrive: z.boolean().default(false),
-});
-
-type UserSettings = z.infer<typeof userSettingsSchema>;
-
-type ActionType = {
-  type: "set" | "reset";
-  payload: Partial<UserSettings>;
-};
-
-type UserSettingsContext = {
-  userSettings: UserSettings;
-  setUserSetting: Dispatch<Partial<UserSettings>>;
-  resetUserSettings: () => void;
-};
-
-const userSettingsKey = "userSettings";
-const defaultUserSettings = userSettingsSchema.parse({});
-const userSettingsContext = createContext<UserSettingsContext | null>(null);
+import { Provider } from ".";
+import { defaultUserSettings } from "./defaults";
+import type { ActionType, UserSettings } from "./types";
+import { userSettingsSchema } from "./types";
 
 const reducer = (state: UserSettings, { type, payload }: ActionType): UserSettings => {
   switch (type) {
@@ -41,7 +23,9 @@ const reducer = (state: UserSettings, { type, payload }: ActionType): UserSettin
   }
 };
 
-export default function UserSettingsProvider({ children }: PropsWithChildren) {
+const userSettingsKey = "userSettings";
+
+export function UserSettingsProvider({ children }: PropsWithChildren) {
   const { data: savedUserSettings, saveData: saveUserSettings } = useLocalStorage<UserSettings>(
     userSettingsKey,
     defaultUserSettings,
@@ -66,7 +50,7 @@ export default function UserSettingsProvider({ children }: PropsWithChildren) {
   }, [savedUserSettings]);
 
   return (
-    <userSettingsContext.Provider
+    <Provider
       value={{
         userSettings,
         setUserSetting,
@@ -74,13 +58,6 @@ export default function UserSettingsProvider({ children }: PropsWithChildren) {
       }}
     >
       {children}
-    </userSettingsContext.Provider>
+    </Provider>
   );
-}
-
-export function useUserSettingsContext() {
-  const context = useContext(userSettingsContext);
-  if (!context) throw new Error("useUserSettingsContext must be used within a UserSettingsProvider");
-
-  return context;
 }

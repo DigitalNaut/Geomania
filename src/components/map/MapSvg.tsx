@@ -1,11 +1,12 @@
+import { type LeafletMouseEventHandlerFn } from "leaflet";
 import { Fragment, useCallback, useMemo } from "react";
 import { SVGOverlay, type SVGOverlayProps } from "react-leaflet";
-import { type LeafletMouseEventHandlerFn } from "leaflet";
 
-import { useCountryFiltersContext } from "src/contexts/CountryFiltersContext";
-import { useMapContext } from "src/contexts/MapContext";
-import { useSvgAttributes } from "src/hooks/useSVGAttributes";
 import mapSvg from "src/assets/images/world-map-mercator.svg?raw";
+import { useCountryFilters } from "src/hooks/useCountryFilters";
+import { useMapContext } from "src/hooks/useMapContext";
+import { useSvgAttributes } from "src/hooks/useSVGAttributes";
+import { twMerge } from "tailwind-merge";
 
 type PathProperties = {
   style: string;
@@ -51,14 +52,16 @@ export default function SvgMap({
   hidden,
   colorTheme,
   onClick,
+  className,
 }: {
   selectedPaths?: VisitedCountry[];
   hidden?: boolean;
   colorTheme: SvgMapColorTheme;
   onClick?: (a3: string) => void;
+  className?: string;
 }) {
   const { zoom } = useMapContext();
-  const { isCountryInData } = useCountryFiltersContext();
+  const { isCountryInData } = useCountryFilters();
 
   const {
     paths: allPaths,
@@ -110,7 +113,7 @@ export default function SvgMap({
       opacity={1}
       interactive
       zIndex={1000}
-      className="transition-colors duration-500 ease-in-out"
+      className={twMerge("transition-colors duration-500 ease-in-out", className)}
       eventHandlers={{ click }}
     >
       {otherPaths.map((path, index) => {
