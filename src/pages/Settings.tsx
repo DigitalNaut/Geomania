@@ -2,11 +2,9 @@ import type { PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
 
 import { useUserSettingsContext } from "src/hooks/useUserSettings";
-import { DriveAccessButton } from "src/components/drive/DriveAccess";
 import MainView from "src/components/layout/MainView";
 import Toggle from "src/components/common/Toggle";
 import Button from "src/components/common/Button";
-import DriveIcon from "src/components/drive/DriveIcon";
 
 function SettingInfo({
   label,
@@ -33,7 +31,7 @@ function SettingInfo({
 }
 
 function SettingsSection({ children }: PropsWithChildren) {
-  return <div className="flex flex-col gap-4 rounded-md bg-white/5 px-3 py-4">{children}</div>;
+  return <div className="flex flex-col gap-4 rounded-md bg-white/5 px-6 py-4">{children}</div>;
 }
 
 export default function Settings() {
@@ -61,33 +59,6 @@ export default function Settings() {
           </SettingsSection>
 
           <SettingsSection>
-            <SettingInfo
-              label={
-                <span className="flex items-center gap-1">
-                  <DriveIcon />
-                  Google Drive
-                </span>
-              }
-              description="Connect your Google Drive account to store your progress and settings."
-              info={
-                <>
-                  No personal data or identifying information is stored. You can manage the stored information on your
-                  Google Drive
-                  <a
-                    className="mx-[0.25em] text-blue-300 underline hover:text-blue-100"
-                    href="https://drive.google.com/drive/settings"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    account settings
-                  </a>
-                  under the &ldquo;Manage apps&rdquo; tab.
-                </>
-              }
-            >
-              <DriveAccessButton />
-            </SettingInfo>
-
             <SettingInfo small label="Auto connect">
               <Toggle
                 value={userSettings.autoConnectDrive}
