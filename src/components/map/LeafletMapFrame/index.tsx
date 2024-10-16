@@ -1,9 +1,9 @@
 import type { PropsWithChildren } from "react";
 import { useEffect } from "react";
 import { MapContainer, useMapEvents } from "react-leaflet";
+import { twMerge } from "tailwind-merge";
 
 import { useMapContext } from "src/hooks/useMapContext";
-import { cn } from "src/utils/styles";
 import { mapDefaults } from "./defaults";
 import { TileLayersControl } from "./TileLayersControl";
 
@@ -36,10 +36,10 @@ export function LeafletMapFrame({
   className?: string;
 }>) {
   return (
-    <MapContainer className={cn("size-full", className)} {...mapDefaults}>
+    <MapContainer className={twMerge("size-full", className)} {...mapDefaults}>
       <MapEvents />
       {children}
-      {showControls && <TileLayersControl />}
+      {showControls && <TileLayersControl checked={"None"} position="topright" />}
     </MapContainer>
   );
 }

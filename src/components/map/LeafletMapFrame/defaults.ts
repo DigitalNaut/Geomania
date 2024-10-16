@@ -15,5 +15,5 @@ export const mapDefaults: Required<
   maxBoundsViscosity: 0.5,
   style: {
     backgroundColor: "transparent",
-  }
+  },
 } as const;

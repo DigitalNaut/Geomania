@@ -1,3 +1,4 @@
+import type { ControlPosition } from "leaflet";
 import { LayersControl, TileLayer } from "react-leaflet";
 
 const tileLayerProviders = [
@@ -11,13 +12,15 @@ const tileLayerProviders = [
     url: "",
     attribution: "",
   },
-];
+] as const;
 
-export function TileLayersControl() {
+type Provider = (typeof tileLayerProviders)[number];
+
+export function TileLayersControl({ checked, position }: { checked: Provider["name"]; position: ControlPosition }) {
   return (
-    <LayersControl position="topright">
+    <LayersControl position={position}>
       {tileLayerProviders.map((provider) => (
-        <LayersControl.BaseLayer key={provider.name} name={provider.name} checked={provider.name === "None"}>
+        <LayersControl.BaseLayer key={provider.name} name={provider.name} checked={provider.name === checked}>
           <TileLayer url={provider.url} attribution={provider.attribution} />
         </LayersControl.BaseLayer>
       ))}

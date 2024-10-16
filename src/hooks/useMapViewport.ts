@@ -27,7 +27,7 @@ export function useMapViewport({ options }: { options?: options } = {}) {
     { zoom = 4, animate = true, duration = userSettings.reducedMotion ? 0.1 : 0.25 } = {},
     delay = 0,
   ) {
-    if (!destination || !map) return;
+    if (!map || !destination) return;
 
     if (delay > 0) {
       await new Promise((resolve) => setTimeout(resolve, delay));

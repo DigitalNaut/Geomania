@@ -37,18 +37,36 @@
     "wikipedia",
     "wordmark",
     "Xmark",
+    "Zapsplat",
     "zoomend"
   ],
   "dotenv.enableAutocloaking": false,
   "deno.enable": true,
   "deno.lint": true,
-  "deno.enablePaths": ["netlify/edge-functions"],
+  "deno.enablePaths": [
+    "netlify/edge-functions"
+  ],
   "deno.unstable": true,
   "deno.importMap": ".netlify/edge-functions-import-map.json",
-  "deno.path": "C:\\Users\\hoaxy\\AppData\\Roaming\\netlify\\Config\\deno-cli\\deno.exe",
   "markdownlint.config": {
     "MD033": {
-      "allowed_elements": ["details", "summary"]
+      "allowed_elements": [
+        "details",
+        "summary"
+      ]
     }
-  }
+  },
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "class:list",
+    ".+Styles?"
+  ],
+  "tailwindCSS.experimental.classRegex": [
+    ".*Styles?",
+    ["Classes \\=([^;]*);", "'([^']*)'"],
+    ["Classes \\=([^;]*);", "\"([^\"]*)\""],
+    ["Classes \\=([^;]*);", "\\`([^\\`]*)\\`"]
+  ]
 }

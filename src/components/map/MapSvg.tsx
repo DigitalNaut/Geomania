@@ -1,12 +1,19 @@
-import { type LeafletMouseEventHandlerFn } from "leaflet";
-import { Fragment, useCallback, useMemo } from "react";
-import { SVGOverlay, type SVGOverlayProps } from "react-leaflet";
+import type { LeafletMouseEventHandlerFn } from "leaflet";
+import { latLngBounds } from "leaflet";
+import { Fragment, useCallback, useMemo, useState } from "react";
+import type { SVGOverlayProps } from "react-leaflet";
+import { SVGOverlay } from "react-leaflet";
 
 import mapSvg from "src/assets/images/world-map-mercator.svg?raw";
 import { useCountryFilters } from "src/hooks/useCountryFilters";
 import { useMapContext } from "src/hooks/useMapContext";
 import { useSvgAttributes } from "src/hooks/useSVGAttributes";
+import { cn } from "src/utils/styles";
 import { twMerge } from "tailwind-merge";
+
+// Moves the SVG map down to match OpenStreetMap
+const verticalAdjustment = -5.765; // Slides vertically
+const horizontalAdjustment = 0.45; // Scales whole map
 
 type PathProperties = {
   style: string;
@@ -30,15 +37,10 @@ const svgAttributes: SVGOverlayProps["attributes"] = {
   strokeWidth: "0.01",
 };
 
-const svgCorners: Parameters<typeof useSvgAttributes>[2] = {
-  topLeftCorner: [-83.05, -180.6],
-  bottomRightCorner: [83.09, 180.6],
-};
-
 export type SvgMapColorTheme = {
   country: {
-    active: { fill: string; stroke: string };
-    inactive: { fill: string; stroke: string };
+    activeStyle: string;
+    inactiveStyle: string;
   };
 };
 
@@ -63,13 +65,19 @@ export default function SvgMap({
   const { zoom } = useMapContext();
   const { isCountryInData } = useCountryFilters();
 
-  const {
-    paths: allPaths,
-    bounds,
-    width,
-    height,
-    viewBox,
-  } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"], svgCorners);
+  const { paths: allPaths, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"]);
+
+  const [bounds] = useState(() => {
+    const top = 90 + verticalAdjustment,
+      bottom = -90 + verticalAdjustment,
+      left = -180 + -horizontalAdjustment,
+      right = 180 + horizontalAdjustment;
+
+    return latLngBounds([
+      [bottom, left],
+      [top, right],
+    ]);
+  });
 
   const [styledPaths, otherPaths] = useMemo(() => {
     if (!allPaths) return [[], []];
@@ -110,7 +118,7 @@ export default function SvgMap({
         height,
         viewBox,
       }}
-      opacity={1}
+      opacity={0.8}
       interactive
       zIndex={1000}
       className={twMerge("transition-colors duration-500 ease-in-out", className)}
@@ -123,9 +131,8 @@ export default function SvgMap({
             key={index}
             data-a3={path.id}
             d={path.getAttribute("d") ?? ""}
+            className={cn(isActive ? colorTheme.country.activeStyle : colorTheme.country.inactiveStyle)}
             style={{
-              stroke: isActive ? colorTheme.country.active.stroke : colorTheme.country.inactive.stroke,
-              fill: isActive ? colorTheme.country.active.fill : colorTheme.country.inactive.fill,
               strokeWidth: adjustForZoom(3),
             }}
           />

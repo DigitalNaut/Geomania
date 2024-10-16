@@ -23,41 +23,32 @@ import { useCountryStore } from "src/hooks/useCountryStore";
 import { useError } from "src/hooks/useError";
 import useHeaderController from "src/hooks/useHeaderController";
 import { useMapActivity } from "src/hooks/useMapActivity";
-import type { ActivityType, ActivityMode } from "src/hooks/useMapActivity/types";
+import type { ActivityMode, ActivityType } from "src/hooks/useMapActivity/types";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
 import { cn } from "src/utils/styles";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
+const reviewCountryStyle = {
+  activeStyle: "fill-sky-900 stroke-sky-800",
+  inactiveStyle: "fill-sky-800 stroke-sky-900/20",
+};
+
+const quizCountryStyle = {
+  activeStyle: "fill-sky-900 stroke-sky-500",
+  inactiveStyle: "fill-sky-800 stroke-none",
+};
+
+const defaultCountryStyle = {
+  activeStyle: "fill-sky-700 stroke-none",
+  inactiveStyle: "fill-sky-700 stroke-none",
+};
+
 const mapActivityTheme: Map<ActivityMode | "default", SvgMapColorTheme> = new Map([
-  [
-    "review",
-    {
-      country: {
-        active: { fill: "#0241637F", stroke: "#FFFFFF2F" },
-        inactive: { fill: "#0241633F", stroke: "#FFFFFF00" },
-      },
-    },
-  ],
-  [
-    "quiz",
-    {
-      country: {
-        active: { fill: "#0241637F", stroke: "#FFFFFF1F" },
-        inactive: { fill: "#4755693F", stroke: "#FFFFFF00" },
-      },
-    },
-  ],
-  [
-    "default",
-    {
-      country: {
-        active: { fill: "#0241633F", stroke: "#FFFFFF00" },
-        inactive: { fill: "#0241631F", stroke: "#FFFFFF00" },
-      },
-    },
-  ],
+  ["review", { country: reviewCountryStyle }],
+  ["quiz", { country: quizCountryStyle }],
+  ["default", { country: defaultCountryStyle }],
 ]);
 
 function ActivityMap({
@@ -70,7 +61,7 @@ function ActivityMap({
   const { filteredCountryData } = useCountryFilters();
   const { storedCountry, resetStore } = useCountryStore();
   const { activity } = useMapActivity();
-  const { resetView } = useMapViewport({ options: { padding: 0.5 } });
+  const { resetView } = useMapViewport({ options: { padding: 0 } });
   const { handleMapClick, visitedCountries, guessTally, giveHint, inputRef, nextCountry, submitAnswer, resetVisited } =
     useActivityCoordinator();
 
