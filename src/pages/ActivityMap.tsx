@@ -31,12 +31,12 @@ import { cn } from "src/utils/styles";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
 const reviewCountryStyle = {
-  activeStyle: "fill-sky-900 stroke-sky-800",
+  activeStyle: "fill-lime-700/70 stroke-sky-800",
   inactiveStyle: "fill-sky-800 stroke-sky-900/20",
 };
 
 const quizCountryStyle = {
-  activeStyle: "fill-sky-900 stroke-sky-500",
+  activeStyle: "fill-lime-700/70 stroke-sky-800",
   inactiveStyle: "fill-sky-800 stroke-none",
 };
 
