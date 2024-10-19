@@ -111,6 +111,7 @@ export default function SvgMap({
 
   return (
     <SVGOverlay
+      interactive
       bounds={bounds}
       attributes={{
         ...svgAttributes,
@@ -118,8 +119,6 @@ export default function SvgMap({
         height,
         viewBox,
       }}
-      opacity={0.8}
-      interactive
       zIndex={1000}
       className={twMerge("transition-colors duration-500 ease-in-out", className)}
       eventHandlers={{ click }}
@@ -173,15 +172,15 @@ export default function SvgMap({
               height="9"
               patternTransform="scale(0.25) rotate(45 3 3)"
             >
-              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[6%]" cx="2" cy="2" />
-              <circle width="3" height="3" r="0.5" stroke="none" className="fill-white/[9%]" cx="5" cy="2" />
-              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[6%]" cx="8" cy="2" />
-              <circle width="3" height="3" r="0.5" stroke="none" className="fill-white/[9%]" cx="2" cy="5" />
-              <circle width="3" height="3" r="0.75.25" stroke="none" className="fill-white/[6%]" cx="5" cy="5" />
-              <circle width="3" height="3" r="0.5" stroke="none" className="fill-white/[6%]" cx="8" cy="5" />
-              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[6%]" cx="2" cy="8" />
-              <circle width="3" height="3" r="0.5" stroke="none" className="fill-white/[9%]" cx="5" cy="8" />
-              <circle width="3" height="3" r="0.75" stroke="none" className="fill-white/[6%]" cx="8" cy="8" />
+              <ellipse rx="0.55" ry="0.25" cx="2" cy="2" stroke="none" className="fill-white/[6%]" />
+              <ellipse rx="0.25" ry="0.55" cx="5" cy="2" stroke="none" className="fill-white/[9%]" />
+              <ellipse rx="0.55" ry="0.25" cx="8" cy="2" stroke="none" className="fill-white/[6%]" />
+              <ellipse rx="0.25" ry="0.55" cx="2" cy="5" stroke="none" className="fill-white/[9%]" />
+              <ellipse rx="0.55" ry="0.25" cx="5" cy="5" stroke="none" className="fill-white/[6%]" />
+              <ellipse rx="0.25" ry="0.55" cx="8" cy="5" stroke="none" className="fill-white/[6%]" />
+              <ellipse rx="0.55" ry="0.25" cx="2" cy="8" stroke="none" className="fill-white/[6%]" />
+              <ellipse rx="0.25" ry="0.55" cx="5" cy="8" stroke="none" className="fill-white/[9%]" />
+              <ellipse rx="0.55" ry="0.25" cx="8" cy="8" stroke="none" className="fill-white/[6%]" />
             </pattern>
           </defs>
 
