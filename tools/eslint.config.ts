@@ -20,7 +20,6 @@ export default tsEslint.config(
     rules: {
       "no-console": "off",
       "@typescript-eslint/consistent-type-imports": "error",
-      "no-relative-import-paths/no-relative-import-paths": ["warn", { allowSameFolder: true }],
       "object-shorthand": ["warn", "always"],
       "consistent-return": ["warn"],
       "no-use-before-define": "warn",
