@@ -6,9 +6,8 @@
   "main": "src/index.ts",
   "scripts": {
     "wiki-data": "node --loader ts-node/esm src/wiki-data/index.ts",
-    "svg-map": "run-p svg-map:*",
-    "svg-map:countries": "mapshaper src/svg-map/in/ne_50m_admin_0_countries/ne_50m_admin_0_countries.shp -clip bbox=-180,-85,180,85 remove-slivers -explode -simplify weighted keep-shapes 10% -clean -proj EPSG:3857 -dissolve GEOUNIT copy-fields=SOVEREIGNT,SOV_A3,ADM0_DIF,ADMIN,ADM0_A3,GEOU_DIF,GEOUNIT,GU_A3,MAPCOLOR7,CONTINENT,SUBREGION,MIN_ZOOM,MIN_LABEL,MAX_LABEL,scalerank,LABEL_X,LABEL_Y,WIKIDATAID,ISO_A2_EH -sort 'SOVEREIGNT' -o src/svg-map/out/features-data.json format=json -o src/svg-map/out/world-map-countries.svg id-field=GU_A3 format=svg",
-    "svg-map:continents": "mapshaper src/svg-map/in/ne_50m_admin_0_countries/ne_50m_admin_0_countries.shp -clip bbox=-180,-85,180,85 remove-slivers -explode -simplify weighted 3% -clean -proj merc -dissolve CONTINENT -o src/svg-map/out/world-map-continents.svg id-field=CONTINENT format=svg",
+    "svg-map": "node --loader ts-node/esm src/svg-map/index.ts",
+    "clean": "run-p clean:*",
     "clean:svg-map": "rm -rf src/svg-map/out/",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/**/*.ts",

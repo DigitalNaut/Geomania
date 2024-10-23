@@ -1,11 +1,16 @@
-# Data Sources
+# SVG Map Builder
 
-Natural Earth Data
+## Description
 
+This tool creates the SVG maps for Geomaniac.
 
-https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/50m/cultural/ne_50m_admin_0_countries.zip
+All data sources are available from the [Natural Earth Data website](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/).
 
-# How to use
+A direct download link isn't allowed by the server to download automatically so they'll need to be manually downloaded and saved to the [in](./in/) directory.
+
+The script will look for the first ShapeFile (.shp) and use that as its source.
+
+## How to use
 
 For creating all maps, use:
 
@@ -13,14 +18,12 @@ For creating all maps, use:
 pnpm svg-map
 ```
 
-For individual countries, use:
+## Output
 
-```bash
-pnpm svg-map:countries
-```
+The output is located in the [out](./out/) directory.
 
-For individual continents, use:
+The following files are generated:
 
-```bash
-pnpm svg-map:continents
-```
+- `*.svg` map of the countries
+- `.json` file of the features
+- `*.svg` map of the continents
