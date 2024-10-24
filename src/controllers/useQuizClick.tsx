@@ -1,7 +1,7 @@
 import { qualifyScore } from "src/controllers/scores";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useQuiz } from "src/controllers/useQuiz";
-import allFeaturesData from "src/assets/data/features-data.json";
+import allFeaturesData from "src/assets/data/country-features.json";
 
 export function useQuizClick() {
   const { submitAnswer, userGuessTally, resetTally, pushVisitedCountry, visitedCountries } = useQuiz();

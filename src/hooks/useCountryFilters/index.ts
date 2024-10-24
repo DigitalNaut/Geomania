@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
-import allFeaturesData from "src/assets/data/features-data.json";
+import allFeaturesData from "src/assets/data/country-features.json";
 import type { CountryData } from "src/hooks/useCountryStore/types";
 import { continents, countryDataByContinent } from "./data";
 

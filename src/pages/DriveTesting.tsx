@@ -9,7 +9,7 @@ import { DriveAccessButton } from "src/components/drive/DriveAccess";
 
 import mapSvg from "src/assets/images/world-map-mercator.svg?raw";
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
-import allFeaturesData from "src/assets/data/features-data.json";
+import allFeaturesData from "src/assets/data/country-features.json";
 
 function useMapSvg() {
   const parser = new DOMParser();
