@@ -8,8 +8,8 @@ import FloatingHeader from "src/components/activity/FloatingHeader";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import InstructionOverlay from "src/components/activity/InstructionOverlay";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
-import RegionsDisabledOverlay from "src/components/activity/RegionsToggle";
-import ReviewFloatingPanel from "src/components/activity/ReviewFloatingPanel";
+import RegionsToggleOverlay from "src/components/activity/RegionsToggle";
+import ReviewFloatingPanel, { WikipediaFloatingPanel } from "src/components/activity/ReviewFloatingPanel";
 import ErrorBanner from "src/components/common/ErrorBanner";
 import MainView from "src/components/layout/MainView";
 import { BackControl } from "src/components/map/BackControl";
@@ -30,14 +30,19 @@ import { cn } from "src/utils/styles";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
+const mapGradientStyle = {
+  noActivity: "bg-gradient-to-br from-sky-700 to-sky-800 blur-sm",
+  activity: "from-zinc-900 to-zinc-900 blur-none",
+};
+
 const reviewCountryStyle = {
-  activeStyle: "fill-lime-700/40 stroke-sky-800",
-  inactiveStyle: "fill-sky-800 stroke-sky-900/20",
+  activeStyle: "fill-zinc-600 stroke-zinc-700",
+  inactiveStyle: "fill-zinc-800 stroke-none",
 };
 
 const quizCountryStyle = {
-  activeStyle: "fill-lime-700/40 stroke-sky-800",
-  inactiveStyle: "fill-sky-800 stroke-none",
+  activeStyle: "fill-zinc-700 stroke-zinc-700",
+  inactiveStyle: "fill-sky-700 stroke-none",
 };
 
 const defaultCountryStyle = {
@@ -77,8 +82,8 @@ function ActivityMap({
 
   return (
     <div
-      className={cn("size-full bg-gradient-to-br from-sky-700 to-sky-800", {
-        "blur-sm": !activity,
+      className={cn("size-full", mapGradientStyle.noActivity, {
+        [mapGradientStyle.activity]: activity?.activity,
       })}
     >
       <LeafletMapFrame showControls={activity?.activity === "review"}>
@@ -138,10 +143,15 @@ function ActivityMap({
         showNextCountry={nextCountry}
         disabled={filteredCountryData.length === 0}
         onReset={resetVisited}
+      />
+
+      <WikipediaFloatingPanel
+        disabled={filteredCountryData.length === 0}
+        shouldShow={activity?.activity === "review"}
         onError={setError}
       />
 
-      {activity && <RegionsDisabledOverlay shouldShow={filteredCountryData.length === 0} />}
+      {activity && <RegionsToggleOverlay shouldShow={filteredCountryData.length === 0} />}
     </div>
   );
 }
@@ -161,7 +171,7 @@ export default function ActivityMapLayout() {
   const [, setURLSearchParams] = useSearchParams();
   const { activity } = useMapActivity();
 
-  const isActivityModeUndefined = useMemo(() => !activity || !activity.activity, [activity]);
+  const isActivitySelected = useMemo(() => !activity || !activity.activity, [activity]);
 
   return (
     <>
@@ -172,14 +182,14 @@ export default function ActivityMapLayout() {
       )}
 
       <MainView className="relative overflow-auto">
-        <InstructionOverlay shouldShow={isActivityModeUndefined}>
+        <InstructionOverlay shouldShow={isActivitySelected}>
           <ActivitySection>
             <ActivityButton
               className="bg-gradient-to-br from-blue-600 to-blue-700"
               label="🗺 Review"
               onClick={() => setURLSearchParams(activities["review-countries"])}
             >
-              Learn about the cultures, geography, and history of countries from around the world.
+              Learn the countries by region.
             </ActivityButton>
           </ActivitySection>
           <ActivitySection>
@@ -188,19 +198,19 @@ export default function ActivityMapLayout() {
               label="⌨ Typing Quiz"
               onClick={() => setURLSearchParams(activities["quiz-typing"])}
             >
-              Type the name of the country.
+              Type in the name of the country.
             </ActivityButton>
             <ActivityButton
               className="bg-gradient-to-br from-green-600 to-green-700"
               label="👆 Point & Click"
               onClick={() => setURLSearchParams(activities["quiz-pointing"])}
             >
-              Choose the correct country on the map.
+              Point out the country on the map.
             </ActivityButton>
           </ActivitySection>
         </InstructionOverlay>
 
-        <FloatingHeader shouldShow={!isActivityModeUndefined} imageSrc={NerdMascot}>
+        <FloatingHeader shouldShow={!isActivitySelected} imageSrc={NerdMascot}>
           {activity?.activity === "quiz" && <span>Guess the country!</span>}
           {activity?.activity === "review" && <span>Reviewing countries</span>}
         </FloatingHeader>

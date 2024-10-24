@@ -69,7 +69,7 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
     );
 
   return (
-    <section className="flex max-h-[300px] max-w-xl flex-col py-3">
+    <section className="flex max-h-[60vh] max-w-md flex-col py-3">
       <div className="prose visible scroll-pb-3 overflow-y-auto indent-2 text-white scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700">
         <div className="float-left mt-5">
           {page.thumbnail && (
