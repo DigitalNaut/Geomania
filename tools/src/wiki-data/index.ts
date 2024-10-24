@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import data from "../../../src/assets/data/features-data.json" with { type: "json" };
+import data from "../../../src/assets/data/country-features.json" with { type: "json" };
 
 const [{ WIKIDATAID }] = data;
 
