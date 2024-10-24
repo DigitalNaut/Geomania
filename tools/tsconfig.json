@@ -23,6 +23,6 @@
     "src"
   ],
   "lib": [
-    "ESNext"
+    "ESNext, NodeNext"
   ]
 }

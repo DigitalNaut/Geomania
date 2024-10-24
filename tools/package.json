@@ -5,8 +5,8 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "wiki-data": "node --loader ts-node/esm src/wiki-data/index.ts",
-    "svg-map": "node --loader ts-node/esm src/svg-map/index.ts",
+    "wiki-data": "node --loader ts-node/esm src/wiki-data",
+    "svg-map": "node --env-file=src/svg-map/.env --loader ts-node/esm src/svg-map",
     "clean": "run-p clean:*",
     "clean:svg-map": "rm -rf src/svg-map/out/",
     "typecheck": "tsc --noEmit",
@@ -30,6 +30,7 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
+    "chalk": "^5.3.0",
     "mapshaper": "^0.6.101"
   }
 }

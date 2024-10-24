@@ -4,9 +4,19 @@
 
 This tool creates the SVG maps for Geomaniac.
 
-All data sources are available from the [Natural Earth Data website](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/).
+All data sources are retrieved from the [Natural Earth Data website](https://www.naturalearthdata.com/downloads/).
 
-A direct download link isn't allowed by the server to download automatically so they'll need to be manually downloaded and saved to the [in](./in/) directory.
+We use the `50m-cultural-vectors` dataset which you can download [here](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/) (~780 KB).
+
+### Behavior
+
+A direct download link isn't allowed by the server without a referrer.
+
+For this reason, we have to download the data via:
+
+```bash
+curl -o archive.zip -L -e  ne_50m_admin_0_countries.zip https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/50m/cultural/ne_50m_admin_0_countries.zip
+```
 
 The script will look for the first ShapeFile (.shp) and use that as its source.
 
