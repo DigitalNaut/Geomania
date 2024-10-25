@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from "react";
-import axios, { type AxiosRequestConfig } from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { useCountryStore } from "src/hooks/useCountryStore";
-import { RenderDOM } from "src/components/common/RenderDOM";
+import axios, { type AxiosRequestConfig } from "axios";
+import { useEffect, useMemo } from "react";
 
+import { RenderDOM } from "src/components/common/RenderDOM";
+import { useCountryStore } from "src/hooks/useCountryStore";
 import { type WikidataSummaryResponse } from "src/types/wikipedia";
 
 const wikiLogoURL =
@@ -71,17 +71,17 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
   return (
     <section className="flex max-h-[60vh] max-w-md flex-col pb-3">
       <div className="prose visible relative scroll-p-8 overflow-y-auto break-words pr-2 text-justify indent-4 text-white scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700">
-        <div className="float-left">
+        <div className="float-right">
           {page.thumbnail && (
             <img
-              className="peer m-4"
+              className="peer mb-2 ml-4"
               alt={storedCountry.data?.GEOUNIT}
               src={page.thumbnail.source}
               width={page.thumbnail.width}
             />
           )}
 
-          <span className="pointer-events-none absolute top-0 z-50 hidden rounded-sm bg-slate-200 p-2 shadow-lg peer-hover:block">
+          <span className="pointer-events-none absolute inset-x-0 top-0 z-50 hidden rounded-sm bg-slate-200 p-2 shadow-lg peer-hover:block">
             {page.original && (
               <img
                 className="shadow-md"
@@ -96,12 +96,12 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
 
         <RenderDOM input={page.extract} />
       </div>
-      <span className="flex justify-end border-t-2 border-sky-800 pt-2">
+      <span className="flex justify-end border-t-2 border-sky-800 pt-2 text-blue-300">
         <a
+          className="mr-2 flex items-center justify-end gap-1 hover:underline"
           href={page.fullurl}
           target="_blank"
           rel="noreferrer"
-          className="mr-2 flex items-center justify-end gap-1 text-blue-300 hover:underline"
         >
           Read more on
           <img src={wikiLogoURL} loading="lazy" width={16} />

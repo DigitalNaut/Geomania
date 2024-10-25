@@ -1,11 +1,12 @@
+import { animated } from "@react-spring/web";
 import type { ChangeEventHandler } from "react";
 import { useState } from "react";
-import { animated } from "@react-spring/web";
 
-import { ActionButton } from "src/components/common/ActionButton";
 import { useFloatingPanelSlideInAnimation } from "src/components/activity/QuizFloatingPanel/hooks";
-import { useMapActivity } from "src/hooks/useMapActivity";
+import { ActionButton } from "src/components/common/ActionButton";
 import { CountryWikiInfo } from "src/components/info/CountryWikiInfo";
+import { UnsplashImages } from "src/components/info/UnsplashImages";
+import { useMapActivity } from "src/hooks/useMapActivity";
 import { InlineButton } from "./InlineButton";
 
 export function WikipediaFloatingPanel({
@@ -22,15 +23,41 @@ export function WikipediaFloatingPanel({
   if (disabled) return null;
 
   return (
-    <div className="pointer-events-none absolute left-4 top-16 z-[1000] my-auto flex size-fit flex-col items-center gap-2 rounded-md">
+    <div className="absolute left-4 top-16 z-[1000] rounded-md">
       {shouldShow && (
         <details
-          className="pointer-events-auto rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
+          className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
           open={showDetails}
           onToggle={(event) => setShowDetails(event.currentTarget.open)}
         >
           <summary className="cursor-pointer pr-3">Wikipedia summary</summary>
           {showDetails && <CountryWikiInfo onError={onError} />}
+        </details>
+      )}
+    </div>
+  );
+}
+
+export function UnsplashImagesFloatingPanel({
+  disabled,
+  shouldShow,
+  onError,
+}: {
+  disabled: boolean;
+  shouldShow: boolean;
+  onError: (error: Error) => void;
+}) {
+  if (disabled) return null;
+
+  return (
+    <div className="absolute right-16 top-16 z-[1000] rounded-md">
+      {shouldShow && (
+        <details
+          className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
+          open
+        >
+          <summary className="cursor-pointer pr-3">Unsplash images</summary>
+          <UnsplashImages onError={onError} />
         </details>
       )}
     </div>

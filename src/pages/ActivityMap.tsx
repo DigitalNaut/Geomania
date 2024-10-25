@@ -9,7 +9,10 @@ import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import InstructionOverlay from "src/components/activity/InstructionOverlay";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
 import RegionsToggleOverlay from "src/components/activity/RegionsToggle";
-import ReviewFloatingPanel, { WikipediaFloatingPanel } from "src/components/activity/ReviewFloatingPanel";
+import ReviewFloatingPanel, {
+  UnsplashImagesFloatingPanel,
+  WikipediaFloatingPanel,
+} from "src/components/activity/ReviewFloatingPanel";
 import ErrorBanner from "src/components/common/ErrorBanner";
 import MainView from "src/components/layout/MainView";
 import { BackControl } from "src/components/map/BackControl";
@@ -141,6 +144,11 @@ function ActivityMap({
         onReset={resetVisited}
       />
       <WikipediaFloatingPanel
+        disabled={filteredCountryData.length === 0}
+        shouldShow={activity?.activity === "review" && filteredCountryData.length > 0}
+        onError={setError}
+      />
+      <UnsplashImagesFloatingPanel
         disabled={filteredCountryData.length === 0}
         shouldShow={activity?.activity === "review" && filteredCountryData.length > 0}
         onError={setError}
