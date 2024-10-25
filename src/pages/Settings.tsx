@@ -58,15 +58,6 @@ export default function Settings() {
             </SettingInfo>
           </SettingsSection>
 
-          <SettingsSection>
-            <SettingInfo small label="Auto connect">
-              <Toggle
-                value={userSettings.autoConnectDrive}
-                onChange={(value) => setUserSetting({ autoConnectDrive: value })}
-              />
-            </SettingInfo>
-          </SettingsSection>
-
           <div className="mt-4 flex w-full justify-end">
             <Button onClick={reset} styles="secondary">
               Restore defaults
