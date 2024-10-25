@@ -142,7 +142,7 @@ function ActivityMap({
       />
       <WikipediaFloatingPanel
         disabled={filteredCountryData.length === 0}
-        shouldShow={activity?.activity === "review"}
+        shouldShow={activity?.activity === "review" && filteredCountryData.length > 0}
         onError={setError}
       />
       {activity && <RegionsToggleOverlay shouldShow={filteredCountryData.length === 0} />}

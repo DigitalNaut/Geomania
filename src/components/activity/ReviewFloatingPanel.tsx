@@ -22,16 +22,18 @@ export function WikipediaFloatingPanel({
   if (disabled) return null;
 
   return (
-    <animated.div className="pointer-events-none absolute left-4 top-16 z-[1000] my-auto flex size-fit flex-col items-center gap-2 rounded-md">
-      <details
-        className="pointer-events-auto rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
-        open={showDetails}
-        onToggle={(event) => setShowDetails(event.currentTarget.open)}
-      >
-        <summary className="cursor-pointer pr-3">Wikipedia summary</summary>
-        {shouldShow && showDetails && <CountryWikiInfo onError={onError} />}
-      </details>
-    </animated.div>
+    <div className="pointer-events-none absolute left-4 top-16 z-[1000] my-auto flex size-fit flex-col items-center gap-2 rounded-md">
+      {shouldShow && (
+        <details
+          className="pointer-events-auto rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
+          open={showDetails}
+          onToggle={(event) => setShowDetails(event.currentTarget.open)}
+        >
+          <summary className="cursor-pointer pr-3">Wikipedia summary</summary>
+          {showDetails && <CountryWikiInfo onError={onError} />}
+        </details>
+      )}
+    </div>
   );
 }
 

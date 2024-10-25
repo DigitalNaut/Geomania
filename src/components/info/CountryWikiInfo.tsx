@@ -69,19 +69,19 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
     );
 
   return (
-    <section className="flex max-h-[60vh] max-w-md flex-col py-3">
-      <div className="prose visible scroll-pb-3 overflow-y-auto indent-2 text-white scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700">
-        <div className="float-left mt-5">
+    <section className="flex max-h-[60vh] max-w-md flex-col pb-3">
+      <div className="prose visible relative scroll-p-8 overflow-y-auto break-words pr-2 text-justify indent-4 text-white scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700">
+        <div className="float-left">
           {page.thumbnail && (
             <img
-              className="peer m-2"
+              className="peer m-4"
               alt={storedCountry.data?.GEOUNIT}
               src={page.thumbnail.source}
               width={page.thumbnail.width}
             />
           )}
 
-          <span className="pointer-events-none absolute top-0 z-50 hidden -translate-y-1/3 rounded-sm bg-slate-200 p-2 shadow-lg peer-hover:block">
+          <span className="pointer-events-none absolute top-0 z-50 hidden rounded-sm bg-slate-200 p-2 shadow-lg peer-hover:block">
             {page.original && (
               <img
                 className="shadow-md"
@@ -96,7 +96,7 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
 
         <RenderDOM input={page.extract} />
       </div>
-      <span className="flex justify-end">
+      <span className="flex justify-end border-t-2 border-sky-800 pt-2">
         <a
           href={page.fullurl}
           target="_blank"
