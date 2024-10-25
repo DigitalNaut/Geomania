@@ -31,18 +31,18 @@ import { cn } from "src/utils/styles";
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
 const mapGradientStyle = {
-  noActivity: "bg-gradient-to-br from-sky-700 to-sky-800 blur-sm",
-  activity: "from-zinc-900 to-zinc-900 blur-none",
+  noActivity: "from-sky-700 to-sky-800 blur-sm",
+  activity: "from-slate-900 to-slate-900 blur-none",
 };
 
 const reviewCountryStyle = {
-  activeStyle: "fill-zinc-600 stroke-zinc-700",
-  inactiveStyle: "fill-zinc-800 stroke-none",
+  activeStyle: "fill-slate-500 stroke-slate-400",
+  inactiveStyle: "fill-slate-800 stroke-none",
 };
 
 const quizCountryStyle = {
-  activeStyle: "fill-zinc-700 stroke-zinc-700",
-  inactiveStyle: "fill-sky-700 stroke-none",
+  activeStyle: "fill-slate-500 stroke-slate-400",
+  inactiveStyle: "fill-slate-800 stroke-none",
 };
 
 const defaultCountryStyle = {
@@ -82,9 +82,7 @@ function ActivityMap({
 
   return (
     <div
-      className={cn("size-full", mapGradientStyle.noActivity, {
-        [mapGradientStyle.activity]: activity?.activity,
-      })}
+      className={cn("size-full bg-gradient-to-br", activity ? mapGradientStyle.activity : mapGradientStyle.noActivity)}
     >
       <LeafletMapFrame showControls={activity?.activity === "review"}>
         {activity && (
@@ -127,7 +125,6 @@ function ActivityMap({
 
         <SvgMap selectedPaths={visitedCountries} onClick={handleMapClick} colorTheme={colorTheme} />
       </LeafletMapFrame>
-
       <QuizFloatingPanel
         shouldShow={activity?.activity === "quiz" && filteredCountryData.length > 0}
         mode={activity?.activity === "quiz" ? activity.kind : undefined}
@@ -137,20 +134,17 @@ function ActivityMap({
         submitAnswer={submitAnswer}
         userGuessTally={guessTally}
       />
-
       <ReviewFloatingPanel
         shouldShow={activity?.activity === "review"}
         showNextCountry={nextCountry}
         disabled={filteredCountryData.length === 0}
         onReset={resetVisited}
       />
-
       <WikipediaFloatingPanel
         disabled={filteredCountryData.length === 0}
         shouldShow={activity?.activity === "review"}
         onError={setError}
       />
-
       {activity && <RegionsToggleOverlay shouldShow={filteredCountryData.length === 0} />}
     </div>
   );
