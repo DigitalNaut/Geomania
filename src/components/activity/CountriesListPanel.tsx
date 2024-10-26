@@ -9,7 +9,7 @@ import Toggle from "src/components/common/Toggle";
 import { useCountryFilters } from "src/hooks/useCountryFilters";
 import { continents } from "src/hooks/useCountryFilters/data";
 import { useCountryStore } from "src/hooks/useCountryStore";
-import { type CountryData, type CountryDataList, type NullableCountryData } from "src/hooks/useCountryStore/types";
+import { type CountryData, type CountryDataList, type NullableCountryData } from "src/types/features";
 
 import { cn } from "src/utils/styles";
 

@@ -6,7 +6,7 @@ import { type KeyboardEvent, type PropsWithChildren, type RefObject, useCallback
 import { InlineButton } from "src/components/activity/InlineButton";
 import { ActionButton } from "src/components/common/ActionButton";
 import type { QuizKind } from "src/hooks/useMapActivity/types";
-import type { NullableCountryData } from "src/hooks/useCountryStore/types";
+import type { NullableCountryData } from "src/types/features";
 import { useCountryStore } from "src/hooks/useCountryStore";
 
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";

@@ -1,4 +1,4 @@
-import type { CountryData } from "src/hooks/useCountryStore/types";
+import type { CountryData } from "src/types/features";
 import { z } from "zod";
 
 export const CountryGuessSchema = z.object({

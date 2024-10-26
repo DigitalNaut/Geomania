@@ -1,4 +1,4 @@
-import type featuresData from "src/assets/data/country-features.json";
+import type featuresData from "src/assets/data/features/countries.json";
 
 export type CountryDataList = typeof featuresData;
 export type CountryData = CountryDataList[number];

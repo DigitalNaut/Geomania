@@ -8,9 +8,10 @@ import { useQuizClick } from "src/controllers/useQuizClick";
 import { useQuizInput } from "src/controllers/useQuizInput";
 import { useReview } from "src/controllers/useReview";
 import { useCountryFilters } from "src/hooks/useCountryFilters";
-import { getCountryCoordinates, useCountryStore } from "src/hooks/useCountryStore";
-import type { NullableCountryData } from "src/hooks/useCountryStore/types";
+import { useCountryStore } from "src/hooks/useCountryStore";
+import type { NullableCountryData } from "src/types/features";
 import { useMapViewport } from "src/hooks/useMapViewport";
+import { getCountryCoordinates } from "src/utils/features";
 
 /**
  * This hook helps by providing a way to automatically focus the UI when the activity changes and there are countries to show.

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
-import allFeaturesData from "src/assets/data/country-features.json";
-import type { CountryData } from "src/hooks/useCountryStore/types";
+import allFeaturesData from "src/assets/data/features/countries.json";
+import type { CountryData } from "src/types/features";
 import { continents, countryDataByContinent } from "./data";
 
 const initialContinentFilters = Object.fromEntries(continents.map((continent) => [continent, false]));

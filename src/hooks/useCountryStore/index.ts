@@ -1,22 +1,9 @@
 import { useEffect, useState } from "react";
-import { type LatLngTuple } from "leaflet";
 
 import { useCountryFilters } from "src/hooks/useCountryFilters";
+import type { CountryDataList, NullableCountryData } from "src/types/features";
+import { getCountryCoordinates, normalizeName } from "src/utils/features";
 import { useCountryStoreContext } from "./hooks";
-import type { CountryData, CountryDataList, NullableCountryData } from "./types";
-
-function normalizeName(name?: string) {
-  return name
-    ?.trim()
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "");
-}
-
-export function getCountryCoordinates(country: CountryData): LatLngTuple {
-  const { LABEL_X, LABEL_Y } = country;
-  if (LABEL_X && LABEL_Y) return [LABEL_Y, LABEL_X];
-  else return [0, 0];
-}
 
 export function useCountryStore() {
   const { filteredCountryData } = useCountryFilters();
@@ -108,3 +95,4 @@ export function useCountryStore() {
 }
 
 export { CountryStoreProvider } from "./Provider";
+

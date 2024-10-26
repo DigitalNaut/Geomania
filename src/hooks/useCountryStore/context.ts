@@ -1,6 +1,6 @@
 import { type Dispatch, type SetStateAction, createContext } from "react";
 
-import type { NullableCountryData } from "./types";
+import type { NullableCountryData } from "src/types/features";
 
 type CountryStoreContextType = {
   storedCountry: NullableCountryData;

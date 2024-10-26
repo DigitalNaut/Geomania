@@ -1,5 +1,5 @@
-import allFeaturesData from "src/assets/data/country-features.json";
-import type { CountryDataList } from "src/hooks/useCountryStore/types";
+import allFeaturesData from "src/assets/data/features/countries.json";
+import type { CountryDataList } from "src/types/features";
 
 export const countryDataByContinent = allFeaturesData.reduce((groups, country) => {
   const { CONTINENT: continent } = country;

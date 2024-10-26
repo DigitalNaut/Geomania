@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { useMemo } from "react";
 
-import type { CountryData } from "src/hooks/useCountryStore/types";
+import type { CountryData } from "src/types/features";
 import { Provider } from ".";
 import { useCountryStats, useGuessHistory } from "./hooks";
 import type { CountryGuess } from "./types";
