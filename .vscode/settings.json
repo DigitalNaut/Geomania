@@ -48,7 +48,6 @@
   "deno.enablePaths": [
     "netlify/edge-functions"
   ],
-  "deno.unstable": true,
   "deno.importMap": ".netlify/edge-functions-import-map.json",
   "markdownlint.config": {
     "MD033": {
@@ -67,8 +66,26 @@
   ],
   "tailwindCSS.experimental.classRegex": [
     ".*Styles?",
-    ["Classes \\=([^;]*);", "'([^']*)'"],
-    ["Classes \\=([^;]*);", "\"([^\"]*)\""],
-    ["Classes \\=([^;]*);", "\\`([^\\`]*)\\`"]
-  ]
+    [
+      "Classes \\=([^;]*);",
+      "'([^']*)'"
+    ],
+    [
+      "Classes \\=([^;]*);",
+      "\"([^\"]*)\""
+    ],
+    [
+      "Classes \\=([^;]*);",
+      "\\`([^\\`]*)\\`"
+    ]
+  ],
+  "commandOnAllFiles.commands": {
+    "Organize All Imports": {
+      "command": "multiCommand.sortImports",
+      "includeFileExtensions": [
+        ".ts",
+        ".tsx"
+      ]
+    }
+  },
 }
