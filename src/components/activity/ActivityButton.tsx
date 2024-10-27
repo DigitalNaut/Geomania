@@ -1,6 +1,6 @@
-import { type PropsWithChildren } from "react";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { type PropsWithChildren } from "react";
 import { twJoin, twMerge } from "tailwind-merge";
 
 export function ActivityButton({
