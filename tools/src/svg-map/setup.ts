@@ -1,6 +1,5 @@
 import fs from "fs";
 import { findShapeFile } from "./fileUtils.js";
-import chalk from "chalk";
 
 const dir = "src/svg-map";
 const inDir = `${dir}/${process.env.IN_DIR}`;

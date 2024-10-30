@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useCountryFilters } from "src/hooks/useCountryFilters";
 import type { CountryDataList, NullableCountryData } from "src/types/features";
 import { getCountryCoordinates, normalizeName } from "src/utils/features";
-import { useCountryStoreContext } from "./hooks";
+import { useCountryStoreContext } from "./context";
 
 export function useCountryStore() {
   const { filteredCountryData } = useCountryFilters();
   const { storedCountry, setStoredCountry } = useCountryStoreContext();
 
-  const resetWorkingList = () => [...filteredCountryData];
+  const resetWorkingList = useCallback(() => [...filteredCountryData], [filteredCountryData]);
 
   const [pendingCountries, setPendingCountries] = useState<CountryDataList>(resetWorkingList);
 
@@ -78,7 +78,7 @@ export function useCountryStore() {
 
   const resetStore = () => {
     setStoredCountry(null);
-    resetWorkingList();
+    setPendingCountries(resetWorkingList());
   };
 
   return {
@@ -95,4 +95,3 @@ export function useCountryStore() {
 }
 
 export { CountryStoreProvider } from "./Provider";
-

@@ -19,7 +19,7 @@ export function useFilteredCountryData() {
     () =>
       allFeaturesData.filter((country) => {
         const { CONTINENT: continent } = country ?? {};
-        return continent && continentFilters[continent];
+        return continent.length && continentFilters[continent];
       }),
     [continentFilters],
   );
