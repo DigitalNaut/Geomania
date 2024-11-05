@@ -4,7 +4,7 @@ import { Fragment, useCallback, useMemo, useState } from "react";
 import type { SVGOverlayProps } from "react-leaflet";
 import { SVGOverlay } from "react-leaflet";
 
-import mapSvg from "src/assets/images/world-map-mercator.svg?raw";
+import mapSvg from "src/assets/images/world-map-countries.svg?raw";
 import { useCountryFilters } from "src/hooks/useCountryFilters";
 import { useMapContext } from "src/hooks/useMapContext";
 import { useSvgAttributes } from "src/hooks/useSVGAttributes";
@@ -12,7 +12,7 @@ import { cn } from "src/utils/styles";
 import { twMerge } from "tailwind-merge";
 
 // Moves the SVG map down to match OpenStreetMap
-const verticalAdjustment = -5.765; // Slides vertically
+const verticalAdjustment = -1.35; // Slides vertically
 const horizontalAdjustment = 0.45; // Scales whole map
 
 type PathProperties = {
@@ -68,8 +68,8 @@ export default function SvgMap({
   const { paths: allPaths, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"]);
 
   const [bounds] = useState(() => {
-    const top = 90 + verticalAdjustment,
-      bottom = -90 + verticalAdjustment,
+    const top = 85 + verticalAdjustment,
+      bottom = -85 + verticalAdjustment,
       left = -180 + -horizontalAdjustment,
       right = 180 + horizontalAdjustment;
 

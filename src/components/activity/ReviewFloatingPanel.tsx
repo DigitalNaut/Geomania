@@ -52,10 +52,7 @@ export function UnsplashImagesFloatingPanel({
   return (
     <div className="absolute right-16 top-16 z-[1000] rounded-md">
       {shouldShow && (
-        <details
-          className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
-          open
-        >
+        <details className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900">
           <summary className="cursor-pointer pr-3">Unsplash images</summary>
           <UnsplashImages onError={onError} />
         </details>
