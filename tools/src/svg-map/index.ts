@@ -2,7 +2,13 @@ import chalk from "chalk";
 import { runCommand } from "./commandUtils.js";
 import { reportFileSize } from "./fileUtils.js";
 import { handleError, timeStamp } from "./utils.js";
-import { clip, outContinentFeatures, outCountryFeatures, outMapContinents, outMapCountries, proj, shapeFile } from "./setup.js";
+import {
+  jsonContinentsFilename,
+  jsonCountriesFilename,
+  svgContinentsFilename,
+  svgCountriesFilename,
+  shapeFile,
+} from "./setup.js";
 
 if (!shapeFile) {
   console.error("A shape file is required.");
@@ -10,20 +16,47 @@ if (!shapeFile) {
 }
 
 console.log(chalk.green("Found shape file:"), shapeFile);
-
-const countriesCmd = `mapshaper ${shapeFile} ${clip} -explode -simplify weighted keep-shapes 10% -clean ${proj} -dissolve GEOUNIT copy-fields=SOVEREIGNT,SOV_A3,ADM0_DIF,ADMIN,ADM0_A3,GEOU_DIF,GEOUNIT,GU_A3,MAPCOLOR7,CONTINENT,SUBREGION,MIN_ZOOM,MIN_LABEL,MAX_LABEL,scalerank,LABEL_X,LABEL_Y,WIKIDATAID,ISO_A2_EH -sort 'SOVEREIGNT' -o ${outCountryFeatures} format=json -o ${outMapCountries} id-field=GU_A3 format=svg`;
-const continentsCmd = `mapshaper ${shapeFile} ${clip} -explode -simplify weighted 3% -clean ${proj} -dissolve CONTINENT -o ${outContinentFeatures} format=json -o ${outMapContinents} id-field=CONTINENT format=svg`;
+const countriesCmd = `mapshaper ${shapeFile}\
+                      -explode\
+                      -clip bbox2=-180,-85,180,85 remove-slivers\
+                      -simplify weighted keep-shapes 10%\
+                      -clean\
+                      -dissolve GEOUNIT copy-fields=SOVEREIGNT,SOV_A3,ADM0_DIF,ADMIN,ADM0_A3,GEOU_DIF,GEOUNIT,GU_A3,MAPCOLOR7,CONTINENT,SUBREGION,MIN_ZOOM,MIN_LABEL,MAX_LABEL,scalerank,LABEL_X,LABEL_Y,WIKIDATAID,ISO_A2_EH\
+                      -proj EPSG:3857\
+                      -sort 'SOVEREIGNT'\
+                      -o ${jsonCountriesFilename} format=json\
+                      -o ${svgCountriesFilename} id-field=GU_A3 format=svg`;
+const continentsCmd = `mapshaper ${shapeFile}\
+                      -clip bbox2=-180,-85,180,85 remove-slivers\
+                      -simplify weighted 3%\
+                      -clean\
+                      -dissolve CONTINENT\
+                      -proj EPSG:3857\
+                      -o ${jsonContinentsFilename} format=json\
+                      -o ${svgContinentsFilename} id-field=CONTINENT bbox-index format=svg`;
 
 async function processMaps() {
   const countriesMap = runCommand(countriesCmd, "Generating country map")
-    .then(() => reportFileSize(outMapCountries))
-    .then(() => reportFileSize(outCountryFeatures));
+    .then((onFulfilled) => {
+      console.log(chalk.blueBright(onFulfilled?.stdout || onFulfilled?.stderr || "No map generated."));
+    })
+    .then(() => {
+      console.log("Country map files:");
+      reportFileSize(svgCountriesFilename);
+      reportFileSize(jsonCountriesFilename);
+    })
+    .catch((error) => handleError(error, "map generation"));
 
   const continentsMap = runCommand(continentsCmd, "Generating continent map")
-    .then(() => reportFileSize(outMapContinents))
-    .then(() => reportFileSize(outContinentFeatures));
-
-  console.log(chalk.blue("\nOutput files:"));
+    .then((onFulfilled) => {
+      console.log(chalk.blueBright(onFulfilled?.stdout || onFulfilled?.stderr || "No map generated."));
+    })
+    .then(() => {
+      console.log("Continent map files:");
+      reportFileSize(svgContinentsFilename);
+      reportFileSize(jsonContinentsFilename);
+    })
+    .catch((error) => handleError(error, "map generation"));
 
   try {
     await Promise.all([countriesMap, continentsMap]);

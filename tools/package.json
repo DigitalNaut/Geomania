@@ -1,12 +1,13 @@
 {
   "name": "geomaniac-tools",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "wiki-data": "node --loader ts-node/esm src/wiki-data",
-    "svg-map": "node --env-file=src/svg-map/.env --loader ts-node/esm src/svg-map",
+    "wiki-data": "bun src/wiki-data/index.ts",
+    "svg-map": "bun --env-file=src/svg-map/.env src/svg-map/index.ts",
+    "country-store": "bun src/country-store/index.ts",
     "clean": "run-p clean:*",
     "clean:svg-map": "rm -rf src/svg-map/out/",
     "typecheck": "tsc --noEmit",
@@ -21,10 +22,11 @@
   "license": "CC BY-NC-SA 4.0",
   "devDependencies": {
     "@eslint/js": "^9.13.0",
-    "@types/node": "^22.7.9",
+    "@types/node": "^22.8.4",
+    "bun": "^1.1.34",
     "eslint": "^9.13.0",
     "eslint-plugin-no-relative-import-paths": "^1.5.5",
-    "npm-run-all2": "^7.0.0",
+    "npm-run-all2": "^7.0.1",
     "prettier": "^3.3.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"

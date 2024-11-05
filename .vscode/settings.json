@@ -5,6 +5,7 @@
     "clsx",
     "Coriginal",
     "Cpageimages",
+    "Durstenfeld",
     "exintro",
     "fontawesome",
     "fortawesome",
@@ -29,7 +30,7 @@
     "preinstall",
     "signin",
     "signout",
-    "SOVEREIGNT",
+    "sovereignt",
     "svgr",
     "tailwindcss",
     "tanstack",
@@ -88,4 +89,5 @@
       ]
     }
   },
+  "svg.preview.background": "editor",
 }

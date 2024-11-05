@@ -42,12 +42,18 @@ function getLocalShapeFile(dir: string) {
 const refererUrl = process.env.REFERER_URL;
 const fileDownloadUrl = `${refererUrl}/${process.env.FILE_DOWNLOAD_URL}`;
 
-function downloadShapeFile(dir: string) {
+function downloadShapeFileSync(dir: string) {
   return execSync(
     `cd "${dir}" && curl -o archive.zip -L -e ${refererUrl} ${fileDownloadUrl} && unzip -o archive.zip && rm archive.zip && cd ..`,
   );
 }
 
+/**
+ * Find the shape file in the given directory.
+ * If not found, ask the user if they want to download it.
+ * @param dir
+ * @returns
+ */
 export async function findShapeFile(dir: string) {
   let shapeFile = getLocalShapeFile(dir);
 
@@ -61,7 +67,7 @@ export async function findShapeFile(dir: string) {
       const fileName = fileDownloadUrl.split("/").pop();
       console.log(chalk.yellow(`Downloading shape file ${fileName} ...`));
 
-      downloadShapeFile(dir);
+      downloadShapeFileSync(dir);
       shapeFile = getLocalShapeFile(dir);
     } catch (error) {
       console.error(error);

@@ -12,12 +12,6 @@
     "noEmit": true,
     "baseUrl": ".",
     "outDir": "dist",
-    "resolvePackageJsonExports": true,
-  },
-  "ts-node": {
-    "esm": true,
-    // See issue 01
-    "experimentalSpecifierResolution": "node",
   },
   "include": [
     "src"
