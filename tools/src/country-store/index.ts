@@ -1,11 +1,12 @@
 import chalk from "chalk";
+
+import { CountryQueue } from "./lib/countryQueue.js";
 import {
-  loadCountryCatalog,
-  deriveContinents,
   countriesCatalogByContinent,
+  getContinents,
+  loadCountryCatalog,
   summarizeContinentCatalog,
-  CountryQueue,
-} from "./lib.js";
+} from "./lib/index.js";
 
 const excludedContinents = ["Antarctica"];
 
@@ -23,9 +24,9 @@ async function measureScriptExecutionTime(callback: () => Promise<void>) {
 }
 
 async function main() {
-  const countryCatalog = await loadCountryCatalog("../../../src/assets/data/features/countries.json");
+  const countryCatalog = await loadCountryCatalog("../../../../src/assets/data/features/countries.json");
   const continentCatalog = countriesCatalogByContinent(countryCatalog);
-  const continentNames = deriveContinents(continentCatalog, excludedContinents);
+  const continentNames = getContinents(continentCatalog, excludedContinents);
 
   if (excludedContinents.length)
     console.log(`Excluded continents (${excludedContinents.length}): ${excludedContinents.join(", ")}`);
