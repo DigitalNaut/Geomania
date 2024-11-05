@@ -4,7 +4,7 @@ import { Fragment, useCallback, useMemo, useState } from "react";
 import type { SVGOverlayProps } from "react-leaflet";
 import { SVGOverlay } from "react-leaflet";
 
-import mapSvg from "src/assets/images/world-map-countries.svg?raw";
+import mapSvg from "src/assets/images/generated/world-map-countries.svg?raw";
 import { useCountryFilters } from "src/hooks/useCountryFilters";
 import { useMapContext } from "src/hooks/useMapContext";
 import { useSvgAttributes } from "src/hooks/useSVGAttributes";
@@ -177,7 +177,7 @@ export default function SvgMap({
               <ellipse rx="0.55" ry="0.25" cx="8" cy="2" stroke="none" className="fill-white/[6%]" />
               <ellipse rx="0.25" ry="0.55" cx="2" cy="5" stroke="none" className="fill-white/[9%]" />
               <ellipse rx="0.55" ry="0.25" cx="5" cy="5" stroke="none" className="fill-white/[6%]" />
-              <ellipse rx="0.25" ry="0.55" cx="8" cy="5" stroke="none" className="fill-white/[6%]" />
+              <ellipse rx="0.25" ry="0.55" cx="8" cy="5" stroke="none" className="fill-white/[9%]" />
               <ellipse rx="0.55" ry="0.25" cx="2" cy="8" stroke="none" className="fill-white/[6%]" />
               <ellipse rx="0.25" ry="0.55" cx="5" cy="8" stroke="none" className="fill-white/[9%]" />
               <ellipse rx="0.55" ry="0.25" cx="8" cy="8" stroke="none" className="fill-white/[6%]" />
