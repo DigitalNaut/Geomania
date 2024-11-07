@@ -47,14 +47,20 @@ export function UnsplashImagesFloatingPanel({
   shouldShow: boolean;
   onError: (error: Error) => void;
 }) {
+  const [showDetails, setShowDetails] = useState(false);
+
   if (disabled) return null;
 
   return (
     <div className="absolute right-16 top-16 z-[1000] rounded-md">
       {shouldShow && (
-        <details className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900">
+        <details
+          className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
+          open={showDetails}
+          onToggle={(event) => setShowDetails(event.currentTarget.open)}
+        >
           <summary className="cursor-pointer pr-3">Unsplash images</summary>
-          <UnsplashImages onError={onError} />
+          {showDetails && <UnsplashImages onError={onError} />}
         </details>
       )}
     </div>
