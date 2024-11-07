@@ -6,26 +6,9 @@ import { Provider } from ".";
 import type { ActivityType } from "./types";
 import { ActivityTypeSchema } from "./types";
 
-// function validateReviewKind(kind: string | null): kind is ReviewKind {
-//   return kind !== null && ReviewKindSchema.safeParse(kind).success;
-// }
-
-// function validateQuizKind(kind: string | null): kind is QuizKind {
-//   return kind !== null && QuizKindSchema.safeParse(kind).success;
-// }
-
 function validateActivity(activity: unknown): activity is ActivityType | undefined {
   return ActivityTypeSchema.safeParse(activity).success;
 }
-
-// function validateActivity(mode: string | null, kind: string | null): ActivityType | undefined {
-//   if (!ActivityModeSchema.safeParse(mode).success) return undefined;
-
-//   if (mode === "review" && validateReviewKind(kind)) return { activity: "review", kind };
-//   else if (mode === "quiz" && validateQuizKind(kind)) return { activity: "quiz", kind };
-
-//   return undefined;
-// }
 
 export function MapActivityProvider({ children }: PropsWithChildren) {
   const [searchParams, setURLSearchParams] = useSearchParams();
