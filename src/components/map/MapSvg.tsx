@@ -200,18 +200,23 @@ export default function SvgMap({
                     strokeWidth: adjustForZoom(2),
                   }}
                 />
+                <path
+                  d={d}
+                  data-a3={id}
+                  pointerEvents="none"
+                  className="fill-[url(#land)] stroke-none hover:fill-lime-600/30"
+                />
                 {highlight && (
                   <path
                     d={d}
                     data-a3={id}
                     pointerEvents="none"
-                    className="animate-scrollDash fill-[url(#waves)] [stroke-dasharray:1] [stroke-dashoffset:_8]"
+                    className="animate-scrollDash fill-lime-500 [stroke-dasharray:32] [stroke-dashoffset:8] hover:fill-[url(#waves)] hover:stroke-white hover:[animation:none] hover:[stroke-dasharray:0]"
                     style={{
                       strokeWidth: adjustForZoom(4),
                     }}
                   />
                 )}
-                <path d={d} data-a3={id} pointerEvents="none" className="fill-[url(#land)] stroke-none" />
               </Fragment>
             );
           })}

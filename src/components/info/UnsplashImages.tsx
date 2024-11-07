@@ -44,7 +44,7 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
   }, [error, onError]);
 
   if (error)
-    return <p className="mr-3 rounded-md bg-sky-900 p-3">Search unavailable at the moment. An error has occurred.</p>;
+    return <p className="mr-3 rounded-md bg-sky-900 p-3">Images are unavailable at the moment.</p>;
 
   if (isLoading)
     return <div className="mr-3 rounded-md bg-sky-900 p-3">Loading images for {storedCountry.data?.GEOUNIT}...</div>;

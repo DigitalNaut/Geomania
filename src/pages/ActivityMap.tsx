@@ -39,12 +39,12 @@ const mapGradientStyle = {
 };
 
 const reviewCountryStyle = {
-  activeStyle: "fill-slate-500 stroke-slate-400",
+  activeStyle: "fill-slate-500/95 stroke-slate-400 hover:stroke-slate-300 hover:fill-slate-500",
   inactiveStyle: "fill-slate-800 stroke-none",
 };
 
 const quizCountryStyle = {
-  activeStyle: "fill-slate-500 stroke-slate-400",
+  activeStyle: "fill-slate-500/95 stroke-slate-400",
   inactiveStyle: "fill-slate-800 stroke-none",
 };
 
