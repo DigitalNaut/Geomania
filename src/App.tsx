@@ -24,83 +24,99 @@ const LazyPageNotFound = lazy(() => import("src/pages/PageNotFound"));
 
 const queryClient = new QueryClient();
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      element: (
+        <StandardLayout>
+          <Nav>
+            <Nav.Logo title="Geomaniac" />
+
+            <div className="flex flex-1 gap-2 pl-6">
+              <Nav.Link to="/" icon={faMap}>
+                Map
+              </Nav.Link>
+              <Nav.Link to="../dashboard" icon={faChartLine}>
+                Dashboard
+              </Nav.Link>
+              <Nav.Link to="../settings" icon={faCog}>
+                Settings
+              </Nav.Link>
+            </div>
+          </Nav>
+
+          <Outlet />
+
+          <Footer />
+        </StandardLayout>
+      ),
+      children: [
+        {
+          element: (
+            <ErrorBoundary FallbackComponent={ErrorFallback}>
+              <QueryClientProvider client={queryClient}>
+                <UserGuessRecordProvider historyLimit={10}>
+                  <CountryFiltersProvider>
+                    <CountryStoreProvider>
+                      <MapActivityProvider>
+                        <Suspense fallback={<Spinner cover />}>
+                          <Outlet />
+                        </Suspense>
+                      </MapActivityProvider>
+                    </CountryStoreProvider>
+                  </CountryFiltersProvider>
+                </UserGuessRecordProvider>
+              </QueryClientProvider>
+            </ErrorBoundary>
+          ),
+          children: [
+            {
+              path: "/",
+              index: true,
+              element: (
+                <MapContextProvider>
+                  <LazyActivityMap />
+                </MapContextProvider>
+              ),
+            },
+            {
+              path: "settings",
+              element: <LazySettings />,
+            },
+            {
+              path: "dashboard",
+              element: <LazyDashboard />,
+            },
+          ],
+        },
+        {
+          path: "*",
+          element: <LazyPageNotFound />,
+        },
+      ],
+    },
+  ],
   {
-    element: (
-      <StandardLayout>
-        <Nav>
-          <Nav.Logo title="Geomaniac" />
-
-          <div className="flex flex-1 gap-2 pl-6">
-            <Nav.Link to="/" icon={faMap}>
-              Map
-            </Nav.Link>
-            <Nav.Link to="dashboard" icon={faChartLine}>
-              Dashboard
-            </Nav.Link>
-            <Nav.Link to="settings" icon={faCog}>
-              Settings
-            </Nav.Link>
-          </div>
-        </Nav>
-
-        <Outlet />
-
-        <Footer />
-      </StandardLayout>
-    ),
-    children: [
-      {
-        element: (
-          <ErrorBoundary FallbackComponent={ErrorFallback}>
-            <QueryClientProvider client={queryClient}>
-              <UserGuessRecordProvider historyLimit={10}>
-                <CountryFiltersProvider>
-                  <CountryStoreProvider>
-                    <MapActivityProvider>
-                      <Suspense fallback={<Spinner cover />}>
-                        <Outlet />
-                      </Suspense>
-                    </MapActivityProvider>
-                  </CountryStoreProvider>
-                </CountryFiltersProvider>
-              </UserGuessRecordProvider>
-            </QueryClientProvider>
-          </ErrorBoundary>
-        ),
-        children: [
-          {
-            path: "/",
-            index: true,
-            element: (
-              <MapContextProvider>
-                <LazyActivityMap />
-              </MapContextProvider>
-            ),
-          },
-          {
-            path: "/settings",
-            element: <LazySettings />,
-          },
-          {
-            path: "/dashboard",
-            element: <LazyDashboard />,
-          },
-        ],
-      },
-      {
-        path: "*",
-        element: <LazyPageNotFound />,
-      },
-    ],
+    future: {
+      v7_relativeSplatPath: true,
+      v7_partialHydration: true,
+      v7_fetcherPersist: true,
+      v7_normalizeFormMethod: true,
+      v7_skipActionErrorRevalidation: true,
+    },
   },
-]);
+);
 
 export default function App() {
   return (
     <HeaderControllerProvider>
       <UserSettingsProvider>
-        <RouterProvider router={router} />
+        <RouterProvider
+          router={router}
+          future={{
+            v7_startTransition: true,
+          }}
+        />
       </UserSettingsProvider>
     </HeaderControllerProvider>
   );

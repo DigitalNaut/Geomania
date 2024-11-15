@@ -143,7 +143,7 @@ export default function Dashboard() {
                 <img src={ThinkingFace} className="mx-auto" width={96} height={96} alt="No records found" />
                 <h3 className="text-lg">No records found</h3>
                 <p>
-                  <Link to="/?activity=quiz" className="text-blue-500 hover:underline">
+                  <Link to="/" className="text-blue-500 hover:underline">
                     Play the map
                   </Link>
                   &nbsp;to start recording your progress.
