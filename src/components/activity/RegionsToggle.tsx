@@ -35,8 +35,14 @@ function RegionsToggleList() {
   const initialToggles = useMemo(() => createInitialToggles(continentFilters), [continentFilters]);
   const [selectedContinents, setSelectedContinents] = useState<CountryFilters>(initialToggles);
 
-  const allContinentsSelected = Object.values(selectedContinents).every((toggle) => toggle);
-  const noContinentsSelected = !Object.values(selectedContinents).some((toggle) => toggle);
+  const allContinentsSelected = useMemo(
+    () => Object.values(selectedContinents).every((toggle) => toggle),
+    [selectedContinents],
+  );
+  const noContinentsSelected = useMemo(
+    () => !Object.values(selectedContinents).some((toggle) => toggle),
+    [selectedContinents],
+  );
 
   const handleToggleAll = (checked: boolean) => {
     setSelectedContinents(Object.fromEntries(Object.keys(selectedContinents).map((continent) => [continent, checked])));

@@ -1,4 +1,3 @@
-import type { Dispatch, SetStateAction } from "react";
 import { z } from "zod";
 
 const ReviewKindSchema = z.enum(["countries"]);
@@ -21,6 +20,6 @@ export type QuizKind = z.infer<typeof QuizKindSchema>;
 
 export type MapActivityContext = {
   isRandomReviewMode: boolean;
-  setRandomReviewMode: Dispatch<SetStateAction<boolean>>;
+  toggleRandomReviewMode: (value: boolean) => void;
   activity?: ActivityType;
 };

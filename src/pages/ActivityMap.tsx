@@ -95,7 +95,7 @@ function ActivityMap({
 
             {storedCountry.coordinates && (
               <>
-                {activity?.activity !== "quiz" || activity.kind === "typing" ? (
+                {activity.activity !== "quiz" || activity.kind === "typing" ? (
                   <Marker position={storedCountry.coordinates} icon={markerIcon} />
                 ) : null}
 
