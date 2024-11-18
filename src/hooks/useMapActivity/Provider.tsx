@@ -1,4 +1,4 @@
-import type { Dispatch, PropsWithChildren, SetStateAction } from "react";
+import type { PropsWithChildren } from "react";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -6,25 +6,31 @@ import { Provider } from ".";
 import type { ActivityType } from "./types";
 import { ActivityTypeSchema } from "./types";
 
-function validateActivity(activity: unknown): activity is ActivityType | undefined {
+function validateActivity(activity: unknown): activity is ActivityType {
   return ActivityTypeSchema.safeParse(activity).success;
 }
 
 export function MapActivityProvider({ children }: PropsWithChildren) {
   const [searchParams, setURLSearchParams] = useSearchParams();
-  const activityMode = useMemo(() => searchParams.get("activity"), [searchParams]);
-  const activityKind = useMemo(() => searchParams.get("kind"), [searchParams]);
-  const activity = useMemo(() => {
-    const newActivity = { activity: activityMode, kind: activityKind };
-    return validateActivity(newActivity) ? newActivity : undefined;
-  }, [activityMode, activityKind]);
-  const isRandomReview = useMemo(() => /^true$/i.test(searchParams.get("random") || ""), [searchParams]);
-  const [isRandomReviewMode, setRandomReviewMode] = useState(() => isRandomReview);
 
-  const setReviewMode: Dispatch<SetStateAction<boolean>> = (value) => {
+  const [isRandomReviewMode, setRandomReviewMode] = useState(() => searchParams.get("random") === "true");
+
+  const activity = useMemo(() => {
+    const activity = searchParams.get("activity");
+    const kind = searchParams.get("kind");
+    const newActivity = { activity, kind };
+
+    const isValid = validateActivity(newActivity);
+    if (isValid) return newActivity;
+
+    return undefined;
+  }, [searchParams]);
+
+  const toggleRandomReviewMode = (value: boolean) => {
     setRandomReviewMode(value);
-    if (value) searchParams.set("random", "true");
-    else searchParams.delete("random");
+
+    // Lift state to URL
+    searchParams.set("random", String(value));
     setURLSearchParams(searchParams);
   };
 
@@ -32,7 +38,7 @@ export function MapActivityProvider({ children }: PropsWithChildren) {
     <Provider
       value={{
         isRandomReviewMode,
-        setRandomReviewMode: setReviewMode,
+        toggleRandomReviewMode,
         activity,
       }}
     >

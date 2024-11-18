@@ -79,9 +79,9 @@ export default function ReviewFloatingPanel({
   onReset: () => void;
 }) {
   const { firstTrail } = useFloatingPanelSlideInAnimation(shouldShow);
-  const { isRandomReviewMode, setRandomReviewMode } = useMapActivity();
+  const { isRandomReviewMode, toggleRandomReviewMode } = useMapActivity();
 
-  const onChange: ChangeEventHandler<HTMLInputElement> = (event) => setRandomReviewMode(event.currentTarget.checked);
+  const onChange: ChangeEventHandler<HTMLInputElement> = (event) => toggleRandomReviewMode(event.currentTarget.checked);
 
   return (
     <animated.div
