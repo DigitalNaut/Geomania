@@ -82,32 +82,33 @@ export default function useActivityCoordinator() {
   }, [activity, clickGuessTally, inputGuessTally]);
 
   /**
-   * Focuses the UI on the next country by
-   * 1. Getting the next country data
-   * 2. Setting the URL search params
-   * 3. Flying to the country
+   * Lifts the country state to the URL search params by its A3
    */
-  const focusUI = useCallback(
-    (nextCountry: NullableCountryData, delay = 0, fly = true) => {
-      if (!nextCountry) return;
-
-      const destination = getCountryCoordinates(nextCountry);
+  const liftCountryA3 = useCallback(
+    (a3: string) => {
       setURLSearchParams((prev) => {
-        if (activity?.activity === "review") prev.set("country", nextCountry.GU_A3);
+        if (activity?.activity === "review") prev.set("country", a3);
         else prev.delete("country");
+
         return prev;
       });
-
-      if (fly)
-        flyTo(
-          destination,
-          {
-            zoom: Math.max(nextCountry.MIN_LABEL, mapDefaults.minZoom),
-          },
-          delay,
-        );
     },
-    [activity?.activity, flyTo, setURLSearchParams],
+    [activity, setURLSearchParams],
+  );
+
+  /**
+   * Focuses the UI on the next country by panning the map to the country coordinates
+   */
+  const focusUI = useCallback(
+    (country: NullableCountryData, delay = 0, shouldFly = true) => {
+      if (!country) return;
+
+      const destination = getCountryCoordinates(country);
+      const zoom = Math.max(country.MIN_LABEL, mapDefaults.minZoom);
+
+      if (shouldFly) flyTo(destination, { zoom }, delay);
+    },
+    [flyTo],
   );
 
   const resetUI = useCallback(() => {
@@ -128,36 +129,38 @@ export default function useActivityCoordinator() {
         return;
       }
 
-      let countryData: NullableCountryData = null;
-
       switch (activity.activity) {
         case "review":
-          if (countryParam) countryData = setCountryDataByCode(countryParam);
-          else countryData = nextReviewCountry();
+          if (countryParam) setCountryDataByCode(countryParam);
+          else nextReviewCountry();
           break;
 
         case "quiz":
           switch (activity.kind) {
             case "pointing":
-              countryData = nextClickCountry();
+              nextClickCountry();
               break;
 
-            case "typing":
-              countryData = nextInputCountry();
+            case "typing": {
+              const countryData = nextInputCountry();
+              if (countryData) focusUI(countryData);
               break;
+            }
           }
       }
 
-      if (countryData && activity.activity === "quiz" && activity.kind !== "pointing") focusUI(countryData);
-      else resetUI();
-    } else {
-      if (filteredCountryData.length === 0 || !filteredCountryData.includes(storedCountry.data)) {
-        resetStore();
-        resetUI();
-      } else if (countryParam && countryParam !== storedCountry.data.GU_A3) {
-        const countryData = setCountryDataByCode(countryParam);
-        if (countryData && activity.activity === "quiz" && activity.kind !== "pointing") focusUI(countryData);
-      }
+      return;
+    }
+
+    if (filteredCountryData.length === 0 || !filteredCountryData.includes(storedCountry.data)) {
+      resetStore();
+      resetUI();
+      return;
+    }
+
+    if (countryParam && countryParam !== storedCountry.data.GU_A3) {
+      const countryData = setCountryDataByCode(countryParam);
+      if (countryData && activity.activity === "quiz" && activity.kind === "typing") focusUI(countryData);
     }
   }, [
     activity,
@@ -180,6 +183,7 @@ export default function useActivityCoordinator() {
 
     if (activity.activity === "review") {
       focusUI(clickReview(a3), 100, false);
+      liftCountryA3(a3);
       return;
     }
 
@@ -213,7 +217,12 @@ export default function useActivityCoordinator() {
     if (!activity) return;
 
     if (activity.activity === "review") {
-      focusUI(nextReviewCountry());
+      const nextCountry = nextReviewCountry();
+
+      focusUI(nextCountry);
+      if (!nextCountry) return;
+
+      liftCountryA3(nextCountry.GU_A3);
       return;
     }
 
