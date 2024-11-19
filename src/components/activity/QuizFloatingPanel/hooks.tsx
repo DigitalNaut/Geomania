@@ -42,8 +42,9 @@ export function useHorizontalShakeAnimation({
 
 export function useFloatingPanelSlideInAnimation(shouldShow: boolean) {
   const [firstTrail, secondTrail] = useTrail(2, {
+    duration: 200,
     opacity: shouldShow ? 1 : 0,
-    transform: shouldShow ? "translateY(0%)" : "translateY(100%)",
+    transform: shouldShow ? "translateY(0)" : "translateY(-2rem)",
   });
 
   return {
