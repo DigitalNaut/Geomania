@@ -89,7 +89,7 @@ function ContinentListEntry({
 }
 
 export default function CountriesListPanel({ isAbridged = false }: { isAbridged?: boolean }) {
-  const { toggleContinentFilter, countryDataByContinent, continentFilters, toggleAllContinentFilters } =
+  const { countryDataByContinent, getContinentFilter, toggleContinentFilter, toggleAllContinentFilters } =
     useCountryFilters();
   const { storedCountry } = useCountryStore();
   const listRef = useRef<HTMLDivElement>(null);
@@ -138,7 +138,7 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
             index={index}
             isContinentAbridged={isAbridged}
             continent={continent}
-            isContinentToggled={continentFilters[continent]}
+            isContinentToggled={getContinentFilter(continent)}
             continentCountries={countryDataByContinent.get(continent) ?? []}
             toggleContinentCallback={toggleContinentFilter}
             countryClickCallback={handleCountryClick}

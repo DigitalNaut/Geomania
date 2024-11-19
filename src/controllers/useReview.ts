@@ -9,7 +9,7 @@ const visitedStyle = "fill-lime-700 stroke-lime-200";
 const highlightStyle = "fill-lime-500 stroke-lime-200";
 
 export function useReview() {
-  const { isCountryInData } = useCountryFilters();
+  const { isCountryInFilters } = useCountryFilters();
   const { setCountryDataNext, setCountryDataRandom, setCountryDataByCode, storedCountry } = useCountryStore();
   const { visitedCountries, pushVisitedCountry, setVisitedCountry, resetVisitedCountries } = useVisitedCountries();
   const { isRandomReviewMode } = useMapActivity();
@@ -35,10 +35,10 @@ export function useReview() {
   const visitedCountriesWithHighlight = useMemo(() => {
     if (!storedCountry.data) return visitedCountries;
 
-    const filteredVisitedCountries = visitedCountries.filter((country) => isCountryInData(country.a3));
+    const filteredVisitedCountries = visitedCountries.filter((country) => isCountryInFilters(country.a3));
 
     return [...filteredVisitedCountries, { a3: storedCountry.data.GU_A3, style: highlightStyle, highlight: true }];
-  }, [isCountryInData, storedCountry.data, visitedCountries]);
+  }, [isCountryInFilters, storedCountry.data, visitedCountries]);
 
   return {
     clickCountry,

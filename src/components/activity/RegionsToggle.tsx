@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 
 import Button from "src/components/common/Button";
 import Toggle from "src/components/common/Toggle";
-import { useCountryFilters, type CountryFilters } from "src/hooks/useCountryFilters";
+import { useCountryFilters } from "src/hooks/useCountryFilters";
 import { continents } from "src/hooks/useCountryFilters/data";
 import { cn } from "src/utils/styles";
 
@@ -26,38 +26,31 @@ function ToggleListItem({ id, checked, onChange, label }: ListItemProps) {
   );
 }
 
-function createInitialToggles(continentFilters: CountryFilters) {
-  return Object.fromEntries(Object.keys(continentFilters).map((continent) => [continent, false]));
-}
-
 function RegionsToggleList() {
-  const { toggleContinentFilter, continentFilters } = useCountryFilters();
-  const initialToggles = useMemo(() => createInitialToggles(continentFilters), [continentFilters]);
-  const [selectedContinents, setSelectedContinents] = useState<CountryFilters>(initialToggles);
+  const { toggleContinentFilter, continentFiltersList } = useCountryFilters();
+  const [selection, setSelection] = useState(() => new Map(continentFiltersList));
 
-  const allContinentsSelected = useMemo(
-    () => Object.values(selectedContinents).every((toggle) => toggle),
-    [selectedContinents],
-  );
-  const noContinentsSelected = useMemo(
-    () => !Object.values(selectedContinents).some((toggle) => toggle),
-    [selectedContinents],
-  );
+  const allSelected = useMemo(() => [...selection].every(([_, checked]) => checked), [selection]);
+  const someSelected = useMemo(() => ![...selection].some(([_, checked]) => checked), [selection]);
 
   const handleToggleAll = (checked: boolean) => {
-    setSelectedContinents(Object.fromEntries(Object.keys(selectedContinents).map((continent) => [continent, checked])));
+    const newMap = new Map(continents.map((continent) => [continent, checked]));
+    setSelection(newMap);
   };
   const handleSubmit = () => {
-    Object.entries(selectedContinents).forEach(([continent, toggle]) => {
+    // Transfer state
+    for (const [continent, toggle] of selection) {
       toggleContinentFilter(continent, toggle);
-    });
-    setSelectedContinents(initialToggles);
+    }
+
+    // Reset state
+    setSelection(new Map(continentFiltersList));
   };
 
   return (
     <section className="flex w-auto flex-col gap-2 sm:h-auto sm:w-[30ch]">
       <div className="flex flex-1 flex-col gap-1 px-2">
-        <ToggleListItem id="all" label="All" checked={allContinentsSelected} onChange={handleToggleAll} />
+        <ToggleListItem id="all" label="All" checked={allSelected} onChange={handleToggleAll} />
 
         <hr className="border-white" />
         {continents.map((continent) => (
@@ -65,17 +58,14 @@ function RegionsToggleList() {
             key={continent}
             id={continent}
             label={continent}
-            checked={selectedContinents[continent]}
+            checked={selection.get(continent) ?? false}
             onChange={(checked) => {
-              setSelectedContinents((currentContinents) => ({
-                ...currentContinents,
-                [continent]: checked,
-              }));
+              setSelection((currentContinents) => new Map(currentContinents.set(continent, checked)));
             }}
           />
         ))}
       </div>
-      <Button disabled={noContinentsSelected} onClick={handleSubmit}>
+      <Button disabled={someSelected} onClick={handleSubmit}>
         Start
       </Button>
     </section>

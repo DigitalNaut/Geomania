@@ -63,7 +63,7 @@ export default function SvgMap({
   className?: string;
 }) {
   const { zoom } = useMapContext();
-  const { isCountryInData } = useCountryFilters();
+  const { isCountryInFilters } = useCountryFilters();
 
   const { paths: allPaths, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"]);
 
@@ -124,7 +124,7 @@ export default function SvgMap({
       eventHandlers={{ click }}
     >
       {otherPaths.map((path, index) => {
-        const isActive = isCountryInData(path.id);
+        const isActive = isCountryInFilters(path.id);
         return (
           <path
             key={index}

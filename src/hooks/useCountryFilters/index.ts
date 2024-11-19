@@ -4,9 +4,7 @@ import allFeaturesData from "src/assets/data/features/countries.json";
 import type { CountryData } from "src/types/features";
 import { continents, countryDataByContinent } from "./data";
 
-const initialContinentFilters = Object.fromEntries(continents.map((continent) => [continent, false]));
-
-export type CountryFilters = typeof initialContinentFilters;
+const initialContinentFilters = new Map(continents.map((continent) => [continent, false]));
 
 const optimizedAllFeaturesData: Map<string, CountryData> = new Map(
   allFeaturesData.map((country) => [country.GU_A3, country]),
@@ -18,17 +16,14 @@ export function useFilteredCountryData() {
   const filteredCountryData = useMemo(
     () =>
       allFeaturesData.filter((country) => {
-        const { CONTINENT: continent } = country ?? {};
-        return continent.length && continentFilters[continent];
+        const continent = country.CONTINENT;
+        return continent.length && continentFilters.get(continent);
       }),
     [continentFilters],
   );
 
   const toggleContinentFilter = (continent: string, toggle: boolean) => {
-    setContinentFilters((currentFilters) => ({
-      ...currentFilters,
-      [continent]: toggle,
-    }));
+    setContinentFilters((currentFilters) => new Map(currentFilters.set(continent, toggle)));
   };
 
   const toggleAllContinentFilters = (value: boolean) => {
@@ -37,26 +32,32 @@ export function useFilteredCountryData() {
     });
   };
 
-  const isCountryInData = useCallback(
+  const getContinentFilter = useCallback(
+    (continent: string) => continentFilters.get(continent) ?? false,
+    [continentFilters],
+  );
+
+  const isCountryInFilters = useCallback(
     (targetA3: string) => {
       const country = optimizedAllFeaturesData.get(targetA3);
 
       if (!country) return false;
 
-      const { CONTINENT: continent } = country;
-
-      return continentFilters[continent];
+      return getContinentFilter(country.CONTINENT);
     },
-    [continentFilters],
+    [getContinentFilter],
   );
+
+  const continentFiltersList = useMemo(() => [...continentFilters], [continentFilters]);
 
   return {
     toggleAllContinentFilters,
     toggleContinentFilter,
-    continentFilters,
+    getContinentFilter,
+    continentFiltersList,
     countryDataByContinent,
     filteredCountryData,
-    isCountryInData,
+    isCountryInFilters,
   };
 }
 

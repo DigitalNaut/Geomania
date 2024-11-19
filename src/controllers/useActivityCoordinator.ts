@@ -22,7 +22,7 @@ export default function useActivityCoordinator() {
   const [searchParams, setURLSearchParams] = useSearchParams();
   const { activity } = useMapActivity();
   const { storedCountry, setCountryDataByCode, resetStore } = useCountryStore();
-  const { filteredCountryData, isCountryInData } = useCountryFilters();
+  const { filteredCountryData, isCountryInFilters } = useCountryFilters();
 
   const {
     submitClick,
@@ -179,7 +179,7 @@ export default function useActivityCoordinator() {
 
   const handleMapClick = (a3?: string) => {
     if (!activity || !a3) return;
-    if (!isCountryInData(a3)) return;
+    if (!isCountryInFilters(a3)) return;
 
     if (activity.activity === "review") {
       focusUI(clickReview(a3), 100, false);
