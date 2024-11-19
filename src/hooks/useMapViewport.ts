@@ -1,4 +1,4 @@
-import type { LatLngExpression } from "leaflet";
+import type { LatLngExpression, ZoomPanOptions } from "leaflet";
 import { useEffect } from "react";
 
 import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
@@ -39,9 +39,9 @@ export function useMapViewport({ options }: { options?: options } = {}) {
     });
   }
 
-  function resetView() {
+  function resetView(options?: ZoomPanOptions) {
     if (!map) return;
-    map.setView(mapDefaults.center, mapDefaults.zoom);
+    map.setView(mapDefaults.center, mapDefaults.zoom, options);
   }
 
   return { flyTo, resetView };

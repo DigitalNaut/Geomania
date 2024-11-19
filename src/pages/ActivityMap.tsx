@@ -38,25 +38,34 @@ const mapGradientStyle = {
   activity: "from-slate-900 to-slate-900 blur-none",
 };
 
-const reviewCountryStyle = {
-  activeStyle: "fill-slate-500/95 stroke-slate-400 hover:stroke-slate-300 hover:fill-slate-500",
-  inactiveStyle: "fill-slate-800 stroke-none",
-};
-
-const quizCountryStyle = {
-  activeStyle: "fill-slate-500/95 stroke-slate-400",
-  inactiveStyle: "fill-slate-800 stroke-none",
-};
-
-const defaultCountryStyle = {
-  activeStyle: "fill-sky-700 stroke-none",
-  inactiveStyle: "fill-sky-700 stroke-none",
-};
-
 const mapActivityTheme: Map<ActivityMode | "default", SvgMapColorTheme> = new Map([
-  ["review", { country: reviewCountryStyle }],
-  ["quiz", { country: quizCountryStyle }],
-  ["default", { country: defaultCountryStyle }],
+  [
+    "review",
+    {
+      country: {
+        activeStyle: "fill-slate-500/95 stroke-slate-400 hover:stroke-slate-300 hover:fill-slate-500",
+        inactiveStyle: "fill-slate-800 stroke-none",
+      },
+    },
+  ],
+  [
+    "quiz",
+    {
+      country: {
+        activeStyle: "fill-slate-500/95 stroke-slate-400",
+        inactiveStyle: "fill-slate-800 stroke-none",
+      },
+    },
+  ],
+  [
+    "default",
+    {
+      country: {
+        activeStyle: "fill-sky-700 stroke-none",
+        inactiveStyle: "fill-sky-700 stroke-none",
+      },
+    },
+  ],
 ]);
 
 function ActivityMap({
@@ -75,7 +84,7 @@ function ActivityMap({
 
   const finishActivity = useCallback(() => {
     resetStore();
-    resetView();
+    resetView({ animate: false });
     onFinishActivity();
   }, [onFinishActivity, resetStore, resetView]);
 
@@ -117,7 +126,7 @@ function ActivityMap({
                         ) : null}
                       </div>
                     ) : (
-                      "Unknown"
+                      <div className="text-xl italic">Unknown</div>
                     )}
                   </Popup>
                 )}

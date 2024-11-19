@@ -3,8 +3,8 @@ import { twMerge } from "tailwind-merge";
 type ToggleProps = {
   id?: string;
   value?: boolean;
-  onChange?: (value: boolean) => void;
   disabled?: boolean;
+  onChange: (value: boolean) => void;
 };
 
 export default function Toggle({ id, value = false, onChange, disabled }: ToggleProps) {
@@ -16,7 +16,7 @@ export default function Toggle({ id, value = false, onChange, disabled }: Toggle
         value ? "bg-blue-500" : "bg-gray-500",
       )}
       onClick={() => {
-        onChange?.(!value);
+        onChange(!value);
       }}
       disabled={disabled}
     >
