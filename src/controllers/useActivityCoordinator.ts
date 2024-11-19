@@ -24,62 +24,44 @@ export default function useActivityCoordinator() {
   const { storedCountry, setCountryDataByCode, resetStore } = useCountryStore();
   const { filteredCountryData, isCountryInFilters } = useCountryFilters();
 
-  const {
-    submitClick,
-    userGuessTally: clickGuessTally,
-    giveHint: giveClickHint,
-    nextCountry: nextClickCountry,
-    visitedCountries: visitedClick,
-  } = useQuizClick();
-  const {
-    inputRef,
-    submitInput,
-    userGuessTally: inputGuessTally,
-    giveHint: giveInputHint,
-    nextCountry: nextInputCountry,
-    visitedCountries: visitedInput,
-  } = useQuizInput();
-  const {
-    nextCountry: nextReviewCountry,
-    clickCountry: clickReview,
-    visitedCountries: visitedReview,
-    resetVisitedCountries: resetVisited,
-  } = useReview();
+  const clickQuiz = useQuizClick();
+  const inputQuiz = useQuizInput();
+  const review = useReview();
 
   const visitedCountries = useMemo<VisitedCountry[]>(() => {
     switch (activity?.activity) {
       case "quiz":
         switch (activity.kind) {
           case "pointing":
-            return visitedClick;
+            return clickQuiz.visitedCountries;
 
           case "typing":
-            return visitedInput;
+            return inputQuiz.visitedCountries;
 
           default:
             return [];
         }
 
       case "review":
-        return visitedReview;
+        return review.visitedCountries;
 
       default:
         return [];
     }
-  }, [activity, visitedClick, visitedInput, visitedReview]);
+  }, [activity, clickQuiz, inputQuiz, review]);
 
   const guessTally = useMemo(() => {
     if (activity?.activity === "quiz")
       switch (activity.kind) {
         case "pointing":
-          return clickGuessTally;
+          return clickQuiz.userGuessTally;
 
         case "typing":
-          return inputGuessTally;
+          return inputQuiz.userGuessTally;
       }
 
     return 0;
-  }, [activity, clickGuessTally, inputGuessTally]);
+  }, [activity, clickQuiz, inputQuiz]);
 
   /**
    * Lifts the country state to the URL search params by its A3
@@ -119,31 +101,33 @@ export default function useActivityCoordinator() {
   }, [setURLSearchParams]);
 
   useEffect(() => {
-    if (!activity) return;
+    if (!activity) {
+      resetView({ animate: false });
+      return;
+    }
 
     const countryParam = searchParams.get("country");
 
     if (!storedCountry.data) {
       if (filteredCountryData.length === 0) {
-        resetView();
+        resetView({ animate: false });
         return;
       }
 
       switch (activity.activity) {
         case "review":
           if (countryParam) setCountryDataByCode(countryParam);
-          else nextReviewCountry();
+          else review.nextCountry();
           break;
 
         case "quiz":
           switch (activity.kind) {
             case "pointing":
-              nextClickCountry();
+              clickQuiz.nextCountry();
               break;
 
             case "typing": {
-              const countryData = nextInputCountry();
-              if (countryData) focusUI(countryData);
+              inputQuiz.nextCountry();
               break;
             }
           }
@@ -171,9 +155,9 @@ export default function useActivityCoordinator() {
     resetView,
     searchParams,
     setCountryDataByCode,
-    nextClickCountry,
-    nextInputCountry,
-    nextReviewCountry,
+    clickQuiz,
+    inputQuiz,
+    review,
     storedCountry.data,
   ]);
 
@@ -182,7 +166,7 @@ export default function useActivityCoordinator() {
     if (!isCountryInFilters(a3)) return;
 
     if (activity.activity === "review") {
-      focusUI(clickReview(a3), 100, false);
+      focusUI(review.clickCountry(a3), 100, false);
       liftCountryA3(a3);
       return;
     }
@@ -193,7 +177,7 @@ export default function useActivityCoordinator() {
         return;
 
       case "pointing": {
-        focusUI(submitClick(a3), 250);
+        focusUI(clickQuiz.submitClick(a3), 250);
         return;
       }
     }
@@ -204,11 +188,11 @@ export default function useActivityCoordinator() {
 
     switch (activity.kind) {
       case "typing":
-        giveInputHint();
+        inputQuiz.giveHint();
         break;
 
       case "pointing":
-        giveClickHint();
+        clickQuiz.giveHint();
         break;
     }
   };
@@ -217,7 +201,7 @@ export default function useActivityCoordinator() {
     if (!activity) return;
 
     if (activity.activity === "review") {
-      const nextCountry = nextReviewCountry();
+      const nextCountry = review.nextCountry();
 
       focusUI(nextCountry);
       if (!nextCountry) return;
@@ -228,12 +212,12 @@ export default function useActivityCoordinator() {
 
     switch (activity.kind) {
       case "typing": {
-        focusUI(nextInputCountry());
+        focusUI(inputQuiz.nextCountry());
         break;
       }
 
       case "pointing": {
-        focusUI(nextClickCountry());
+        focusUI(clickQuiz.nextCountry());
         break;
       }
     }
@@ -242,18 +226,18 @@ export default function useActivityCoordinator() {
   const submitAnswer = () => {
     if (!activity || activity.activity === "review" || activity.kind === "pointing") return null;
 
-    const nextCountry = submitInput();
+    const nextCountry = inputQuiz.submitInput();
     focusUI(nextCountry, 100);
 
     return nextCountry;
   };
 
   return {
-    inputRef,
+    inputRef: inputQuiz.inputRef,
     giveHint,
     handleMapClick,
     visitedCountries,
-    resetVisited,
+    resetVisited: review.resetVisitedCountries,
     guessTally,
     nextCountry,
     submitAnswer,
