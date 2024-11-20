@@ -78,7 +78,7 @@ function ActivityMap({
   const { filteredCountryData } = useCountryFilters();
   const { storedCountry, resetStore } = useCountryStore();
   const { activity } = useMapActivity();
-  const { resetView } = useMapViewport({ options: { padding: 0 } });
+  const { resetViewport: resetView } = useMapViewport({ options: { padding: 0 } });
   const { handleMapClick, visitedCountries, guessTally, giveHint, inputRef, nextCountry, submitAnswer, resetVisited } =
     useActivityCoordinator();
 

@@ -39,10 +39,10 @@ export function useMapViewport({ options }: { options?: options } = {}) {
     });
   }
 
-  function resetView(options?: ZoomPanOptions) {
+  function resetViewport(options?: ZoomPanOptions) {
     if (!map) return;
     map.setView(mapDefaults.center, mapDefaults.zoom, options);
   }
 
-  return { flyTo, resetView };
+  return { flyTo, resetViewport };
 }
