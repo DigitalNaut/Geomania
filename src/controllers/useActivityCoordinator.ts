@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
 
 import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
 import type { VisitedCountry } from "src/components/map/MapSvg";
@@ -14,15 +13,14 @@ import { useMapViewport } from "src/hooks/useMapViewport";
 import { getCountryCoordinates } from "src/utils/features";
 
 /**
- * This hook helps by providing a way to automatically focus the UI when the activity changes and there are countries to show.
+ * Automatically focuses the UI when the activity changes and there are countries to show.
  * @param activityMode Whether to activate the hook or not.
  */
 export default function useActivityCoordinator() {
-  const { flyTo, resetView } = useMapViewport();
-  const [searchParams, setURLSearchParams] = useSearchParams();
+  const { flyTo, resetViewport } = useMapViewport();
   const { activity } = useMapActivity();
-  const { storedCountry, setCountryDataByCode, resetStore } = useCountryStore();
-  const { filteredCountryData, isCountryInFilters } = useCountryFilters();
+  const { storedCountry } = useCountryStore();
+  const { isCountryInFilters, filteredCountryData } = useCountryFilters();
 
   const clickQuiz = useQuizClick();
   const inputQuiz = useQuizInput();
@@ -64,24 +62,9 @@ export default function useActivityCoordinator() {
   }, [activity, clickQuiz, inputQuiz]);
 
   /**
-   * Lifts the country state to the URL search params by its A3
-   */
-  const liftCountryA3 = useCallback(
-    (a3: string) => {
-      setURLSearchParams((prev) => {
-        if (activity?.activity === "review") prev.set("country", a3);
-        else prev.delete("country");
-
-        return prev;
-      });
-    },
-    [activity, setURLSearchParams],
-  );
-
-  /**
    * Focuses the UI on the next country by panning the map to the country coordinates
    */
-  const focusUI = useCallback(
+  const focusViewport = useCallback(
     (country: NullableCountryData, delay = 0, shouldFly = true) => {
       if (!country) return;
 
@@ -93,91 +76,22 @@ export default function useActivityCoordinator() {
     [flyTo],
   );
 
-  const resetUI = useCallback(() => {
-    setURLSearchParams((prev) => {
-      prev.delete("country");
-      return prev;
-    });
-  }, [setURLSearchParams]);
-
-  useEffect(() => {
-    if (!activity) {
-      resetView({ animate: false });
-      return;
-    }
-
-    const countryParam = searchParams.get("country");
-
-    if (!storedCountry.data) {
-      if (filteredCountryData.length === 0) {
-        resetView({ animate: false });
-        return;
-      }
-
-      switch (activity.activity) {
-        case "review":
-          if (countryParam) setCountryDataByCode(countryParam);
-          else review.nextCountry();
-          break;
-
-        case "quiz":
-          switch (activity.kind) {
-            case "pointing":
-              clickQuiz.nextCountry();
-              break;
-
-            case "typing": {
-              inputQuiz.nextCountry();
-              break;
-            }
-          }
-      }
-
-      return;
-    }
-
-    if (filteredCountryData.length === 0 || !filteredCountryData.includes(storedCountry.data)) {
-      resetStore();
-      resetUI();
-      return;
-    }
-
-    if (countryParam && countryParam !== storedCountry.data.GU_A3) {
-      const countryData = setCountryDataByCode(countryParam);
-      if (countryData && activity.activity === "quiz" && activity.kind === "typing") focusUI(countryData);
-    }
-  }, [
-    activity,
-    filteredCountryData,
-    focusUI,
-    resetStore,
-    resetUI,
-    resetView,
-    searchParams,
-    setCountryDataByCode,
-    clickQuiz,
-    inputQuiz,
-    review,
-    storedCountry.data,
-  ]);
-
   const handleMapClick = (a3?: string) => {
     if (!activity || !a3) return;
     if (!isCountryInFilters(a3)) return;
 
     if (activity.activity === "review") {
-      focusUI(review.clickCountry(a3), 100, false);
-      liftCountryA3(a3);
+      focusViewport(review.clickCountry(a3), 100, false);
       return;
     }
 
     switch (activity.kind) {
       case "typing":
-        focusUI(storedCountry.data);
+        focusViewport(storedCountry.data);
         return;
 
       case "pointing": {
-        focusUI(clickQuiz.submitClick(a3), 250);
+        focusViewport(clickQuiz.submitClick(a3), 250);
         return;
       }
     }
@@ -203,34 +117,86 @@ export default function useActivityCoordinator() {
     if (activity.activity === "review") {
       const nextCountry = review.nextCountry();
 
-      focusUI(nextCountry);
+      focusViewport(nextCountry);
       if (!nextCountry) return;
 
-      liftCountryA3(nextCountry.GU_A3);
       return;
     }
 
     switch (activity.kind) {
       case "typing": {
-        focusUI(inputQuiz.nextCountry());
+        focusViewport(inputQuiz.nextCountry());
         break;
       }
 
       case "pointing": {
-        focusUI(clickQuiz.nextCountry());
+        focusViewport(clickQuiz.nextCountry());
         break;
       }
     }
   };
 
   const submitAnswer = () => {
-    if (!activity || activity.activity === "review" || activity.kind === "pointing") return null;
+    if (!activity || activity.activity !== "quiz" || activity.kind !== "typing") return null;
 
     const nextCountry = inputQuiz.submitInput();
-    focusUI(nextCountry, 100);
+    focusViewport(nextCountry, 100);
 
     return nextCountry;
   };
+
+  const start = useCallback(() => {
+    if (!activity) return;
+
+    switch (activity?.activity) {
+      case "review":
+        review.start();
+        break;
+
+      case "quiz":
+        switch (activity.kind) {
+          case "pointing":
+            clickQuiz.start();
+            break;
+
+          case "typing":
+            inputQuiz.start();
+            break;
+        }
+        break;
+    }
+  }, [activity, clickQuiz, inputQuiz, review]);
+
+  const finish = useCallback(() => {
+    if (!activity) return;
+
+    switch (activity?.activity) {
+      case "review":
+        review.finish();
+        break;
+
+      case "quiz":
+        switch (activity.kind) {
+          case "pointing":
+            clickQuiz.finish();
+            break;
+
+          case "typing":
+            inputQuiz.finish();
+            break;
+        }
+        break;
+    }
+  }, [activity, clickQuiz, inputQuiz, review]);
+
+  useEffect(
+    function manageViewportOnNoActivity() {
+      if (activity || storedCountry.data || filteredCountryData.length > 0) return;
+
+      resetViewport({ animate: false });
+    },
+    [activity, filteredCountryData.length, resetViewport, storedCountry.data],
+  );
 
   return {
     inputRef: inputQuiz.inputRef,
@@ -241,5 +207,7 @@ export default function useActivityCoordinator() {
     guessTally,
     nextCountry,
     submitAnswer,
+    start,
+    finish,
   };
 }

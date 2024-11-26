@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Marker, Popup, ZoomControl } from "react-leaflet";
 import { useSearchParams } from "react-router-dom";
 
@@ -68,6 +68,57 @@ const mapActivityTheme: Map<ActivityMode | "default", SvgMapColorTheme> = new Ma
   ],
 ]);
 
+function shallowEqual(objA: Record<string, string>, objB: Record<string, string>): boolean {
+  if (objA === objB) return true;
+
+  const keysA = Object.keys(objA);
+  const keysB = Object.keys(objB);
+
+  if (keysA.length !== keysB.length) return false;
+
+  for (const key of keysA) {
+    if (!Object.prototype.hasOwnProperty.call(objB, key) || !Object.is(objA[key], objB[key])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+type ActivityTransitionType = "start" | "finish" | "change";
+
+function determineType(current: boolean, next: boolean): ActivityTransitionType {
+  if (current && !next) return "finish";
+  if (!current && next) return "start";
+  return "change";
+}
+
+/**
+ * Monitors changes in activity and triggers a callback when the activity type changes.
+ *
+ * @param onActivityChange Called when the activity type changes.
+ * @returns The current activity.
+ */
+function useActivityMonitor(onActivityChange: (type: ActivityTransitionType) => void) {
+  const { activity } = useMapActivity();
+  const prevActivity = useRef<typeof activity | undefined>(undefined);
+
+  useEffect(
+    function activityMonitor() {
+      if (prevActivity.current && activity && shallowEqual(prevActivity.current, activity)) return;
+      if (!prevActivity.current && !activity) return;
+
+      const type = determineType(Boolean(prevActivity.current), Boolean(activity));
+      onActivityChange(type);
+
+      prevActivity.current = activity;
+    },
+    [activity, onActivityChange],
+  );
+
+  return { activity };
+}
+
 function ActivityMap({
   setError,
   onFinishActivity,
@@ -77,18 +128,47 @@ function ActivityMap({
 }) {
   const { filteredCountryData } = useCountryFilters();
   const { storedCountry, resetStore } = useCountryStore();
-  const { activity } = useMapActivity();
   const { resetViewport: resetView } = useMapViewport({ options: { padding: 0 } });
-  const { handleMapClick, visitedCountries, guessTally, giveHint, inputRef, nextCountry, submitAnswer, resetVisited } =
-    useActivityCoordinator();
+  const {
+    handleMapClick,
+    visitedCountries,
+    guessTally,
+    giveHint,
+    inputRef,
+    nextCountry,
+    submitAnswer,
+    resetVisited,
+    start,
+    // finish,
+  } = useActivityCoordinator();
 
   const finishActivity = useCallback(() => {
     resetStore();
     resetView({ animate: false });
+    // finish();
     onFinishActivity();
   }, [onFinishActivity, resetStore, resetView]);
 
   useHeaderController(finishActivity);
+
+  const activityMonitorHandler = useCallback(
+    (type: ActivityTransitionType) => {
+      switch (type) {
+        case "finish":
+          finishActivity();
+          break;
+        case "start":
+          start();
+          break;
+        case "change":
+          break;
+        default:
+          throw new Error(`Unknown activity type: ${type}`);
+      }
+    },
+    [finishActivity, start],
+  );
+  const { activity } = useActivityMonitor(activityMonitorHandler);
 
   const colorTheme = useMemo(() => mapActivityTheme.get(activity?.activity || "default")!, [activity]);
 
@@ -162,7 +242,7 @@ function ActivityMap({
         shouldShow={activity?.activity === "review" && filteredCountryData.length > 0}
         onError={setError}
       />
-      {activity && <RegionsToggleOverlay shouldShow={filteredCountryData.length === 0} />}
+      {activity && <RegionsToggleOverlay shouldShow={filteredCountryData.length === 0} onStart={start} />}
     </div>
   );
 }

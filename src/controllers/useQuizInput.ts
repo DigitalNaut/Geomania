@@ -1,14 +1,24 @@
+import type { RefObject } from "react";
 import { useMemo } from "react";
 
+import type { VisitedCountry } from "src/components/map/MapSvg";
 import { qualifyScore } from "src/controllers/scores";
+import { useQuiz } from "src/controllers/useQuiz";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useInputField } from "src/hooks/useInputField";
-import { useQuiz } from "src/controllers/useQuiz";
 import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
+import type { NullableCountryData } from "src/types/features";
+import type { IActivity } from "./types";
 
 const highlightStyle = "fill-yellow-400";
 
-export function useQuizInput() {
+export function useQuizInput(): IActivity & {
+  inputRef: RefObject<HTMLInputElement>;
+  visitedCountries: VisitedCountry[];
+  giveHint: () => void;
+  submitInput: () => NullableCountryData;
+  userGuessTally: number;
+} {
   const { submitAnswer, resetTally, userGuessTally, pushVisitedCountry, visitedCountries } = useQuiz();
   const { storedCountry: correctAnswer, setCountryDataRandom } = useCountryStore();
   const { inputRef, setInputField: setAnswerInputField, focusInputField: focusAnswerInputField } = useInputField();
@@ -67,6 +77,10 @@ export function useQuizInput() {
     return [...visitedCountries, { a3: correctAnswer.data.GU_A3, style: highlightStyle, highlight: true }];
   }, [correctAnswer.data, visitedCountries]);
 
+  const start = () => void showNextCountry();
+
+  const finish = () => {};
+
   return {
     inputRef,
     submitInput,
@@ -74,5 +88,7 @@ export function useQuizInput() {
     nextCountry,
     userGuessTally,
     visitedCountries: visitedCountriesWithHighlight,
+    start,
+    finish,
   };
 }

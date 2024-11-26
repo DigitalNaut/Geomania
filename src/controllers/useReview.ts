@@ -1,36 +1,69 @@
-import { useMemo } from "react";
-import { useCountryFilters } from "src/hooks/useCountryFilters";
+import { useCallback, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 
-import { useMapActivity } from "src/hooks/useMapActivity";
+import type { VisitedCountry } from "src/components/map/MapSvg";
+import { useCountryFilters } from "src/hooks/useCountryFilters";
 import { useCountryStore } from "src/hooks/useCountryStore";
+import { useMapActivity } from "src/hooks/useMapActivity";
 import { useVisitedCountries } from "src/hooks/useVisitedCountries";
+import type { NullableCountryData } from "src/types/features";
+import type { IActivity } from "./types";
 
 const visitedStyle = "fill-lime-700 stroke-lime-200";
 const highlightStyle = "fill-lime-500 stroke-lime-200";
 
-export function useReview() {
+export function useReview(): IActivity & {
+  clickCountry: (a3: string) => NullableCountryData;
+  visitedCountries: VisitedCountry[];
+  resetVisitedCountries: () => void;
+} {
+  const [searchParams, setURLSearchParams] = useSearchParams();
   const { isCountryInFilters } = useCountryFilters();
   const { setCountryDataNext, setCountryDataRandom, setCountryDataByCode, storedCountry } = useCountryStore();
   const { visitedCountries, pushVisitedCountry, setVisitedCountry, resetVisitedCountries } = useVisitedCountries();
   const { isRandomReviewMode } = useMapActivity();
 
-  function pushStoredCountry() {
+  const pushStoredCountry = useCallback(() => {
     if (!storedCountry.data) return;
     pushVisitedCountry(storedCountry.data.GU_A3, visitedStyle);
-  }
+  }, [pushVisitedCountry, storedCountry.data]);
 
-  const clickCountry = (a3: string) => {
-    pushStoredCountry();
-    setVisitedCountry(a3);
-    return setCountryDataByCode(a3);
-  };
+  const liftCountryToParams = useCallback(
+    (a3: string) => {
+      setURLSearchParams((prev) => {
+        prev.set("country", a3);
+        return prev;
+      });
+    },
+    [setURLSearchParams],
+  );
 
-  const nextCountry = () => {
+  const clickCountry = useCallback(
+    (a3: string) => {
+      pushStoredCountry();
+      liftCountryToParams(a3);
+      setVisitedCountry(a3);
+      return setCountryDataByCode(a3);
+    },
+    [liftCountryToParams, pushStoredCountry, setCountryDataByCode, setVisitedCountry],
+  );
+
+  const nextCountry = useCallback(() => {
     pushStoredCountry();
     const next = isRandomReviewMode ? setCountryDataRandom() : setCountryDataNext();
-    if (next) setVisitedCountry(next?.GU_A3);
+    if (next) {
+      liftCountryToParams(next.GU_A3);
+      setVisitedCountry(next?.GU_A3);
+    }
     return next;
-  };
+  }, [
+    isRandomReviewMode,
+    liftCountryToParams,
+    pushStoredCountry,
+    setCountryDataNext,
+    setCountryDataRandom,
+    setVisitedCountry,
+  ]);
 
   const visitedCountriesWithHighlight = useMemo(() => {
     if (!storedCountry.data) return visitedCountries;
@@ -40,10 +73,42 @@ export function useReview() {
     return [...filteredVisitedCountries, { a3: storedCountry.data.GU_A3, style: highlightStyle, highlight: true }];
   }, [isCountryInFilters, storedCountry.data, visitedCountries]);
 
+  const clearCountryFromParams = useCallback(() => {
+    setURLSearchParams((prev) => {
+      prev.delete("country");
+      return prev;
+    });
+  }, [setURLSearchParams]);
+
+  const getCountryFromParams = useCallback(() => searchParams.get("country"), [searchParams]);
+
+  const start = useCallback(() => {
+    if (storedCountry.data) return;
+
+    const a3 = getCountryFromParams();
+    if (!a3) {
+      nextCountry();
+      return;
+    }
+    if (!a3.length) {
+      clearCountryFromParams();
+      return;
+    }
+
+    if (isCountryInFilters(a3)) clickCountry(a3);
+  }, [clearCountryFromParams, clickCountry, getCountryFromParams, isCountryInFilters, nextCountry, storedCountry]);
+
+  const finish = useCallback(() => {
+    clearCountryFromParams();
+  }, [clearCountryFromParams]);
+
   return {
     clickCountry,
     nextCountry,
     visitedCountries: visitedCountriesWithHighlight,
     resetVisitedCountries,
+    start,
+    finish,
   };
 }
+

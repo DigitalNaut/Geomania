@@ -26,7 +26,7 @@ function ToggleListItem({ id, checked, onChange, label }: ListItemProps) {
   );
 }
 
-function RegionsToggleList() {
+function RegionsToggleList({ onStart }: { onStart?: () => void }) {
   const { toggleContinentFilter, continentFiltersList } = useCountryFilters();
   const [selection, setSelection] = useState(() => new Map(continentFiltersList));
 
@@ -45,6 +45,9 @@ function RegionsToggleList() {
 
     // Reset state
     setSelection(new Map(continentFiltersList));
+
+    // Run callback
+    onStart?.();
   };
 
   return (
@@ -72,7 +75,7 @@ function RegionsToggleList() {
   );
 }
 
-export default function RegionsToggleOverlay({ shouldShow }: { shouldShow: boolean }) {
+export default function RegionsToggleOverlay({ shouldShow, onStart }: { shouldShow: boolean; onStart: () => void }) {
   const springs = useSpring({
     opacity: shouldShow ? 1 : 0,
     transform: shouldShow ? "translateY(-50%) translateX(-50%)" : "translateY(-75%) translateX(-50%)",
@@ -88,11 +91,11 @@ export default function RegionsToggleOverlay({ shouldShow }: { shouldShow: boole
         className="absolute inset-1/2 z-[1000] mx-auto flex size-max -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md hover:bg-sky-900"
         style={springs}
       >
-        <h2 className="text-center text-2xl font-bold">No countries to review</h2>
+        <h2 className="text-center text-2xl font-bold">Toggle regions</h2>
         <div className="flex flex-col gap-4 text-center">
-          <span>You have disabled all regions.</span>
+          <span>Please select which region to view:</span>
 
-          <RegionsToggleList />
+          <RegionsToggleList onStart={onStart} />
         </div>
       </animated.div>
     </div>

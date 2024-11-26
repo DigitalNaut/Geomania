@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { Provider } from ".";
@@ -13,18 +13,30 @@ function validateActivity(activity: unknown): activity is ActivityType {
 export function MapActivityProvider({ children }: PropsWithChildren) {
   const [searchParams, setURLSearchParams] = useSearchParams();
 
+  const [activity, setActivity] = useState(() => {
+    const newActivity = {
+      activity: searchParams.get("activity"),
+      kind: searchParams.get("kind"),
+    };
+    if (validateActivity(newActivity)) return newActivity;
+    return undefined;
+  });
   const [isRandomReviewMode, setRandomReviewMode] = useState(() => searchParams.get("random") === "true");
 
-  const activity = useMemo(() => {
+  const parseSearchParams = useCallback(() => {
     const activity = searchParams.get("activity");
     const kind = searchParams.get("kind");
     const newActivity = { activity, kind };
 
     const isValid = validateActivity(newActivity);
-    if (isValid) return newActivity;
-
-    return undefined;
+    const isDifferent = !Object.is(newActivity, activity);
+    if (isValid && isDifferent) setActivity(newActivity);
+    else setActivity(undefined);
   }, [searchParams]);
+
+  useEffect(() => {
+    parseSearchParams();
+  }, [parseSearchParams]);
 
   const toggleRandomReviewMode = (value: boolean) => {
     setRandomReviewMode(value);
