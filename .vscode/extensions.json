@@ -16,6 +16,11 @@
     "vitest.explorer",
     "davidanson.vscode-markdownlint",
     "denoland.vscode-deno",
-    "rioj7.commandonallfiles"
+    "rioj7.commandonallfiles",
+    "aaron-bond.better-comments",
+    "pkief.material-icon-theme",
+    "wayou.vscode-todo-highlight",
+    "grapecity.gc-excelviewer",
+    "reflow.reflow"
   ]
 }
