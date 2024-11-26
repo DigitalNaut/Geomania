@@ -5,11 +5,20 @@ import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
 import { useUserSettingsContext } from "src/hooks/useUserSettings";
 import { useMapContext } from "./useMapContext";
 
-type options = {
+type Options = {
   padding: number;
 };
 
-export function useMapViewport({ options }: { options?: options } = {}) {
+/**
+ * Manages the map viewport.
+ *
+ * Provides a function to fly to a new location on the map.
+ *
+ * @param {Object} [Options]
+ * @param {number} [Options.padding] - The amount of padding to add to the adjusted bounds.
+ * @returns {Object} An object with a single key, `flyTo`, which is a function.
+ */
+export function useMapViewport({ options }: { options?: Options } = {}) {
   const { map } = useMapContext();
   const { userSettings } = useUserSettingsContext();
   const padding = options?.padding ?? 0.5;
