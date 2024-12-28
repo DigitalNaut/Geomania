@@ -1,5 +1,6 @@
 import { faForwardStep, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { Variants } from "motion/react";
 import { motion } from "motion/react";
 import { type KeyboardEvent, type PropsWithChildren, type RefObject, useCallback, useMemo, useState } from "react";
 
@@ -65,6 +66,11 @@ function CountryFlag({ a2 }: { a2?: string }) {
   );
 }
 
+const panelVariants: Variants = {
+  hidden: { translateY: 100, opacity: 0, transition: { duration: 0.1 } },
+  visible: { translateY: 0, opacity: 1, transition: { duration: 0.2 } },
+};
+
 export default function QuizFloatingPanel({
   mode,
   userGuessTally,
@@ -118,7 +124,11 @@ export default function QuizFloatingPanel({
   return (
     <motion.div
       className="absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 text-center"
-      exit={{ opacity: 0 }}
+      key="quiz-floating-panel"
+      variants={panelVariants}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
     >
       <motion.div>
         {mode === "typing" && (

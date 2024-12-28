@@ -1,3 +1,4 @@
+import type { Variants } from "motion/react";
 import { motion } from "motion/react";
 import type { ChangeEventHandler } from "react";
 import { useState } from "react";
@@ -8,13 +9,23 @@ import { UnsplashImages } from "src/components/info/UnsplashImages";
 import { useMapActivity } from "src/hooks/useMapActivity";
 import { InlineButton } from "./InlineButton";
 
-export function WikipediaFloatingPanel({ disabled, onError }: { disabled: boolean; onError: (error: Error) => void }) {
+const wikiPanelVariants: Variants = {
+  hidden: { opacity: 0, translateY: -100, transition: { duration: 0.1 } },
+  visible: { opacity: 1, translateY: 0, transition: { duration: 0.2 } },
+};
+
+export function WikipediaFloatingPanel({ onError }: { onError: (error: Error) => void }) {
   const [showDetails, setShowDetails] = useState(false);
 
-  if (disabled) return null;
-
   return (
-    <motion.div className="absolute left-4 top-16 z-[1000] rounded-md" exit={{ opacity: 0 }}>
+    <motion.div
+      className="absolute left-4 top-16 z-[1000] rounded-md"
+      key="wikipedia-floating-panel"
+      variants={wikiPanelVariants}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+    >
       <details
         className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
         open={showDetails}
@@ -27,19 +38,23 @@ export function WikipediaFloatingPanel({ disabled, onError }: { disabled: boolea
   );
 }
 
-export function UnsplashImagesFloatingPanel({
-  disabled,
-  onError,
-}: {
-  disabled: boolean;
-  onError: (error: Error) => void;
-}) {
+const unsplashPanelVariants: Variants = {
+  hidden: { opacity: 0, translateY: -100, transition: { duration: 0.1 } },
+  visible: { opacity: 1, translateY: 0, transition: { duration: 0.2 } },
+};
+
+export function UnsplashImagesFloatingPanel({ onError }: { onError: (error: Error) => void }) {
   const [showDetails, setShowDetails] = useState(false);
 
-  if (disabled) return null;
-
   return (
-    <motion.div className="absolute right-16 top-16 z-[1000] rounded-md" exit={{ opacity: 0 }}>
+    <motion.div
+      className="absolute right-16 top-16 z-[1000] rounded-md"
+      key="unsplash-floating-panel"
+      variants={unsplashPanelVariants}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+    >
       <details
         className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
         open={showDetails}
@@ -51,6 +66,11 @@ export function UnsplashImagesFloatingPanel({
     </motion.div>
   );
 }
+
+const reviewPanelVariants: Variants = {
+  hidden: { opacity: 0, translateY: 100, transition: { duration: 0.1 } },
+  visible: { opacity: 1, translateY: 0, transition: { duration: 0.2 } },
+};
 
 export default function ReviewFloatingPanel({
   showNextCountry,
@@ -68,7 +88,11 @@ export default function ReviewFloatingPanel({
   return (
     <motion.div
       className="pointer-events-none absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 rounded-md"
-      exit={{ opacity: 0 }}
+      key="review-floating-panel"
+      variants={reviewPanelVariants}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
     >
       <div className="pointer-events-auto flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
         <motion.div className="flex w-full flex-col items-center overflow-hidden rounded-md">

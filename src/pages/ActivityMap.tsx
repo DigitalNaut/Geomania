@@ -1,9 +1,10 @@
+import { AnimatePresence, motion } from "motion/react";
+import type { PropsWithChildren } from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Marker, Popup, ZoomControl } from "react-leaflet";
 import { useSearchParams } from "react-router-dom";
-import { AnimatePresence } from "motion/react";
 
-import { ActivityButton, ActivitySection } from "src/components/activity/ActivityButton";
+import { ActivityButton } from "src/components/activity/ActivityButton";
 import CountriesListPanel from "src/components/activity/CountriesListPanel";
 import FloatingHeader from "src/components/activity/FloatingHeader";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
@@ -219,34 +220,37 @@ function ActivityMap({
         <SvgMap selectedPaths={visitedCountries} onClick={handleMapClick} colorTheme={colorTheme} />
       </LeafletMapFrame>
 
-      <AnimatePresence>
-        {activity?.activity === "quiz" && filteredCountryData.length > 0 && (
-          <QuizFloatingPanel
-            mode={activity?.activity === "quiz" ? activity.kind : undefined}
-            giveHint={giveHint}
-            inputRef={inputRef}
-            skipCountry={nextCountry}
-            submitAnswer={submitAnswer}
-            userGuessTally={guessTally}
-          />
-        )}
-        {activity?.activity === "review" && (
-          <ReviewFloatingPanel
-            showNextCountry={nextCountry}
-            disabled={filteredCountryData.length === 0}
-            onReset={resetVisited}
-          />
-        )}
-        {activity?.activity === "review" && filteredCountryData.length > 0 && (
-          <>
-            <WikipediaFloatingPanel disabled={filteredCountryData.length === 0} onError={setError} />
-            <UnsplashImagesFloatingPanel disabled={filteredCountryData.length === 0} onError={setError} />
-          </>
-        )}
-        {activity && <RegionsToggleOverlay shouldShow={filteredCountryData.length === 0} onStart={start} />}
+      <AnimatePresence mode="wait">
+        {activity &&
+          (filteredCountryData.length === 0 ? (
+            <RegionsToggleOverlay onStart={start} />
+          ) : activity.activity === "quiz" ? (
+            <QuizFloatingPanel
+              mode={activity.kind}
+              giveHint={giveHint}
+              inputRef={inputRef}
+              skipCountry={nextCountry}
+              submitAnswer={submitAnswer}
+              userGuessTally={guessTally}
+            />
+          ) : activity.activity === "review" ? (
+            <>
+              <ReviewFloatingPanel
+                showNextCountry={nextCountry}
+                disabled={filteredCountryData.length === 0}
+                onReset={resetVisited}
+              />
+              <WikipediaFloatingPanel onError={setError} />
+              <UnsplashImagesFloatingPanel onError={setError} />
+            </>
+          ) : null)}
       </AnimatePresence>
     </div>
   );
+}
+
+export function ActivitySection({ children }: PropsWithChildren) {
+  return <div className="flex size-full shrink items-center justify-center gap-3 hover:bg-white/10">{children}</div>;
 }
 
 type Activities = { [key: string]: ActivityType };
@@ -264,7 +268,7 @@ export default function ActivityMapLayout() {
   const [, setURLSearchParams] = useSearchParams();
   const { activity } = useMapActivity();
 
-  const isActivitySelected = useMemo(() => !activity || !activity.activity, [activity]);
+  const isActivitySelected = !!activity?.activity;
 
   return (
     <>
@@ -275,48 +279,54 @@ export default function ActivityMapLayout() {
       )}
 
       <MainView className="relative overflow-auto">
-        <InstructionOverlay shouldShow={isActivitySelected}>
-          <ActivitySection>
-            <ActivityButton
-              className="bg-gradient-to-br from-blue-600 to-blue-700"
-              label="🗺 Review"
-              onClick={() => setURLSearchParams(activities["review-countries"])}
-            >
-              Learn the countries by region.
-            </ActivityButton>
-          </ActivitySection>
-          <ActivitySection>
-            <ActivityButton
-              className="bg-gradient-to-br from-pink-600 to-pink-700"
-              label="⌨ Typing Quiz"
-              onClick={() => setURLSearchParams(activities["quiz-typing"])}
-            >
-              Type in the name of the country.
-            </ActivityButton>
-            <ActivityButton
-              className="bg-gradient-to-br from-green-600 to-green-700"
-              label="👆 Point & Click"
-              onClick={() => setURLSearchParams(activities["quiz-pointing"])}
-            >
-              Point out the country on the map.
-            </ActivityButton>
-          </ActivitySection>
-        </InstructionOverlay>
+        <AnimatePresence mode="wait">
+          {!isActivitySelected && (
+            <InstructionOverlay>
+              <ActivitySection>
+                <ActivityButton
+                  className="bg-gradient-to-br from-blue-600 to-blue-700"
+                  label="🗺 Review"
+                  onClick={() => setURLSearchParams(activities["review-countries"])}
+                >
+                  Learn the countries by region.
+                </ActivityButton>
+              </ActivitySection>
+              <ActivitySection>
+                <ActivityButton
+                  className="bg-gradient-to-br from-pink-600 to-pink-700"
+                  label="⌨ Typing Quiz"
+                  onClick={() => setURLSearchParams(activities["quiz-typing"])}
+                >
+                  Type in the name of the country.
+                </ActivityButton>
+                <ActivityButton
+                  className="bg-gradient-to-br from-green-600 to-green-700"
+                  label="👆 Point & Click"
+                  onClick={() => setURLSearchParams(activities["quiz-pointing"])}
+                >
+                  Point out the country on the map.
+                </ActivityButton>
+              </ActivitySection>
+            </InstructionOverlay>
+          )}
 
-        <FloatingHeader shouldShow={!isActivitySelected} imageSrc={NerdMascot}>
-          {activity?.activity === "quiz" && <span>Guess the country!</span>}
-          {activity?.activity === "review" && <span>Reviewing countries</span>}
-        </FloatingHeader>
+          {isActivitySelected && (
+            <FloatingHeader imageSrc={NerdMascot}>
+              {activity?.activity === "quiz" && <span>Guess the country!</span>}
+              {activity?.activity === "review" && <span>Reviewing countries</span>}
+            </FloatingHeader>
+          )}
+        </AnimatePresence>
 
         <div className="relative m-2 flex-1 overflow-hidden rounded-lg shadow-inner">
           <ActivityMap onFinishActivity={() => setURLSearchParams(undefined)} setError={setError} />
         </div>
 
         {activity?.activity && (
-          <div className="flex h-1/5 w-max flex-col gap-6 overflow-y-auto sm:h-auto sm:w-[30ch]">
+          <motion.div className="flex h-1/5 w-max flex-col gap-6 overflow-y-auto sm:h-auto sm:w-[30ch]">
             <CountriesListPanel isAbridged={activity.activity === "quiz"} />
             {activity.activity === "quiz" && <GuessHistoryPanel guessHistory={guessHistory} />}
-          </div>
+          </motion.div>
         )}
       </MainView>
     </>

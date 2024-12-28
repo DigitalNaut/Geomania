@@ -1,7 +1,7 @@
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { type PropsWithChildren } from "react";
-import { twJoin, twMerge } from "tailwind-merge";
+import { twJoin } from "tailwind-merge";
 
 export function ActivityButton({
   label,
@@ -16,10 +16,7 @@ export function ActivityButton({
   return (
     <button
       role="button"
-      className={twJoin(
-        "flex max-w-[40ch] w-max items-center justify-center gap-4 rounded-lg p-6 shadow-l",
-        className,
-      )}
+      className={twJoin("flex max-w-[40ch] w-max items-center justify-center gap-4 rounded-lg p-6 shadow-l", className)}
       onClick={onClick}
     >
       <div className="flex flex-col gap-4">
@@ -28,18 +25,5 @@ export function ActivityButton({
       </div>
       <FontAwesomeIcon icon={faChevronRight} />
     </button>
-  );
-}
-
-export function ActivitySection({ children, className }: PropsWithChildren<{ label?: string; className?: string }>) {
-  return (
-    <div
-      className={twMerge(
-        "flex justify-center h-full w-full shrink gap-3 items-center hover:bg-white/10",
-        className,
-      )}
-    >
-      {children}
-    </div>
   );
 }

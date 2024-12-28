@@ -39,7 +39,7 @@ export function LeafletMapFrame({
     <MapContainer className={twMerge("size-full", className)} {...mapDefaults}>
       <MapEvents />
       {children}
-      {showControls && <TileLayersControl checked={"None"} position="topright" />}
+      {showControls && <TileLayersControl checked="None" position="topright" />}
     </MapContainer>
   );
 }

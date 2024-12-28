@@ -1,3 +1,4 @@
+import type { Variants } from "motion/react";
 import { motion } from "motion/react";
 import { useMemo, useState } from "react";
 
@@ -5,7 +6,6 @@ import Button from "src/components/common/Button";
 import Toggle from "src/components/common/Toggle";
 import { useCountryFilters } from "src/hooks/useCountryFilters";
 import { continents } from "src/hooks/useCountryFilters/data";
-import { cn } from "src/utils/styles";
 
 type ListItemProps = {
   id: string;
@@ -75,16 +75,20 @@ function RegionsToggleList({ onStart }: { onStart?: () => void }) {
   );
 }
 
-export default function RegionsToggleOverlay({ shouldShow, onStart }: { shouldShow: boolean; onStart: () => void }) {
+const overlayVariants: Variants = {
+  hidden: { opacity: 0, transition: { duration: 0.1 } },
+  visible: { opacity: 1, transition: { duration: 0.2 } },
+};
+
+export default function RegionsToggleOverlay({ onStart }: { onStart: () => void }) {
   return (
     <motion.div
-      className={cn("invisible pointer-events-none absolute inset-0 bg-slate-900/90 z-[1000]", {
-        "visible pointer-events-auto": shouldShow,
-      })}
-      animate={{
-        opacity: shouldShow ? 1 : 0,
-      }}
-      exit={{ opacity: 0 }}
+      className="absolute inset-0 z-[1000] bg-slate-900/90"
+      key="regions-toggle-overlay"
+      variants={overlayVariants}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
     >
       <div className="absolute inset-1/2 z-[1000] mx-auto flex size-max -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md hover:bg-sky-900">
         <h2 className="text-center text-2xl font-bold">Toggle regions</h2>
