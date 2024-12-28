@@ -66,7 +66,6 @@ function CountryFlag({ a2 }: { a2?: string }) {
 }
 
 export default function QuizFloatingPanel({
-  shouldShow,
   mode,
   userGuessTally,
   inputRef,
@@ -74,10 +73,9 @@ export default function QuizFloatingPanel({
   skipCountry,
   giveHint,
 }: {
-  shouldShow: boolean;
   mode?: QuizKind;
   userGuessTally: number;
-  inputRef: RefObject<HTMLInputElement>;
+  inputRef: RefObject<HTMLInputElement | null>;
   submitAnswer?: (text: string) => NullableCountryData;
   skipCountry: () => void;
   giveHint: () => void;
@@ -118,7 +116,10 @@ export default function QuizFloatingPanel({
   const a2 = useMemo(() => storedCountry.data?.ISO_A2_EH, [storedCountry.data?.ISO_A2_EH]);
 
   return (
-    <motion.div className="absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 text-center">
+    <motion.div
+      className="absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 text-center"
+      exit={{ opacity: 0 }}
+    >
       <motion.div>
         {mode === "typing" && (
           <QuizHeaderSection skipCountryHandler={skipCountry}>Which country is this?</QuizHeaderSection>
@@ -142,12 +143,9 @@ export default function QuizFloatingPanel({
                 ref={inputRef}
                 onKeyDown={handleKeyDown}
                 placeholder="Enter country name"
-                disabled={!shouldShow}
                 maxLength={50}
               />
-              <ActionButton disabled={!shouldShow} onClick={handleSubmit}>
-                Submit
-              </ActionButton>
+              <ActionButton onClick={handleSubmit}>Submit</ActionButton>
             </motion.div>
           </div>
         )}

@@ -77,24 +77,23 @@ function RegionsToggleList({ onStart }: { onStart?: () => void }) {
 
 export default function RegionsToggleOverlay({ shouldShow, onStart }: { shouldShow: boolean; onStart: () => void }) {
   return (
-    <div
+    <motion.div
       className={cn("invisible pointer-events-none absolute inset-0 bg-slate-900/90 z-[1000]", {
         "visible pointer-events-auto": shouldShow,
       })}
+      animate={{
+        opacity: shouldShow ? 1 : 0,
+      }}
+      exit={{ opacity: 0 }}
     >
-      <motion.div
-        className="absolute inset-1/2 z-[1000] mx-auto flex size-max -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md hover:bg-sky-900"
-        animate={{
-          opacity: shouldShow ? 1 : 0,
-        }}
-      >
+      <div className="absolute inset-1/2 z-[1000] mx-auto flex size-max -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md hover:bg-sky-900">
         <h2 className="text-center text-2xl font-bold">Toggle regions</h2>
         <div className="flex flex-col gap-4 text-center">
           <span>Please select which region to view:</span>
 
           <RegionsToggleList onStart={onStart} />
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   );
 }

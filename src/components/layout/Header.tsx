@@ -1,6 +1,6 @@
 import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, JSX } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 

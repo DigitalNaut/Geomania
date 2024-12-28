@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Marker, Popup, ZoomControl } from "react-leaflet";
 import { useSearchParams } from "react-router-dom";
+import { AnimatePresence } from "motion/react";
 
 import { ActivityButton, ActivitySection } from "src/components/activity/ActivityButton";
 import CountriesListPanel from "src/components/activity/CountriesListPanel";
@@ -218,32 +219,32 @@ function ActivityMap({
         <SvgMap selectedPaths={visitedCountries} onClick={handleMapClick} colorTheme={colorTheme} />
       </LeafletMapFrame>
 
-      <QuizFloatingPanel
-        shouldShow={activity?.activity === "quiz" && filteredCountryData.length > 0}
-        mode={activity?.activity === "quiz" ? activity.kind : undefined}
-        giveHint={giveHint}
-        inputRef={inputRef}
-        skipCountry={nextCountry}
-        submitAnswer={submitAnswer}
-        userGuessTally={guessTally}
-      />
-      <ReviewFloatingPanel
-        shouldShow={activity?.activity === "review"}
-        showNextCountry={nextCountry}
-        disabled={filteredCountryData.length === 0}
-        onReset={resetVisited}
-      />
-      <WikipediaFloatingPanel
-        disabled={filteredCountryData.length === 0}
-        shouldShow={activity?.activity === "review" && filteredCountryData.length > 0}
-        onError={setError}
-      />
-      <UnsplashImagesFloatingPanel
-        disabled={filteredCountryData.length === 0}
-        shouldShow={activity?.activity === "review" && filteredCountryData.length > 0}
-        onError={setError}
-      />
-      {activity && <RegionsToggleOverlay shouldShow={filteredCountryData.length === 0} onStart={start} />}
+      <AnimatePresence>
+        {activity?.activity === "quiz" && filteredCountryData.length > 0 && (
+          <QuizFloatingPanel
+            mode={activity?.activity === "quiz" ? activity.kind : undefined}
+            giveHint={giveHint}
+            inputRef={inputRef}
+            skipCountry={nextCountry}
+            submitAnswer={submitAnswer}
+            userGuessTally={guessTally}
+          />
+        )}
+        {activity?.activity === "review" && (
+          <ReviewFloatingPanel
+            showNextCountry={nextCountry}
+            disabled={filteredCountryData.length === 0}
+            onReset={resetVisited}
+          />
+        )}
+        {activity?.activity === "review" && filteredCountryData.length > 0 && (
+          <>
+            <WikipediaFloatingPanel disabled={filteredCountryData.length === 0} onError={setError} />
+            <UnsplashImagesFloatingPanel disabled={filteredCountryData.length === 0} onError={setError} />
+          </>
+        )}
+        {activity && <RegionsToggleOverlay shouldShow={filteredCountryData.length === 0} onStart={start} />}
+      </AnimatePresence>
     </div>
   );
 }

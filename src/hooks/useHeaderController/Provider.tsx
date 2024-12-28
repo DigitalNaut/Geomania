@@ -5,7 +5,7 @@ import { Provider } from ".";
 import type { Callback } from "./types";
 
 export function HeaderControllerProvider({ children }: PropsWithChildren) {
-  const onClickCallback = useRef<Callback>();
+  const onClickCallback = useRef<Callback>(undefined);
 
   return (
     <Provider

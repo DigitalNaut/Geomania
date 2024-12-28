@@ -8,42 +8,30 @@ import { UnsplashImages } from "src/components/info/UnsplashImages";
 import { useMapActivity } from "src/hooks/useMapActivity";
 import { InlineButton } from "./InlineButton";
 
-export function WikipediaFloatingPanel({
-  disabled,
-  shouldShow,
-  onError,
-}: {
-  disabled: boolean;
-  shouldShow: boolean;
-  onError: (error: Error) => void;
-}) {
+export function WikipediaFloatingPanel({ disabled, onError }: { disabled: boolean; onError: (error: Error) => void }) {
   const [showDetails, setShowDetails] = useState(false);
 
   if (disabled) return null;
 
   return (
-    <div className="absolute left-4 top-16 z-[1000] rounded-md">
-      {shouldShow && (
-        <details
-          className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
-          open={showDetails}
-          onToggle={(event) => setShowDetails(event.currentTarget.open)}
-        >
-          <summary className="cursor-pointer pr-3">Wikipedia summary</summary>
-          {showDetails && <CountryWikiInfo onError={onError} />}
-        </details>
-      )}
-    </div>
+    <motion.div className="absolute left-4 top-16 z-[1000] rounded-md" exit={{ opacity: 0 }}>
+      <details
+        className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
+        open={showDetails}
+        onToggle={(event) => setShowDetails(event.currentTarget.open)}
+      >
+        <summary className="cursor-pointer pr-3">Wikipedia summary</summary>
+        {showDetails && <CountryWikiInfo onError={onError} />}
+      </details>
+    </motion.div>
   );
 }
 
 export function UnsplashImagesFloatingPanel({
   disabled,
-  shouldShow,
   onError,
 }: {
   disabled: boolean;
-  shouldShow: boolean;
   onError: (error: Error) => void;
 }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -51,28 +39,24 @@ export function UnsplashImagesFloatingPanel({
   if (disabled) return null;
 
   return (
-    <div className="absolute right-16 top-16 z-[1000] rounded-md">
-      {shouldShow && (
-        <details
-          className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
-          open={showDetails}
-          onToggle={(event) => setShowDetails(event.currentTarget.open)}
-        >
-          <summary className="cursor-pointer pr-3">Unsplash images</summary>
-          {showDetails && <UnsplashImages onError={onError} />}
-        </details>
-      )}
-    </div>
+    <motion.div className="absolute right-16 top-16 z-[1000] rounded-md" exit={{ opacity: 0 }}>
+      <details
+        className="rounded-md bg-sky-900/70 p-3 pr-0 shadow-md backdrop-blur-md hover:bg-sky-900"
+        open={showDetails}
+        onToggle={(event) => setShowDetails(event.currentTarget.open)}
+      >
+        <summary className="cursor-pointer pr-3">Unsplash images</summary>
+        {showDetails && <UnsplashImages onError={onError} />}
+      </details>
+    </motion.div>
   );
 }
 
 export default function ReviewFloatingPanel({
-  shouldShow,
   showNextCountry,
   disabled,
   onReset,
 }: {
-  shouldShow: boolean;
   showNextCountry: () => void;
   disabled: boolean;
   onReset: () => void;
@@ -82,15 +66,13 @@ export default function ReviewFloatingPanel({
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => toggleRandomReviewMode(event.currentTarget.checked);
 
   return (
-    <motion.div className="pointer-events-none absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 rounded-md">
+    <motion.div
+      className="pointer-events-none absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 rounded-md"
+      exit={{ opacity: 0 }}
+    >
       <div className="pointer-events-auto flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
         <motion.div className="flex w-full flex-col items-center overflow-hidden rounded-md">
-          <ActionButton
-            className="w-full"
-            disabled={disabled || !shouldShow}
-            onClick={showNextCountry}
-            title="Next country"
-          >
+          <ActionButton className="w-full" disabled={disabled} onClick={showNextCountry} title="Next country">
             Next country
           </ActionButton>
           <div className="flex justify-between gap-2 p-1">

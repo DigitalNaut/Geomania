@@ -13,7 +13,7 @@ import type { IActivity } from "./types";
 const highlightStyle = "fill-yellow-400";
 
 export function useQuizInput(): IActivity & {
-  inputRef: RefObject<HTMLInputElement>;
+  inputRef: RefObject<HTMLInputElement | null>;
   visitedCountries: VisitedCountry[];
   giveHint: () => void;
   submitInput: () => NullableCountryData;

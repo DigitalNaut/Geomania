@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, JSX } from "react";
 import { twMerge } from "tailwind-merge";
 
 import { useUserSettingsContext } from "src/hooks/useUserSettings";

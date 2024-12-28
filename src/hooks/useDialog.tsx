@@ -1,4 +1,5 @@
-import { type PropsWithChildren, type HTMLProps, useCallback, useState } from "react";
+import type { HTMLProps, JSX, PropsWithChildren } from "react";
+import { useCallback, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 export function useDialog(initialContent: JSX.Element | null = null) {
