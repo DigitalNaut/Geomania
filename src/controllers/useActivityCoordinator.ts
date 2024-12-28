@@ -16,7 +16,7 @@ import { getCountryCoordinates } from "src/utils/features";
  * Automatically focuses the UI when the activity changes and there are countries to show.
  * @param activityMode Whether to activate the hook or not.
  */
-export default function useActivityCoordinator() {
+export default function useActivityManager() {
   const { flyTo, resetViewport } = useMapViewport();
   const { activity } = useMapActivity();
   const { storedCountry } = useCountryStore();

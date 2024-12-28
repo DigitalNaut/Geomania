@@ -17,69 +17,78 @@ export function useCountryStore() {
     setPendingCountries([...filteredCountryData]);
   }, [filteredCountryData]);
 
-  function setCountryData(pendingIndex: number) {
-    const country = pendingCountries[pendingIndex];
+  const setCountryData = useCallback(
+    (pendingIndex: number) => {
+      const country = pendingCountries[pendingIndex];
 
-    setStoredCountry(country);
-    setPendingCountries((prevList) => {
-      const newList = prevList.toSpliced(pendingIndex, 1);
+      setStoredCountry(country);
+      setPendingCountries((prevList) => {
+        const newList = prevList.toSpliced(pendingIndex, 1);
 
-      // If there are no more countries left, reset the list
-      if (!newList.length) return resetWorkingList();
+        // If there are no more countries left, reset the list
+        if (newList.length === 0) return resetWorkingList();
 
-      return newList;
-    });
+        return newList;
+      });
 
-    return country;
-  }
+      return country;
+    },
+    [pendingCountries, resetWorkingList, setStoredCountry],
+  );
 
-  function setCountryDataNext(): NullableCountryData {
-    if (!pendingCountries.length) return null;
+  const setCountryDataNext = useCallback((): NullableCountryData => {
+    if (pendingCountries.length === 0) return null;
 
     const countryIndex = pendingCountries.findIndex((country) => country?.GU_A3 === storedCountry?.GU_A3);
     const nextIndex = (countryIndex + 1) % pendingCountries.length;
 
     return setCountryData(nextIndex);
-  }
+  }, [pendingCountries, setCountryData, storedCountry?.GU_A3]);
 
-  function setCountryDataRandom(): NullableCountryData {
-    if (!pendingCountries.length) return null;
+  const setCountryDataRandom = useCallback((): NullableCountryData => {
+    if (pendingCountries.length === 0) return null;
 
     const randomIndex = Math.floor(Math.random() * pendingCountries.length);
 
     return setCountryData(randomIndex);
-  }
+  }, [pendingCountries.length, setCountryData]);
 
-  function setCountryDataByCode(a3?: string): NullableCountryData {
-    if (!pendingCountries.length || !a3) return null;
+  const setCountryDataByCode = useCallback(
+    (a3?: string): NullableCountryData => {
+      if (pendingCountries.length === 0 || !a3) return null;
 
-    // If the country is already in the pending list, use it
-    const pendingIndex = pendingCountries.findIndex((country) => country.GU_A3 === a3);
-    if (pendingIndex !== -1) return setCountryData(pendingIndex);
+      // If the country is already in the pending list, use it
+      const pendingIndex = pendingCountries.findIndex((country) => country.GU_A3 === a3);
+      if (pendingIndex !== -1) return setCountryData(pendingIndex);
 
-    // If the country is not in the pending list, just set it as the stored country
-    const country = filteredCountryData.find((country) => country.GU_A3 === a3);
-    if (country) {
-      setStoredCountry(country);
-      return country;
-    }
+      // If the country is not in the pending list, just set it as the stored country
+      const country = filteredCountryData.find((country) => country.GU_A3 === a3);
+      if (country) {
+        setStoredCountry(country);
+        return country;
+      }
 
-    return null;
-  }
+      return null;
+    },
+    [filteredCountryData, pendingCountries, setCountryData, setStoredCountry],
+  );
 
-  const compareStoredCountry = (countryName: string) => {
-    if (!storedCountry || !storedCountry.GEOUNIT) return false;
+  const compareStoredCountry = useCallback(
+    (countryName: string) => {
+      if (!storedCountry || !storedCountry.GEOUNIT) return false;
 
-    const correctAnswer = storedCountry.GEOUNIT;
-    const inputMatchesAnswer = normalizeName(countryName) === normalizeName(correctAnswer);
+      const correctAnswer = storedCountry.GEOUNIT;
+      const inputMatchesAnswer = normalizeName(countryName) === normalizeName(correctAnswer);
 
-    return inputMatchesAnswer;
-  };
+      return inputMatchesAnswer;
+    },
+    [storedCountry],
+  );
 
-  const resetStore = () => {
+  const resetStore = useCallback(() => {
     setStoredCountry(null);
     setPendingCountries(resetWorkingList());
-  };
+  }, [resetWorkingList, setStoredCountry]);
 
   return {
     storedCountry: {

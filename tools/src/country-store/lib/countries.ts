@@ -16,7 +16,7 @@ export async function loadCountryCatalog(path: string) {
     const data = await import(path);
     const countryData = data.default;
 
-    if (!countryData || !countryData.length) throw new Error("No country data found");
+    if (!countryData || countryData.length === 0) throw new Error("No country data found");
     console.log(chalk.green(`✔ Found ${path}`));
 
     return createCountryCatalog(countryData);
@@ -63,7 +63,7 @@ export async function loadCountryCatalog(path: string) {
 function createCountryCatalog(features: CountryFeatures): CountryCatalog {
   const catalog: CountryCatalog = new Map();
 
-  if (!features || !features.length) return catalog;
+  if (!features || features.length === 0) return catalog;
 
   for (const country of features) {
     if (!country) continue;

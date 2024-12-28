@@ -20,7 +20,7 @@ import { LeafletMapFrame } from "src/components/map/LeafletMapFrame";
 import type { SvgMapColorTheme } from "src/components/map/MapSvg";
 import SvgMap from "src/components/map/MapSvg";
 import { markerIcon } from "src/components/map/MarkerIcon";
-import useActivityCoordinator from "src/controllers/useActivityCoordinator";
+import useActivityManager from "src/controllers/useActivityCoordinator";
 import { useCountryFilters } from "src/hooks/useCountryFilters";
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useError } from "src/hooks/useError";
@@ -140,7 +140,7 @@ function ActivityMap({
     resetVisited,
     start,
     // finish,
-  } = useActivityCoordinator();
+  } = useActivityManager();
 
   const finishActivity = useCallback(() => {
     resetStore();

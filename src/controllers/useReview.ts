@@ -90,7 +90,7 @@ export function useReview(): IActivity & {
       nextCountry();
       return;
     }
-    if (!a3.length) {
+    if (a3.length === 0) {
       clearCountryFromParams();
       return;
     }
@@ -111,4 +111,3 @@ export function useReview(): IActivity & {
     finish,
   };
 }
-
