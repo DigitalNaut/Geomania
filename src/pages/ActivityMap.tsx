@@ -253,9 +253,9 @@ export function ActivitySection({ children }: PropsWithChildren) {
   return <div className="flex size-full shrink items-center justify-center gap-3 hover:bg-white/10">{children}</div>;
 }
 
-type Activities = { [key: string]: ActivityType };
+type MapActivities = { [key: string]: ActivityType };
 
-const activities: Activities = {
+const activities: MapActivities = {
   "review-countries": { activity: "review", kind: "countries" },
   "quiz-typing": { activity: "quiz", kind: "typing" },
   "quiz-pointing": { activity: "quiz", kind: "pointing" },
