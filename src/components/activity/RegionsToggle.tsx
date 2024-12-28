@@ -1,4 +1,4 @@
-import { animated, useSpring } from "@react-spring/web";
+import { motion } from "motion/react";
 import { useMemo, useState } from "react";
 
 import Button from "src/components/common/Button";
@@ -76,20 +76,17 @@ function RegionsToggleList({ onStart }: { onStart?: () => void }) {
 }
 
 export default function RegionsToggleOverlay({ shouldShow, onStart }: { shouldShow: boolean; onStart: () => void }) {
-  const springs = useSpring({
-    opacity: shouldShow ? 1 : 0,
-    transform: shouldShow ? "translateY(-50%) translateX(-50%)" : "translateY(-75%) translateX(-50%)",
-  });
-
   return (
     <div
-      className={cn("hidden pointer-events-none absolute inset-0 bg-slate-900/90 z-[1000]", {
-        "block pointer-events-auto": shouldShow,
+      className={cn("invisible pointer-events-none absolute inset-0 bg-slate-900/90 z-[1000]", {
+        "visible pointer-events-auto": shouldShow,
       })}
     >
-      <animated.div
+      <motion.div
         className="absolute inset-1/2 z-[1000] mx-auto flex size-max -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md hover:bg-sky-900"
-        style={springs}
+        animate={{
+          opacity: shouldShow ? 1 : 0,
+        }}
       >
         <h2 className="text-center text-2xl font-bold">Toggle regions</h2>
         <div className="flex flex-col gap-4 text-center">
@@ -97,7 +94,7 @@ export default function RegionsToggleOverlay({ shouldShow, onStart }: { shouldSh
 
           <RegionsToggleList onStart={onStart} />
         </div>
-      </animated.div>
+      </motion.div>
     </div>
   );
 }

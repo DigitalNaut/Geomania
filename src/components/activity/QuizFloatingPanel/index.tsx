@@ -1,16 +1,16 @@
 import { faForwardStep, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { animated } from "@react-spring/web";
+import { motion } from "motion/react";
 import { type KeyboardEvent, type PropsWithChildren, type RefObject, useCallback, useMemo, useState } from "react";
 
 import { InlineButton } from "src/components/activity/InlineButton";
 import { ActionButton } from "src/components/common/ActionButton";
+import { useCountryStore } from "src/hooks/useCountryStore";
 import type { QuizKind } from "src/hooks/useMapActivity/types";
 import type { NullableCountryData } from "src/types/features";
-import { useCountryStore } from "src/hooks/useCountryStore";
 
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
-import { useFloatingPanelSlideInAnimation, useHorizontalShakeAnimation } from "./hooks";
+import { useShakeAnimation } from "./hooks";
 
 function QuizHeaderSection({
   children,
@@ -86,22 +86,22 @@ export default function QuizFloatingPanel({
 
   const onShakeStart = useCallback(() => {
     if (!inputRef.current) return;
+
     inputRef.current.disabled = true;
   }, [inputRef]);
 
   const onShakeEnd = useCallback(() => {
     if (!inputRef.current) return;
+
     inputRef.current.disabled = false;
     inputRef.current.focus();
     inputRef.current.select();
   }, [inputRef]);
 
-  const { startShake, xShake } = useHorizontalShakeAnimation({
+  const { startShake, scope } = useShakeAnimation({
     onShakeStart,
     onShakeEnd,
   });
-
-  const { firstTrail, secondTrail } = useFloatingPanelSlideInAnimation(shouldShow);
 
   const handleSubmit = () => {
     const isCorrectAnswer = submitAnswer?.(inputRef.current?.value ?? "");
@@ -118,11 +118,8 @@ export default function QuizFloatingPanel({
   const a2 = useMemo(() => storedCountry.data?.ISO_A2_EH, [storedCountry.data?.ISO_A2_EH]);
 
   return (
-    <animated.div
-      className="absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 text-center"
-      style={firstTrail}
-    >
-      <animated.div style={secondTrail}>
+    <motion.div className="absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 text-center">
+      <motion.div>
         {mode === "typing" && (
           <QuizHeaderSection skipCountryHandler={skipCountry}>Which country is this?</QuizHeaderSection>
         )}
@@ -134,12 +131,12 @@ export default function QuizFloatingPanel({
             <CountryFlag a2={a2} />
           </QuizPointerSection>
         )}
-      </animated.div>
+      </motion.div>
 
       <div className="flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 p-2 drop-shadow-lg">
         {mode === "typing" && (
           <div className="rounded-md bg-red-500">
-            <animated.div className="flex w-full justify-center overflow-hidden rounded-md" style={{ x: xShake }}>
+            <motion.div className="flex w-full justify-center overflow-hidden rounded-md" ref={scope}>
               <input
                 className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
                 ref={inputRef}
@@ -151,7 +148,7 @@ export default function QuizFloatingPanel({
               <ActionButton disabled={!shouldShow} onClick={handleSubmit}>
                 Submit
               </ActionButton>
-            </animated.div>
+            </motion.div>
           </div>
         )}
 
@@ -177,6 +174,6 @@ export default function QuizFloatingPanel({
           )}
         </div>
       </div>
-    </animated.div>
+    </motion.div>
   );
 }

@@ -217,6 +217,7 @@ function ActivityMap({
 
         <SvgMap selectedPaths={visitedCountries} onClick={handleMapClick} colorTheme={colorTheme} />
       </LeafletMapFrame>
+
       <QuizFloatingPanel
         shouldShow={activity?.activity === "quiz" && filteredCountryData.length > 0}
         mode={activity?.activity === "quiz" ? activity.kind : undefined}

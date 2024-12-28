@@ -1,7 +1,6 @@
 import { faBroom } from "@fortawesome/free-solid-svg-icons";
-import { animated, useSpring } from "@react-spring/web";
-import type { RefObject } from "react";
-import { useMemo, useRef } from "react";
+import { motion } from "motion/react";
+import { useMemo } from "react";
 
 import { Link } from "react-router-dom";
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg?url";
@@ -65,26 +64,6 @@ function CountryStatsCard({ countryStats }: CountryStatsProps) {
   );
 }
 
-function useAnimatedDialog(ref: RefObject<HTMLDialogElement>) {
-  const [dialogSprings, dialogSpringsApi] = useSpring(() => ({
-    from: { opacity: 0, transform: "translateY(-1rem)" },
-    to: { opacity: 1, transform: "translateY(0)" },
-  }));
-
-  const showDialog = () => {
-    ref.current?.showModal();
-    dialogSpringsApi.start({
-      from: { opacity: 0, transform: "translateY(-1rem)" },
-      to: { opacity: 1, transform: "translateY(0)" },
-    });
-  };
-
-  return {
-    dialogSprings,
-    showDialog,
-  };
-}
-
 function useDashboard() {
   const { countryStats, clearProgress } = useUserGuessRecord();
 
@@ -101,17 +80,11 @@ function useDashboard() {
 }
 
 export default function Dashboard() {
-  const dialogRef = useRef<HTMLDialogElement>(null);
   const { countryStatsList, clearProgress } = useDashboard();
-  const { dialogSprings, showDialog } = useAnimatedDialog(dialogRef);
 
   return (
     <MainView className="sm:flex-col">
-      <animated.dialog
-        className="max-w-[50ch] rounded-md p-4 shadow-lg backdrop:bg-black/40"
-        ref={dialogRef}
-        style={dialogSprings}
-      >
+      <motion.dialog className="max-w-[50ch] rounded-md p-4 shadow-lg backdrop:bg-black/40">
         <h2 className="pb-2 text-xl font-bold">All progress will be lost</h2>
         <p className="text-sm">Your user guess history and country stats will be deleted.</p>
         <form className="flex justify-end gap-2 pt-4" method="dialog">
@@ -120,16 +93,12 @@ export default function Dashboard() {
           </Button>
           <Button styles="secondary">Cancel</Button>
         </form>
-      </animated.dialog>
+      </motion.dialog>
 
       <div className="flex w-full flex-1 gap-2 overflow-y-auto">
         <div className="flex flex-col gap-2 rounded-md bg-slate-800 p-2">
           <h2 className="text-lg font-bold">Options</h2>
-          <Button
-            className="w-max bg-transparent hover:bg-slate-400/40"
-            onClick={showDialog}
-            disabled={countryStatsList.length === 0}
-          >
+          <Button className="w-max bg-transparent hover:bg-slate-400/40" disabled={countryStatsList.length === 0}>
             <Button.Icon icon={faBroom} />
             <span>Clear progress</span>
           </Button>

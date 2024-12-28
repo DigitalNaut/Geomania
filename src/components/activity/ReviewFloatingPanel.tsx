@@ -1,8 +1,7 @@
-import { animated } from "@react-spring/web";
+import { motion } from "motion/react";
 import type { ChangeEventHandler } from "react";
 import { useState } from "react";
 
-import { useFloatingPanelSlideInAnimation } from "src/components/activity/QuizFloatingPanel/hooks";
 import { ActionButton } from "src/components/common/ActionButton";
 import { CountryWikiInfo } from "src/components/info/CountryWikiInfo";
 import { UnsplashImages } from "src/components/info/UnsplashImages";
@@ -78,18 +77,14 @@ export default function ReviewFloatingPanel({
   disabled: boolean;
   onReset: () => void;
 }) {
-  const { firstTrail } = useFloatingPanelSlideInAnimation(shouldShow);
   const { isRandomReviewMode, toggleRandomReviewMode } = useMapActivity();
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => toggleRandomReviewMode(event.currentTarget.checked);
 
   return (
-    <animated.div
-      className="pointer-events-none absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 rounded-md"
-      style={firstTrail}
-    >
+    <motion.div className="pointer-events-none absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 rounded-md">
       <div className="pointer-events-auto flex w-fit flex-col items-center overflow-hidden rounded-md bg-slate-900 drop-shadow-lg">
-        <animated.div className="flex w-full flex-col items-center overflow-hidden rounded-md">
+        <motion.div className="flex w-full flex-col items-center overflow-hidden rounded-md">
           <ActionButton
             className="w-full"
             disabled={disabled || !shouldShow}
@@ -105,8 +100,8 @@ export default function ReviewFloatingPanel({
             </label>
             <InlineButton onClick={onReset}>Reset</InlineButton>
           </div>
-        </animated.div>
+        </motion.div>
       </div>
-    </animated.div>
+    </motion.div>
   );
 }

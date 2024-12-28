@@ -1,29 +1,15 @@
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSpring, animated } from "@react-spring/web";
+import { motion } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
-import type { CountryGuess } from "src/hooks/useUserGuessRecord/types";
 import useScrollToTop from "src/hooks/useScrollToTop";
+import type { CountryGuess } from "src/hooks/useUserGuessRecord/types";
 
 let itemStyle: string;
 
-const props = {
-  from: { opacity: 0 },
-  to: { opacity: 1 },
-  config: { duration: 200 },
-};
-
 export default function GuessHistoryPanel({ guessHistory }: { guessHistory: CountryGuess[] }) {
   const { isScrolledToBottom, handleScrollEvent, scrollToTop, scrollElementRef } = useScrollToTop();
-  const [rendered, setRendered] = useState(false);
-  const [springs, api] = useSpring(() => ({}));
-
-  useEffect(() => {
-    if (rendered) api.start(props);
-    else setRendered(true);
-  }, [api, guessHistory, rendered]);
 
   return (
     <div className="relative flex flex-col gap-2 overflow-y-auto">
@@ -45,15 +31,16 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: Coun
               }
 
               return (
-                <animated.div
+                <motion.div
                   className={twMerge("flex items-center gap-2 px-1", itemStyle)}
-                  style={isLastItem ? springs : {}}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   key={guess.timestamp}
                   title={guess.text}
                 >
                   <FontAwesomeIcon icon={guess.isCorrect ? faCheck : faTimes} />
                   {guess.text}
-                </animated.div>
+                </motion.div>
               );
             })
           ) : (
