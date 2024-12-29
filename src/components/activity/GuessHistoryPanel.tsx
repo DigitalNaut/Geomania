@@ -5,11 +5,18 @@ import { twMerge } from "tailwind-merge";
 
 import useScrollToTop from "src/hooks/useScrollToTop";
 import type { CountryGuess } from "src/hooks/useUserGuessRecord/types";
-
-let itemStyle: string;
+import { useMemo } from "react";
 
 export default function GuessHistoryPanel({ guessHistory }: { guessHistory: CountryGuess[] }) {
   const { isScrolledToBottom, handleScrollEvent, scrollToTop, scrollElementRef } = useScrollToTop();
+
+  const [guessList, latestGuess] = useMemo(() => {
+    if (!guessHistory.length) return [];
+
+    const last = guessHistory[guessHistory.length - 1];
+    const entries = guessHistory.slice(0, guessHistory.length - 1);
+    return [entries, last];
+  }, [guessHistory]);
 
   return (
     <div className="relative flex flex-col gap-2 overflow-y-auto">
@@ -20,19 +27,14 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: Coun
         ref={scrollElementRef}
       >
         <div className="flex flex-col-reverse pb-12">
-          {guessHistory.length ? (
-            guessHistory.map((guess, index) => {
-              const isLastItem = index === guessHistory.length - 1;
-
-              if (isLastItem) {
-                itemStyle = `py-2 text-white ${guess.isCorrect ? "bg-green-800" : "bg-yellow-800"}`;
-              } else {
-                itemStyle = guess.isCorrect ? " text-green-500 " : " text-slate-200 ";
-              }
-
+          {guessList?.length &&
+            guessList.map((guess) => {
               return (
                 <motion.div
-                  className={twMerge("flex items-center gap-2 px-1", itemStyle)}
+                  className={twMerge(
+                    "flex items-center gap-2 px-1",
+                    guess.isCorrect ? "text-green-500" : "text-slate-200",
+                  )}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   key={guess.timestamp}
@@ -42,10 +44,23 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: Coun
                   {guess.text}
                 </motion.div>
               );
-            })
-          ) : (
-            <div className="pt-2 text-center text-sm italic">None yet, start guessing!</div>
+            })}
+          {latestGuess && (
+            <motion.div
+              className={twMerge(
+                "flex items-center gap-2 px-1 py-2 text-white rounded-sm",
+                latestGuess.isCorrect ? "bg-green-800" : "bg-yellow-800",
+              )}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              key={latestGuess.timestamp}
+              title={latestGuess.text}
+            >
+              <FontAwesomeIcon icon={latestGuess.isCorrect ? faCheck : faTimes} />
+              {latestGuess.text}
+            </motion.div>
           )}
+          {!guessHistory.length && <div className="pt-2 text-center text-sm italic">None yet, start guessing!</div>}
         </div>
         {!isScrolledToBottom && (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-fit bg-gradient-to-t from-slate-900 px-6 pb-4 pt-12">
