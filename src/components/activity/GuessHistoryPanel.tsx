@@ -13,8 +13,9 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: Coun
   const [guessList, latestGuess] = useMemo(() => {
     if (!guessHistory.length) return [];
 
-    const last = guessHistory[guessHistory.length - 1];
-    const entries = guessHistory.slice(0, guessHistory.length - 1);
+    const last = guessHistory.pop();
+    const entries = guessHistory.slice(0, -1);
+
     return [entries, last];
   }, [guessHistory]);
 
