@@ -21,6 +21,7 @@ export default tsEslint.config(
       "no-console": "off",
       "@typescript-eslint/consistent-type-imports": "error",
       "object-shorthand": ["warn", "always"],
+      "no-useless-rename": "warn",
       "consistent-return": ["warn"],
       "no-use-before-define": "warn",
       "@typescript-eslint/no-unused-vars": [
