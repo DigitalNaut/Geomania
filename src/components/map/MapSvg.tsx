@@ -7,7 +7,7 @@ import { SVGOverlay } from "react-leaflet";
 import mapSvg from "src/assets/images/generated/world-map-countries.svg?raw";
 import { useCountryFilters } from "src/hooks/useCountryFilters";
 import { useMapContext } from "src/hooks/useMapContext";
-import { useSvgAttributes } from "src/hooks/useSVGAttributes";
+import { useSvgAttributes } from "src/hooks/common/useSVGAttributes";
 import { cn } from "src/utils/styles";
 import { twMerge } from "tailwind-merge";
 

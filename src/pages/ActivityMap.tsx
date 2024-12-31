@@ -25,7 +25,7 @@ import { markerIcon } from "src/components/map/MarkerIcon";
 import useActivityManager from "src/controllers/useActivityCoordinator";
 import { useCountryFilters } from "src/hooks/useCountryFilters";
 import { useCountryStore } from "src/hooks/useCountryStore";
-import { useError } from "src/hooks/useError";
+import { useError } from "src/hooks/common/useError";
 import useHeaderController from "src/hooks/useHeaderController";
 import { useMapActivity } from "src/hooks/useMapActivity";
 import type { ActivityMode, ActivityType } from "src/hooks/useMapActivity/types";

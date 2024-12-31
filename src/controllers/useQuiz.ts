@@ -1,6 +1,6 @@
 import { useCountryStore } from "src/hooks/useCountryStore";
 import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
-import { useTally } from "src/hooks/useTally";
+import { useTally } from "src/hooks/common/useTally";
 
 import IncorrectSound from "src/assets/sounds/incorrect.mp3?url";
 import CorrectSound from "src/assets/sounds/correct.mp3?url";

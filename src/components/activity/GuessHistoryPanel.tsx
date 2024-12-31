@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { useMemo } from "react";
 import { twJoin, twMerge } from "tailwind-merge";
 
-import useScrollTo from "src/hooks/useScrollTo";
+import useScrollTo from "src/hooks/common/useScrollTo";
 import type { CountryGuess } from "src/hooks/useUserGuessRecord/types";
 
 export default function GuessHistoryPanel({ guessHistory }: { guessHistory: CountryGuess[] }) {
