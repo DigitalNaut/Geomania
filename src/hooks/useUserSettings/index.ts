@@ -1,13 +1,11 @@
 import { createContext, useContext } from "react";
 
-import type { UserSettingsContext } from "./types";
+import type { UserSettingsContextType } from "./types";
 
-const userSettingsContext = createContext<UserSettingsContext | null>(null);
-
-export const Provider = userSettingsContext.Provider;
+export const UserSettingsContext = createContext<UserSettingsContextType | null>(null);
 
 export function useUserSettingsContext() {
-  const context = useContext(userSettingsContext);
+  const context = useContext(UserSettingsContext);
   if (!context) throw new Error("useUserSettingsContext must be used within a UserSettingsProvider");
 
   return context;

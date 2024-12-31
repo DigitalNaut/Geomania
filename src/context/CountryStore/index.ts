@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { useCountryFilters } from "src/hooks/useCountryFilters";
+import { useCountryFilters } from "src/context/FilteredCountryData";
 import type { CountryDataList, NullableCountryData } from "src/types/features";
 import { getCountryCoordinates, normalizeName } from "src/utils/features";
-import { useCountryStoreContext } from "./context";
+import { useCountryStoreContext } from "./useCountryStoreContext";
 
 export function useCountryStore() {
   const { filteredCountryData } = useCountryFilters();
@@ -103,4 +103,4 @@ export function useCountryStore() {
   };
 }
 
-export { CountryStoreProvider } from "./Provider";
+export { CountryStoreProvider } from "./CountryStoreProvider";

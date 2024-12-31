@@ -12,7 +12,7 @@ export type ActionType = {
   payload: Partial<UserSettings>;
 };
 
-export type UserSettingsContext = {
+export type UserSettingsContextType = {
   userSettings: UserSettings;
   setUserSetting: Dispatch<Partial<UserSettings>>;
   resetUserSettings: () => void;

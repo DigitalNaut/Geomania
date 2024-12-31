@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { useEffect, useReducer } from "react";
 
 import { useLocalStorage } from "src/hooks/useLocalStorage";
-import { Provider } from ".";
+import { UserSettingsContext } from ".";
 import { defaultUserSettings } from "./defaults";
 import type { ActionType, UserSettings } from "./types";
 import { userSettingsSchema } from "./types";
@@ -50,7 +50,7 @@ export function UserSettingsProvider({ children }: PropsWithChildren) {
   }, [savedUserSettings]);
 
   return (
-    <Provider
+    <UserSettingsContext
       value={{
         userSettings,
         setUserSetting,
@@ -58,6 +58,6 @@ export function UserSettingsProvider({ children }: PropsWithChildren) {
       }}
     >
       {children}
-    </Provider>
+    </UserSettingsContext>
   );
 }

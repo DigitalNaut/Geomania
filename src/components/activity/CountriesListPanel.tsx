@@ -6,9 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSearchParams } from "react-router-dom";
 import { InlineButton } from "src/components/activity/InlineButton";
 import Toggle from "src/components/common/Toggle";
-import { useCountryFilters } from "src/hooks/useCountryFilters";
-import { continents } from "src/hooks/useCountryFilters/data";
-import { useCountryStore } from "src/hooks/useCountryStore";
+import { useCountryFilters } from "src/context/FilteredCountryData";
+import { continents } from "src/context/FilteredCountryData/data";
+import { useCountryStore } from "src/context/CountryStore";
 import { type CountryData, type CountryDataList, type NullableCountryData } from "src/types/features";
 import { cn } from "src/utils/styles";
 

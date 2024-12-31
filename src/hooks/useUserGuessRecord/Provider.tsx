@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { useMemo } from "react";
 
 import type { CountryData } from "src/types/features";
-import { Provider } from ".";
+import { GuessRecordContext } from ".";
 import { useCountryStats, useGuessHistory } from "./hooks";
 import type { CountryGuess } from "./types";
 
@@ -45,7 +45,7 @@ export function UserGuessRecordProvider({
   };
 
   return (
-    <Provider
+    <GuessRecordContext
       value={{
         createRecord,
         guessHistory,
@@ -55,6 +55,6 @@ export function UserGuessRecordProvider({
       }}
     >
       {children}
-    </Provider>
+    </GuessRecordContext>
   );
 }

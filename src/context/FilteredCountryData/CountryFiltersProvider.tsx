@@ -1,16 +1,10 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import type { PropsWithChildren } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import allFeaturesData from "src/assets/data/features/countries.json";
-import type { CountryData } from "src/types/features";
-import { continents, countryDataByContinent } from "./data";
-
-const initialContinentFilters = new Map(continents.map((continent) => [continent, false]));
-
-const optimizedAllFeaturesData: Map<string, CountryData> = new Map(
-  allFeaturesData.map((country) => [country.GU_A3, country]),
-);
-
-export function useFilteredCountryData() {
+import { FilteredCountryDataContext } from "./FilteredCountryDataContext";
+import { continents, countryDataByContinent, initialContinentFilters, optimizedAllFeaturesData } from "./data";
+export function CountryFiltersProvider({ children }: PropsWithChildren) {
   const [continentFilters, setContinentFilters] = useState(initialContinentFilters);
 
   const filteredCountryData = useMemo(
@@ -50,26 +44,19 @@ export function useFilteredCountryData() {
 
   const continentFiltersList = useMemo(() => [...continentFilters], [continentFilters]);
 
-  return {
-    toggleAllContinentFilters,
-    toggleContinentFilter,
-    getContinentFilter,
-    continentFiltersList,
-    countryDataByContinent,
-    filteredCountryData,
-    isCountryInFilters,
-  };
+  return (
+    <FilteredCountryDataContext
+      value={{
+        toggleAllContinentFilters,
+        toggleContinentFilter,
+        getContinentFilter,
+        continentFiltersList,
+        countryDataByContinent,
+        filteredCountryData,
+        isCountryInFilters,
+      }}
+    >
+      {children}
+    </FilteredCountryDataContext>
+  );
 }
-
-const filteredCountryDataContext = createContext<ReturnType<typeof useFilteredCountryData> | null>(null);
-
-export const Provider = filteredCountryDataContext.Provider;
-
-export function useCountryFilters() {
-  const context = useContext(filteredCountryDataContext);
-  if (!context) throw new Error("useCountryFiltersContext must be used within a CountryFiltersProvider");
-
-  return context;
-}
-
-export { CountryFiltersProvider } from "./Provider";

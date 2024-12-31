@@ -1,13 +1,11 @@
 import { createContext, useContext, useEffect } from "react";
 
-import type { HeaderControllerContext } from "./types";
+import type { HeaderControllerContextType } from "./types";
 
-export const userSettingsContext = createContext<HeaderControllerContext | null>(null);
-
-export const Provider = userSettingsContext.Provider;
+export const UserSettingsContext = createContext<HeaderControllerContextType | null>(null);
 
 export function useHeaderControllerContext() {
-  const context = useContext(userSettingsContext);
+  const context = useContext(UserSettingsContext);
   if (!context) throw new Error("useHeaderControllerContext must be used within a HeaderControllerProvider");
 
   return context;

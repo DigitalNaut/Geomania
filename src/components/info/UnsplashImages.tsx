@@ -6,7 +6,7 @@ import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useEffect, useMemo } from "react";
 import Masonry from "react-responsive-masonry";
 
-import { useCountryStore } from "src/hooks/useCountryStore";
+import { useCountryStore } from "src/context/CountryStore";
 import useEdgeKeys from "src/hooks/useEdgeKeys";
 import type { UnsplashSearchResponse } from "src/types/unsplash";
 

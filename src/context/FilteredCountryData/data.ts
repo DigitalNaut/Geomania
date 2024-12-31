@@ -1,7 +1,9 @@
 import allFeaturesData from "src/assets/data/features/countries.json";
-import type { CountryDataList } from "src/types/features";
+import type { CountryDataList, CountryData } from "src/types/features";
 
-// Reorganizes all countries by continent
+/**
+ * Countries ordered by continent Map<string, CountryData[]>
+ */
 export const countryDataByContinent = allFeaturesData.reduce((continents, country) => {
   const { CONTINENT: continent } = country;
 
@@ -14,3 +16,7 @@ export const countryDataByContinent = allFeaturesData.reduce((continents, countr
 }, new Map<string, CountryDataList>());
 
 export const continents = [...countryDataByContinent.keys()];
+export const initialContinentFilters = new Map(continents.map((continent) => [continent, false]));
+export const optimizedAllFeaturesData: Map<string, CountryData> = new Map(
+  allFeaturesData.map((country) => [country.GU_A3, country]),
+);

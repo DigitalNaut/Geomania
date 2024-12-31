@@ -5,7 +5,7 @@ import axios, { type AxiosRequestConfig } from "axios";
 import { useEffect, useMemo } from "react";
 
 import { RenderDOM } from "src/components/common/RenderDOM";
-import { useCountryStore } from "src/hooks/useCountryStore";
+import { useCountryStore } from "src/context/CountryStore";
 import { type WikidataSummaryResponse } from "src/types/wikipedia";
 
 const wikiApiURL = "https://en.wikipedia.org/w/api.php";

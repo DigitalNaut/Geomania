@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const ReviewKindSchema = z.enum(["countries"]);
 const QuizKindSchema = z.enum(["typing", "pointing"]);
+export type QuizKind = z.infer<typeof QuizKindSchema>;
 
 export const ActivityTypeSchema = z.union([
   z.object({
@@ -16,10 +17,3 @@ export const ActivityTypeSchema = z.union([
 
 export type ActivityType = z.infer<typeof ActivityTypeSchema>;
 export type ActivityMode = ActivityType["activity"];
-export type QuizKind = z.infer<typeof QuizKindSchema>;
-
-export type MapActivityContext = {
-  isRandomReviewMode: boolean;
-  toggleRandomReviewMode: (value: boolean) => void;
-  activity?: ActivityType;
-};

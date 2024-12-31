@@ -2,14 +2,16 @@ import type { Variants } from "motion/react";
 import { motion } from "motion/react";
 import type { ChangeEventHandler, JSX, PropsWithChildren } from "react";
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import { ActionButton } from "src/components/common/ActionButton";
 import { CountryWikiInfo } from "src/components/info/CountryWikiInfo";
 import SourceLogo from "src/components/info/SourceLogo";
 import { UnsplashImages } from "src/components/info/UnsplashImages";
-import { useMapActivity } from "src/hooks/useMapActivity";
-import { InlineButton } from "./InlineButton";
+import type { RootState } from "src/store";
 import { twMerge } from "tailwind-merge";
+import { InlineButton } from "./InlineButton";
+import { setRandomReviewMode } from "src/store/MapActivity/mapActivitySlice";
 
 const AnimationVariants: Variants = {
   hidden: (custom: number) => ({ opacity: 0, translateY: custom, transition: { duration: 0.1 } }),
@@ -88,9 +90,12 @@ export default function ReviewFloatingPanel({
   disabled: boolean;
   onReset: () => void;
 }) {
-  const { isRandomReviewMode, toggleRandomReviewMode } = useMapActivity();
+  const dispatch = useDispatch();
 
-  const onChange: ChangeEventHandler<HTMLInputElement> = (event) => toggleRandomReviewMode(event.currentTarget.checked);
+  const { isRandomReviewMode } = useSelector((state: RootState) => state.mapActivity);
+
+  const onChange: ChangeEventHandler<HTMLInputElement> = (event) =>
+    dispatch(setRandomReviewMode(event.currentTarget.checked));
 
   return (
     <motion.div

@@ -2,6 +2,7 @@ import { faChartLine, faCog, faMap } from "@fortawesome/free-solid-svg-icons";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { Provider as ReduxProvider } from "react-redux";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
 import ErrorFallback from "src/components/common/ErrorFallback";
@@ -9,13 +10,13 @@ import { Spinner } from "src/components/common/Spinner";
 import Footer from "src/components/layout/Footer";
 import Nav from "src/components/layout/Header";
 import StandardLayout from "src/components/layout/StandardLayout";
-import { CountryFiltersProvider } from "src/hooks/useCountryFilters";
-import { CountryStoreProvider } from "src/hooks/useCountryStore";
+import { CountryStoreProvider } from "src/context/CountryStore";
+import { CountryFiltersProvider } from "src/context/FilteredCountryData";
 import { HeaderControllerProvider } from "src/hooks/useHeaderController";
-import { MapActivityProvider } from "src/hooks/useMapActivity";
 import { MapContextProvider } from "src/hooks/useMapContext";
 import { UserGuessRecordProvider } from "src/hooks/useUserGuessRecord";
 import { UserSettingsProvider } from "src/hooks/useUserSettings";
+import { store } from "src/store";
 
 const LazyActivityMap = lazy(() => import("src/pages/ActivityMap"));
 const LazySettings = lazy(() => import("src/pages/Settings"));
@@ -58,11 +59,9 @@ const router = createBrowserRouter(
                 <UserGuessRecordProvider historyLimit={10}>
                   <CountryFiltersProvider>
                     <CountryStoreProvider>
-                      <MapActivityProvider>
-                        <Suspense fallback={<Spinner cover />}>
-                          <Outlet />
-                        </Suspense>
-                      </MapActivityProvider>
+                      <Suspense fallback={<Spinner cover />}>
+                        <Outlet />
+                      </Suspense>
                     </CountryStoreProvider>
                   </CountryFiltersProvider>
                 </UserGuessRecordProvider>
@@ -109,15 +108,17 @@ const router = createBrowserRouter(
 
 export default function App() {
   return (
-    <HeaderControllerProvider>
-      <UserSettingsProvider>
-        <RouterProvider
-          router={router}
-          future={{
-            v7_startTransition: true,
-          }}
-        />
-      </UserSettingsProvider>
-    </HeaderControllerProvider>
+    <ReduxProvider store={store}>
+      <HeaderControllerProvider>
+        <UserSettingsProvider>
+          <RouterProvider
+            router={router}
+            future={{
+              v7_startTransition: true,
+            }}
+          />
+        </UserSettingsProvider>
+      </HeaderControllerProvider>{" "}
+    </ReduxProvider>
   );
 }

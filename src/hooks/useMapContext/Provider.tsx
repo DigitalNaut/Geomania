@@ -2,19 +2,19 @@ import type { PropsWithChildren } from "react";
 import { useState } from "react";
 
 import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
-import type { MapContext } from ".";
-import { Provider } from ".";
+import type { MapContextType } from ".";
+import { MapContext } from ".";
 
 /**
  * Map Context Provider
  * Holds the map instance
  */
 export function MapContextProvider({ children }: PropsWithChildren) {
-  const [map, setMap] = useState<MapContext["map"]>();
+  const [map, setMap] = useState<MapContextType["map"]>();
   const [zoom, setZoom] = useState<number>(mapDefaults.zoom);
 
   return (
-    <Provider
+    <MapContext
       value={{
         map,
         setMap,
@@ -23,6 +23,6 @@ export function MapContextProvider({ children }: PropsWithChildren) {
       }}
     >
       {children}
-    </Provider>
+    </MapContext>
   );
 }

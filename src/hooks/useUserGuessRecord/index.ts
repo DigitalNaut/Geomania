@@ -4,12 +4,10 @@ import {} from "react";
 
 import type { GuessRecordContextType } from "./types";
 
-const guessRecordContext = createContext<GuessRecordContextType | null>(null);
-
-export const Provider = guessRecordContext.Provider;
+export const GuessRecordContext = createContext<GuessRecordContextType | null>(null);
 
 export function useUserGuessRecord() {
-  const context = useContext(guessRecordContext);
+  const context = useContext(GuessRecordContext);
   if (!context) throw new Error("useUserGuessRecord must be used within a UserGuessRecordProvider");
   return context;
 }

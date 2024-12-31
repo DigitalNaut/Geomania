@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import type { VisitedCountry } from "src/components/map/MapSvg";
 import { qualifyScore } from "src/controllers/scores";
 import { useQuiz } from "src/controllers/useQuiz";
-import { useCountryStore } from "src/hooks/useCountryStore";
+import { useCountryStore } from "src/context/CountryStore";
 import { useInputField } from "src/hooks/common/useInputField";
 import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
 import type { NullableCountryData } from "src/types/features";

@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import type { PropsWithChildren } from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Marker, Popup, ZoomControl } from "react-leaflet";
-import { useSearchParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import { ActivityButton } from "src/components/activity/ActivityButton";
 import CountriesListPanel from "src/components/activity/CountriesListPanel";
@@ -22,15 +22,16 @@ import { LeafletMapFrame } from "src/components/map/LeafletMapFrame";
 import type { SvgMapColorTheme } from "src/components/map/MapSvg";
 import SvgMap from "src/components/map/MapSvg";
 import { markerIcon } from "src/components/map/MarkerIcon";
+import { useCountryStore } from "src/context/CountryStore";
+import { useCountryFilters } from "src/context/FilteredCountryData";
 import useActivityManager from "src/controllers/useActivityCoordinator";
-import { useCountryFilters } from "src/hooks/useCountryFilters";
-import { useCountryStore } from "src/hooks/useCountryStore";
 import { useError } from "src/hooks/common/useError";
 import useHeaderController from "src/hooks/useHeaderController";
-import { useMapActivity } from "src/hooks/useMapActivity";
-import type { ActivityMode, ActivityType } from "src/hooks/useMapActivity/types";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
+import type { RootState } from "src/store";
+import { setActivity } from "src/store/MapActivity/mapActivitySlice";
+import type { ActivityMode, ActivityType } from "src/store/MapActivity/types";
 import { cn } from "src/utils/styles";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
@@ -102,7 +103,7 @@ function determineType(current: boolean, next: boolean): ActivityTransitionType 
  * @returns The current activity.
  */
 function useActivityMonitor(onActivityChange: (type: ActivityTransitionType) => void) {
-  const { activity } = useMapActivity();
+  const { activity } = useSelector((state: RootState) => state.mapActivity);
   const prevActivity = useRef<typeof activity | undefined>(undefined);
 
   useEffect(
@@ -265,8 +266,8 @@ const activities: MapActivities = {
 export default function ActivityMapLayout() {
   const { guessHistory } = useUserGuessRecord();
   const { error, setError, dismissError } = useError();
-  const [, setURLSearchParams] = useSearchParams();
-  const { activity } = useMapActivity();
+  const dispatch = useDispatch();
+  const { activity } = useSelector((state: RootState) => state.mapActivity);
 
   const isActivitySelected = !!activity?.activity;
 
@@ -286,7 +287,7 @@ export default function ActivityMapLayout() {
                 <ActivityButton
                   className="bg-gradient-to-br from-blue-600 to-blue-700"
                   label="🗺 Review"
-                  onClick={() => setURLSearchParams(activities["review-countries"])}
+                  onClick={() => dispatch(setActivity(activities["review-countries"]))}
                 >
                   Learn the countries by region.
                 </ActivityButton>
@@ -295,14 +296,14 @@ export default function ActivityMapLayout() {
                 <ActivityButton
                   className="bg-gradient-to-br from-pink-600 to-pink-700"
                   label="⌨ Typing Quiz"
-                  onClick={() => setURLSearchParams(activities["quiz-typing"])}
+                  onClick={() => dispatch(setActivity(activities["quiz-typing"]))}
                 >
                   Type in the name of the country.
                 </ActivityButton>
                 <ActivityButton
                   className="bg-gradient-to-br from-green-600 to-green-700"
                   label="👆 Point & Click"
-                  onClick={() => setURLSearchParams(activities["quiz-pointing"])}
+                  onClick={() => dispatch(setActivity(activities["quiz-pointing"]))}
                 >
                   Point out the country on the map.
                 </ActivityButton>
@@ -319,7 +320,7 @@ export default function ActivityMapLayout() {
         </AnimatePresence>
 
         <div className="relative m-2 flex-1 overflow-hidden rounded-lg shadow-inner">
-          <ActivityMap onFinishActivity={() => setURLSearchParams(undefined)} setError={setError} />
+          <ActivityMap onFinishActivity={() => dispatch(setActivity(undefined))} setError={setError} />
         </div>
 
         {activity?.activity && (

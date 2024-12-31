@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useMemo } from "react";
+import { useSelector } from "react-redux";
 
 import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
 import type { VisitedCountry } from "src/components/map/MapSvg";
-import { useMapActivity } from "src/hooks/useMapActivity";
+import { useCountryStore } from "src/context/CountryStore";
+import { useCountryFilters } from "src/context/FilteredCountryData";
 import { useQuizClick } from "src/controllers/useQuizClick";
 import { useQuizInput } from "src/controllers/useQuizInput";
 import { useReview } from "src/controllers/useReview";
-import { useCountryFilters } from "src/hooks/useCountryFilters";
-import { useCountryStore } from "src/hooks/useCountryStore";
-import type { NullableCountryData } from "src/types/features";
 import { useMapViewport } from "src/hooks/useMapViewport";
+import type { RootState } from "src/store";
+import type { NullableCountryData } from "src/types/features";
 import { getCountryCoordinates } from "src/utils/features";
 
 /**
@@ -18,7 +19,7 @@ import { getCountryCoordinates } from "src/utils/features";
  */
 export default function useActivityManager() {
   const { flyTo, resetViewport } = useMapViewport();
-  const { activity } = useMapActivity();
+  const { activity } = useSelector((state: RootState) => state.mapActivity);
   const { storedCountry } = useCountryStore();
   const { isCountryInFilters, filteredCountryData } = useCountryFilters();
 

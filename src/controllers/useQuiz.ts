@@ -1,4 +1,4 @@
-import { useCountryStore } from "src/hooks/useCountryStore";
+import { useCountryStore } from "src/context/CountryStore";
 import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
 import { useTally } from "src/hooks/common/useTally";
 

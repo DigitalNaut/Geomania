@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 
 import Button from "src/components/common/Button";
 import Toggle from "src/components/common/Toggle";
-import { useCountryFilters } from "src/hooks/useCountryFilters";
-import { continents } from "src/hooks/useCountryFilters/data";
+import { useCountryFilters } from "src/context/FilteredCountryData";
+import { continents } from "src/context/FilteredCountryData/data";
 
 type ListItemProps = {
   id: string;
