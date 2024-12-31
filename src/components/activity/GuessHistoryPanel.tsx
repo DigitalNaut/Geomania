@@ -1,47 +1,48 @@
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "motion/react";
-import { twMerge } from "tailwind-merge";
+import { useMemo } from "react";
+import { twJoin, twMerge } from "tailwind-merge";
 
 import useScrollTo from "src/hooks/useScrollTo";
 import type { CountryGuess } from "src/hooks/useUserGuessRecord/types";
-import { useMemo } from "react";
 
 export default function GuessHistoryPanel({ guessHistory }: { guessHistory: CountryGuess[] }) {
   const { isScrolledToPosition, scrollToPosition, scrollRef } = useScrollTo("bottom");
 
   const [guessList, latestGuess] = useMemo(() => {
-    if (!guessHistory.length) return [];
+    if (guessHistory.length === 0) return [];
 
-    const last = guessHistory.pop();
-    const entries = guessHistory.slice(0, -1);
+    const last = guessHistory.slice(-1)[0];
+    const entriesMinusLast = guessHistory.slice(0, -1);
 
-    return [entries, last];
+    return [entriesMinusLast, last];
   }, [guessHistory]);
 
   return (
     <div className="relative flex flex-col gap-2 overflow-y-auto">
-      <h3 className="text-center text-slate-300">Last {guessHistory.length} guesses</h3>
+      <h3 className={twJoin("text-center text-slate-300", guessHistory.length > 0 ? "visible" : "invisible")}>
+        Last {guessHistory.length} guesses
+      </h3>
       <div className="flex flex-1 flex-col overflow-y-auto text-ellipsis px-2" ref={scrollRef}>
         <div className="flex flex-col-reverse pb-12">
-          {guessList?.length &&
-            guessList.map((guess) => {
-              return (
-                <motion.div
-                  className={twMerge(
-                    "flex items-center gap-2 px-1",
-                    guess.isCorrect ? "text-green-500" : "text-slate-200",
-                  )}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  key={guess.timestamp}
-                  title={guess.text}
-                >
-                  <FontAwesomeIcon icon={guess.isCorrect ? faCheck : faTimes} />
-                  {guess.text}
-                </motion.div>
-              );
-            })}
+          {guessList?.map((guess) => {
+            return (
+              <motion.div
+                className={twMerge(
+                  "flex items-center gap-2 px-1",
+                  guess.isCorrect ? "text-green-500" : "text-slate-200",
+                )}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                key={guess.timestamp}
+                title={guess.text}
+              >
+                <FontAwesomeIcon icon={guess.isCorrect ? faCheck : faTimes} />
+                {guess.text}
+              </motion.div>
+            );
+          })}
           {latestGuess && (
             <motion.div
               className={twMerge(
@@ -57,7 +58,9 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: Coun
               {latestGuess.text}
             </motion.div>
           )}
-          {!guessHistory.length && <div className="pt-2 text-center text-sm italic">None yet, start guessing!</div>}
+          {guessHistory.length === 0 && (
+            <div className="pt-2 text-center text-sm italic">None guesses yet! {guessHistory.length}</div>
+          )}
         </div>
         {!isScrolledToPosition && (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-fit bg-gradient-to-t from-slate-900 px-6 pb-4 pt-12">

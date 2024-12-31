@@ -1,4 +1,5 @@
 import { createElement, useEffect, useMemo, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 function filterText(text: string) {
   const replacedText = text
@@ -31,12 +32,17 @@ function useDOMParser(input = "") {
   return { doc, error };
 }
 
-export function RenderDOM({ input }: { input: string }) {
+export function RenderDOM({ className, input }: { className?: string; input: string }) {
   const { doc, error } = useDOMParser(input);
 
   const htmlSections = useMemo(() => doc?.childNodes[0].childNodes, [doc]);
 
-  if (error) return <div className="w-full flex-1 grow rounded-sm bg-red-400 p-2 text-white">{error.message}</div>;
+  if (error)
+    return (
+      <div className={twMerge("w-full flex-1 grow rounded-sm bg-red-400 p-2 text-white", className)}>
+        {error.message}
+      </div>
+    );
 
   return !htmlSections ? null : (
     <>

@@ -2,6 +2,7 @@ import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import axios, { type AxiosRequestConfig } from "axios";
+import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useEffect, useMemo } from "react";
 import Masonry from "react-responsive-masonry";
 
@@ -12,6 +13,16 @@ import type { UnsplashSearchResponse } from "src/types/unsplash";
 const unsplashApiURL = "https://api.unsplash.com";
 const unsplashSearch = `${unsplashApiURL}/search/photos?query=`;
 
+const overlayVariants: Variants = {
+  initial: {
+    opacity: 0,
+    onAnimationEnd: () => ({ display: "none" }),
+  },
+  hover: {
+    opacity: 1,
+    display: "flex",
+  },
+};
 export function UnsplashImages({ onError }: { onError: (error: Error) => void }) {
   const { data: keys } = useEdgeKeys();
   const { storedCountry } = useCountryStore();
@@ -43,44 +54,67 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
     if (error) onError(error as Error);
   }, [error, onError]);
 
-  if (error)
-    return <p className="mr-3 rounded-md bg-sky-900 p-3">Images are unavailable at the moment.</p>;
+  if (error) return <p className="rounded-md bg-sky-900 p-3">Images are unavailable at the moment.</p>;
 
   if (isLoading)
-    return <div className="mr-3 rounded-md bg-sky-900 p-3">Loading images for {storedCountry.data?.GEOUNIT}...</div>;
+    return <div className="rounded-md bg-sky-900 p-3">Loading images for {storedCountry.data?.GEOUNIT}...</div>;
 
   return (
     <section className="pt-2">
-      <div className="max-h-[60vh] w-[20vw] overflow-y-auto scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700">
+      <div className="flex max-h-[60vh] min-w-[20vw] overflow-y-auto scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700">
         {data?.results.length && (
-          <Masonry columnsCount={2} gutter="0.5rem">
+          <Masonry columnsCount={2}>
             {data.results.map((image) => (
-              <div className="group relative h-auto w-full overflow-hidden rounded-md" key={image.id}>
-                <img src={image.urls.thumb} alt={image.alt_description} loading="lazy" />
-                <span className="absolute right-0 top-0 hidden rounded-bl-md bg-sky-900/70 p-2 text-right text-sm shadow-sm group-hover:block">
-                  <a
-                    className="underline"
-                    href={image.links.html}
-                    target="_blank"
-                    rel="noreferrer"
-                    title="View on Unsplash"
+              <motion.div key={image.id} initial="initial" whileHover="hover" transition={{ duration: 0.05 }}>
+                <div className="peer/image group/label relative h-auto w-full" key={image.id}>
+                  <img src={image.urls.thumb} alt={image.alt_description} loading="lazy" />
+
+                  <div className="absolute inset-x-0 bottom-0 flex-col bg-black/30 p-4 text-right opacity-0 backdrop-blur-sm transition-opacity duration-200 ease-out group-hover/label:opacity-100">
+                    <span className="rounded-bl-md text-base shadow-sm">
+                      <a
+                        className="hover:underline"
+                        href={image.links.html}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="View on Unsplash"
+                      >
+                        View original&ensp;
+                        <FontAwesomeIcon icon={faExternalLinkAlt} />
+                      </a>
+                    </span>
+                    <br />
+                    <span className="text-xs">
+                      <span>Photo by&ensp;</span>
+                      <a
+                        className="underline"
+                        href={`https://unsplash.com/@${image.user.username}?utm_source=Geomaniac&utm_medium=referral`}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="Visit Unsplash profile"
+                      >
+                        {image.user.name}
+                      </a>
+                    </span>
+                  </div>
+                </div>
+
+                <AnimatePresence>
+                  <motion.div
+                    className="pointer-events-none absolute inset-0 z-10 hidden -translate-x-full items-center justify-center"
+                    key={image.id}
+                    variants={overlayVariants}
                   >
-                    <FontAwesomeIcon icon={faExternalLinkAlt} />
-                  </a>
-                </span>
-                <span className="absolute inset-x-0 bottom-0 hidden bg-sky-900/70 p-2 text-right text-xs group-hover:block">
-                  Photo by{" "}
-                  <a
-                    className="underline"
-                    href={`https://unsplash.com/@${image.user.username}?utm_source=Geomaniac&utm_medium=referral`}
-                    target="_blank"
-                    rel="noreferrer"
-                    title="Visit Unsplash profile"
-                  >
-                    {image.user.name}
-                  </a>
-                </span>
-              </div>
+                    <img
+                      className="max-h-full max-w-full rounded-md bg-white p-2 shadow-md"
+                      src={image.urls.regular}
+                      alt={image.alt_description}
+                      width={image.width}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
             ))}
           </Masonry>
         )}
