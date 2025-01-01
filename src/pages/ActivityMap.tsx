@@ -26,7 +26,7 @@ import { useCountryStore } from "src/context/CountryStore";
 import { useCountryFilters } from "src/context/FilteredCountryData";
 import useActivityManager from "src/controllers/useActivityCoordinator";
 import { useError } from "src/hooks/common/useError";
-import useHeaderController from "src/hooks/useHeaderController";
+import { useHeaderController } from "src/context/useHeaderController";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
 import type { RootState } from "src/store";
@@ -88,9 +88,9 @@ function shallowEqual(objA: Record<string, string>, objB: Record<string, string>
   return true;
 }
 
-type ActivityTransitionType = "start" | "finish" | "change";
+type ActivityEvent = "start" | "finish" | "change";
 
-function determineType(current: boolean, next: boolean): ActivityTransitionType {
+function determineEventType(current: boolean, next: boolean): ActivityEvent {
   if (current && !next) return "finish";
   if (!current && next) return "start";
   return "change";
@@ -102,7 +102,7 @@ function determineType(current: boolean, next: boolean): ActivityTransitionType 
  * @param onActivityChange Called when the activity type changes.
  * @returns The current activity.
  */
-function useActivityMonitor(onActivityChange: (type: ActivityTransitionType) => void) {
+function useActivityMonitor(onActivityChange: (type: ActivityEvent) => void) {
   const { activity } = useSelector((state: RootState) => state.mapActivity);
   const prevActivity = useRef<typeof activity | undefined>(undefined);
 
@@ -111,8 +111,8 @@ function useActivityMonitor(onActivityChange: (type: ActivityTransitionType) => 
       if (prevActivity.current && activity && shallowEqual(prevActivity.current, activity)) return;
       if (!prevActivity.current && !activity) return;
 
-      const type = determineType(Boolean(prevActivity.current), Boolean(activity));
-      onActivityChange(type);
+      const eventType = determineEventType(Boolean(prevActivity.current), Boolean(activity));
+      onActivityChange(eventType);
 
       prevActivity.current = activity;
     },
@@ -142,20 +142,18 @@ function ActivityMap({
     submitAnswer,
     resetVisited,
     start,
-    // finish,
   } = useActivityManager();
 
   const finishActivity = useCallback(() => {
     resetStore();
     resetView({ animate: false });
-    // finish();
     onFinishActivity();
   }, [onFinishActivity, resetStore, resetView]);
 
   useHeaderController(finishActivity);
 
   const activityMonitorHandler = useCallback(
-    (type: ActivityTransitionType) => {
+    (type: ActivityEvent) => {
       switch (type) {
         case "finish":
           finishActivity();
@@ -174,6 +172,8 @@ function ActivityMap({
   const { activity } = useActivityMonitor(activityMonitorHandler);
 
   const colorTheme = useMemo(() => mapActivityTheme.get(activity?.activity || "default")!, [activity]);
+
+  const hasCountryData = useMemo(() => filteredCountryData.length > 0, [filteredCountryData]);
 
   return (
     <div
@@ -221,12 +221,13 @@ function ActivityMap({
         <SvgMap selectedPaths={visitedCountries} onClick={handleMapClick} colorTheme={colorTheme} />
       </LeafletMapFrame>
 
-      <AnimatePresence mode="wait">
-        {activity &&
-          (filteredCountryData.length === 0 ? (
-            <RegionsToggleOverlay onStart={start} />
-          ) : activity.activity === "quiz" ? (
+      {activity && (
+        <AnimatePresence>
+          {!hasCountryData && <RegionsToggleOverlay key="regions-toggle-overlay" onStart={start} />}
+
+          {hasCountryData && activity.activity === "quiz" && (
             <QuizFloatingPanel
+              key="quiz-floating-panel"
               mode={activity.kind}
               giveHint={giveHint}
               inputRef={inputRef}
@@ -234,18 +235,22 @@ function ActivityMap({
               submitAnswer={submitAnswer}
               userGuessTally={guessTally}
             />
-          ) : activity.activity === "review" ? (
+          )}
+
+          {hasCountryData && activity.activity === "review" && (
             <>
               <ReviewFloatingPanel
+                key="review-floating-panel"
                 showNextCountry={nextCountry}
-                disabled={filteredCountryData.length === 0}
+                disabled={!hasCountryData}
                 onReset={resetVisited}
               />
-              <WikipediaFloatingPanel onError={setError} />
-              <UnsplashImagesFloatingPanel onError={setError} />
+              <WikipediaFloatingPanel key="wikipedia-floating-panel" onError={setError} />
+              <UnsplashImagesFloatingPanel key="unsplash-floating-panel" onError={setError} />
             </>
-          ) : null)}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      )}
     </div>
   );
 }
@@ -280,7 +285,7 @@ export default function ActivityMapLayout() {
       )}
 
       <MainView className="relative overflow-auto">
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {!isActivitySelected && (
             <InstructionOverlay>
               <ActivitySection>
@@ -312,7 +317,7 @@ export default function ActivityMapLayout() {
           )}
 
           {isActivitySelected && (
-            <FloatingHeader imageSrc={NerdMascot}>
+            <FloatingHeader key="floating-header" imageSrc={NerdMascot}>
               {activity?.activity === "quiz" && <span>Guess the country!</span>}
               {activity?.activity === "review" && <span>Reviewing countries</span>}
             </FloatingHeader>

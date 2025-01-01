@@ -4,7 +4,7 @@ import type { PropsWithChildren, JSX } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
-import { useHeaderControllerContext } from "src/hooks/useHeaderController";
+import { useHeaderController } from "src/context/useHeaderController";
 
 import LogoImage from "src/assets/images/geomaniac-wordmark.min.svg?react";
 
@@ -24,15 +24,10 @@ type TitleProps = PropsWithChildren<{
 }>;
 
 Nav.Logo = function Logo({ title }: TitleProps) {
-  const { onClickCallback } = useHeaderControllerContext();
+  const { clickCallback } = useHeaderController();
 
   return (
-    <Link
-      to="/"
-      onClick={() => {
-        onClickCallback.current?.();
-      }}
-    >
+    <Link to="/" onClick={() => clickCallback.current?.()}>
       <LogoImage title={title} width={224} height={36} />
     </Link>
   );

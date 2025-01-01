@@ -12,7 +12,7 @@ import Nav from "src/components/layout/Header";
 import StandardLayout from "src/components/layout/StandardLayout";
 import { CountryStoreProvider } from "src/context/CountryStore";
 import { CountryFiltersProvider } from "src/context/FilteredCountryData";
-import { HeaderControllerProvider } from "src/hooks/useHeaderController";
+import { HeaderControllerProvider } from "src/context/useHeaderController";
 import { MapContextProvider } from "src/hooks/useMapContext";
 import { UserGuessRecordProvider } from "src/hooks/useUserGuessRecord";
 import { UserSettingsProvider } from "src/hooks/useUserSettings";
@@ -109,16 +109,16 @@ const router = createBrowserRouter(
 export default function App() {
   return (
     <ReduxProvider store={store}>
-      <HeaderControllerProvider>
-        <UserSettingsProvider>
+      <UserSettingsProvider>
+        <HeaderControllerProvider>
           <RouterProvider
             router={router}
             future={{
               v7_startTransition: true,
             }}
           />
-        </UserSettingsProvider>
-      </HeaderControllerProvider>{" "}
+        </HeaderControllerProvider>{" "}
+      </UserSettingsProvider>
     </ReduxProvider>
   );
 }
