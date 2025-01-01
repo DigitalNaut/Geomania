@@ -3,8 +3,8 @@ import { motion } from "motion/react";
 import type { PropsWithChildren } from "react";
 
 const headerVariants: Variants = {
-  hidden: { opacity: 0, translateY: -100, transition: { duration: 0.1 } },
-  visible: { opacity: 1, translateY: 0, transition: { duration: 0.2 } },
+  hidden: { opacity: 0, translateY: -50 },
+  visible: { opacity: 1, translateY: 0 },
 };
 
 export default function FloatingHeader({
@@ -16,7 +16,6 @@ export default function FloatingHeader({
   return (
     <motion.div
       className="absolute inset-x-0 top-4 z-[1000] mx-auto flex w-fit min-w-min items-center gap-2 sm:min-w-max"
-      key="floating-header"
       variants={headerVariants}
       initial="hidden"
       animate="visible"

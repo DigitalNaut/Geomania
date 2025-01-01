@@ -124,7 +124,6 @@ export default function QuizFloatingPanel({
   return (
     <motion.div
       className="absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 text-center"
-      key="quiz-floating-panel"
       variants={panelVariants}
       initial="hidden"
       animate="visible"

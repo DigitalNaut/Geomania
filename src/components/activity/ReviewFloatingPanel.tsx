@@ -14,7 +14,7 @@ import { InlineButton } from "./InlineButton";
 import { setRandomReviewMode } from "src/store/MapActivity/mapActivitySlice";
 
 const AnimationVariants: Variants = {
-  hidden: (custom: number) => ({ opacity: 0, translateY: custom, transition: { duration: 0.1 } }),
+  hidden: (custom: number = 0) => ({ opacity: 0, translateY: custom, transition: { duration: 0.1 } }),
   visible: { opacity: 1, translateY: 0, transition: { duration: 0.2 } },
 };
 
@@ -28,9 +28,7 @@ function DetailFloatingPanel({
   return (
     <motion.div
       className={twMerge("absolute top-16 z-[1000] rounded-md", className)}
-      key="floating-panel"
       variants={AnimationVariants}
-      custom={-100}
       initial="hidden"
       animate="visible"
       exit="hidden"
@@ -100,7 +98,6 @@ export default function ReviewFloatingPanel({
   return (
     <motion.div
       className="pointer-events-none absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 rounded-md"
-      key="review-floating-panel"
       variants={AnimationVariants}
       custom={100}
       initial="hidden"
