@@ -1,4 +1,3 @@
-import type { Dispatch } from "react";
 import { z } from "zod";
 
 export const userSettingsSchema = z.object({
@@ -10,10 +9,4 @@ export type UserSettings = z.infer<typeof userSettingsSchema>;
 export type ActionType = {
   type: "set" | "reset";
   payload: Partial<UserSettings>;
-};
-
-export type UserSettingsContextType = {
-  userSettings: UserSettings;
-  setUserSetting: Dispatch<Partial<UserSettings>>;
-  resetUserSettings: () => void;
 };

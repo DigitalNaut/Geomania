@@ -2,12 +2,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
 import { startAppListening } from "src/store/listenerMiddleware.js";
-import type { ActivityType } from "./types.js";
-
-export interface MapActivitySlice {
-  isRandomReviewMode: boolean;
-  activity?: ActivityType;
-}
+import type { ActivityType, MapActivitySlice } from "./types.js";
 
 const initialState: MapActivitySlice = {
   isRandomReviewMode: false,

@@ -17,3 +17,8 @@ export const ActivityTypeSchema = z.union([
 
 export type ActivityType = z.infer<typeof ActivityTypeSchema>;
 export type ActivityMode = ActivityType["activity"];
+
+export interface MapActivitySlice {
+  isRandomReviewMode: boolean;
+  activity?: ActivityType;
+}
