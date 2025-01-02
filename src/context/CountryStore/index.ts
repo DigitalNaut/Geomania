@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { useCountryFilters } from "src/context/FilteredCountryData";
+import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
 import type { CountryDataList, NullableCountryData } from "src/types/features";
 import { getCountryCoordinates, normalizeName } from "src/utils/features";
-import { useCountryStoreContext } from "./useCountryStoreContext";
+import { useCountryStoreContext } from "./context";
 
 export function useCountryStore() {
-  const { filteredCountryData } = useCountryFilters();
+  const { filteredCountryData } = useFilteredCountriesContext();
   const { storedCountry, setStoredCountry } = useCountryStoreContext();
 
   const resetWorkingList = useCallback(() => [...filteredCountryData], [filteredCountryData]);
@@ -103,4 +103,4 @@ export function useCountryStore() {
   };
 }
 
-export { CountryStoreProvider } from "./CountryStoreProvider";
+export { CountryStoreProvider } from "./Provider";

@@ -5,7 +5,7 @@ import type { SVGOverlayProps } from "react-leaflet";
 import { SVGOverlay } from "react-leaflet";
 
 import mapSvg from "src/assets/images/generated/world-map-countries.svg?raw";
-import { useCountryFilters } from "src/context/FilteredCountryData";
+import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
 import { useMapContext } from "src/hooks/useMapContext";
 import { useSvgAttributes } from "src/hooks/common/useSVGAttributes";
 import { cn } from "src/utils/styles";
@@ -63,7 +63,7 @@ export default function SvgMap({
   className?: string;
 }) {
   const { zoom } = useMapContext();
-  const { isCountryInFilters } = useCountryFilters();
+  const { isCountryInFilters } = useFilteredCountriesContext();
 
   const { paths: allPaths, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"]);
 

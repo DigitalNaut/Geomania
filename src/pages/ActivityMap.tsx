@@ -23,7 +23,7 @@ import type { SvgMapColorTheme } from "src/components/map/MapSvg";
 import SvgMap from "src/components/map/MapSvg";
 import { markerIcon } from "src/components/map/MarkerIcon";
 import { useCountryStore } from "src/context/CountryStore";
-import { useCountryFilters } from "src/context/FilteredCountryData";
+import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
 import useActivityManager from "src/controllers/useActivityCoordinator";
 import { useError } from "src/hooks/common/useError";
 import { useHeaderController } from "src/context/useHeaderController";
@@ -129,7 +129,7 @@ function ActivityMap({
   setError: (error: Error) => void;
   onFinishActivity: () => void;
 }) {
-  const { filteredCountryData } = useCountryFilters();
+  const { filteredCountryData } = useFilteredCountriesContext();
   const { storedCountry, resetStore } = useCountryStore();
   const { resetViewport: resetView } = useMapViewport({ options: { padding: 0 } });
   const {

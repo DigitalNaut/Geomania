@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 import Button from "src/components/common/Button";
 import Toggle from "src/components/common/Toggle";
-import { useCountryFilters } from "src/context/FilteredCountryData";
+import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
 import { continents } from "src/context/FilteredCountryData/data";
 
 type ListItemProps = {
@@ -27,7 +27,7 @@ function ToggleListItem({ id, checked, onChange, label }: ListItemProps) {
 }
 
 function RegionsToggleList({ onStart }: { onStart?: () => void }) {
-  const { toggleContinentFilter, continentFiltersList } = useCountryFilters();
+  const { toggleContinentFilter, continentFiltersList } = useFilteredCountriesContext();
   const [selection, setSelection] = useState(() => new Map(continentFiltersList));
 
   const allSelected = useMemo(() => [...selection].every(([_, checked]) => checked), [selection]);

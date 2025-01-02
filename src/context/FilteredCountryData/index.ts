@@ -1,2 +1,2 @@
-export { CountryFiltersProvider } from "./CountryFiltersProvider";
-export { useFilteredCountriesContext as useCountryFilters } from "./useFilteredCountriesContext";
+export { CountryFiltersProvider } from "./Provider";
+export { useFilteredCountriesContext } from "./context";

@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { useCallback, useMemo, useState } from "react";
 
 import allFeaturesData from "src/assets/data/features/countries.json";
-import { FilteredCountryDataContext } from "./FilteredCountryDataContext";
+import { FilteredCountryDataContext } from "./context";
 import { continents, countryDataByContinent, initialContinentFilters, optimizedAllFeaturesData } from "./data";
 export function CountryFiltersProvider({ children }: PropsWithChildren) {
   const [continentFilters, setContinentFilters] = useState(initialContinentFilters);

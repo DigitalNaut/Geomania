@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { useState } from "react";
 
-import { CountryStoreContext } from "./useCountryStoreContext";
+import { CountryStoreContext } from "./context";
 import type { NullableCountryData } from "src/types/features";
 
 export function CountryStoreProvider({ children }: PropsWithChildren) {

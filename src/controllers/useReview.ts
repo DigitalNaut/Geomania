@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 
 import type { VisitedCountry } from "src/components/map/MapSvg";
 import { useCountryStore } from "src/context/CountryStore";
-import { useCountryFilters } from "src/context/FilteredCountryData";
+import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
 import { useVisitedCountries } from "src/hooks/useVisitedCountries";
 import type { RootState } from "src/store";
 import type { NullableCountryData } from "src/types/features";
@@ -19,7 +19,7 @@ export function useReview(): IActivity & {
   resetVisitedCountries: () => void;
 } {
   const [searchParams, setURLSearchParams] = useSearchParams();
-  const { isCountryInFilters } = useCountryFilters();
+  const { isCountryInFilters } = useFilteredCountriesContext();
   const { setCountryDataNext, setCountryDataRandom, setCountryDataByCode, storedCountry } = useCountryStore();
   const { visitedCountries, pushVisitedCountry, setVisitedCountry, resetVisitedCountries } = useVisitedCountries();
   const { isRandomReviewMode } = useSelector((state: RootState) => state.mapActivity);
