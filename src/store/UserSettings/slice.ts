@@ -1,19 +1,31 @@
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
+import { startAppListening } from "src/store/listenerMiddleware";
+import { LocalStorage } from "src/store/utility/localStorage";
+import type { AtLeastOne } from "src/store/utility/types";
 import type { UserSettings } from "./types";
+import { userSettingsSchema } from "./types";
 
-const initialState: UserSettings = {
-  reducedMotion: false,
-};
+const STATS_KEY = "userSettings";
+export const settingsStorage = new LocalStorage<UserSettings>(STATS_KEY);
+
+const initialState = userSettingsSchema.parse({});
 
 const userSettingsSlice = createSlice({
   name: "userSettings",
   initialState,
   reducers: {
-    set: (state, { payload }) => ({ ...state, ...payload }),
-    reset: () => initialState,
+    setUserSettings: (state, { payload }: PayloadAction<AtLeastOne<UserSettings>>) => ({ ...state, ...payload }),
+
+    resetUserSettings: () => initialState,
   },
 });
 
-export const { set, reset } = userSettingsSlice.actions;
+export const { setUserSettings, resetUserSettings } = userSettingsSlice.actions;
 export default userSettingsSlice.reducer;
+
+startAppListening({
+  actionCreator: setUserSettings,
+  effect: (action) => settingsStorage.set(action.payload),
+});

@@ -2,8 +2,8 @@ import type { LatLngExpression, ZoomPanOptions } from "leaflet";
 import { useEffect } from "react";
 
 import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
-import { useUserSettingsContext } from "src/hooks/useUserSettings";
 import { useMapContext } from "./useMapContext";
+import { useSettings } from "./useSettings";
 
 type Options = {
   padding: number;
@@ -19,8 +19,8 @@ type Options = {
  * @returns {Object} An object with a single key, `flyTo`, which is a function.
  */
 export function useMapViewport({ options }: { options?: Options } = {}) {
+  const { useReducedMotion } = useSettings();
   const { map } = useMapContext();
-  const { userSettings } = useUserSettingsContext();
   const padding = options?.padding ?? 0.5;
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export function useMapViewport({ options }: { options?: Options } = {}) {
 
   async function flyTo(
     destination: LatLngExpression | null,
-    { zoom = 4, animate = true, duration = userSettings.reducedMotion ? 0.1 : 0.25 } = {},
+    { zoom = 4, animate = true, duration = useReducedMotion ? 0.05 : 0.25 } = {},
     delay = 0,
   ) {
     if (!map || !destination) return;

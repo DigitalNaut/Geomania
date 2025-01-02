@@ -5,9 +5,9 @@ import { useMemo } from "react";
 import { twJoin, twMerge } from "tailwind-merge";
 
 import useScrollTo from "src/hooks/common/useScrollTo";
-import type { CountryGuess } from "src/hooks/useUserGuessRecord/types";
+import type { GuessHistory } from "src/store/UserGuessHistory/types";
 
-export default function GuessHistoryPanel({ guessHistory }: { guessHistory: CountryGuess[] }) {
+export default function GuessHistoryPanel({ guessHistory }: { guessHistory: GuessHistory }) {
   const { isScrolledToPosition, scrollToPosition, scrollRef } = useScrollTo("bottom");
 
   const [guessList, latestGuess] = useMemo(() => {

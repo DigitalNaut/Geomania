@@ -1,10 +1,10 @@
-import type { PropsWithChildren, JSX } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
-import { useUserSettingsContext } from "src/hooks/useUserSettings";
-import MainView from "src/components/layout/MainView";
-import Toggle from "src/components/common/Toggle";
 import Button from "src/components/common/Button";
+import Toggle from "src/components/common/Toggle";
+import MainView from "src/components/layout/MainView";
+import { useSettings } from "src/hooks/useSettings";
 
 function SettingInfo({
   label,
@@ -13,9 +13,9 @@ function SettingInfo({
   small,
   children,
 }: PropsWithChildren<{
-  label: JSX.Element | string;
-  description?: JSX.Element | string;
-  info?: JSX.Element | string;
+  label: ReactNode;
+  description?: ReactNode;
+  info?: ReactNode;
   small?: true;
 }>) {
   return (
@@ -35,11 +35,7 @@ function SettingsSection({ children }: PropsWithChildren) {
 }
 
 export default function Settings() {
-  const { userSettings, setUserSetting, resetUserSettings } = useUserSettingsContext();
-
-  const reset = () => {
-    resetUserSettings();
-  };
+  const { useReducedMotion, resetSettings, toggleUseReducedMotion } = useSettings();
 
   return (
     <MainView className="sm:flex-col">
@@ -51,15 +47,12 @@ export default function Settings() {
               label="Reduced motion"
               description="Use snappy transitions and animations to reduce motion sickness."
             >
-              <Toggle
-                value={userSettings.reducedMotion}
-                onChange={(value) => setUserSetting({ reducedMotion: value })}
-              />
+              <Toggle value={useReducedMotion} onChange={toggleUseReducedMotion} />
             </SettingInfo>
           </SettingsSection>
 
           <div className="mt-4 flex w-full justify-end">
-            <Button onClick={reset} styles="secondary">
+            <Button onClick={resetSettings} styles="secondary">
               Restore defaults
             </Button>
           </div>

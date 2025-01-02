@@ -1,12 +1,11 @@
 import { useCallback, useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
 import type { VisitedCountry } from "src/components/map/MapSvg";
 import { useCountryStore } from "src/context/CountryStore";
 import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
+import { useMapActivity } from "src/hooks/useMapActivity";
 import { useVisitedCountries } from "src/hooks/useVisitedCountries";
-import type { RootState } from "src/store";
 import type { NullableCountryData } from "src/types/features";
 import type { IActivity } from "./types";
 
@@ -22,7 +21,7 @@ export function useReview(): IActivity & {
   const { isCountryInFilters } = useFilteredCountriesContext();
   const { setCountryDataNext, setCountryDataRandom, setCountryDataByCode, storedCountry } = useCountryStore();
   const { visitedCountries, pushVisitedCountry, setVisitedCountry, resetVisitedCountries } = useVisitedCountries();
-  const { isRandomReviewMode } = useSelector((state: RootState) => state.mapActivity);
+  const { isRandomReviewMode } = useMapActivity();
 
   const pushStoredCountry = useCallback(() => {
     if (!storedCountry.data) return;

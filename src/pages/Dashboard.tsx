@@ -1,14 +1,14 @@
 import { faBroom } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "motion/react";
 import { useMemo } from "react";
-
 import { Link } from "react-router-dom";
+
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg?url";
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
 import Button from "src/components/common/Button";
 import MainView from "src/components/layout/MainView";
-import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
-import type { GuessStats } from "src/hooks/useUserGuessRecord/types";
+import { useGuessRecord } from "src/hooks/useGuessRecord";
+import type { GuessStats } from "src/store/UserGuessStats/types";
 
 type CountryProgressProps = {
   correct: number;
@@ -65,7 +65,7 @@ function CountryStatsCard({ countryStats }: CountryStatsProps) {
 }
 
 function useDashboard() {
-  const { countryStats, clearProgress } = useUserGuessRecord();
+  const { countryStats, clearProgress } = useGuessRecord();
 
   const countryStatsList: GuessStats[] | undefined = useMemo(() => {
     const countryValues = Object.values(countryStats);
@@ -89,7 +89,7 @@ export default function Dashboard() {
         <p className="text-sm">Your user guess history and country stats will be deleted.</p>
         <form className="flex justify-end gap-2 pt-4" method="dialog">
           <Button styles="danger" onClick={clearProgress}>
-            Delete progress
+            Clear progress
           </Button>
           <Button styles="secondary">Cancel</Button>
         </form>

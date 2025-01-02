@@ -6,9 +6,9 @@ import { qualifyScore } from "src/controllers/scores";
 import { useQuiz } from "src/controllers/useQuiz";
 import { useCountryStore } from "src/context/CountryStore";
 import { useInputField } from "src/hooks/common/useInputField";
-import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
 import type { NullableCountryData } from "src/types/features";
 import type { IActivity } from "./types";
+import { useGuessRecord } from "src/hooks/useGuessRecord";
 
 const highlightStyle = "fill-yellow-400";
 
@@ -22,7 +22,7 @@ export function useQuizInput(): IActivity & {
   const { submitAnswer, resetTally, userGuessTally, pushVisitedCountry, visitedCountries } = useQuiz();
   const { storedCountry: correctAnswer, setCountryDataRandom } = useCountryStore();
   const { inputRef, setInputField: setAnswerInputField, focusInputField: focusAnswerInputField } = useInputField();
-  const { lastGuess } = useUserGuessRecord();
+  const { lastGuess } = useGuessRecord();
 
   const giveHint = () => {
     if (correctAnswer.data) {

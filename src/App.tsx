@@ -14,8 +14,6 @@ import { CountryStoreProvider } from "src/context/CountryStore";
 import { CountryFiltersProvider } from "src/context/FilteredCountryData";
 import { HeaderControllerProvider } from "src/context/useHeaderController";
 import { MapContextProvider } from "src/hooks/useMapContext";
-import { UserGuessRecordProvider } from "src/hooks/useUserGuessRecord";
-import { UserSettingsProvider } from "src/hooks/useUserSettings";
 import { store } from "src/store";
 
 const LazyActivityMap = lazy(() => import("src/pages/ActivityMap"));
@@ -56,15 +54,13 @@ const router = createBrowserRouter(
           element: (
             <ErrorBoundary FallbackComponent={ErrorFallback}>
               <QueryClientProvider client={queryClient}>
-                <UserGuessRecordProvider historyLimit={10}>
-                  <CountryFiltersProvider>
-                    <CountryStoreProvider>
-                      <Suspense fallback={<Spinner cover />}>
-                        <Outlet />
-                      </Suspense>
-                    </CountryStoreProvider>
-                  </CountryFiltersProvider>
-                </UserGuessRecordProvider>
+                <CountryFiltersProvider>
+                  <CountryStoreProvider>
+                    <Suspense fallback={<Spinner cover />}>
+                      <Outlet />
+                    </Suspense>
+                  </CountryStoreProvider>
+                </CountryFiltersProvider>
               </QueryClientProvider>
             </ErrorBoundary>
           ),
@@ -109,16 +105,14 @@ const router = createBrowserRouter(
 export default function App() {
   return (
     <ReduxProvider store={store}>
-      <UserSettingsProvider>
-        <HeaderControllerProvider>
-          <RouterProvider
-            router={router}
-            future={{
-              v7_startTransition: true,
-            }}
-          />
-        </HeaderControllerProvider>{" "}
-      </UserSettingsProvider>
+      <HeaderControllerProvider>
+        <RouterProvider
+          router={router}
+          future={{
+            v7_startTransition: true,
+          }}
+        />
+      </HeaderControllerProvider>{" "}
     </ReduxProvider>
   );
 }
