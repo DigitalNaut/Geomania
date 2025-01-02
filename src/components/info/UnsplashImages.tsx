@@ -51,7 +51,7 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
   });
 
   useEffect(() => {
-    if (error) onError(error as Error);
+    if (error) onError(error);
   }, [error, onError]);
 
   if (error) return <p className="rounded-md bg-sky-900 p-3">Images are unavailable at the moment.</p>;
