@@ -35,9 +35,7 @@ export function useLocalStorage<T extends Record<string, unknown>>(key: string, 
       } catch (error) {
         // If parsing fails, reset to default settings
         saveData(defaultData);
-        throw new Error(
-          `Failed to load settings from local storage: ${error instanceof Error ? error.message : "Unknown error"}`,
-        );
+        throw new Error(`Failed to load settings from local storage: ${error ?? "Unknown error"}`);
       }
   }, [defaultData, key, schema, saveData]);
 
