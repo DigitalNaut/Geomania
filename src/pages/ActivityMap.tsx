@@ -30,7 +30,7 @@ import { useHeaderController } from "src/context/useHeaderController";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { useUserGuessRecord } from "src/hooks/useUserGuessRecord";
 import type { RootState } from "src/store";
-import { setActivity } from "src/store/MapActivity/mapActivitySlice";
+import { setActivity } from "src/store/MapActivity/slice";
 import type { ActivityMode, ActivityType } from "src/store/MapActivity/types";
 import { cn } from "src/utils/styles";
 

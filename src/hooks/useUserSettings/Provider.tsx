@@ -3,11 +3,13 @@ import { useEffect, useReducer } from "react";
 
 import { useLocalStorage } from "src/hooks/useLocalStorage";
 import { UserSettingsContext } from ".";
-import { defaultUserSettings } from "./defaults";
 import type { ActionType, UserSettings } from "./types";
 import { userSettingsSchema } from "./types";
 
-const reducer = (state: UserSettings, { type, payload }: ActionType): UserSettings => {
+const USER_SETTINGS_KEY = "userSettings";
+const defaultSettings = userSettingsSchema.parse({});
+
+const settingsReducer = (state: UserSettings, { type, payload }: ActionType): UserSettings => {
   switch (type) {
     case "set":
       return {
@@ -16,38 +18,36 @@ const reducer = (state: UserSettings, { type, payload }: ActionType): UserSettin
       };
 
     case "reset":
-      return defaultUserSettings;
+      return defaultSettings;
 
     default:
       return state;
   }
 };
 
-const userSettingsKey = "userSettings";
-
 export function UserSettingsProvider({ children }: PropsWithChildren) {
-  const { data: savedUserSettings, saveData: saveUserSettings } = useLocalStorage<UserSettings>(
-    userSettingsKey,
-    defaultUserSettings,
+  const { data: userSettingsInStorage, saveData: persistSettings } = useLocalStorage<UserSettings>(
+    USER_SETTINGS_KEY,
+    defaultSettings,
     userSettingsSchema,
   );
-  const [userSettings, setUserSettings] = useReducer(reducer, defaultUserSettings);
+  const [userSettings, setUserSettings] = useReducer(settingsReducer, defaultSettings);
 
   const setUserSetting = (payload: Partial<UserSettings>) => {
     setUserSettings({ type: "set", payload });
-    saveUserSettings({ ...userSettings, ...payload });
+    persistSettings({ ...userSettings, ...payload });
   };
 
   const resetUserSettings = () => {
     setUserSettings({ type: "reset", payload: {} });
-    saveUserSettings(defaultUserSettings);
+    persistSettings(defaultSettings);
   };
 
   useEffect(() => {
-    if (savedUserSettings) {
-      setUserSettings({ type: "set", payload: savedUserSettings });
+    if (userSettingsInStorage) {
+      setUserSettings({ type: "set", payload: userSettingsInStorage });
     }
-  }, [savedUserSettings]);
+  }, [userSettingsInStorage]);
 
   return (
     <UserSettingsContext

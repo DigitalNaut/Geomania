@@ -11,7 +11,7 @@ import { UnsplashImages } from "src/components/info/UnsplashImages";
 import type { RootState } from "src/store";
 import { twMerge } from "tailwind-merge";
 import { InlineButton } from "./InlineButton";
-import { setRandomReviewMode } from "src/store/MapActivity/mapActivitySlice";
+import { setRandomReviewMode } from "src/store/MapActivity/slice";
 
 const AnimationVariants: Variants = {
   hidden: (custom: number = 0) => ({ opacity: 0, translateY: custom, transition: { duration: 0.1 } }),
