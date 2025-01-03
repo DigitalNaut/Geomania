@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { startAppListening } from "src/store/listenerMiddleware.js";
 import type { ActivityType, MapActivitySlice } from "./types.js";
+import { pushSearchParamsToURL } from "src/store/utility/searchParams.js";
 
 const initialState: MapActivitySlice = {
   isRandomReviewMode: false,
@@ -25,6 +26,7 @@ const mapActivitySlice = createSlice({
 export const { setActivity, setRandomReviewMode } = mapActivitySlice.actions;
 export default mapActivitySlice.reducer;
 
+// Lift Activity to URL
 startAppListening({
   actionCreator: setActivity,
   effect: function liftStateToURL(action) {
@@ -36,17 +38,18 @@ startAppListening({
     const kind = action.payload?.kind;
     if (kind) searchParams.set("kind", kind);
 
-    window.history.pushState(null, "", `?${searchParams.toString()}`);
+    pushSearchParamsToURL(searchParams);
   },
 });
 
+// Lift Review Mode to URL
 startAppListening({
   actionCreator: setRandomReviewMode,
-  effect: function liftStateToURL(action) {
+  effect: function liftStateToURL({ payload }) {
     const searchParams = new URLSearchParams(window.location.search);
 
-    searchParams.set("random", action.payload.toString());
+    searchParams.set("random", payload.toString());
 
-    window.history.pushState(null, "", `?${searchParams.toString()}`);
+    pushSearchParamsToURL(searchParams);
   },
 });
