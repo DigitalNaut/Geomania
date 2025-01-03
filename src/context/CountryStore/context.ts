@@ -1,11 +1,6 @@
-import { type Dispatch, type SetStateAction, createContext, useContext } from "react";
+import { useContext, createContext } from "react";
 
-import type { NullableCountryData } from "src/types/features";
-
-interface CountryStoreContextValue {
-  storedCountry: NullableCountryData;
-  setStoredCountry: Dispatch<SetStateAction<NullableCountryData>>;
-}
+import type { CountryStoreContextValue } from "./type";
 
 export const CountryStoreContext = createContext<CountryStoreContextValue | null>(null);
 
