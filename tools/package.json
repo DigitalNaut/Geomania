@@ -12,7 +12,10 @@
     "clean:svg-map": "rm -rf src/svg-map/out/",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/**/*.ts",
-    "format": "prettier . -w"
+    "format": "prettier . -w",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage"
   },
   "keywords": [
     "geomaniac",
@@ -21,18 +24,19 @@
   "author": "DigitalNaut",
   "license": "CC BY-NC-SA 4.0",
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
-    "@types/node": "^22.10.2",
-    "bun": "^1.1.40",
-    "eslint": "^9.17.0",
-    "eslint-plugin-no-relative-import-paths": "^1.5.5",
+    "@eslint/js": "^9.18.0",
+    "@types/node": "^22.10.5",
+    "bun": "^1.1.43",
+    "eslint": "^9.18.0",
+    "eslint-plugin-no-relative-import-paths": "^1.6.1",
     "npm-run-all2": "^7.0.2",
     "prettier": "^3.4.2",
     "ts-node": "^10.9.2",
-    "typescript": "5.8.0-dev.20241218"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
-    "chalk": "^5.3.0",
-    "mapshaper": "^0.6.102"
+    "chalk": "^5.4.1",
+    "mapshaper": "^0.6.102",
+    "vitest": "^2.1.8"
   }
 }

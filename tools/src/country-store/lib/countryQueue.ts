@@ -1,62 +1,108 @@
-import { ContinentCatalog, ContinentName } from "../types.js";
-import { getContinentFeatures } from "./continents.js";
+import { CountryCatalog } from "./countryCatalog.js";
+import type { ICountryQueue } from "./types.js";
 
-type CountryQueueProperties = {
-  /** Whether to reset the queue if there are no more countries left. */
-  autoRequeue: true;
+type CountryQueueArgs = {
+  catalog: CountryCatalog;
+  continent: string;
 };
 
-export class CountryQueue {
-  continent: string;
-  catalog: ContinentCatalog;
-  countryStack: string[] | null;
-  countryBlacklist: string[] = [];
-  canAutoRequeue = true;
+type CountryQueueProperties = {
+  autoRequeue?: boolean;
+};
 
-  constructor(continent: ContinentName, catalog: ContinentCatalog, properties?: CountryQueueProperties) {
-    this.continent = continent;
-    this.catalog = catalog;
+/**
+ * Manages a queue of countries for a given continent in a {@link CountryCatalog}.
+ *
+ * Methods:
+ * - {@link next}: Returns the next country in the queue
+ * - {@link requeue}: Resets the queue
+ * - {@link blacklist}: Prevents a country from reselection and removes it from the queue
+ */
+export class CountryQueue implements ICountryQueue {
+  #continent: string;
+  #countryCatalog: CountryCatalog;
+  #queue: string[];
+  #countryBlacklist: string[] = [];
+  #canAutoRequeue = true;
+
+  constructor({ catalog, continent }: CountryQueueArgs, properties: CountryQueueProperties = { autoRequeue: true }) {
+    this.#continent = continent;
+    this.#countryCatalog = catalog;
 
     if (properties) {
-      this.canAutoRequeue = properties.autoRequeue;
+      if (properties.autoRequeue !== undefined) this.#canAutoRequeue = properties.autoRequeue;
     }
 
-    this.countryStack = getContinentFeatures(this.continent, this.catalog, true);
+    this.#queue = this.#countryCatalog.getCountriesIn(this.#continent, true);
+  }
+
+  get length() {
+    return this.#queue.length;
+  }
+
+  get blacklisted() {
+    return this.#countryBlacklist;
   }
 
   requeue() {
-    if (!this.catalog || !this.continent) return;
+    if (!this.#continent) return;
 
-    const features = getContinentFeatures(this.continent, this.catalog, true);
-    if (!features) return;
-
-    this.countryStack = features.filter((c) => !this.countryBlacklist.includes(c));
+    const features = this.#countryCatalog.getCountriesIn(this.#continent, true);
+    this.#queue = features.filter((c) => !this.#countryBlacklist.includes(c));
   }
 
+  /**
+   *
+   * @returns The next country in the queue
+   */
   next() {
-    if (!this.countryStack) return null;
-    if (!this.countryStack.length && this.canAutoRequeue) this.requeue();
+    // Reset the queue if needed
+    if (this.#queue.length === 0 && this.#canAutoRequeue) this.requeue();
 
-    const country = this.countryStack.pop();
+    // Get the next country
+    return this.#queue.pop();
+  }
 
-    return country;
+  /**
+   * Checks if a country is in the queue.
+   */
+  includes(country: string) {
+    return this.#queue.includes(country);
   }
 
   #removeFromStack(country: string) {
-    if (!this.countryStack) return 0;
+    if (!this.#queue) return 0;
 
-    const filtered = this.countryStack.filter((c) => c !== country);
-    const removedCount = this.countryStack.length - filtered.length;
+    const filtered = this.#queue.filter((c) => c !== country);
+    const removedCount = this.#queue.length - filtered.length;
 
-    this.countryStack = filtered;
+    this.#queue = filtered;
 
     return removedCount;
   }
 
+  /**
+   * Prevents a country from reselection and removes it from the queue.
+   * @param country
+   */
   blacklist(country: string) {
     // Remove the country from the current stack
     this.#removeFromStack(country);
     // Prevent it from being selected again
-    this.countryBlacklist.push(country);
+    this.#countryBlacklist.push(country);
+  }
+
+  /**
+   * Prevents countries from reselection and removes them from the queue.
+   * @param countries A list of country codes
+   */
+  blacklistMany(countries: string[]) {
+    for (const country of countries) {
+      this.blacklist(country);
+    }
+  }
+
+  hasBlacklisted(country: string) {
+    return this.#countryBlacklist.includes(country);
   }
 }
