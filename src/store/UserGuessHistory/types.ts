@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const CountryGuessSchema = z.object({
+const CountryGuessSchema = z.object({
   timestamp: z.number(),
   text: z.string(),
   isCorrect: z.boolean(),

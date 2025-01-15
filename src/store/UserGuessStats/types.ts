@@ -5,7 +5,7 @@ import type { CountryGuess } from "src/store/UserGuessHistory/types";
 
 export type CountryStatsPayload = Omit<CountryGuess, "timestamp" | "text"> & Pick<CountryData, "GEOUNIT">;
 
-export const GuessStatsSchema = z.object({
+const GuessStatsSchema = z.object({
   correctGuesses: z.number(),
   incorrectGuesses: z.number(),
   lastGuessTimestamp: z.number(),

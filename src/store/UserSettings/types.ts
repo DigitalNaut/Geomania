@@ -5,8 +5,3 @@ export const userSettingsSchema = z.object({
 });
 
 export type UserSettings = z.infer<typeof userSettingsSchema>;
-
-export type ActionType = {
-  type: "set" | "reset";
-  payload: Partial<UserSettings>;
-};
