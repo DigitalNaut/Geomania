@@ -13,9 +13,12 @@ export function useCountryStore() {
 
   const [pendingCountries, setPendingCountries] = useState<CountryDataList>(resetWorkingList);
 
-  useEffect(() => {
-    setPendingCountries([...filteredCountryData]);
-  }, [filteredCountryData]);
+  useEffect(
+    function updateWorkingList() {
+      setPendingCountries([...filteredCountryData]);
+    },
+    [filteredCountryData],
+  );
 
   const setCountryData = useCallback(
     (pendingIndex: number) => {
