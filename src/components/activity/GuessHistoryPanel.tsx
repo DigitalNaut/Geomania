@@ -46,7 +46,7 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: Gues
           {latestGuess && (
             <motion.div
               className={twMerge(
-                "flex items-center gap-2 px-1 py-2 text-white rounded-sm",
+                "flex items-center gap-2 rounded-sm px-1 py-2 text-white",
                 latestGuess.isCorrect ? "bg-green-800" : "bg-yellow-800",
               )}
               initial={{ opacity: 0 }}

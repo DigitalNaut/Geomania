@@ -28,7 +28,6 @@ export default tsEslint.config(
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "no-console": "warn",
       "@typescript-eslint/consistent-type-imports": "error",
-
       "no-relative-import-paths/no-relative-import-paths": ["warn", { allowSameFolder: true }],
       "object-shorthand": ["warn", "always"],
       "consistent-return": ["warn"],
@@ -51,7 +50,8 @@ export default tsEslint.config(
     },
     settings: {
       tailwindcss: {
-        whitelist: ["(fa\\-|leaflet\\-|g_id_).+"],
+        whitelist: ["(fa\\-|leaflet\\-).+"], // prefixes followed by at least one character
+        callees: ["twMerge", "twJoin", "cn"],
       },
     },
   },

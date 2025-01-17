@@ -11,5 +11,5 @@ export default function SourceLogo({ className, source }: { className?: string; 
   const alt = useMemo(() => `${source.charAt(0).toUpperCase() + source.slice(1)} logo`, [source]);
   const src = useMemo(() => logoUrls[source], [source]);
 
-  return <img className={twMerge("w-4 inline-block", className)} src={src} alt={alt} loading="lazy" />;
+  return <img className={twMerge("inline-block w-4", className)} src={src} alt={alt} loading="lazy" />;
 }

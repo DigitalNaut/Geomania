@@ -25,7 +25,7 @@ function CountryListEntry({
   return (
     <button
       id={country?.GU_A3}
-      className={cn("flex items-center gap-2 pl-4 -ml-2 -mr-1 pr-1 text-left -indent-2 rounded-sm", {
+      className={cn("-ml-2 -mr-1 flex items-center gap-2 rounded-sm pl-4 pr-1 text-left -indent-2", {
         "bg-yellow-700 py-1": country?.GU_A3 === storedCountry?.GU_A3,
       })}
       title={country?.GEOUNIT}

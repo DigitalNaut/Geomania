@@ -21,7 +21,7 @@ function SettingInfo({
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between gap-2">
-        <div className={twMerge(small ? "text-md" : "text-lg")}>{label}</div>
+        <div className={twMerge(small ? "text-base" : "text-lg")}>{label}</div>
         {children}
       </div>
       <div className="text-sm">{description}</div>
