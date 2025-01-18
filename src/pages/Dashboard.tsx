@@ -1,7 +1,7 @@
 import { faBroom } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "motion/react";
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg?url";
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";

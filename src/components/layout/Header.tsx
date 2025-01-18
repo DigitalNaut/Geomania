@@ -1,7 +1,7 @@
 import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { PropsWithChildren, JSX } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router";
 import { twMerge } from "tailwind-merge";
 
 import { useHeaderController } from "src/context/useHeaderController";

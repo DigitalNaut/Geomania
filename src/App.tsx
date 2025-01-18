@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Provider as ReduxProvider } from "react-redux";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router";
 
 import ErrorFallback from "src/components/common/ErrorFallback";
 import { Spinner } from "src/components/common/Spinner";

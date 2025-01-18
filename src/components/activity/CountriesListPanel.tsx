@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import { InlineButton } from "src/components/activity/InlineButton";
 import Toggle from "src/components/common/Toggle";
 import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
