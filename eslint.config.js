@@ -50,8 +50,8 @@ export default tsEslint.config(
     },
     settings: {
       tailwindcss: {
-        whitelist: ["(fa\\-|leaflet\\-).+"], // prefixes followed by at least one character
-        callees: ["twMerge", "twJoin", "cn"],
+        whitelist: ["(fa\\-|leaflet\\-).+"], // Prefixes followed by at least one character
+        callees: ["twMerge", "twJoin", "cn", "tw"], // Defaults: ["classnames", "clsx", "ctl"] See: https://www.npmjs.com/package/eslint-plugin-tailwindcss#more-settings
       },
     },
   },
