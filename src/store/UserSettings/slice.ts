@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { startAppListening } from "src/store/listenerMiddleware";
 import { LocalStorage } from "src/store/utility/localStorage";
-import type { AtLeastOne } from "src/store/utility/types";
+import type { AtLeastOne } from "src/utils/types";
 import type { UserSettings } from "./types";
 import { userSettingsSchema } from "./types";
 

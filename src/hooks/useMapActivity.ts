@@ -1,20 +1,52 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
-import type { RootState } from "src/store";
-import { setActivity, setRandomReviewMode } from "src/store/MapActivity/slice";
-import type { ActivityType } from "src/store/MapActivity/types";
+import type { ActivityType } from "src/types/map-activity";
+import { ActivityTypeSchema } from "src/types/map-activity";
+
+function modifySearchParams(searchParams: URLSearchParams, items: Record<string, string | undefined>) {
+  for (const [key, value] of Object.entries(items)) {
+    if (value === "true") {
+      searchParams.set(key, value);
+    } else {
+      searchParams.delete(key);
+    }
+  }
+
+  return searchParams;
+}
+
+function isValidActivity(activity: unknown): activity is ActivityType {
+  return ActivityTypeSchema.safeParse(activity).success;
+}
 
 export function useMapActivity() {
-  const dispatch = useDispatch();
-  const mapActivity = useSelector((state: RootState) => state.mapActivity);
+  const { activity: activityParam, kind: kindParam } = useParams<Record<string, string | undefined>>();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const dispatchSetActivity = (activity: ActivityType | undefined) => {
-    dispatch(setActivity(activity));
+  const setActivity = (activity: ActivityType | undefined) => {
+    navigate(activity ? `/${activity.activity}/${activity.kind}` : "/");
   };
 
-  const dispatchSetRandomReviewMode = (isRandomReviewMode: boolean) => {
-    dispatch(setRandomReviewMode(isRandomReviewMode));
+  const setRandomReviewMode = (isRandomReviewMode: boolean) => {
+    if (activityParam !== "review") return;
+
+    setSearchParams(modifySearchParams(searchParams, { random: String(isRandomReviewMode) }), {
+      replace: true,
+    });
   };
 
-  return { ...mapActivity, setActivity: dispatchSetActivity, setRandomReviewMode: dispatchSetRandomReviewMode };
+  const isRandomReviewMode = searchParams.get("random") === "true";
+
+  const activity = {
+    activity: activityParam,
+    kind: kindParam,
+  };
+
+  return {
+    activity: isValidActivity(activity) ? activity : undefined,
+    setActivity,
+    isRandomReviewMode,
+    setRandomReviewMode,
+  };
 }

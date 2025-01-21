@@ -30,45 +30,37 @@ import { useError } from "src/hooks/common/useError";
 import { useGuessRecord } from "src/hooks/useGuessRecord";
 import { useMapActivity } from "src/hooks/useMapActivity";
 import { useMapViewport } from "src/hooks/useMapViewport";
-import type { ActivityMode, ActivityType } from "src/store/MapActivity/types";
+import type { ActivityMode, ActivityType } from "src/types/map-activity";
 import { cn } from "src/utils/styles";
+import { tw } from "src/utils/types";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
 const mapGradientStyle = {
-  noActivity: "from-sky-700 to-sky-800 blur-sm",
-  activity: "from-slate-900 to-slate-900 blur-none",
+  noActivity: tw`from-sky-700 to-sky-800 blur-sm`,
+  activity: tw`from-slate-900 to-slate-900 blur-none`,
 };
 
-const mapActivityTheme: Map<ActivityMode | "default", SvgMapColorTheme> = new Map([
-  [
-    "review",
-    {
-      country: {
-        activeStyle: "fill-slate-500/95 stroke-slate-400 hover:stroke-slate-300 hover:fill-slate-500",
-        inactiveStyle: "fill-slate-800 stroke-none",
-      },
-    },
-  ],
-  [
-    "quiz",
-    {
-      country: {
-        activeStyle: "fill-slate-500/95 stroke-slate-400",
-        inactiveStyle: "fill-slate-800 stroke-none",
-      },
-    },
-  ],
-  [
-    "default",
-    {
-      country: {
-        activeStyle: "fill-sky-700 stroke-none",
-        inactiveStyle: "fill-sky-700 stroke-none",
-      },
-    },
-  ],
-]);
+const reviewCountryStyle = {
+  activeStyle: tw`fill-slate-500/95 stroke-slate-400 hover:fill-slate-500 hover:stroke-slate-300`,
+  inactiveStyle: tw`fill-slate-800 stroke-none`,
+};
+
+const quizCountryStyle = {
+  activeStyle: tw`fill-slate-500/95 stroke-slate-400`,
+  inactiveStyle: tw`fill-slate-800 stroke-none`,
+};
+
+const defaultCountryStyle = {
+  activeStyle: tw`fill-sky-700 stroke-none`,
+  inactiveStyle: tw`fill-sky-700 stroke-none`,
+};
+
+const mapActivityTheme: Record<ActivityMode | "default", SvgMapColorTheme> = {
+  review: { country: reviewCountryStyle },
+  quiz: { country: quizCountryStyle },
+  default: { country: defaultCountryStyle },
+};
 
 function shallowEqual(objA: Record<string, string>, objB: Record<string, string>): boolean {
   if (objA === objB) return true;
@@ -170,7 +162,7 @@ function ActivityMap({
   );
   const { activity } = useActivityMonitor(activityMonitorHandler);
 
-  const colorTheme = useMemo(() => mapActivityTheme.get(activity?.activity || "default")!, [activity]);
+  const colorTheme = useMemo(() => mapActivityTheme[activity?.activity || "default"], [activity]);
 
   const hasCountryData = useMemo(() => filteredCountryData.length > 0, [filteredCountryData]);
 

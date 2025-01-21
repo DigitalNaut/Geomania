@@ -7,8 +7,8 @@ import { type KeyboardEvent, type PropsWithChildren, type RefObject, useCallback
 import { InlineButton } from "src/components/activity/InlineButton";
 import { ActionButton } from "src/components/common/ActionButton";
 import { useCountryStore } from "src/context/CountryStore";
-import type { QuizKind } from "src/store/MapActivity/types";
 import type { NullableCountryData } from "src/types/features";
+import type { QuizKind } from "src/types/map-activity";
 
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
 import { useShakeAnimation } from "./hooks";

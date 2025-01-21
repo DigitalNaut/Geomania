@@ -73,7 +73,7 @@ function Router() {
       <Routes>
         <Route element={<Layout />}>
           <Route
-            path="/"
+            path="/:activity?/:kind?"
             index
             element={
               <MapContextProvider>
