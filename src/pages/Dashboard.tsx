@@ -1,6 +1,7 @@
 import { faBroom } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "motion/react";
-import { useMemo } from "react";
+import type { RefObject } from "react";
+import { useMemo, useRef } from "react";
 import { Link } from "react-router";
 
 import ThinkingFace from "src/assets/images/mascot-thinking-bw.min.svg?url";
@@ -79,32 +80,53 @@ function useDashboard() {
   };
 }
 
+function ClearProgressDialog({
+  onClick,
+  open,
+  ref,
+}: {
+  onClick: () => void;
+  open?: boolean;
+  ref: RefObject<HTMLDialogElement | null>;
+}) {
+  return (
+    <motion.dialog ref={ref} open={open} className="max-w-[50ch] rounded-md p-4 shadow-lg backdrop:bg-black/40">
+      <h2 className="pb-2 text-xl font-bold">All progress will be lost</h2>
+      <p className="text-sm">Your user guess history and country stats will be deleted.</p>
+      <form className="flex justify-end gap-2 pt-4" method="dialog">
+        <Button styles="danger" onClick={onClick}>
+          Clear progress
+        </Button>
+        <Button styles="secondary">Cancel</Button>
+      </form>
+    </motion.dialog>
+  );
+}
+
+function ClearProgressButton({ disabled, onClick }: { disabled: boolean; onClick: () => void }) {
+  return (
+    <div className="flex flex-col gap-2 rounded-md bg-slate-800 p-2">
+      <h2 className="text-lg font-bold">Options</h2>
+      <Button className="w-max bg-transparent hover:bg-slate-400/40" disabled={disabled} onClick={onClick}>
+        <Button.Icon icon={faBroom} />
+        <span>Clear progress</span>
+      </Button>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const { countryStatsList, clearProgress } = useDashboard();
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   return (
-    <MainView className="sm:flex-col">
-      <motion.dialog className="max-w-[50ch] rounded-md p-4 shadow-lg backdrop:bg-black/40">
-        <h2 className="pb-2 text-xl font-bold">All progress will be lost</h2>
-        <p className="text-sm">Your user guess history and country stats will be deleted.</p>
-        <form className="flex justify-end gap-2 pt-4" method="dialog">
-          <Button styles="danger" onClick={clearProgress}>
-            Clear progress
-          </Button>
-          <Button styles="secondary">Cancel</Button>
-        </form>
-      </motion.dialog>
+    <MainView className="overflow-y-auto sm:flex-col">
+      <ClearProgressDialog ref={dialogRef} onClick={clearProgress} />
 
       <div className="flex w-full flex-1 gap-2 overflow-y-auto">
-        <div className="flex flex-col gap-2 rounded-md bg-slate-800 p-2">
-          <h2 className="text-lg font-bold">Options</h2>
-          <Button className="w-max bg-transparent hover:bg-slate-400/40" disabled={countryStatsList.length === 0}>
-            <Button.Icon icon={faBroom} />
-            <span>Clear progress</span>
-          </Button>
-        </div>
+        <ClearProgressButton disabled={countryStatsList.length === 0} onClick={() => dialogRef.current?.showModal()} />
 
-        <div className="flex flex-1 flex-col overflow-y-auto">
+        <section className="flex flex-1 flex-col overflow-y-auto">
           <h1 className="p-2 pb-4 text-xl font-bold">Country Stats</h1>
           {countryStatsList.length === 0 ? (
             <div className="flex flex-[0.3_0.3_30%] items-center justify-center">
@@ -126,7 +148,7 @@ export default function Dashboard() {
               ))}
             </div>
           )}
-        </div>
+        </section>
       </div>
     </MainView>
   );
