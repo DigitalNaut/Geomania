@@ -28,7 +28,7 @@ Nav.Logo = function Logo({ title }: TitleProps) {
 
   return (
     <Link to="/" onClick={() => clickCallback.current?.()}>
-      <LogoImage title={title} width={224} height={36} />
+      <LogoImage title={title} className="scale-75 text-slate-200" />
     </Link>
   );
 };
