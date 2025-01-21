@@ -1,5 +1,6 @@
+import { faBookAtlas, faKeyboard, faMousePointer } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "motion/react";
-import type { PropsWithChildren } from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Marker, Popup, ZoomControl } from "react-leaflet";
 
@@ -26,13 +27,13 @@ import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
 import { useHeaderController } from "src/context/useHeaderController";
 import useActivityManager from "src/controllers/useActivityCoordinator";
 import { useError } from "src/hooks/common/useError";
+import { useGuessRecord } from "src/hooks/useGuessRecord";
+import { useMapActivity } from "src/hooks/useMapActivity";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import type { ActivityMode, ActivityType } from "src/store/MapActivity/types";
 import { cn } from "src/utils/styles";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
-import { useMapActivity } from "src/hooks/useMapActivity";
-import { useGuessRecord } from "src/hooks/useGuessRecord";
 
 const mapGradientStyle = {
   noActivity: "from-sky-700 to-sky-800 blur-sm",
@@ -253,13 +254,7 @@ function ActivityMap({
   );
 }
 
-export function ActivitySection({ children }: PropsWithChildren) {
-  return <div className="flex size-full shrink items-center justify-center gap-3 hover:bg-white/10">{children}</div>;
-}
-
-type MapActivities = { [key: string]: ActivityType };
-
-const activities: MapActivities = {
+const activities: Record<string, ActivityType> = {
   "review-countries": { activity: "review", kind: "countries" },
   "quiz-typing": { activity: "quiz", kind: "typing" },
   "quiz-pointing": { activity: "quiz", kind: "pointing" },
@@ -284,32 +279,37 @@ export default function ActivityMapLayout() {
       <MainView className="relative overflow-auto">
         <AnimatePresence>
           {!isActivitySelected && (
-            <InstructionOverlay>
-              <ActivitySection>
-                <ActivityButton
-                  className="bg-gradient-to-br from-blue-600 to-blue-700"
-                  label="🗺 Review"
-                  onClick={() => setActivity(activities["review-countries"])}
-                >
-                  Learn the countries by region.
-                </ActivityButton>
-              </ActivitySection>
-              <ActivitySection>
-                <ActivityButton
-                  className="bg-gradient-to-br from-pink-600 to-pink-700"
-                  label="⌨ Typing Quiz"
-                  onClick={() => setActivity(activities["quiz-typing"])}
-                >
-                  Type in the name of the country.
-                </ActivityButton>
-                <ActivityButton
-                  className="bg-gradient-to-br from-green-600 to-green-700"
-                  label="👆 Point & Click"
-                  onClick={() => setActivity(activities["quiz-pointing"])}
-                >
-                  Point out the country on the map.
-                </ActivityButton>
-              </ActivitySection>
+            <InstructionOverlay key="instruction-overlay">
+              <section className="flex w-full min-w-max max-w-screen-sm flex-col items-center gap-8 p-6">
+                <h1 className="text-2xl">Learn Geography</h1>
+                <div className="flex flex-col shadow-lg">
+                  <ActivityButton
+                    type="review"
+                    icon={<FontAwesomeIcon icon={faBookAtlas} />}
+                    label="Review the map"
+                    summary="Learn country names by region"
+                    onClick={() => setActivity(activities["review-countries"])}
+                  />
+                </div>
+
+                <h2 className="text-xl">And test your knowledge</h2>
+                <div className="flex flex-col shadow-lg">
+                  <ActivityButton
+                    type="quiz"
+                    icon={<FontAwesomeIcon icon={faMousePointer} />}
+                    label="Point & click test"
+                    summary="Point out the country on the map"
+                    onClick={() => setActivity(activities["quiz-pointing"])}
+                  />
+                  <ActivityButton
+                    type="quiz"
+                    icon={<FontAwesomeIcon icon={faKeyboard} />}
+                    label="Typing quiz"
+                    summary="Type in the name of the country"
+                    onClick={() => setActivity(activities["quiz-typing"])}
+                  />
+                </div>
+              </section>
             </InstructionOverlay>
           )}
 

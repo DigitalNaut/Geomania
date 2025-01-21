@@ -1,29 +1,45 @@
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { type PropsWithChildren } from "react";
-import { twJoin } from "tailwind-merge";
+import type { ReactNode } from "react";
+
+import { cn } from "src/utils/styles";
+
+const activityButtonStyles = {
+  review: "hover:bg-gradient-to-br hover:from-lime-500/50 hover:to-lime-600/50",
+  quiz: "hover:bg-gradient-to-br hover:from-yellow-500/50 hover:to-yellow-600/50",
+};
 
 export function ActivityButton({
+  type,
+  icon,
   label,
-  children,
+  summary,
   onClick,
-  className,
-}: PropsWithChildren<{
-  label?: string;
+}: {
+  type: keyof typeof activityButtonStyles;
+  icon: ReactNode;
+  label: ReactNode;
+  summary?: ReactNode;
   onClick: () => void;
   className?: string;
-}>) {
+}) {
   return (
     <button
       role="button"
-      className={twJoin("flex max-w-[40ch] w-max items-center justify-center gap-4 rounded-lg p-6 shadow-l", className)}
+      className={cn(
+        activityButtonStyles[type],
+        "group flex w-full min-w-max max-w-full items-center justify-center gap-6 bg-slate-900/50 p-10 outline outline-1 outline-slate-200/0 backdrop-blur-sm transition-all first:rounded-t-2xl last:rounded-b-2xl hover:outline-slate-200/15",
+      )}
       onClick={onClick}
     >
-      <div className="flex flex-col gap-4">
-        <h2 className="text-2xl">{label}</h2>
-        {children}
+      <div className="flex gap-8">
+        <span className="text-4xl">{icon}</span>
+        <div className="flex flex-col items-start gap-1">
+          <span className="text-xl">{label}</span>
+          <span className="italic opacity-50">{summary}</span>
+        </div>
       </div>
-      <FontAwesomeIcon icon={faChevronRight} />
+      <FontAwesomeIcon icon={faChevronRight} className="text-3xl text-white/10 group-hover:text-white/30" />
     </button>
   );
 }
