@@ -5,12 +5,12 @@ import { startAppListening } from "src/store/listenerMiddleware";
 import { LocalStorage } from "src/store/utility/localStorage";
 import type { AtLeastOne } from "src/utils/types";
 import type { UserSettings } from "./types";
-import { userSettingsSchema } from "./types";
+import { UserSettingsSchema } from "./types";
 
 const STATS_KEY = "userSettings";
-export const settingsStorage = new LocalStorage<UserSettings>(STATS_KEY);
+export const settingsStorage = new LocalStorage<UserSettings | undefined>(STATS_KEY, UserSettingsSchema);
 
-const initialState = userSettingsSchema.parse({});
+const initialState = settingsStorage.load() ?? UserSettingsSchema.parse(undefined);
 
 const userSettingsSlice = createSlice({
   name: "userSettings",

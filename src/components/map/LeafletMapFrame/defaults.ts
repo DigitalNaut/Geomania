@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
 import type { MapContainer } from "react-leaflet";
 
-import type { Required } from "src/types/utility";
+import type { Required } from "src/utils/types";
 
 export const mapDefaults: Required<
   ComponentProps<typeof MapContainer>,

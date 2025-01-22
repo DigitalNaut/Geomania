@@ -4,10 +4,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import { startAppListening } from "src/store/listenerMiddleware";
 import { LocalStorage } from "src/store/utility/localStorage";
 import type { CountryGuess, GuessHistory } from "./types";
+import { GuessHistorySchema } from "./types";
 
 const HISTORY_LIMIT = 10;
 const HISTORY_KEY = "guessHistory";
-const initialState: GuessHistory = [];
 
 function timestampGuess(guess: Omit<CountryGuess, "timestamp">): CountryGuess {
   return {
@@ -16,7 +16,9 @@ function timestampGuess(guess: Omit<CountryGuess, "timestamp">): CountryGuess {
   };
 }
 
-export const historyStorage = new LocalStorage<GuessHistory>(HISTORY_KEY);
+export const historyStorage = new LocalStorage<GuessHistory>(HISTORY_KEY, GuessHistorySchema);
+
+const initialState: GuessHistory = historyStorage.load() ?? GuessHistorySchema.parse(undefined);
 
 const userGuessHistory = createSlice({
   name: "userGuessHistory",

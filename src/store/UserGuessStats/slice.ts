@@ -4,11 +4,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import { startAppListening } from "src/store/listenerMiddleware";
 import { LocalStorage } from "src/store/utility/localStorage";
 import type { CountryStats, CountryStatsPayload } from "./types";
+import { CountryStatsSchema } from "./types";
 
 const STATS_KEY = "countryStats";
-const initialState: CountryStats = {};
+export const statsStorage = new LocalStorage<CountryStats>(STATS_KEY, CountryStatsSchema);
 
-export const statsStorage = new LocalStorage<CountryStats>(STATS_KEY);
+const initialState: CountryStats = statsStorage.load() ?? CountryStatsSchema.parse(undefined);
 
 const userGuessStatsSlice = createSlice({
   name: "userGuessStats",

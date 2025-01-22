@@ -31,8 +31,7 @@ import { useGuessRecord } from "src/hooks/useGuessRecord";
 import { useMapActivity } from "src/hooks/useMapActivity";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import type { ActivityMode, ActivityType } from "src/types/map-activity";
-import { cn } from "src/utils/styles";
-import { tw } from "src/utils/types";
+import { cn, tw } from "src/utils/styles";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 

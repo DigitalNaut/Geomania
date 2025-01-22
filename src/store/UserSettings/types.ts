@@ -1,7 +1,9 @@
 import { z } from "zod";
 
-export const userSettingsSchema = z.object({
-  useReducedMotion: z.boolean().default(false),
-});
+export const UserSettingsSchema = z
+  .object({
+    useReducedMotion: z.boolean().optional(),
+  })
+  .default({ useReducedMotion: false });
 
-export type UserSettings = z.infer<typeof userSettingsSchema>;
+export type UserSettings = z.infer<typeof UserSettingsSchema>;
