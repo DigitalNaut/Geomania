@@ -10,7 +10,7 @@ const LOG_SIZE_LIMIT = 10;
 
 const initialState: LogEntry[] = [];
 
-const errorLog = createSlice({
+const errorLogSlice = createSlice({
   name: "errorLog",
   initialState,
   reducers: {
@@ -26,5 +26,5 @@ const errorLog = createSlice({
   },
 });
 
-export const { pushToErrorLog, clearErrorLog } = errorLog.actions;
-export default errorLog.reducer;
+export const { pushToErrorLog, clearErrorLog } = errorLogSlice.actions;
+export default errorLogSlice.reducer;
