@@ -1,14 +1,14 @@
-import { useEffect, useRef } from "react";
-import { twMerge } from "tailwind-merge";
-
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
+import { twMerge } from "tailwind-merge";
+
 import { InlineButton } from "src/components/activity/InlineButton";
 import Toggle from "src/components/common/Toggle";
+import { useCountryStore } from "src/context/CountryStore";
 import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
 import { continents } from "src/context/FilteredCountryData/data";
-import { useCountryStore } from "src/context/CountryStore";
 import { type CountryData, type CountryDataList, type NullableCountryData } from "src/types/features";
 import { cn } from "src/utils/styles";
 

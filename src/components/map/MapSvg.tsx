@@ -3,14 +3,15 @@ import { latLngBounds } from "leaflet";
 import { Fragment, useCallback, useMemo, useState } from "react";
 import type { SVGOverlayProps } from "react-leaflet";
 import { SVGOverlay } from "react-leaflet";
+import { twMerge } from "tailwind-merge";
 
 import mapSvg from "src/assets/images/generated/world-map-countries.svg?raw";
 import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
-import { useMapContext } from "src/hooks/useMapContext";
 import { useSvgAttributes } from "src/hooks/common/useSVGAttributes";
+import { useMapContext } from "src/hooks/useMapContext";
 import { cn } from "src/utils/styles";
-import { twMerge } from "tailwind-merge";
 
+// TODO: Find a solution for automatically adjusting the SVG after generating
 // Moves the SVG map down to match OpenStreetMap
 const verticalAdjustment = -1.35; // Slides vertically
 const horizontalAdjustment = 0.45; // Scales whole map

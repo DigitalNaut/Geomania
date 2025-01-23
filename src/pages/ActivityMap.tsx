@@ -288,7 +288,7 @@ export default function ActivityMapLayout() {
                   <ActivityButton
                     type="quiz"
                     icon={<FontAwesomeIcon icon={faMousePointer} />}
-                    label="Point & click test"
+                    label="Point & click"
                     summary="Point out the country on the map"
                     onClick={() => setActivity(activities["quiz-pointing"])}
                   />

@@ -1,4 +1,5 @@
 import type { LatLngTuple } from "leaflet";
+
 import type { CountryData } from "src/types/features";
 
 export function getCountryCoordinates(country: CountryData): LatLngTuple {
