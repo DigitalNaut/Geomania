@@ -1,6 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
+import { pushToErrorLog } from "src/store/ErrorLog/slice";
 import { startMiddlewareListening } from "src/store/listenerMiddleware";
 import { LocalStorage } from "src/store/utility/localStorage";
 import type { CountryStats, CountryStatsPayload } from "./types";
@@ -46,7 +47,10 @@ export default userGuessStatsSlice.reducer;
 
 startMiddlewareListening({
   actionCreator: pushCountryStat,
-  effect: (_, { getState }) => statsStorage.set(getState().guessStats),
+  effect: (_, { getState, dispatch }) => {
+    const result = statsStorage.set(getState().guessStats);
+    if (!result.success) dispatch(pushToErrorLog(result));
+  },
 });
 
 startMiddlewareListening({

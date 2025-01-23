@@ -1,6 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
+import { pushToErrorLog } from "src/store/ErrorLog/slice";
 import { startMiddlewareListening } from "src/store/listenerMiddleware";
 import { LocalStorage } from "src/store/utility/localStorage";
 import type { CountryGuess, GuessHistory } from "./types";
@@ -42,5 +43,8 @@ export default userGuessHistory.reducer;
 
 startMiddlewareListening({
   actionCreator: pushGuessToHistory,
-  effect: (_, { getState }) => historyStorage.set(getState().guessHistory),
+  effect: (_, { getState, dispatch }) => {
+    const result = historyStorage.set(getState().guessHistory);
+    if (!result.success) dispatch(pushToErrorLog(result));
+  },
 });

@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MotionConfig } from "motion/react";
 import type { PropsWithChildren } from "react";
 import { lazy, Suspense } from "react";
-import { Provider as ReduxProvider } from "react-redux";
+import { Provider as ReduxProvider, useSelector } from "react-redux";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 
 import { Spinner } from "src/components/common/Spinner";
@@ -14,6 +14,7 @@ import { CountryStoreProvider } from "src/context/CountryStore";
 import { CountryFiltersProvider } from "src/context/FilteredCountryData";
 import { HeaderControllerProvider } from "src/context/useHeaderController";
 import { MapContextProvider } from "src/hooks/useMapContext";
+import type { RootState } from "src/store";
 import { store } from "src/store";
 
 const LazyActivityMap = lazy(() => import("src/pages/ActivityMap"));
@@ -22,6 +23,26 @@ const LazyDashboard = lazy(() => import("src/pages/Dashboard"));
 const LazyPageNotFound = lazy(() => import("src/pages/PageNotFound"));
 
 const queryClient = new QueryClient();
+
+function ErrorLog() {
+  const errors = useSelector((state: RootState) => state.errorLog);
+
+  if (!errors.length) return null;
+
+  return (
+    <div className="flex flex-col gap-2 bg-slate-800 p-4">
+      <h3 className="text-lg font-bold">Errors {errors.length}</h3>
+      <div className="flex max-h-[20vh] flex-col gap-2 overflow-y-scroll">
+        {errors.map(({ id, error }) => (
+          <div key={id} className="flex max-h-32 min-h-full flex-col gap-2 overflow-y-auto rounded-md bg-slate-700 p-2">
+            <h4 className="text-base font-bold">{error.message}</h4>
+            <pre className="max-w-full overflow-auto text-ellipsis">{error.stack}</pre>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function Providers({ children }: PropsWithChildren) {
   return (
@@ -61,6 +82,8 @@ function Layout() {
       </Nav>
 
       <Outlet />
+
+      <ErrorLog />
 
       <Footer />
     </StandardLayout>

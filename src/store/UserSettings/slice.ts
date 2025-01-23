@@ -1,6 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
+import { pushToErrorLog } from "src/store/ErrorLog/slice";
 import { startMiddlewareListening } from "src/store/listenerMiddleware";
 import { LocalStorage } from "src/store/utility/localStorage";
 import type { AtLeastOne } from "src/utils/types";
@@ -27,5 +28,8 @@ export default userSettingsSlice.reducer;
 
 startMiddlewareListening({
   actionCreator: setUserSettings,
-  effect: (action) => settingsStorage.set(action.payload),
+  effect: ({ payload }, { dispatch }) => {
+    const result = settingsStorage.set(payload);
+    if (!result.success) dispatch(pushToErrorLog(result));
+  },
 });
