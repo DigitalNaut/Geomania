@@ -1,7 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-import { startAppListening } from "src/store/listenerMiddleware";
+import { startMiddlewareListening } from "src/store/listenerMiddleware";
 import { LocalStorage } from "src/store/utility/localStorage";
 import type { AtLeastOne } from "src/utils/types";
 import type { UserSettings } from "./types";
@@ -25,7 +25,7 @@ const userSettingsSlice = createSlice({
 export const { setUserSettings, resetUserSettings } = userSettingsSlice.actions;
 export default userSettingsSlice.reducer;
 
-startAppListening({
+startMiddlewareListening({
   actionCreator: setUserSettings,
   effect: (action) => settingsStorage.set(action.payload),
 });

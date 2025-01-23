@@ -1,7 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-import { startAppListening } from "src/store/listenerMiddleware";
+import { startMiddlewareListening } from "src/store/listenerMiddleware";
 import { LocalStorage } from "src/store/utility/localStorage";
 import type { CountryStats, CountryStatsPayload } from "./types";
 import { CountryStatsSchema } from "./types";
@@ -43,12 +43,12 @@ const userGuessStatsSlice = createSlice({
 export const { pushCountryStat, clearCountryStats } = userGuessStatsSlice.actions;
 export default userGuessStatsSlice.reducer;
 
-startAppListening({
+startMiddlewareListening({
   actionCreator: pushCountryStat,
   effect: (_, { getState }) => statsStorage.set(getState().guessStats),
 });
 
-startAppListening({
+startMiddlewareListening({
   actionCreator: clearCountryStats,
   effect: () => statsStorage.clear(),
 });

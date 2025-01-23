@@ -31,11 +31,11 @@ export function useQuiz() {
 
     if (isCorrect) {
       resetTally();
-      playAudio(correctAnswerTrack);
     } else {
       upTally();
-      playAudio(incorrectAnswerTrack);
     }
+
+    playAudio(isCorrect ? correctAnswerTrack : incorrectAnswerTrack);
 
     const { ISO_A2_EH, GU_A3, GEOUNIT } = correctAnswer.data;
 
