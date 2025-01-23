@@ -10,15 +10,15 @@ import { UserSettingsSchema } from "./types";
 const STATS_KEY = "userSettings";
 export const settingsStorage = new LocalStorage<UserSettings | undefined>(STATS_KEY, UserSettingsSchema);
 
-const initialState = settingsStorage.load() ?? UserSettingsSchema.parse(undefined);
+const defaultState = UserSettingsSchema.parse(undefined);
+const initialState: UserSettings = settingsStorage.load() ?? defaultState;
 
 const userSettingsSlice = createSlice({
   name: "userSettings",
   initialState,
   reducers: {
     setUserSettings: (state, { payload }: PayloadAction<AtLeastOne<UserSettings>>) => ({ ...state, ...payload }),
-
-    resetUserSettings: () => initialState,
+    resetUserSettings: () => defaultState,
   },
 });
 

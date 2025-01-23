@@ -9,7 +9,8 @@ import { CountryStatsSchema } from "./types";
 const STATS_KEY = "countryStats";
 export const statsStorage = new LocalStorage<CountryStats>(STATS_KEY, CountryStatsSchema);
 
-const initialState: CountryStats = statsStorage.load() ?? CountryStatsSchema.parse(undefined);
+const defaultState = CountryStatsSchema.parse({});
+const initialState: CountryStats = statsStorage.load() ?? defaultState;
 
 const userGuessStatsSlice = createSlice({
   name: "userGuessStats",
@@ -36,7 +37,7 @@ const userGuessStatsSlice = createSlice({
       return newState;
     },
 
-    clearCountryStats: () => initialState,
+    clearCountryStats: () => defaultState,
   },
 });
 

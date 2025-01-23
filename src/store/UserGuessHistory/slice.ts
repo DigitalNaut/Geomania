@@ -18,7 +18,8 @@ function timestampGuess(guess: Omit<CountryGuess, "timestamp">): CountryGuess {
 
 export const historyStorage = new LocalStorage<GuessHistory>(HISTORY_KEY, GuessHistorySchema);
 
-const initialState: GuessHistory = historyStorage.load() ?? GuessHistorySchema.parse(undefined);
+const defaultState: GuessHistory = [];
+const initialState = historyStorage.load() ?? defaultState;
 
 const userGuessHistory = createSlice({
   name: "userGuessHistory",
@@ -32,7 +33,7 @@ const userGuessHistory = createSlice({
       return newHistory;
     },
 
-    clearGuessHistory: () => initialState,
+    clearGuessHistory: () => defaultState,
   },
 });
 
