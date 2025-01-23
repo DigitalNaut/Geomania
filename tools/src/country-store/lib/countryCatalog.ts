@@ -9,6 +9,14 @@ type CountryCatalogProperties = { excludedContinents: string[] };
  * - Map countries by code for faster access
  * - Group countries by continent
  * - Get a list of continent names
+ *
+ * Properties:
+ * - {@link continents}: A list of continent names
+ *
+ * Methods:
+ * - {@link includes}: Checks if a continent is in the catalog
+ * - {@link getCountriesIn}: Returns a list of countries in a given continent
+ * - {@link tallyCountriesByContinent}: Returns a map of continents and the number of countries
  */
 export class CountryCatalog implements ICountryCatalog {
   #catalog: CountryMap;

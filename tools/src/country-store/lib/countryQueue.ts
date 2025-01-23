@@ -13,10 +13,17 @@ type CountryQueueProperties = {
 /**
  * Manages a queue of countries for a given continent in a {@link CountryCatalog}.
  *
+ * Properties:
+ * - {@link length}: The number of countries in the queue
+ * - {@link blacklisted}: A list of countries that have been blacklisted
+ *
  * Methods:
  * - {@link next}: Returns the next country in the queue
  * - {@link requeue}: Resets the queue
  * - {@link blacklist}: Prevents a country from reselection and removes it from the queue
+ * - {@link blacklistMany}: Prevents countries from reselection and removes them from the queue
+ * - {@link includes}: Checks if a country is in the queue
+ * - {@link hasBlacklisted}: Checks if a country is blacklisted
  */
 export class CountryQueue implements ICountryQueue {
   #continent: string;
