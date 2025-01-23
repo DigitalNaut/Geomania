@@ -1,14 +1,15 @@
 import chalk from "chalk";
+
 import { runCommand } from "./commandUtils.js";
 import { reportFileSize } from "./fileUtils.js";
-import { handleError, timeStamp } from "./utils.js";
 import {
   jsonContinentsFilename,
   jsonCountriesFilename,
+  shapeFile,
   svgContinentsFilename,
   svgCountriesFilename,
-  shapeFile,
 } from "./setup.js";
+import { handleError, timeStamp } from "./utils.js";
 
 if (!shapeFile) {
   console.error("A shape file is required.");

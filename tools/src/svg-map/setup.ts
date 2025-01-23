@@ -1,4 +1,5 @@
 import fs from "fs";
+
 import { findShapeFile } from "./fileUtils.js";
 
 const dir = "src/svg-map";

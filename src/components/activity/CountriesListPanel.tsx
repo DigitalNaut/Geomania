@@ -9,7 +9,9 @@ import Toggle from "src/components/common/Toggle";
 import { useCountryStore } from "src/context/CountryStore";
 import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
 import { continents } from "src/context/FilteredCountryData/data";
+import { useMapViewport } from "src/hooks/useMapViewport";
 import { type CountryData, type CountryDataList, type NullableCountryData } from "src/types/features";
+import { getCountryCoordinates } from "src/utils/features";
 import { cn } from "src/utils/styles";
 
 type CountryListEntryProps = {
@@ -19,15 +21,13 @@ type CountryListEntryProps = {
 
 function CountryListEntry({
   country,
-  storedCountry,
+  className,
   countryClickCallback,
-}: CountryListEntryProps & { country: CountryData }) {
+}: CountryListEntryProps & { className?: string; isHighlighted?: boolean; country: CountryData }) {
   return (
     <button
       id={country?.GU_A3}
-      className={cn("-ml-2 -mr-1 flex items-center gap-2 rounded-sm pl-4 pr-1 text-left -indent-2", {
-        "bg-yellow-700 py-1": country?.GU_A3 === storedCountry?.GU_A3,
-      })}
+      className={className}
       title={country?.GEOUNIT}
       onClick={() => countryClickCallback(country.GU_A3)}
     >
@@ -72,11 +72,17 @@ function ContinentListEntry({
 
       {!isContinentAbridged && (
         <div
-          className={twMerge("flex flex-col rounded-sm bg-slate-800 p-1 pl-2", isContinentToggled ? "flex" : "hidden")}
+          className={twMerge(
+            "flex flex-wrap gap-2 rounded-sm bg-slate-800 p-1 pl-2",
+            isContinentToggled ? "flex" : "hidden",
+          )}
         >
           {continentCountries.map((country) => (
             <CountryListEntry
               key={country.GU_A3}
+              className={cn("flex items-center justify-center rounded-full bg-white/10 px-2 py-0.5 text-center", {
+                "bg-yellow-900": country?.GU_A3 === storedCountry?.GU_A3,
+              })}
               country={country}
               countryClickCallback={countryClickCallback}
               storedCountry={storedCountry}
@@ -89,9 +95,10 @@ function ContinentListEntry({
 }
 
 export default function CountriesListPanel({ isAbridged = false }: { isAbridged?: boolean }) {
+  const viewport = useMapViewport();
   const { countryDataByContinent, getContinentFilter, toggleContinentFilter, toggleAllContinentFilters } =
     useFilteredCountriesContext();
-  const { storedCountry } = useCountryStore();
+  const { storedCountry, setCountryDataByCode } = useCountryStore();
   const listRef = useRef<HTMLDivElement>(null);
   const [, setURLSearchParams] = useSearchParams();
 
@@ -100,6 +107,13 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
       prev.set("country", a3);
       return prev;
     });
+
+    const destination = setCountryDataByCode(a3);
+
+    if (destination) {
+      const coordinates = getCountryCoordinates(destination);
+      viewport.flyTo(coordinates);
+    }
   };
 
   // Scroll to the active country
@@ -115,7 +129,7 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
   }, [storedCountry.data]);
 
   return (
-    <div className={cn("flex h-max flex-col gap-2 pl-2", { "overflow-y-auto": !isAbridged })}>
+    <div className={cn("flex flex-col gap-2 overflow-y-auto", { "overflow-y-auto": !isAbridged })}>
       <h3 className="text-center text-slate-300">Countries by Region</h3>
 
       <div className="flex grow items-center justify-center gap-2 text-sm">
@@ -130,21 +144,22 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
           </InlineButton>
         </div>
       </div>
-
-      <div className={cn("flex flex-col px-2", { "pb-[40vh]": !isAbridged })} ref={listRef}>
-        {continents.map((continent, index) => (
-          <ContinentListEntry
-            key={continent}
-            index={index}
-            isContinentAbridged={isAbridged}
-            continent={continent}
-            isContinentToggled={getContinentFilter(continent)}
-            continentCountries={countryDataByContinent.get(continent) ?? []}
-            toggleContinentCallback={toggleContinentFilter}
-            countryClickCallback={handleCountryClick}
-            storedCountry={storedCountry.data}
-          />
-        ))}
+      <div className={cn("flex h-max flex-col gap-2 pl-2", { "overflow-y-auto": !isAbridged })}>
+        <div className={cn("flex flex-col px-2", { "pb-[40vh]": !isAbridged })} ref={listRef}>
+          {continents.map((continent, index) => (
+            <ContinentListEntry
+              key={continent}
+              index={index}
+              isContinentAbridged={isAbridged}
+              continent={continent}
+              isContinentToggled={getContinentFilter(continent)}
+              continentCountries={countryDataByContinent.get(continent) ?? []}
+              toggleContinentCallback={toggleContinentFilter}
+              countryClickCallback={handleCountryClick}
+              storedCountry={storedCountry.data}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

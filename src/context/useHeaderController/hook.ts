@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+
 import { useHeaderControllerContext } from "./context";
 import type { Callback } from "./types";
 
