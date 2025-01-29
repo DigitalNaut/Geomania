@@ -1,4 +1,5 @@
-import { useMemo, type SVGAttributes } from "react";
+import type { SVGAttributes } from "react";
+import { useMemo } from "react";
 
 const parser = new DOMParser();
 

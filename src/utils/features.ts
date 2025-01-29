@@ -1,6 +1,6 @@
 import type { LatLngTuple } from "leaflet";
 
-import type { CountryData } from "src/types/features";
+import type { CountryData } from "src/store/CountryStore/types";
 
 export function getCountryCoordinates(country: CountryData): LatLngTuple {
   const { LABEL_X, LABEL_Y } = country;

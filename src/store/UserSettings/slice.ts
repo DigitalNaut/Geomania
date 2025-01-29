@@ -30,6 +30,6 @@ startMiddlewareListening({
   actionCreator: setUserSettings,
   effect: ({ payload }, { dispatch }) => {
     const result = settingsStorage.set(payload);
-    if (!result.success) dispatch(pushToErrorLog(result));
+    if (!result.success) dispatch(pushToErrorLog(result.error));
   },
 });

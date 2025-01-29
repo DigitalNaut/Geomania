@@ -8,7 +8,7 @@ import { ActionButton } from "src/components/common/ActionButton";
 import { CountryWikiInfo } from "src/components/info/CountryWikiInfo";
 import SourceLogo from "src/components/info/SourceLogo";
 import { UnsplashImages } from "src/components/info/UnsplashImages";
-import { useMapActivity } from "src/hooks/useMapActivity";
+import { useMapActivityContext } from "src/context/MapActivity/hook";
 import { InlineButton } from "./InlineButton";
 
 const AnimationVariants: Variants = {
@@ -86,7 +86,7 @@ export default function ReviewFloatingPanel({
   disabled: boolean;
   onReset: () => void;
 }) {
-  const { isRandomReviewMode, setRandomReviewMode } = useMapActivity();
+  const { isRandomReviewMode, setRandomReviewMode } = useMapActivityContext();
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) =>
     setRandomReviewMode(Boolean(event.currentTarget.checked));
@@ -110,7 +110,9 @@ export default function ReviewFloatingPanel({
               <input id="randomMode" type="checkbox" checked={isRandomReviewMode} onChange={onChange} />
               Random mode
             </label>
-            <InlineButton onClick={onReset}>Reset</InlineButton>
+            <InlineButton title="Reset activity" onClick={onReset}>
+              Reset
+            </InlineButton>
           </div>
         </motion.div>
       </div>

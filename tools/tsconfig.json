@@ -14,7 +14,7 @@
   },
   "include": [
     "src"
-  ],
+, "../src/lib"  ],
   "lib": [
     "ESNext, NodeNext"
   ]

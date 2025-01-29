@@ -1,50 +1,31 @@
 import type { Variants } from "motion/react";
 import { motion } from "motion/react";
-import { useMemo, useState } from "react";
 
-import Button from "src/components/common/Button";
-import Toggle from "src/components/common/Toggle";
-import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
-import { continents } from "src/context/FilteredCountryData/data";
+import { useSvgAttributes } from "src/hooks/common/useSVGAttributes";
+import { newQueue } from "src/store/CountryStore/slice";
+import { useMapActivityContext } from "src/context/MapActivity/hook";
+import { useAppDispatch } from "src/store/hooks";
 
-type ListItemProps = {
-  id: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  label: string;
-};
+import continentsSvg from "src/assets/images/generated/world-map-continents.svg?raw";
 
-function ToggleListItem({ id, checked, onChange, label }: ListItemProps) {
-  return (
-    <label
-      className="flex w-full cursor-pointer items-center justify-between rounded-sm px-1 hover:bg-white/30"
-      htmlFor={id}
-    >
-      <span>{label}</span>
-      <Toggle id={id} value={checked} onChange={onChange} />
-    </label>
-  );
-}
+function ContinentToggleMap({ onStart }: { onStart?: () => void }) {
+  const { paths, viewBox } = useSvgAttributes(continentsSvg, ["width", "height", "viewBox"]);
+  const dispatch = useAppDispatch();
 
-function RegionsToggleList({ onStart }: { onStart?: () => void }) {
-  const { toggleContinentFilter, continentFiltersList } = useFilteredCountriesContext();
-  const [selection, setSelection] = useState(() => new Map(continentFiltersList));
+  const { activity } = useMapActivityContext();
 
-  const allSelected = useMemo(() => [...selection].every(([_, checked]) => checked), [selection]);
-  const someSelected = useMemo(() => ![...selection].some(([_, checked]) => checked), [selection]);
+  const handleClick = (id: string) => {
+    if (!activity) return;
 
-  const handleToggleAll = (checked: boolean) => {
-    const newMap = new Map(continents.map((continent) => [continent, checked]));
-    setSelection(newMap);
-  };
-  const handleSubmit = () => {
-    // Transfer state
-    for (const [continent, toggle] of selection) {
-      toggleContinentFilter(continent, toggle);
-    }
-
-    // Reset state
-    setSelection(new Map(continentFiltersList));
+    // Set state
+    dispatch(
+      newQueue({
+        activityType: activity.activity,
+        continent: id,
+        shuffle: false,
+        blacklistedCountries: [],
+      }),
+    );
 
     // Run callback
     onStart?.();
@@ -53,24 +34,17 @@ function RegionsToggleList({ onStart }: { onStart?: () => void }) {
   return (
     <section className="flex w-auto flex-col gap-2 sm:h-auto sm:w-[30ch]">
       <div className="flex flex-1 flex-col gap-1 px-2">
-        <ToggleListItem id="all" label="All" checked={allSelected} onChange={handleToggleAll} />
-
-        <hr className="border-white" />
-        {continents.map((continent) => (
-          <ToggleListItem
-            key={continent}
-            id={continent}
-            label={continent}
-            checked={selection.get(continent) ?? false}
-            onChange={(checked) => {
-              setSelection((currentContinents) => new Map(currentContinents.set(continent, checked)));
-            }}
-          />
-        ))}
+        <svg viewBox={viewBox}>
+          {paths.map((path) => (
+            <path
+              className="fill-sky-700 hover:cursor-pointer hover:fill-sky-500 active:fill-sky-600"
+              key={path.id}
+              onMouseUp={() => handleClick(path.id)}
+              d={path.getAttribute("d") ?? ""}
+            />
+          ))}
+        </svg>
       </div>
-      <Button disabled={someSelected} onClick={handleSubmit}>
-        Start
-      </Button>
     </section>
   );
 }
@@ -94,7 +68,7 @@ export default function RegionsToggleOverlay({ onStart }: { onStart: () => void 
         <div className="flex flex-col gap-4 text-center">
           <span>Please select which region to view:</span>
 
-          <RegionsToggleList onStart={onStart} />
+          <ContinentToggleMap onStart={onStart} />
         </div>
       </div>
     </motion.div>

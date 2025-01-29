@@ -8,12 +8,11 @@ export class LocalStorage<T, S extends z.ZodSchema<T> = z.ZodSchema<T>> {
     this.key = key;
   }
 
-  set(value: T): { success: true } | { id: string; success: false; error: Error } {
+  set(value: T): { success: true } | { success: false; error: Error } {
     const parsed = this.schema.safeParse(value);
-    const id = crypto.randomUUID();
 
-    if (!parsed.success) return { id, success: false, error: parsed.error };
-    if (!parsed.data) return { id, success: false, error: new Error("Invalid data") };
+    if (!parsed.success) return { success: false, error: parsed.error };
+    if (!parsed.data) return { success: false, error: new Error("Invalid data") };
 
     localStorage.setItem(this.key, JSON.stringify(parsed));
     return { success: true };

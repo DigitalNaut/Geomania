@@ -6,8 +6,8 @@ import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useEffect, useMemo } from "react";
 import Masonry from "react-responsive-masonry";
 
-import { useCountryStore } from "src/context/CountryStore";
 import useEdgeKeys from "src/hooks/useEdgeKeys";
+import { useAppSelector } from "src/store/hooks";
 import type { UnsplashSearchResponse } from "src/types/unsplash";
 
 const unsplashApiURL = "https://api.unsplash.com";
@@ -25,13 +25,17 @@ const overlayVariants: Variants = {
 };
 export function UnsplashImages({ onError }: { onError: (error: Error) => void }) {
   const { data: keys } = useEdgeKeys();
-  const { storedCountry } = useCountryStore();
+  const {
+    review: { currentCountry },
+  } = useAppSelector((state) => state.countryStore);
+
+  const currentCountryData = useMemo(() => (currentCountry ? currentCountry : null), [currentCountry]);
   const query = useMemo(
     () =>
       new URLSearchParams({
-        query: storedCountry.data?.GEOUNIT ?? "",
+        query: currentCountryData?.GEOUNIT ?? "",
       }),
-    [storedCountry.data],
+    [currentCountryData],
   );
 
   const config: AxiosRequestConfig = useMemo(
@@ -44,10 +48,10 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
   );
 
   const { isLoading, error, data } = useQuery({
-    queryKey: ["country-images", storedCountry.data, storedCountry.data?.GEOUNIT, query, config],
+    queryKey: ["country-images", currentCountryData, currentCountryData?.GEOUNIT, query, config],
     queryFn: () => axios.get<UnsplashSearchResponse>(`${unsplashSearch}${query}`, config).then(({ data }) => data),
     refetchOnWindowFocus: false,
-    enabled: !!keys?.unsplash.accessKey && !!storedCountry.data?.GEOUNIT,
+    enabled: !!keys?.unsplash.accessKey && !!currentCountryData?.GEOUNIT,
   });
 
   useEffect(() => {
@@ -57,7 +61,7 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
   if (error) return <p className="rounded-md bg-sky-900 p-3">Images are unavailable at the moment.</p>;
 
   if (isLoading)
-    return <div className="rounded-md bg-sky-900 p-3">Loading images for {storedCountry.data?.GEOUNIT}...</div>;
+    return <div className="rounded-md bg-sky-900 p-3">Loading images for {currentCountryData?.GEOUNIT}...</div>;
 
   return (
     <section className="pt-2">

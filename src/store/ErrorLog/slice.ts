@@ -14,8 +14,8 @@ const errorLogSlice = createSlice({
   name: "errorLog",
   initialState,
   reducers: {
-    pushToErrorLog: (state, { payload }: PayloadAction<LogEntry>) => {
-      const newLog = [...state, payload];
+    pushToErrorLog: (state, { payload }: PayloadAction<Error>) => {
+      const newLog = [...state, { id: crypto.randomUUID(), error: payload }];
 
       if (newLog.length > LOG_SIZE_LIMIT) newLog.shift();
 

@@ -1,22 +1,24 @@
 import allFeaturesData from "src/assets/data/features/countries.json";
-import type { VisitedCountry } from "src/components/map/MapSvg";
 import { qualifyScore } from "src/controllers/scores";
 import { useQuiz } from "src/controllers/useQuiz";
-import { useCountryStore } from "src/context/CountryStore";
-import type { NullableCountryData } from "src/types/features";
+import { addVisitedCountry, getNextCountry } from "src/store/CountryStore/slice";
+import type { CountryData } from "src/store/CountryStore/types";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import type { IActivity } from "./types";
 
 export function useQuizClick(): IActivity & {
-  visitedCountries: VisitedCountry[];
   giveHint: () => void;
-  submitClick: (a3: string) => NullableCountryData;
+  submitClick: (a3: string) => CountryData | null;
   userGuessTally: number;
 } {
-  const { submitAnswer, userGuessTally, resetTally, pushVisitedCountry, visitedCountries } = useQuiz();
-  const { storedCountry: correctAnswer, setCountryDataRandom } = useCountryStore();
+  const { submitAnswer, userGuessTally, resetTally } = useQuiz();
+  const {
+    quiz: { currentCountry },
+  } = useAppSelector((state) => state.countryStore);
+  const dispatch = useAppDispatch();
 
   const giveHint = () => {
-    if (correctAnswer.data) {
+    if (currentCountry) {
       // TODO: Add a better way to provide hints
     }
   };
@@ -29,20 +31,21 @@ export function useQuizClick(): IActivity & {
 
     if (!isCorrect) return null;
 
-    const style = qualifyScore(userGuessTally);
+    // const style = qualifyScore(userGuessTally);
+    console.log(qualifyScore(userGuessTally));
 
-    pushVisitedCountry(a3, style);
-    return setCountryDataRandom();
+    dispatch(addVisitedCountry({ countryA3: a3, activityType: "quiz" }));
+    return dispatch(getNextCountry("quiz"));
   };
 
   const nextCountry = () => {
     resetTally();
-    return setCountryDataRandom();
+    return dispatch(getNextCountry("quiz"));
   };
 
-  const start = () => void nextCountry();
+  const start = () => nextCountry();
 
   const finish = () => {};
 
-  return { visitedCountries, giveHint, submitClick, userGuessTally, nextCountry, start, finish };
+  return { giveHint, submitClick, userGuessTally, nextCountry, start, finish };
 }

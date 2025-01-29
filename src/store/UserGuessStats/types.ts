@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import type { CountryData } from "src/types/features";
+import type { CountryData } from "src/store/CountryStore/types";
 import type { CountryGuess } from "src/store/UserGuessHistory/types";
 
 export type CountryStatsPayload = Omit<CountryGuess, "timestamp" | "text"> & Pick<CountryData, "GEOUNIT">;

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { MapContainer, useMapEvents } from "react-leaflet";
 import { twMerge } from "tailwind-merge";
 
-import { useMapContext } from "src/hooks/useMapContext";
+import { useMapContext } from "src/context/Map/hook";
 import { mapDefaults } from "./defaults";
 import { TileLayersControl } from "./TileLayersControl";
 

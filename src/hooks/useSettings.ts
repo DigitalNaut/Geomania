@@ -1,11 +1,10 @@
-import { useDispatch, useSelector } from "react-redux";
 
-import type { RootState } from "src/store";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { resetUserSettings, setUserSettings } from "src/store/UserSettings/slice";
 
 export function useSettings() {
-  const dispatch = useDispatch();
-  const { useReducedMotion } = useSelector((state: RootState) => state.settings);
+  const dispatch = useAppDispatch();
+  const { useReducedMotion } = useAppSelector((state) => state.settings);
 
   const resetSettings = () => dispatch(resetUserSettings());
 

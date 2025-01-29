@@ -1,7 +1,7 @@
-import type { NullableCountryData } from "src/types/features";
+import type { CountryData } from "src/store/CountryStore/types";
 
 export type IActivity = {
-  nextCountry: () => NullableCountryData;
-  start: () => void;
+  nextCountry: () => CountryData | null;
+  start: () => CountryData | null;
   finish: () => void;
 };

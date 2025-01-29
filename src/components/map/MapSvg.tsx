@@ -6,28 +6,13 @@ import { SVGOverlay } from "react-leaflet";
 import { twMerge } from "tailwind-merge";
 
 import mapSvg from "src/assets/images/generated/world-map-countries.svg?raw";
-import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
 import { useSvgAttributes } from "src/hooks/common/useSVGAttributes";
-import { useMapContext } from "src/hooks/useMapContext";
-import { cn } from "src/utils/styles";
+import { useMapContext } from "src/context/Map/hook";
 
 // TODO: Find a solution for automatically adjusting the SVG after generating
 // Moves the SVG map down to match OpenStreetMap
 const verticalAdjustment = -1.35; // Slides vertically
 const horizontalAdjustment = 0.45; // Scales whole map
-
-type PathProperties = {
-  style: string;
-  highlight?: boolean;
-};
-
-type StyledPath = {
-  path: SVGPathElement;
-} & PathProperties;
-
-export type VisitedCountry = {
-  a3: string;
-} & PathProperties;
 
 // Geounit presets
 const svgAttributes: SVGOverlayProps["attributes"] = {
@@ -42,7 +27,19 @@ export type SvgMapColorTheme = {
   country: {
     activeStyle: string;
     inactiveStyle: string;
+    highlightStyle: string;
+    visitedStyle: string;
   };
+};
+
+type SvgMapLists = {
+  [K in keyof SvgMapColorTheme["country"] as K extends `${infer Prefix}Style` ? `${Prefix}List` : never]: string[];
+};
+
+type SvgMapPaths = {
+  [K in keyof SvgMapColorTheme["country"] as K extends `${infer Prefix}Style`
+    ? `${Prefix}Paths`
+    : never]: SVGPathElement[];
 };
 
 /**
@@ -51,22 +48,21 @@ export type SvgMapColorTheme = {
  * @returns
  */
 export default function SvgMap({
-  selectedPaths,
   hidden,
   colorTheme,
   onClick,
   className,
+  lists: { activeList, highlightList, inactiveList, visitedList },
 }: {
-  selectedPaths?: VisitedCountry[];
   hidden?: boolean;
   colorTheme: SvgMapColorTheme;
   onClick?: (a3: string) => void;
   className?: string;
+  lists: SvgMapLists;
 }) {
   const { zoom } = useMapContext();
-  const { isCountryInFilters } = useFilteredCountriesContext();
 
-  const { paths: allPaths, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"]);
+  const { paths, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"]);
 
   const [bounds] = useState(() => {
     const top = 85 + verticalAdjustment,
@@ -80,25 +76,6 @@ export default function SvgMap({
     ]);
   });
 
-  const [styledPaths, otherPaths] = useMemo(() => {
-    if (!allPaths) return [[], []];
-    if (!selectedPaths) return [[], allPaths];
-
-    const styledList: StyledPath[] = [];
-    const otherList: SVGPathElement[] = [];
-
-    const selectedPathsMap = new Map(selectedPaths.map((path) => [path.a3, path]));
-
-    for (const path of allPaths) {
-      const pathMatch = selectedPathsMap.get(path.id);
-
-      if (pathMatch) styledList.push({ path, style: pathMatch?.style, highlight: pathMatch?.highlight });
-      else otherList.push(path);
-    }
-
-    return [styledList, otherList];
-  }, [selectedPaths, allPaths]);
-
   const click: LeafletMouseEventHandlerFn = ({ originalEvent }) => {
     const target = originalEvent.target as HTMLElement | null;
     const a3 = target?.getAttribute("data-a3"); // Set in the path elements below
@@ -108,7 +85,30 @@ export default function SvgMap({
 
   const adjustForZoom = useCallback((value: number) => value / zoom ** 2, [zoom]);
 
+  const { visitedPaths, activePaths, highlightPaths } = useMemo(
+    () =>
+      paths.reduce<SvgMapPaths>(
+        (acc, path) => {
+          if (visitedList.includes(path.id)) acc.visitedPaths.push(path);
+          if (activeList.includes(path.id)) acc.activePaths.push(path);
+          if (inactiveList.includes(path.id)) acc.inactivePaths.push(path);
+          if (highlightList.includes(path.id)) acc.highlightPaths.push(path);
+
+          return acc;
+        },
+        {
+          visitedPaths: [],
+          activePaths: [],
+          inactivePaths: [],
+          highlightPaths: [],
+        },
+      ),
+    [activeList, highlightList, inactiveList, visitedList, paths],
+  );
+
   if (hidden) return null;
+
+  const strokeWidth = adjustForZoom(3);
 
   return (
     <SVGOverlay
@@ -124,22 +124,43 @@ export default function SvgMap({
       className={twMerge("transition-colors duration-500 ease-in-out", className)}
       eventHandlers={{ click }}
     >
-      {otherPaths.map((path, index) => {
-        const isActive = isCountryInFilters(path.id);
+      {paths.map((path, index) => {
         return (
           <path
             key={index}
             data-a3={path.id}
             d={path.getAttribute("d") ?? ""}
-            className={cn(isActive ? colorTheme.country.activeStyle : colorTheme.country.inactiveStyle)}
-            style={{
-              strokeWidth: adjustForZoom(3),
-            }}
+            className={colorTheme.country.inactiveStyle}
+            style={{ strokeWidth }}
           />
         );
       })}
 
-      {styledPaths?.length > 0 && (
+      {activePaths.map((path, index) => {
+        return (
+          <path
+            key={index}
+            data-a3={path.id}
+            d={path.getAttribute("d") ?? ""}
+            className={colorTheme.country.activeStyle}
+            style={{ strokeWidth }}
+          />
+        );
+      })}
+
+      {visitedPaths.map((path, index) => {
+        return (
+          <path
+            key={index}
+            data-a3={path.id}
+            d={path.getAttribute("d") ?? ""}
+            className={colorTheme.country.visitedStyle}
+            style={{ strokeWidth }}
+          />
+        );
+      })}
+
+      {highlightPaths?.length > 0 && (
         <>
           <defs>
             <linearGradient id="gradient" colorInterpolation="linearRGB">
@@ -185,7 +206,7 @@ export default function SvgMap({
             </pattern>
           </defs>
 
-          {styledPaths.map(({ path, style, highlight }) => {
+          {highlightPaths.map((path) => {
             const { id } = path;
             const d = path.getAttribute("d");
 
@@ -196,10 +217,8 @@ export default function SvgMap({
                 <path
                   data-a3={id}
                   d={d}
-                  className={style}
-                  style={{
-                    strokeWidth: adjustForZoom(2),
-                  }}
+                  className={colorTheme.country.highlightStyle}
+                  style={{ strokeWidth: adjustForZoom(2) }}
                 />
                 <path
                   d={d}
@@ -207,17 +226,15 @@ export default function SvgMap({
                   pointerEvents="none"
                   className="fill-[url(#land)] stroke-none hover:fill-lime-600/30"
                 />
-                {highlight && (
-                  <path
-                    d={d}
-                    data-a3={id}
-                    pointerEvents="none"
-                    className="animate-scrollDash fill-lime-500 [stroke-dasharray:32] [stroke-dashoffset:8] hover:fill-[url(#waves)] hover:stroke-white hover:[animation:none] hover:[stroke-dasharray:0]"
-                    style={{
-                      strokeWidth: adjustForZoom(4),
-                    }}
-                  />
-                )}
+                <path
+                  d={d}
+                  data-a3={id}
+                  pointerEvents="none"
+                  className="animate-scrollDash fill-lime-500 [stroke-dasharray:32] [stroke-dashoffset:8] hover:fill-[url(#waves)] hover:stroke-white hover:[animation:none] hover:[stroke-dasharray:0]"
+                  style={{
+                    strokeWidth: adjustForZoom(4),
+                  }}
+                />
               </Fragment>
             );
           })}

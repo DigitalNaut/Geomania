@@ -1,5 +1,6 @@
-import { type Dispatch, type SetStateAction, createContext, useContext } from "react";
 import type { Map } from "leaflet";
+import type { Dispatch, SetStateAction } from "react";
+import { createContext, useContext } from "react";
 
 export type MapContextType = {
   map?: Map;
@@ -12,9 +13,10 @@ export const MapContext = createContext<MapContextType | null>(null);
 
 export function useMapContext() {
   const context = useContext(MapContext);
-  if (!context) throw new Error("useMapContext must be used within a MapContextProvider");
+
+  if (!context) throw new Error("'useMapContext' must be used within a 'MapContextProvider'");
 
   return context;
 }
 
-export { MapContextProvider } from "./Provider";
+export { MapContextProvider } from ".";

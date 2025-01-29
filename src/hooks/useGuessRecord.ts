@@ -1,20 +1,19 @@
 import { useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-import type { CountryData } from "src/types/features";
-import type { CountryGuess } from "src/store/UserGuessHistory/types";
-import type { RootState } from "src/store";
+import type { CountryData } from "src/store/CountryStore/types";
 import { clearGuessHistory, pushGuessToHistory } from "src/store/UserGuessHistory/slice";
+import type { CountryGuess } from "src/store/UserGuessHistory/types";
 import { clearCountryStats, pushCountryStat } from "src/store/UserGuessStats/slice";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 
 /**
  * Manages that guess history and stats with a single interface
  */
 
 export function useGuessRecord() {
-  const dispatch = useDispatch();
-  const guessHistory = useSelector((state: RootState) => state.guessHistory);
-  const countryStats = useSelector((state: RootState) => state.guessStats);
+  const dispatch = useAppDispatch();
+  const guessHistory = useAppSelector((state) => state.guessHistory);
+  const countryStats = useAppSelector((state) => state.guessStats);
 
   const lastGuess = useMemo(() => guessHistory[guessHistory.length - 1], [guessHistory]);
 

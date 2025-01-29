@@ -22,9 +22,9 @@ const countriesCmd = `mapshaper ${shapeFile}\
                       -clip bbox2=-180,-85,180,85 remove-slivers\
                       -simplify weighted keep-shapes 10%\
                       -clean\
+                      -sort 'GU_A3'\
                       -dissolve GEOUNIT copy-fields=SOVEREIGNT,SOV_A3,ADM0_DIF,ADMIN,ADM0_A3,GEOU_DIF,GEOUNIT,GU_A3,MAPCOLOR7,CONTINENT,SUBREGION,MIN_ZOOM,MIN_LABEL,MAX_LABEL,scalerank,LABEL_X,LABEL_Y,WIKIDATAID,ISO_A2_EH\
                       -proj EPSG:3857\
-                      -sort 'SOVEREIGNT'\
                       -o ${jsonCountriesFilename} format=json\
                       -o ${svgCountriesFilename} id-field=GU_A3 format=svg`;
 const continentsCmd = `mapshaper ${shapeFile}\

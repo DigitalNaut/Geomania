@@ -6,12 +6,12 @@ import { type KeyboardEvent, type PropsWithChildren, type RefObject, useCallback
 
 import { InlineButton } from "src/components/activity/InlineButton";
 import { ActionButton } from "src/components/common/ActionButton";
-import { useCountryStore } from "src/context/CountryStore";
-import type { NullableCountryData } from "src/types/features";
+import type { CountryData } from "src/store/CountryStore/types";
+import { useAppSelector } from "src/store/hooks";
 import type { QuizKind } from "src/types/map-activity";
+import { useShakeAnimation } from "./hooks";
 
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
-import { useShakeAnimation } from "./hooks";
 
 function QuizHeaderSection({
   children,
@@ -82,11 +82,12 @@ export default function QuizFloatingPanel({
   mode?: QuizKind;
   userGuessTally: number;
   inputRef: RefObject<HTMLInputElement | null>;
-  submitAnswer?: (text: string) => NullableCountryData;
   skipCountry: () => void;
+  submitAnswer?: (text: string) => CountryData | null;
   giveHint: () => void;
 }) {
-  const { storedCountry } = useCountryStore();
+  const { quiz } = useAppSelector((state) => state.countryStore);
+  const currentCountry = useMemo(() => (quiz.currentCountry ? quiz.currentCountry : null), [quiz.currentCountry]);
 
   const onShakeStart = useCallback(() => {
     if (!inputRef.current) return;
@@ -119,7 +120,7 @@ export default function QuizFloatingPanel({
     }
   };
 
-  const a2 = useMemo(() => storedCountry.data?.ISO_A2_EH, [storedCountry.data?.ISO_A2_EH]);
+  const a2 = useMemo(() => currentCountry?.ISO_A2_EH, [currentCountry?.ISO_A2_EH]);
 
   return (
     <motion.div
@@ -136,7 +137,7 @@ export default function QuizFloatingPanel({
         {mode === "pointing" && (
           <QuizPointerSection>
             <span>
-              Click on <strong>{storedCountry.data?.GEOUNIT}</strong>
+              Click on <strong>{currentCountry?.GEOUNIT}</strong>
             </span>
             <CountryFlag a2={a2} />
           </QuizPointerSection>
@@ -174,7 +175,7 @@ export default function QuizFloatingPanel({
           )}
 
           {mode === "pointing" && (
-            <InlineButton onClick={skipCountry}>
+            <InlineButton title="Skip country" onClick={skipCountry}>
               <span className="no-underline">Skip</span>
               <FontAwesomeIcon icon={faForwardStep} />
             </InlineButton>

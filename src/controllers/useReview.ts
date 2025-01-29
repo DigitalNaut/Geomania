@@ -1,32 +1,30 @@
 import { useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router";
 
-import type { VisitedCountry } from "src/components/map/MapSvg";
-import { useCountryStore } from "src/context/CountryStore";
-import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
-import { useMapActivity } from "src/hooks/useMapActivity";
-import { useVisitedCountries } from "src/hooks/useVisitedCountries";
-import type { NullableCountryData } from "src/types/features";
+import {
+  addVisitedCountry,
+  countryCatalog,
+  getNextCountry,
+  setCurrentCountryByCode,
+  clearVisitedCountries,
+  clearQueue,
+} from "src/store/CountryStore/slice";
+import type { CountryData } from "src/store/CountryStore/types";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import type { IActivity } from "./types";
 
-const visitedStyle = "fill-lime-700 stroke-lime-200";
-const highlightStyle = "fill-lime-500 stroke-lime-200";
+const activityType = "review";
 
 export function useReview(): IActivity & {
-  clickCountry: (a3: string) => NullableCountryData;
-  visitedCountries: VisitedCountry[];
-  resetVisitedCountries: () => void;
+  clickCountry: (a3: string) => CountryData | null;
+  setCurrentCountry: (a3: string) => CountryData | null;
+  visitedCountries: string[];
+  resetActivity: () => void;
 } {
   const [searchParams, setURLSearchParams] = useSearchParams();
-  const { isCountryInFilters } = useFilteredCountriesContext();
-  const { setCountryDataNext, setCountryDataRandom, setCountryDataByCode, storedCountry } = useCountryStore();
-  const { visitedCountries, pushVisitedCountry, setVisitedCountry, resetVisitedCountries } = useVisitedCountries();
-  const { isRandomReviewMode } = useMapActivity();
-
-  const pushStoredCountry = useCallback(() => {
-    if (!storedCountry.data) return;
-    pushVisitedCountry(storedCountry.data.GU_A3, visitedStyle);
-  }, [pushVisitedCountry, storedCountry.data]);
+  const dispatch = useAppDispatch();
+  const activityState = useAppSelector((state) => state.countryStore);
+  const currentActivity = activityState[activityType];
 
   const liftCountryToParams = useCallback(
     (a3: string) => {
@@ -38,40 +36,53 @@ export function useReview(): IActivity & {
     [setURLSearchParams],
   );
 
-  const clickCountry = useCallback(
-    (a3: string) => {
-      pushStoredCountry();
-      liftCountryToParams(a3);
-      setVisitedCountry(a3);
-      return setCountryDataByCode(a3);
+  const selectCountry = useCallback(
+    (countryA3: string) => {
+      dispatch(setCurrentCountryByCode({ countryA3, activityType }));
+      dispatch(addVisitedCountry({ countryA3, activityType }));
+
+      liftCountryToParams(countryA3);
+
+      return countryCatalog[countryA3];
     },
-    [liftCountryToParams, pushStoredCountry, setCountryDataByCode, setVisitedCountry],
+    [dispatch, liftCountryToParams],
+  );
+
+  const isCountryInFilters = useCallback(
+    (targetA3: string) => {
+      return currentActivity.visitedCountries.includes(targetA3);
+    },
+    [currentActivity.visitedCountries],
   );
 
   const nextCountry = useCallback(() => {
-    pushStoredCountry();
-    const next = isRandomReviewMode ? setCountryDataRandom() : setCountryDataNext();
-    if (next) {
-      liftCountryToParams(next.GU_A3);
-      setVisitedCountry(next?.GU_A3);
+    const countryData = dispatch(getNextCountry(activityType));
+
+    if (countryData) {
+      liftCountryToParams(countryData.GU_A3);
+      dispatch(addVisitedCountry({ countryA3: countryData.GU_A3, activityType }));
     }
-    return next;
-  }, [
-    isRandomReviewMode,
-    liftCountryToParams,
-    pushStoredCountry,
-    setCountryDataNext,
-    setCountryDataRandom,
-    setVisitedCountry,
-  ]);
 
-  const visitedCountriesWithHighlight = useMemo(() => {
-    if (!storedCountry.data) return visitedCountries;
+    return countryData;
+  }, [dispatch, liftCountryToParams]);
 
-    const filteredVisitedCountries = visitedCountries.filter((country) => isCountryInFilters(country.a3));
+  const setCurrentCountry = useCallback(
+    (countryA3: string) => {
+      {
+        dispatch(setCurrentCountryByCode({ countryA3, activityType }));
+        return countryCatalog[countryA3];
+      }
+    },
+    [dispatch],
+  );
 
-    return [...filteredVisitedCountries, { a3: storedCountry.data.GU_A3, style: highlightStyle, highlight: true }];
-  }, [isCountryInFilters, storedCountry.data, visitedCountries]);
+  const visitedCountries = useMemo(() => {
+    if (!currentActivity.currentCountry) return [];
+
+    const filteredVisitedCountries = currentActivity.visitedCountries.filter((country) => isCountryInFilters(country));
+
+    return [...filteredVisitedCountries, currentActivity.currentCountry.GU_A3];
+  }, [currentActivity.currentCountry, currentActivity.visitedCountries, isCountryInFilters]);
 
   const clearCountryFromParams = useCallback(() => {
     setURLSearchParams((prev) => {
@@ -82,32 +93,48 @@ export function useReview(): IActivity & {
 
   const getCountryFromParams = useCallback(() => searchParams.get("country"), [searchParams]);
 
+  const resetActivity = useCallback(() => {
+    dispatch(setCurrentCountryByCode({ countryA3: "", activityType }));
+    dispatch(clearVisitedCountries({ activityType }));
+    dispatch(clearQueue({ activityType }));
+    clearCountryFromParams();
+  }, [clearCountryFromParams, dispatch]);
+
   const start = useCallback(() => {
-    if (storedCountry.data) return;
+    if (currentActivity.currentCountry) return selectCountry(currentActivity.currentCountry.GU_A3);
 
     const a3 = getCountryFromParams();
     if (!a3) {
-      nextCountry();
-      return;
+      return nextCountry();
     }
     if (a3.length === 0) {
       clearCountryFromParams();
-      return;
+      return nextCountry();
     }
 
-    if (isCountryInFilters(a3)) clickCountry(a3);
-  }, [clearCountryFromParams, clickCountry, getCountryFromParams, isCountryInFilters, nextCountry, storedCountry]);
+    if (isCountryInFilters(a3)) return nextCountry();
+
+    return selectCountry(a3);
+  }, [
+    clearCountryFromParams,
+    selectCountry,
+    currentActivity.currentCountry,
+    getCountryFromParams,
+    isCountryInFilters,
+    nextCountry,
+  ]);
 
   const finish = useCallback(() => {
     clearCountryFromParams();
   }, [clearCountryFromParams]);
 
   return {
-    clickCountry,
     nextCountry,
-    visitedCountries: visitedCountriesWithHighlight,
-    resetVisitedCountries,
+    setCurrentCountry,
     start,
     finish,
+    visitedCountries,
+    clickCountry: selectCountry,
+    resetActivity,
   };
 }

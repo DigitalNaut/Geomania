@@ -1,7 +1,9 @@
+import type { PropsWithChildren } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 
 import type { ActivityType } from "src/types/map-activity";
 import { ActivityTypeSchema } from "src/types/map-activity";
+import { MapActivityContext } from "./hook";
 
 function modifySearchParams(searchParams: URLSearchParams, items: Record<string, string | undefined>) {
   for (const [key, value] of Object.entries(items)) {
@@ -19,7 +21,7 @@ function isValidActivity(activity: unknown): activity is ActivityType {
   return ActivityTypeSchema.safeParse(activity).success;
 }
 
-export function useMapActivity() {
+export function MapActivityProvider({ children }: PropsWithChildren) {
   const { activity: activityParam, kind: kindParam } = useParams<Record<string, string | undefined>>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -43,10 +45,16 @@ export function useMapActivity() {
     kind: kindParam,
   };
 
-  return {
-    activity: isValidActivity(activity) ? activity : undefined,
-    setActivity,
-    isRandomReviewMode,
-    setRandomReviewMode,
-  };
+  return (
+    <MapActivityContext
+      value={{
+        activity: isValidActivity(activity) ? activity : undefined,
+        setActivity,
+        isRandomReviewMode,
+        setRandomReviewMode,
+      }}
+    >
+      {children}
+    </MapActivityContext>
+  );
 }

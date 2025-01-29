@@ -12,5 +12,5 @@ export function qualifyScore(score: number) {
   const roundedScore = Math.round(score);
   const isScoreInRange = roundedScore >= 0 && roundedScore < scoreStyles.length;
 
-  return isScoreInRange ? scoreStyles[roundedScore] : neutralStyle;
+  return isScoreInRange ? Object.keys(scoreStyles)[roundedScore] : neutralStyle;
 }

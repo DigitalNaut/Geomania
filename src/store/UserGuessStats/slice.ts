@@ -49,7 +49,7 @@ startMiddlewareListening({
   actionCreator: pushCountryStat,
   effect: (_, { getState, dispatch }) => {
     const result = statsStorage.set(getState().guessStats);
-    if (!result.success) dispatch(pushToErrorLog(result));
+    if (!result.success) dispatch(pushToErrorLog(result.error));
   },
 });
 

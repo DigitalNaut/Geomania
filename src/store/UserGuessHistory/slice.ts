@@ -45,6 +45,6 @@ startMiddlewareListening({
   actionCreator: pushGuessToHistory,
   effect: (_, { getState, dispatch }) => {
     const result = historyStorage.set(getState().guessHistory);
-    if (!result.success) dispatch(pushToErrorLog(result));
+    if (!result.success) dispatch(pushToErrorLog(result.error));
   },
 });

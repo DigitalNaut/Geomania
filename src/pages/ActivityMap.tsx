@@ -1,7 +1,7 @@
 import { faBookAtlas, faKeyboard, faMousePointer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "motion/react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import { Marker, Popup, ZoomControl } from "react-leaflet";
 
 import { ActivityButton } from "src/components/activity/ActivityButton";
@@ -22,15 +22,15 @@ import { LeafletMapFrame } from "src/components/map/LeafletMapFrame";
 import type { SvgMapColorTheme } from "src/components/map/MapSvg";
 import SvgMap from "src/components/map/MapSvg";
 import { markerIcon } from "src/components/map/MarkerIcon";
-import { useCountryStore } from "src/context/CountryStore";
-import { useFilteredCountriesContext } from "src/context/FilteredCountryData";
+import { useActivityCoordinatorContext } from "src/context/ActivityCoordinator/hook";
+import { useMapActivityContext } from "src/context/MapActivity/hook";
 import { useHeaderController } from "src/context/useHeaderController";
-import useActivityManager from "src/controllers/useActivityCoordinator";
 import { useError } from "src/hooks/common/useError";
 import { useGuessRecord } from "src/hooks/useGuessRecord";
-import { useMapActivity } from "src/hooks/useMapActivity";
 import { useMapViewport } from "src/hooks/useMapViewport";
+import { continentCatalog } from "src/store/CountryStore/slice";
 import type { ActivityMode, ActivityType } from "src/types/map-activity";
+import { getCountryCoordinates } from "src/utils/features";
 import { cn, tw } from "src/utils/styles";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
@@ -40,18 +40,24 @@ const mapGradientStyle = {
   activity: tw`from-slate-900 to-slate-900 blur-none`,
 };
 
-const reviewCountryStyle = {
+const reviewCountryStyle: SvgMapColorTheme["country"] = {
   activeStyle: tw`fill-slate-500/95 stroke-slate-400 hover:fill-slate-500 hover:stroke-slate-300`,
+  highlightStyle: tw`fill-lime-500 stroke-lime-200`,
+  visitedStyle: tw`fill-lime-700 stroke-lime-200`,
   inactiveStyle: tw`fill-slate-800 stroke-none`,
 };
 
-const quizCountryStyle = {
+const quizCountryStyle: SvgMapColorTheme["country"] = {
   activeStyle: tw`fill-slate-500/95 stroke-slate-400`,
+  highlightStyle: tw`fill-lime-500 stroke-lime-200`,
+  visitedStyle: tw`fill-lime-700 stroke-lime-200`,
   inactiveStyle: tw`fill-slate-800 stroke-none`,
 };
 
-const defaultCountryStyle = {
+const defaultCountryStyle: SvgMapColorTheme["country"] = {
   activeStyle: tw`fill-sky-700 stroke-none`,
+  highlightStyle: "",
+  visitedStyle: "",
   inactiveStyle: tw`fill-sky-700 stroke-none`,
 };
 
@@ -61,109 +67,51 @@ const mapActivityTheme: Record<ActivityMode | "default", SvgMapColorTheme> = {
   default: { country: defaultCountryStyle },
 };
 
-function shallowEqual(objA: Record<string, string>, objB: Record<string, string>): boolean {
-  if (objA === objB) return true;
-
-  const keysA = Object.keys(objA);
-  const keysB = Object.keys(objB);
-
-  if (keysA.length !== keysB.length) return false;
-
-  for (const key of keysA) {
-    if (!Object.prototype.hasOwnProperty.call(objB, key) || !Object.is(objA[key], objB[key])) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-type ActivityEvent = "start" | "finish" | "change";
-
-function determineEventType(current: boolean, next: boolean): ActivityEvent {
-  if (current && !next) return "finish";
-  if (!current && next) return "start";
-  return "change";
-}
-
-/**
- * Monitors changes in activity and triggers a callback when the activity type changes.
- *
- * @param onActivityChange Called when the activity type changes.
- * @returns The current activity.
- */
-function useActivityMonitor(onActivityChange: (type: ActivityEvent) => void) {
-  const { activity } = useMapActivity();
-  const prevActivity = useRef<typeof activity | undefined>(undefined);
-
-  useEffect(
-    function activityMonitor() {
-      if (prevActivity.current && activity && shallowEqual(prevActivity.current, activity)) return;
-      if (!prevActivity.current && !activity) return;
-
-      const eventType = determineEventType(Boolean(prevActivity.current), Boolean(activity));
-      onActivityChange(eventType);
-
-      prevActivity.current = activity;
-    },
-    [activity, onActivityChange],
-  );
-
-  return { activity };
-}
-
 function ActivityMap({
   setError,
   onFinishActivity,
 }: {
   setError: (error: Error) => void;
   onFinishActivity: () => void;
+  activityMode?: ActivityMode;
 }) {
-  const { filteredCountryData } = useFilteredCountriesContext();
-  const { storedCountry, resetStore } = useCountryStore();
-  const { resetViewport: resetView } = useMapViewport({ options: { padding: 0 } });
+  const { resetViewport } = useMapViewport({ options: { padding: 0 } });
   const {
+    currentActivityState,
     handleMapClick,
-    visitedCountries,
+    visitedCountries: visitedList,
     guessTally,
     giveHint,
     inputRef,
     nextCountry,
     submitAnswer,
-    resetVisited,
+    resetActivity,
     start,
-  } = useActivityManager();
+  } = useActivityCoordinatorContext();
+
+  const { currentContinent, currentCountry } = currentActivityState ?? {};
+
+  const storedCountryCoordinates = useMemo(
+    () => (currentCountry ? getCountryCoordinates(currentCountry) : null),
+    [currentCountry],
+  );
 
   const finishActivity = useCallback(() => {
-    resetStore();
-    resetView({ animate: false });
     onFinishActivity();
-  }, [onFinishActivity, resetStore, resetView]);
+    resetViewport();
+  }, [onFinishActivity, resetViewport]);
 
   useHeaderController(finishActivity);
 
-  const activityMonitorHandler = useCallback(
-    (type: ActivityEvent) => {
-      switch (type) {
-        case "finish":
-          finishActivity();
-          break;
-        case "start":
-          start();
-          break;
-        case "change":
-          break;
-        default:
-          throw new Error(`Unknown activity type: ${type}`);
-      }
-    },
-    [finishActivity, start],
-  );
-  const { activity } = useActivityMonitor(activityMonitorHandler);
+  const { activity } = useMapActivityContext();
 
   const colorTheme = useMemo(() => mapActivityTheme[activity?.activity || "default"], [activity]);
 
-  const hasCountryData = useMemo(() => filteredCountryData.length > 0, [filteredCountryData]);
+  const activeList = useMemo(() => {
+    if (!activity || !currentContinent) return [];
+
+    return continentCatalog[currentContinent];
+  }, [activity, currentContinent]);
 
   return (
     <div
@@ -175,15 +123,15 @@ function ActivityMap({
             <ZoomControl position="topright" />
             <BackControl position="topleft" label="Finish" onClick={finishActivity} />
 
-            {storedCountry.coordinates && (
+            {storedCountryCoordinates && (
               <>
                 {activity.activity !== "quiz" || activity.kind === "typing" ? (
-                  <Marker position={storedCountry.coordinates} icon={markerIcon} />
+                  <Marker position={storedCountryCoordinates} icon={markerIcon} />
                 ) : null}
 
                 {activity.activity === "review" && (
                   <Popup
-                    position={storedCountry.coordinates}
+                    position={storedCountryCoordinates}
                     keepInView
                     closeButton
                     autoClose={false}
@@ -191,11 +139,11 @@ function ActivityMap({
                     closeOnEscapeKey={false}
                     autoPan={false}
                   >
-                    {storedCountry.data ? (
+                    {currentCountry ? (
                       <div className="flex flex-col justify-center gap-1 text-center">
-                        <h2 className="text-xl">{storedCountry.data.GEOUNIT}</h2>
-                        {storedCountry.data.ADM0_DIF || storedCountry.data.GEOU_DIF ? (
-                          <h3 className="text-sm">({storedCountry.data.SOVEREIGNT})</h3>
+                        <h2 className="text-xl">{currentCountry.GEOUNIT}</h2>
+                        {currentCountry.ADM0_DIF || currentCountry.GEOU_DIF ? (
+                          <h3 className="text-sm">({currentCountry.SOVEREIGNT})</h3>
                         ) : null}
                       </div>
                     ) : (
@@ -208,14 +156,23 @@ function ActivityMap({
           </>
         )}
 
-        <SvgMap selectedPaths={visitedCountries} onClick={handleMapClick} colorTheme={colorTheme} />
+        <SvgMap
+          lists={{
+            activeList,
+            visitedList,
+            highlightList: [],
+            inactiveList: [],
+          }}
+          onClick={handleMapClick}
+          colorTheme={colorTheme}
+        />
       </LeafletMapFrame>
 
       {activity && (
         <AnimatePresence>
-          {!hasCountryData && <RegionsToggleOverlay key="regions-toggle-overlay" onStart={start} />}
+          {!currentCountry && <RegionsToggleOverlay key="regions-toggle-overlay" onStart={start} />}
 
-          {hasCountryData && activity.activity === "quiz" && (
+          {currentCountry && activity.activity === "quiz" && (
             <QuizFloatingPanel
               key="quiz-floating-panel"
               mode={activity.kind}
@@ -227,13 +184,13 @@ function ActivityMap({
             />
           )}
 
-          {hasCountryData && activity.activity === "review" && (
+          {currentCountry && activity.activity === "review" && (
             <>
               <ReviewFloatingPanel
                 key="review-floating-panel"
                 showNextCountry={nextCountry}
-                disabled={!hasCountryData}
-                onReset={resetVisited}
+                disabled={!currentCountry}
+                onReset={resetActivity}
               />
               <WikipediaFloatingPanel key="wikipedia-floating-panel" onError={setError} />
               <UnsplashImagesFloatingPanel key="unsplash-floating-panel" onError={setError} />
@@ -255,7 +212,7 @@ const activities: Record<string, ActivityType> = {
 export default function ActivityMapLayout() {
   const { guessHistory } = useGuessRecord();
   const { error, setError, dismissError } = useError();
-  const { activity, setActivity } = useMapActivity();
+  const { activity, setActivity } = useMapActivityContext();
 
   const isActivitySelected = !!activity?.activity;
 
@@ -266,7 +223,6 @@ export default function ActivityMapLayout() {
           <ErrorBanner.Button dismissError={dismissError} />
         </ErrorBanner>
       )}
-
       <MainView className="relative overflow-auto">
         <AnimatePresence>
           {!isActivitySelected && (
@@ -311,11 +267,13 @@ export default function ActivityMapLayout() {
             </FloatingHeader>
           )}
         </AnimatePresence>
-
         <div className="relative m-2 flex-1 overflow-hidden rounded-lg shadow-inner">
-          <ActivityMap onFinishActivity={() => setActivity(undefined)} setError={setError} />
+          <ActivityMap
+            activityMode={activity?.activity}
+            onFinishActivity={() => setActivity(undefined)}
+            setError={setError}
+          />
         </div>
-
         {activity?.activity && (
           <motion.div className="flex h-1/5 w-max flex-col gap-6 overflow-y-auto sm:h-auto sm:w-[30ch]">
             <CountriesListPanel isAbridged={activity.activity === "quiz"} />

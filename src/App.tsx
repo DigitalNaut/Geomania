@@ -3,19 +3,19 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MotionConfig } from "motion/react";
 import type { PropsWithChildren } from "react";
 import { lazy, Suspense } from "react";
-import { Provider as ReduxProvider, useSelector } from "react-redux";
+import { Provider as ReduxProvider } from "react-redux";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 
 import { Spinner } from "src/components/common/Spinner";
 import Footer from "src/components/layout/Footer";
 import Nav from "src/components/layout/Header";
 import StandardLayout from "src/components/layout/StandardLayout";
-import { CountryStoreProvider } from "src/context/CountryStore";
-import { CountryFiltersProvider } from "src/context/FilteredCountryData";
+import { ActivityCoordinatorProvider } from "src/context/ActivityCoordinator";
+import { MapContextProvider } from "src/context/Map/hook";
+import { MapActivityProvider } from "src/context/MapActivity";
 import { HeaderControllerProvider } from "src/context/useHeaderController";
-import { MapContextProvider } from "src/hooks/useMapContext";
-import type { RootState } from "src/store";
 import { store } from "src/store";
+import { useAppSelector } from "src/store/hooks";
 
 const LazyActivityMap = lazy(() => import("src/pages/ActivityMap"));
 const LazySettings = lazy(() => import("src/pages/Settings"));
@@ -25,7 +25,7 @@ const LazyPageNotFound = lazy(() => import("src/pages/PageNotFound"));
 const queryClient = new QueryClient();
 
 function ErrorLog() {
-  const errors = useSelector((state: RootState) => state.errorLog);
+  const errors = useAppSelector((state) => state.errorLog);
 
   if (!errors.length) return null;
 
@@ -50,11 +50,7 @@ function Providers({ children }: PropsWithChildren) {
       <MotionConfig reducedMotion="user">
         <ReduxProvider store={store}>
           <HeaderControllerProvider>
-            <CountryFiltersProvider>
-              <CountryStoreProvider>
-                <Suspense fallback={<Spinner cover />}>{children}</Suspense>
-              </CountryStoreProvider>
-            </CountryFiltersProvider>
+            <Suspense fallback={<Spinner cover />}>{children}</Suspense>
           </HeaderControllerProvider>
         </ReduxProvider>
       </MotionConfig>
@@ -84,7 +80,6 @@ function Layout() {
       <Outlet />
 
       <ErrorLog />
-
       <Footer />
     </StandardLayout>
   );
@@ -100,7 +95,11 @@ function Router() {
             index
             element={
               <MapContextProvider>
-                <LazyActivityMap />
+                <MapActivityProvider>
+                  <ActivityCoordinatorProvider>
+                    <LazyActivityMap />
+                  </ActivityCoordinatorProvider>
+                </MapActivityProvider>
               </MapContextProvider>
             }
           />

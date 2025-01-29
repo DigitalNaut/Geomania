@@ -2,7 +2,7 @@ import type { LatLngExpression, ZoomPanOptions } from "leaflet";
 import { useEffect } from "react";
 
 import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
-import { useMapContext } from "./useMapContext";
+import { useMapContext } from "src/context/Map/hook";
 import { useSettings } from "./useSettings";
 
 type Options = {

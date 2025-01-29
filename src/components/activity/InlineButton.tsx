@@ -6,7 +6,8 @@ export function InlineButton({
   onClick,
   className,
   small,
-}: PropsWithChildren<{ onClick: () => void; className?: string; small?: true }>) {
+  title,
+}: PropsWithChildren<{ onClick: () => void; className?: string; small?: true; title: string }>) {
   return (
     <button
       className={twMerge(
@@ -15,7 +16,7 @@ export function InlineButton({
         className,
       )}
       role="button"
-      title="Reset visited"
+      title={title}
       onClick={onClick}
     >
       {children}

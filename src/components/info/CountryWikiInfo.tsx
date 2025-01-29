@@ -5,7 +5,7 @@ import axios, { type AxiosRequestConfig } from "axios";
 import { useEffect, useMemo } from "react";
 
 import { RenderDOM } from "src/components/common/RenderDOM";
-import { useCountryStore } from "src/context/CountryStore";
+import { useAppSelector } from "src/store/hooks";
 import { type WikidataSummaryResponse } from "src/types/wikipedia";
 
 const wikiApiURL = "https://en.wikipedia.org/w/api.php";
@@ -17,7 +17,11 @@ const config: AxiosRequestConfig = {
 };
 
 export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }) {
-  const { storedCountry } = useCountryStore();
+  const {
+    review: { currentCountry },
+  } = useAppSelector((state) => state.countryStore);
+  const storedCountry = currentCountry ? currentCountry : null;
+
   const query = useMemo(
     () =>
       new URLSearchParams({
@@ -29,9 +33,9 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
         piprop: "thumbnail|original",
         redirects: "1",
         origin: "*",
-        titles: storedCountry.data?.GEOUNIT ?? "",
+        titles: storedCountry?.GEOUNIT ?? "",
       }),
-    [storedCountry.data?.GEOUNIT],
+    [storedCountry?.GEOUNIT],
   );
 
   const {
@@ -39,10 +43,10 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
     error: summaryError,
     data: summaryData,
   } = useQuery({
-    queryKey: ["country-info", storedCountry.data, storedCountry.data?.WIKIDATAID, storedCountry.data?.GEOUNIT, query],
+    queryKey: ["country-info", storedCountry, storedCountry?.WIKIDATAID, storedCountry?.GEOUNIT, query],
     queryFn: () => axios.get<WikidataSummaryResponse>(`${wikiApiURL}?${query}`, config).then(({ data }) => data),
     refetchOnWindowFocus: false,
-    enabled: !!storedCountry.data?.WIKIDATAID,
+    enabled: !!storedCountry?.WIKIDATAID,
   });
 
   useEffect(() => {
@@ -64,7 +68,7 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
   if ("missing" in page)
     return (
       <p className="m-2 rounded-sm border border-slate-400/40 px-4 py-2 italic">
-        Page unavailable for {JSON.stringify(storedCountry.data?.GEOUNIT, null, 2)}.
+        Page unavailable for {JSON.stringify(storedCountry?.GEOUNIT, null, 2)}.
       </p>
     );
 
@@ -77,7 +81,7 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
             {page.thumbnail && (
               <img
                 className="peer m-2"
-                alt={storedCountry.data?.GEOUNIT}
+                alt={storedCountry?.GEOUNIT}
                 src={page.thumbnail.source}
                 width={page.thumbnail.width}
               />
@@ -102,7 +106,7 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
       <span className="flex justify-end border-t-2 border-sky-800 pb-4 pt-2 text-blue-300">
         <a
           className="mr-2 flex items-center justify-end gap-1 hover:underline"
-          href={`https://en.wikipedia.org/wiki/${storedCountry.data?.GEOUNIT}`}
+          href={`https://en.wikipedia.org/wiki/${storedCountry?.GEOUNIT}`}
           target="_blank"
           rel="noreferrer"
         >
