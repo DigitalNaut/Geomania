@@ -38,6 +38,8 @@ function getLocalShapeFile(dir: string) {
   } catch (error) {
     console.error(error);
   }
+
+  return null;
 }
 
 const refererUrl = process.env.REFERER_URL;
@@ -49,6 +51,21 @@ function downloadShapeFileSync(dir: string) {
   );
 }
 
+async function getRemoteShapeFile(dir: string) {
+  const fileName = fileDownloadUrl.split("/").pop();
+  console.log(chalk.yellow(`Downloading shape file ${fileName} ...`));
+
+  downloadShapeFileSync(dir);
+  return getLocalShapeFile(dir);
+}
+
+async function promptDownloadShapeFile() {
+  const response = await inquirer("\nShape file not found. Do you want to download it? (y/yes) ");
+  const shouldDownloadFile = ["y", "yes"].includes(response);
+
+  return shouldDownloadFile;
+}
+
 /**
  * Find the shape file in the given directory.
  * If not found, ask the user if they want to download it.
@@ -57,23 +74,17 @@ function downloadShapeFileSync(dir: string) {
  */
 export async function findShapeFile(dir: string) {
   let shapeFile = getLocalShapeFile(dir);
+  if (shapeFile) return shapeFile;
 
-  if (!shapeFile) {
-    try {
-      const response = await inquirer("\nShape file not found. Do you want to download it? (y/yes) ");
-      const shouldDownloadFile = ["y", "yes"].includes(response);
+  const shouldDownloadFile = await promptDownloadShapeFile();
+  if (!shouldDownloadFile) return null;
 
-      if (!shouldDownloadFile) return;
-
-      const fileName = fileDownloadUrl.split("/").pop();
-      console.log(chalk.yellow(`Downloading shape file ${fileName} ...`));
-
-      downloadShapeFileSync(dir);
-      shapeFile = getLocalShapeFile(dir);
-    } catch (error) {
-      console.error(error);
-    }
+  try {
+    shapeFile = await getRemoteShapeFile(dir);
+    if (shapeFile) return shapeFile;
+  } catch (error) {
+    console.error(error);
   }
 
-  return shapeFile;
+  return null;
 }
