@@ -17,6 +17,7 @@ if (!shapeFile) {
 }
 
 console.log(chalk.green("Found shape file:"), shapeFile);
+
 const countriesCmd = `mapshaper ${shapeFile}\
                       -explode\
                       -clip bbox2=-180,-85,180,85 remove-slivers\
@@ -27,6 +28,7 @@ const countriesCmd = `mapshaper ${shapeFile}\
                       -proj EPSG:3857\
                       -o ${jsonCountriesFilename} format=json\
                       -o ${svgCountriesFilename} id-field=GU_A3 format=svg`;
+
 const continentsCmd = `mapshaper ${shapeFile}\
                       -clip bbox2=-180,-85,180,85 remove-slivers\
                       -simplify weighted 3%\

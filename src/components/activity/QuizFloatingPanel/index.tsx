@@ -137,7 +137,7 @@ export default function QuizFloatingPanel({
         {mode === "pointing" && (
           <QuizPointerSection>
             <span>
-              Click on <strong>{currentCountry?.GEOUNIT}</strong>
+              Where is <strong>{currentCountry?.GEOUNIT}</strong>?
             </span>
             <CountryFlag a2={a2} />
           </QuizPointerSection>

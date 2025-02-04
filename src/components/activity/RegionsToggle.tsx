@@ -54,6 +54,7 @@ const overlayVariants: Variants = {
   visible: { opacity: 1 },
 };
 
+// TODO: Rename to "ContinentSelectionOverlay"
 export default function RegionsToggleOverlay({ onStart }: { onStart: () => void }) {
   return (
     <motion.div
@@ -63,10 +64,10 @@ export default function RegionsToggleOverlay({ onStart }: { onStart: () => void 
       animate="visible"
       exit="initial"
     >
-      <div className="absolute inset-1/2 z-[1000] mx-auto flex size-max -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md hover:bg-sky-900">
-        <h2 className="text-center text-2xl font-bold">Toggle regions</h2>
+      <div className="absolute inset-1/2 z-[1000] mx-auto flex size-max max-w-screen-sm -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-md bg-sky-900/70 p-3 shadow-md backdrop-blur-md hover:bg-sky-900">
+        <h2 className="text-center text-2xl font-bold">Choose a region</h2>
         <div className="flex flex-col gap-4 text-center">
-          <span>Please select which region to view:</span>
+          <span>Select which continent to review:</span>
 
           <ContinentToggleMap onStart={onStart} />
         </div>
