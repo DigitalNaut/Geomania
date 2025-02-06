@@ -15,7 +15,7 @@ export default function FloatingHeader({
 }>) {
   return (
     <motion.div
-      className="absolute inset-x-0 top-4 z-[1000] mx-auto flex w-fit min-w-min items-center gap-2 sm:min-w-max"
+      className="absolute inset-x-0 top-4 z-1000 mx-auto flex w-fit min-w-min items-center gap-2 sm:min-w-max"
       variants={headerVariants}
       initial="hidden"
       animate="visible"

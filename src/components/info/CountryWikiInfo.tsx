@@ -67,7 +67,7 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
   if (!page) return <p>Page not found</p>;
   if ("missing" in page)
     return (
-      <p className="m-2 rounded-sm border border-slate-400/40 px-4 py-2 italic">
+      <p className="m-2 rounded-xs border border-slate-400/40 px-4 py-2 italic">
         Page unavailable for {JSON.stringify(storedCountry?.GEOUNIT, null, 2)}.
       </p>
     );
@@ -87,7 +87,7 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
               />
             )}
 
-            <span className="pointer-events-none absolute inset-x-0 top-0 z-50 hidden rounded-sm bg-slate-200 p-2 shadow-lg peer-hover:block">
+            <span className="pointer-events-none absolute inset-x-0 top-0 z-50 hidden rounded-xs bg-slate-200 p-2 shadow-lg peer-hover:block">
               {page.original && (
                 <img
                   className="shadow-md"

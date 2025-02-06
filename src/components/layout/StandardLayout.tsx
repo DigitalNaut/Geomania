@@ -9,7 +9,7 @@ export default function StandardLayout({ children, className }: PropsWithChildre
   return (
     <div
       className={cn(
-        "flex h-screen w-full flex-col bg-gradient-to-br from-slate-800 via-slate-900 to-gray-900 text-white",
+        "flex h-screen w-full flex-col bg-linear-to-br from-slate-800 via-slate-900 to-gray-900 text-white",
         className,
       )}
     >

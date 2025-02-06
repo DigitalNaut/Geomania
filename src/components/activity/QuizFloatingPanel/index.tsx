@@ -126,7 +126,7 @@ export default function QuizFloatingPanel({
 
   return (
     <motion.div
-      className="absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 text-center"
+      className="absolute inset-x-0 bottom-8 z-1000 mx-auto flex size-fit flex-col items-center gap-2 text-center"
       variants={panelVariants}
       initial="hidden"
       animate="visible"
@@ -151,7 +151,7 @@ export default function QuizFloatingPanel({
           <div className="rounded-md bg-red-500">
             <motion.div className="flex w-full justify-center overflow-hidden rounded-md" ref={scope}>
               <input
-                className="p-1 pl-4 text-xl text-black focus:ring focus:ring-inset"
+                className="p-1 pl-4 text-xl text-black focus:ring-3 focus:ring-inset"
                 ref={inputRef}
                 onKeyDown={handleKeyDown}
                 placeholder="Enter country name"
@@ -162,7 +162,7 @@ export default function QuizFloatingPanel({
           </div>
         )}
 
-        <div className="flex w-full items-center justify-between gap-4 rounded-md px-1 drop-shadow">
+        <div className="flex w-full items-center justify-between gap-4 rounded-md px-1 drop-shadow-sm">
           <span className="whitespace-nowrap px-6 py-4">Guesses: {userGuessTally}</span>
 
           {mode === "typing" && (

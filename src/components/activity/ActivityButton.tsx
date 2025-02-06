@@ -5,8 +5,8 @@ import type { ReactNode } from "react";
 import { cn } from "src/utils/styles";
 
 const activityButtonStyles = {
-  review: "hover:bg-gradient-to-br hover:from-lime-500/50 hover:to-lime-600/50",
-  quiz: "hover:bg-gradient-to-br hover:from-yellow-500/50 hover:to-yellow-600/50",
+  review: "hover:bg-linear-to-br hover:from-lime-500/50 hover:to-lime-600/50",
+  quiz: "hover:bg-linear-to-br hover:from-yellow-500/50 hover:to-yellow-600/50",
 };
 
 export function ActivityButton({
@@ -28,7 +28,7 @@ export function ActivityButton({
       role="button"
       className={cn(
         activityButtonStyles[type],
-        "group flex w-full min-w-max max-w-full items-center justify-center gap-6 bg-slate-900/50 p-10 outline outline-1 outline-slate-200/0 backdrop-blur-sm transition-all first:rounded-t-2xl last:rounded-b-2xl hover:outline-slate-200/15",
+        "group flex w-full min-w-max max-w-full items-center justify-center gap-6 bg-slate-900/50 p-10 outline outline-1 outline-slate-200/0 backdrop-blur-xs transition-all first:rounded-t-2xl last:rounded-b-2xl hover:outline-slate-200/15",
       )}
       onClick={onClick}
     >

@@ -15,7 +15,7 @@ type HeaderProps = PropsWithChildren<{
 
 function Nav({ children, className }: HeaderProps): JSX.Element {
   return (
-    <nav className={twMerge("relative z-[1500] flex items-center gap-2 p-2 shadow-md", className)}>{children}</nav>
+    <nav className={twMerge("relative z-1500 flex items-center gap-2 p-2 shadow-md", className)}>{children}</nav>
   );
 }
 

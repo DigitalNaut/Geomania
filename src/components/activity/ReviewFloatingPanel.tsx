@@ -25,7 +25,7 @@ function DetailFloatingPanel({
 
   return (
     <motion.div
-      className={twMerge("absolute top-16 z-[1000] rounded-md", className)}
+      className={twMerge("absolute top-16 z-1000 rounded-md", className)}
       variants={AnimationVariants}
       initial="hidden"
       animate="visible"
@@ -93,7 +93,7 @@ export default function ReviewFloatingPanel({
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-x-0 bottom-8 z-[1000] mx-auto flex size-fit flex-col items-center gap-2 rounded-md"
+      className="pointer-events-none absolute inset-x-0 bottom-8 z-1000 mx-auto flex size-fit flex-col items-center gap-2 rounded-md"
       variants={AnimationVariants}
       custom={100}
       initial="hidden"

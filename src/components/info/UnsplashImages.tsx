@@ -73,7 +73,7 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
                 <div className="peer/image group/label relative h-auto w-full" key={image.id}>
                   <img src={image.urls.thumb} alt={image.alt_description} loading="lazy" />
 
-                  <div className="absolute inset-x-0 bottom-0 flex-col border-t border-white/10 bg-gradient-to-b from-slate-950/30 to-blue-500/30 p-4 text-right opacity-0 backdrop-blur-md transition-opacity duration-200 ease-out group-hover/label:opacity-100">
+                  <div className="absolute inset-x-0 bottom-0 flex-col border-t border-white/10 bg-linear-to-b from-slate-950/30 to-blue-500/30 p-4 text-right opacity-0 backdrop-blur-md transition-opacity duration-200 ease-out group-hover/label:opacity-100">
                     <div className="text-sm">
                       <span>Photo by&ensp;</span>
                       <a
@@ -86,7 +86,7 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
                         {image.user.name}
                       </a>
                     </div>
-                    <div className="rounded-bl-md text-xs shadow-sm">
+                    <div className="rounded-bl-md text-xs shadow-xs">
                       <a
                         className="hover:underline"
                         href={image.links.html}

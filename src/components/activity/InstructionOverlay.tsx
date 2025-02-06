@@ -10,7 +10,7 @@ const overlayVariants: Variants = {
 export default function InstructionOverlay({ children }: PropsWithChildren) {
   return (
     <motion.div
-      className="absolute inset-0 z-[1000] flex flex-col items-center justify-center rounded-lg bg-gray-900/5"
+      className="absolute inset-0 z-1000 flex flex-col items-center justify-center rounded-lg bg-gray-900/5"
       key="instruction-overlay"
       variants={overlayVariants}
       initial="hidden"

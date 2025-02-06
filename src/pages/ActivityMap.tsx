@@ -37,7 +37,7 @@ import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 import { useAppDispatch } from "src/store/hooks";
 
 const mapGradientStyle = {
-  noActivity: tw`from-sky-700 to-sky-800 blur-sm`,
+  noActivity: tw`from-sky-700 to-sky-800 blur-xs`,
   activity: tw`from-slate-900 to-slate-900 blur-none`,
 };
 
@@ -132,7 +132,7 @@ function ActivityMap({
 
   return (
     <div
-      className={cn("size-full bg-gradient-to-br", activity ? mapGradientStyle.activity : mapGradientStyle.noActivity)}
+      className={cn("size-full bg-linear-to-br", activity ? mapGradientStyle.activity : mapGradientStyle.noActivity)}
     >
       <LeafletMapFrame showControls={activity?.activity === "review"}>
         {activity && (
@@ -245,7 +245,7 @@ export default function ActivityMapLayout() {
         <AnimatePresence>
           {!isActivitySelected && (
             <InstructionOverlay key="instruction-overlay">
-              <section className="flex w-full min-w-max max-w-screen-sm flex-col items-center gap-8 p-6">
+              <section className="flex w-full min-w-max max-w-(--breakpoint-sm) flex-col items-center gap-8 p-6">
                 <h1 className="text-2xl">Learn Geography</h1>
                 <div className="flex flex-col shadow-lg">
                   <ActivityButton

@@ -39,7 +39,7 @@ export function RenderDOM({ className, input }: { className?: string; input: str
 
   if (error)
     return (
-      <div className={twMerge("w-full flex-1 grow rounded-sm bg-red-400 p-2 text-white", className)}>
+      <div className={twMerge("w-full flex-1 grow rounded-xs bg-red-400 p-2 text-white", className)}>
         {error.message}
       </div>
     );

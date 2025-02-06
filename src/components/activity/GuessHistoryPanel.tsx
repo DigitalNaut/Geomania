@@ -46,7 +46,7 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: Gues
           {latestGuess && (
             <motion.div
               className={twMerge(
-                "flex items-center gap-2 rounded-sm px-1 py-2 text-white",
+                "flex items-center gap-2 rounded-xs px-1 py-2 text-white",
                 latestGuess.isCorrect ? "bg-green-800" : "bg-yellow-800",
               )}
               initial={{ opacity: 0 }}
@@ -63,7 +63,7 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: Gues
           )}
         </div>
         {!isScrolledToPosition && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-fit bg-gradient-to-t from-slate-900 px-6 pb-4 pt-12">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-fit bg-linear-to-t from-slate-900 px-6 pb-4 pt-12">
             <button
               className="pointer-events-auto w-full rounded-md bg-white/80 text-center text-slate-900"
               role="button"
