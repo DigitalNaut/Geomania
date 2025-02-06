@@ -1,10 +1,11 @@
 import allFeaturesData from "src/assets/data/features/countries.json";
-import { qualifyScore } from "src/controllers/scores";
 import { useQuiz } from "src/controllers/useQuiz";
-import { addVisitedCountry, getNextCountry } from "src/store/CountryStore/slice";
+import { addVisitedCountry, getNextCountry, resetActivity } from "src/store/CountryStore/slice";
 import type { CountryData } from "src/store/CountryStore/types";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import type { IActivity } from "./types";
+
+const activityType = "quiz";
 
 export function useQuizClick(): IActivity & {
   giveHint: () => void;
@@ -31,21 +32,23 @@ export function useQuizClick(): IActivity & {
 
     if (!isCorrect) return null;
 
+    // TODO: Styling based on score needs to be reimplemented
     // const style = qualifyScore(userGuessTally);
-    console.log(qualifyScore(userGuessTally));
 
-    dispatch(addVisitedCountry({ countryA3: a3, activityType: "quiz" }));
-    return dispatch(getNextCountry("quiz"));
+    dispatch(addVisitedCountry({ countryA3: a3, activityType }));
+    return dispatch(getNextCountry(activityType));
   };
 
   const nextCountry = () => {
     resetTally();
-    return dispatch(getNextCountry("quiz"));
+    return dispatch(getNextCountry(activityType));
   };
 
   const start = () => nextCountry();
 
-  const finish = () => {};
+  const finish = () => void resetTally();
 
-  return { giveHint, submitClick, userGuessTally, nextCountry, start, finish };
+  const reset = () => void dispatch(resetActivity(activityType));
+
+  return { giveHint, submitClick, userGuessTally, nextCountry, start, finish, reset };
 }

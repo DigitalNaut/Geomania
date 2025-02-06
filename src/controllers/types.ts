@@ -4,4 +4,5 @@ export type IActivity = {
   nextCountry: () => CountryData | null;
   start: () => CountryData | null;
   finish: () => void;
+  reset: () => void;
 };

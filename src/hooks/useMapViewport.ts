@@ -1,7 +1,6 @@
-import type { LatLngExpression, ZoomPanOptions } from "leaflet";
+import type { LatLngBoundsExpression, LatLngExpression } from "leaflet";
 import { useEffect } from "react";
 
-import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
 import { useMapContext } from "src/context/Map/hook";
 import { useSettings } from "./useSettings";
 
@@ -14,9 +13,9 @@ type Options = {
  *
  * Provides a function to fly to a new location on the map.
  *
- * @param {Object} [Options]
- * @param {number} [Options.padding] - The amount of padding to add to the adjusted bounds.
- * @returns {Object} An object with a single key, `flyTo`, which is a function.
+ * @param Object Same options as `useMapViewport`
+ * @param number The amount of padding to add to the adjusted bounds.
+ * @returns An object with a single key, `flyTo`, which is a function.
  */
 export function useMapViewport({ options }: { options?: Options } = {}) {
   const { useReducedMotion } = useSettings();
@@ -26,20 +25,20 @@ export function useMapViewport({ options }: { options?: Options } = {}) {
   useEffect(() => {
     if (!map || !padding) return;
 
-    const adjustedBounds = map?.getBounds().pad(padding);
+    const paddedBounds = map?.getBounds().pad(padding);
 
-    map.setMaxBounds(adjustedBounds);
+    map.setMaxBounds(paddedBounds);
   }, [map, padding]);
 
   async function flyTo(
     destination: LatLngExpression | null,
     { zoom = 4, animate = true, duration = useReducedMotion ? 0.05 : 0.25 } = {},
-    delay = 0,
+    delayMs = 0,
   ) {
     if (!map || !destination) return;
 
-    if (delay > 0) {
-      await new Promise((resolve) => setTimeout(resolve, delay));
+    if (delayMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
 
     map.flyTo(destination, zoom, {
@@ -48,10 +47,16 @@ export function useMapViewport({ options }: { options?: Options } = {}) {
     });
   }
 
-  function resetViewport(options?: ZoomPanOptions) {
+  function fitTo(bounds: LatLngBoundsExpression, { animate = true, duration = useReducedMotion ? 0.05 : 0.25 } = {}) {
     if (!map) return;
-    map.setView(mapDefaults.center, mapDefaults.zoom, options);
+
+    map.fitBounds(bounds, { animate, duration });
   }
 
-  return { flyTo, resetViewport };
+  function resetViewport() {
+    if (!map) return;
+    map.fitWorld();
+  }
+
+  return { flyTo, fitTo, resetViewport };
 }

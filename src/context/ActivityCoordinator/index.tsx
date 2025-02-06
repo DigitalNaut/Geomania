@@ -2,98 +2,121 @@ import type { PropsWithChildren } from "react";
 import { useCallback, useEffect, useMemo } from "react";
 
 import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
-import { useMapActivityContext } from "src/context/MapActivity/hook";
+import { useActivityTracker, useMapActivityContext } from "src/context/MapActivity/hook";
 import { useQuizClick } from "src/controllers/useQuizClick";
 import { useQuizInput } from "src/controllers/useQuizInput";
 import { useReview } from "src/controllers/useReview";
 import { useMapViewport } from "src/hooks/useMapViewport";
-import { countryCatalog } from "src/store/CountryStore/slice";
+import {
+  continentBoundsCatalog,
+  countriesByContinent,
+  countryCatalog,
+  selectCurrentContinent,
+  selectCurrentCountryData,
+} from "src/store/CountryStore/slice";
 import type { CountryData } from "src/store/CountryStore/types";
 import { useAppSelector } from "src/store/hooks";
-import { getCountryCoordinates } from "src/utils/features";
+import type { ActivityType } from "src/types/map-activity";
+import { getLabelCoordinates } from "src/utils/features";
 import { ActivityCoordinatorContext } from "./hook";
+import type { StrategyFactory } from "./types";
+
+type ActivityKindStrategy<R = void> = StrategyFactory<ActivityType, "kind", () => R>;
 
 /**
  * Manages the activity flow between reviews and quizzes.
  */
 export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
-  const { flyTo, resetViewport } = useMapViewport();
+  const { flyTo, fitTo, resetViewport } = useMapViewport();
   const { activity } = useMapActivityContext();
-  const activityState = useAppSelector((state) => state.countryStore);
+  const countryStore = useAppSelector((state) => state.countryStore);
 
   const clickQuiz = useQuizClick();
   const inputQuiz = useQuizInput();
   const review = useReview();
 
-  // const isCountryInFilters = useCallback(
-  //   (a3: string) => {
-  //     if (!activity) return false;
-
-  //     const state = activityState[activity?.activity];
-  //     return state?.blacklistedCountries?.includes(a3) || state?.visitedCountries?.includes(a3);
-  //   },
-  //   [activity, activityState],
-  // );
+  const currentActivityState = useMemo(
+    () => (activity?.activity ? countryStore[activity.activity] : null),
+    [activity, countryStore],
+  );
 
   const visitedCountries = useMemo<string[]>(() => {
-    if (!activity) return [];
+    if (!currentActivityState) return [];
 
-    return activityState[activity?.activity]?.visitedCountries || [];
-  }, [activity, activityState]);
+    return currentActivityState.visitedCountries;
+  }, [currentActivityState]);
+
+  const currentContinentSelector = useMemo(() => selectCurrentContinent(activity?.activity), [activity?.activity]);
+  const currentContinent = useAppSelector(currentContinentSelector);
+
+  const currentCountryDataSelector = useMemo(() => selectCurrentCountryData(activity?.activity), [activity?.activity]);
+  const currentCountryData = useAppSelector(currentCountryDataSelector);
+
+  const unvisitedCountries = useMemo<string[]>(() => {
+    if (!currentActivityState) return [];
+    if (!currentContinent) return [];
+
+    const all = new Set(countriesByContinent[currentContinent]);
+    const visited = new Set(currentActivityState.visitedCountries);
+    const unvisited = all.difference(visited).values();
+
+    return Array.from(unvisited);
+  }, [currentActivityState, currentContinent]);
 
   const guessTally = useMemo(() => {
-    if (activity?.activity === "quiz")
-      switch (activity.kind) {
-        case "pointing":
-          return clickQuiz.userGuessTally;
+    if (!activity) return 0;
 
-        case "typing":
-          return inputQuiz.userGuessTally;
-      }
+    const strategies: ActivityKindStrategy<number> = {
+      pointing: () => clickQuiz.userGuessTally,
+      typing: () => inputQuiz.userGuessTally,
+      countries: () => 0,
+    };
 
-    return 0;
+    return strategies[activity.kind]();
   }, [activity, clickQuiz, inputQuiz]);
-
-  const currentActivityState = useMemo(
-    () => (activity?.activity ? activityState[activity.activity] : null),
-    [activity, activityState],
-  );
 
   /**
    * Focuses the UI on the next country by panning the map to the country coordinates
    */
-  const focusViewport = useCallback(
+  const focusViewportCountry = useCallback(
     (country: CountryData | null, delay = 0, shouldFly = true) => {
       if (!country) return;
 
-      const destination = getCountryCoordinates(country);
-      const zoom = Math.max(country.MIN_LABEL, mapDefaults.minZoom);
+      const destination = getLabelCoordinates(country);
+      const zoom = Math.max((country.MIN_LABEL + country.MAX_LABEL) / 2 - 2, mapDefaults.minZoom);
 
       if (shouldFly) flyTo(destination, { zoom }, delay);
     },
     [flyTo],
   );
 
+  /**
+   *
+   * @param a3
+   * @returns
+   */
+  const focusViewportContinent = useCallback(
+    (continent?: string | null) => {
+      if (!continent || continent.length === 0) return;
+
+      const bounds = continentBoundsCatalog[continent];
+
+      fitTo(bounds);
+    },
+    [fitTo],
+  );
+
   const handleMapClick = (a3?: string) => {
     if (!activity || !a3) return;
-    if (countryCatalog[a3]?.CONTINENT !== currentActivityState?.currentContinent) return;
+    if (countryCatalog[a3]?.CONTINENT !== currentContinent) return;
 
-    if (activity.activity === "review") {
-      focusViewport(review.clickCountry(a3), 100, false);
-      return;
-    }
+    const strategies: ActivityKindStrategy = {
+      countries: () => focusViewportCountry(review.setCurrentCountry(a3), 100, false),
+      typing: () => focusViewportCountry(currentCountryData),
+      pointing: () => focusViewportContinent(clickQuiz.submitClick(a3)?.CONTINENT),
+    };
 
-    switch (activity.kind) {
-      case "typing": {
-        focusViewport(currentActivityState?.currentCountry);
-        return;
-      }
-
-      case "pointing": {
-        focusViewport(clickQuiz.submitClick(a3), 250);
-        return;
-      }
-    }
+    strategies[activity.kind]();
   };
 
   const giveHint = () => {
@@ -113,41 +136,42 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
   const nextCountry = () => {
     if (!activity) return null;
 
-    if (activity.activity === "review") {
-      const nextCountry = review.nextCountry();
-      focusViewport(nextCountry);
-      return nextCountry;
-    }
+    const strategies: ActivityKindStrategy<CountryData | null> = {
+      countries: () => review.nextCountry(),
+      typing: () => inputQuiz.nextCountry(),
+      pointing: () => clickQuiz.nextCountry(),
+    };
 
-    switch (activity.kind) {
-      case "typing": {
-        const nextCountry = inputQuiz.nextCountry();
-        focusViewport(nextCountry);
-        return nextCountry;
-      }
+    const nextCountry = strategies[activity.kind]();
+    focusViewportContinent(nextCountry?.CONTINENT);
 
-      case "pointing": {
-        const nextCountry = clickQuiz.nextCountry();
-        focusViewport(nextCountry);
-        return nextCountry;
-      }
-      default:
-        return null;
-    }
+    return nextCountry;
   };
 
   const setCurrentCountry = (countryA3: string) => {
-    if (!activity || activity.activity !== "review") return;
+    if (!activity) return;
 
-    const country = review.setCurrentCountry(countryA3);
-    focusViewport(country);
+    const strategies: ActivityKindStrategy<CountryData | null> = {
+      countries: () => review.setCurrentCountry(countryA3),
+      typing: () => null,
+      pointing: () => null,
+    };
+
+    const country = strategies[activity.kind]();
+    focusViewportCountry(country);
   };
 
   const submitAnswer = () => {
-    if (!activity || activity.activity !== "quiz" || activity.kind !== "typing") return null;
+    if (!activity) return null;
 
-    const nextCountry = inputQuiz.submitInput();
-    focusViewport(nextCountry, 100);
+    const strategies: ActivityKindStrategy<CountryData | null> = {
+      countries: () => null,
+      typing: () => inputQuiz.submitInput(),
+      pointing: () => null,
+    };
+
+    const nextCountry = strategies[activity.kind]();
+    focusViewportContinent(nextCountry?.CONTINENT);
 
     return nextCountry;
   };
@@ -155,55 +179,49 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
   const start = useCallback(() => {
     if (!activity) return;
 
-    switch (activity?.activity) {
-      case "review":
-        focusViewport(review.start());
-        break;
+    const strategies: ActivityKindStrategy<CountryData | null> = {
+      countries: () => review.start(),
+      typing: () => inputQuiz.start(),
+      pointing: () => clickQuiz.start(),
+    };
 
-      case "quiz":
-        switch (activity.kind) {
-          case "pointing":
-            clickQuiz.start();
-            break;
-
-          case "typing":
-            inputQuiz.start();
-            break;
-        }
-        break;
-
-      default:
-        throw new Error(`Unknown activity: ${activity}`);
-    }
-  }, [activity, clickQuiz, focusViewport, inputQuiz, review]);
+    const nextCountry = strategies[activity.kind]();
+    focusViewportCountry(nextCountry, 100);
+  }, [activity, clickQuiz, focusViewportCountry, inputQuiz, review]);
 
   const finish = useCallback(() => {
     if (!activity) return;
 
-    switch (activity?.activity) {
-      case "review":
-        review.finish();
-        break;
+    const strategies: ActivityKindStrategy = {
+      countries: () => review.finish(),
+      typing: () => inputQuiz.finish(),
+      pointing: () => clickQuiz.finish(),
+    };
 
-      case "quiz":
-        switch (activity.kind) {
-          case "pointing":
-            clickQuiz.finish();
-            break;
-
-          case "typing":
-            inputQuiz.finish();
-            break;
-        }
-        break;
-    }
+    strategies[activity.kind]();
   }, [activity, clickQuiz, inputQuiz, review]);
+
+  const reset = useCallback(() => {
+    if (!activity) return;
+
+    const strategies: ActivityKindStrategy = {
+      countries: () => review.reset(),
+      typing: () => inputQuiz.reset(),
+      pointing: () => clickQuiz.reset(),
+    };
+
+    strategies[activity.kind]();
+  }, [activity, clickQuiz, inputQuiz, review]);
+
+  useActivityTracker(() => {
+    focusViewportContinent(currentContinent);
+  });
 
   useEffect(
     function resetViewportWhenNoActivity() {
       if (activity || currentActivityState?.queue.length) return;
 
-      resetViewport({ animate: false });
+      resetViewport();
     },
     [activity, currentActivityState, resetViewport],
   );
@@ -215,7 +233,8 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
         giveHint,
         handleMapClick,
         visitedCountries,
-        resetActivity: review.resetActivity,
+        unvisitedCountries,
+        reset,
         currentActivityState,
         guessTally,
         nextCountry,

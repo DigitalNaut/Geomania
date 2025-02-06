@@ -74,20 +74,7 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
                   <img src={image.urls.thumb} alt={image.alt_description} loading="lazy" />
 
                   <div className="absolute inset-x-0 bottom-0 flex-col border-t border-white/10 bg-gradient-to-b from-slate-950/30 to-blue-500/30 p-4 text-right opacity-0 backdrop-blur-md transition-opacity duration-200 ease-out group-hover/label:opacity-100">
-                    <span className="rounded-bl-md text-base shadow-sm">
-                      <a
-                        className="hover:underline"
-                        href={image.links.html}
-                        target="_blank"
-                        rel="noreferrer"
-                        title="View on Unsplash"
-                      >
-                        View original&ensp;
-                        <FontAwesomeIcon icon={faExternalLinkAlt} />
-                      </a>
-                    </span>
-                    <br />
-                    <span className="text-xs">
+                    <div className="text-sm">
                       <span>Photo by&ensp;</span>
                       <a
                         className="underline"
@@ -98,7 +85,19 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
                       >
                         {image.user.name}
                       </a>
-                    </span>
+                    </div>
+                    <div className="rounded-bl-md text-xs shadow-sm">
+                      <a
+                        className="hover:underline"
+                        href={image.links.html}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="View on Unsplash"
+                      >
+                        View original&ensp;
+                        <FontAwesomeIcon icon={faExternalLinkAlt} />
+                      </a>
+                    </div>
                   </div>
                 </div>
 

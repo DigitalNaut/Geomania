@@ -1,16 +1,17 @@
 import type { RefObject } from "react";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
-import { qualifyScore } from "src/controllers/scores";
 import { useQuiz } from "src/controllers/useQuiz";
 import { useInputField } from "src/hooks/common/useInputField";
 import { useGuessRecord } from "src/hooks/useGuessRecord";
-import { addVisitedCountry, getNextCountry } from "src/store/CountryStore/slice";
+import { addVisitedCountry, clearQueue, getNextCountry, resetActivity } from "src/store/CountryStore/slice";
 import type { CountryData } from "src/store/CountryStore/types";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import type { IActivity } from "./types";
 
+// TODO: Styling based on score needs to be reimplemented
 // const highlightStyle = "fill-yellow-400";
+const activityType = "quiz";
 
 export function useQuizInput(): IActivity & {
   inputRef: RefObject<HTMLInputElement | null>;
@@ -49,7 +50,7 @@ export function useQuizInput(): IActivity & {
 
   const showNextCountry = () => {
     focusAnswerInputField();
-    return dispatch(getNextCountry("quiz"));
+    return dispatch(getNextCountry(activityType));
   };
 
   const submitInput = () => {
@@ -63,9 +64,10 @@ export function useQuizInput(): IActivity & {
 
     if (!isCorrect) return null;
 
+    // TODO: Styling based on score needs to be reimplemented
     // const style = qualifyScore(userGuessTally);
-    console.log(qualifyScore(userGuessTally));
-    dispatch(addVisitedCountry({ countryA3: correctAnswer.GU_A3, activityType: "quiz" }));
+
+    dispatch(addVisitedCountry({ countryA3: correctAnswer.GU_A3, activityType }));
 
     resetInput();
     return showNextCountry();
@@ -79,7 +81,15 @@ export function useQuizInput(): IActivity & {
 
   const start = () => showNextCountry();
 
-  const finish = () => {};
+  const finish = () => {
+    resetTally();
+    resetInput();
+    dispatch(clearQueue(activityType));
+  };
+
+  const reset = useCallback(() => {
+    dispatch(resetActivity(activityType));
+  }, [dispatch]);
 
   return {
     inputRef,
@@ -90,5 +100,6 @@ export function useQuizInput(): IActivity & {
     visitedCountries: quizState.visitedCountries,
     start,
     finish,
+    reset,
   };
 }

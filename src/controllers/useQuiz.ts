@@ -22,7 +22,6 @@ export function useQuiz() {
 
   const { createRecord } = useGuessRecord();
   const { tally, upTally, resetTally } = useTally();
-
   const correctAnswer = quiz.currentCountry;
 
   const checkAnswer = useCallback(
@@ -63,9 +62,5 @@ export function useQuiz() {
     return isCorrect;
   };
 
-  return {
-    submitAnswer,
-    userGuessTally: tally,
-    resetTally,
-  };
+  return { submitAnswer, userGuessTally: tally, resetTally };
 }

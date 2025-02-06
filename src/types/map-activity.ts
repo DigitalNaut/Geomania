@@ -22,3 +22,7 @@ export interface MapActivitySlice {
   isRandomReviewMode: boolean;
   activity?: ActivityType;
 }
+
+export function isValidActivity(activity: unknown): activity is ActivityType {
+  return ActivityTypeSchema.safeParse(activity).success;
+}

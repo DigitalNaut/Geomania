@@ -9,7 +9,7 @@ type ActivityCoordinatorContextType = {
   giveHint: () => void;
   handleMapClick: (a3?: string) => void;
   visitedCountries: string[];
-  resetActivity: () => void;
+  unvisitedCountries: string[];
   currentActivityState: ActivityState | null;
   setCurrentCountry: (a3: string) => void;
   guessTally: number;
@@ -17,6 +17,7 @@ type ActivityCoordinatorContextType = {
   submitAnswer: () => CountryData | null;
   start: () => void;
   finish: () => void;
+  reset: () => void;
 };
 
 export const ActivityCoordinatorContext = createContext<ActivityCoordinatorContextType | null>(null);

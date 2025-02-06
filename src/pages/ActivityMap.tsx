@@ -28,12 +28,13 @@ import { useHeaderController } from "src/context/useHeaderController";
 import { useError } from "src/hooks/common/useError";
 import { useGuessRecord } from "src/hooks/useGuessRecord";
 import { useMapViewport } from "src/hooks/useMapViewport";
-import { continentCatalog } from "src/store/CountryStore/slice";
+import { countriesByContinent, newQueue } from "src/store/CountryStore/slice";
 import type { ActivityMode, ActivityType } from "src/types/map-activity";
-import { getCountryCoordinates } from "src/utils/features";
+import { getLabelCoordinates } from "src/utils/features";
 import { cn, tw } from "src/utils/styles";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
+import { useAppDispatch } from "src/store/hooks";
 
 const mapGradientStyle = {
   noActivity: tw`from-sky-700 to-sky-800 blur-sm`,
@@ -73,9 +74,8 @@ function ActivityMap({
 }: {
   setError: (error: Error) => void;
   onFinishActivity: () => void;
-  activityMode?: ActivityMode;
 }) {
-  const { resetViewport } = useMapViewport({ options: { padding: 0 } });
+  const { resetViewport } = useMapViewport();
   const {
     currentActivityState,
     handleMapClick,
@@ -85,14 +85,14 @@ function ActivityMap({
     inputRef,
     nextCountry,
     submitAnswer,
-    resetActivity,
     start,
+    reset,
   } = useActivityCoordinatorContext();
 
   const { currentContinent, currentCountry } = currentActivityState ?? {};
 
   const storedCountryCoordinates = useMemo(
-    () => (currentCountry ? getCountryCoordinates(currentCountry) : null),
+    () => (currentCountry ? getLabelCoordinates(currentCountry) : null),
     [currentCountry],
   );
 
@@ -108,10 +108,27 @@ function ActivityMap({
   const colorTheme = useMemo(() => mapActivityTheme[activity?.activity || "default"], [activity]);
 
   const activeList = useMemo(() => {
-    if (!activity || !currentContinent) return [];
+    if (!currentContinent) return [];
 
-    return continentCatalog[currentContinent];
-  }, [activity, currentContinent]);
+    return countriesByContinent[currentContinent].slice();
+  }, [currentContinent]);
+
+  const dispatch = useAppDispatch();
+
+  const handleSelectRegion = (id: string) => {
+    if (!activity) return;
+
+    dispatch(
+      newQueue({
+        activityType: activity.activity,
+        continent: id,
+        shuffle: false,
+        blacklistedCountries: [],
+      }),
+    );
+
+    start();
+  };
 
   return (
     <div
@@ -170,7 +187,7 @@ function ActivityMap({
 
       {activity && (
         <AnimatePresence>
-          {!currentCountry && <RegionsToggleOverlay key="regions-toggle-overlay" onStart={start} />}
+          {!currentCountry && <RegionsToggleOverlay key="regions-toggle-overlay" onClick={handleSelectRegion} />}
 
           {currentCountry && activity.activity === "quiz" && (
             <QuizFloatingPanel
@@ -181,6 +198,7 @@ function ActivityMap({
               skipCountry={nextCountry}
               submitAnswer={submitAnswer}
               userGuessTally={guessTally}
+              onReset={reset}
             />
           )}
 
@@ -190,7 +208,7 @@ function ActivityMap({
                 key="review-floating-panel"
                 showNextCountry={nextCountry}
                 disabled={!currentCountry}
-                onReset={resetActivity}
+                onReset={reset}
               />
               <WikipediaFloatingPanel key="wikipedia-floating-panel" onError={setError} />
               <UnsplashImagesFloatingPanel key="unsplash-floating-panel" onError={setError} />
@@ -212,7 +230,7 @@ const activities: Record<string, ActivityType> = {
 export default function ActivityMapLayout() {
   const { guessHistory } = useGuessRecord();
   const { error, setError, dismissError } = useError();
-  const { activity, setActivity } = useMapActivityContext();
+  const { activity, navigateToActivity } = useMapActivityContext();
 
   const isActivitySelected = !!activity?.activity;
 
@@ -235,7 +253,9 @@ export default function ActivityMapLayout() {
                     icon={<FontAwesomeIcon icon={faBookAtlas} />}
                     label="Review the map"
                     summary="Learn country names by region"
-                    onClick={() => setActivity(activities["review-countries"])}
+                    onClick={() => {
+                      navigateToActivity(activities["review-countries"]);
+                    }}
                   />
                 </div>
 
@@ -246,14 +266,18 @@ export default function ActivityMapLayout() {
                     icon={<FontAwesomeIcon icon={faMousePointer} />}
                     label="Point & click"
                     summary="Point out the country on the map"
-                    onClick={() => setActivity(activities["quiz-pointing"])}
+                    onClick={() => {
+                      navigateToActivity(activities["quiz-pointing"]);
+                    }}
                   />
                   <ActivityButton
                     type="quiz"
                     icon={<FontAwesomeIcon icon={faKeyboard} />}
                     label="Typing quiz"
                     summary="Type in the name of the country"
-                    onClick={() => setActivity(activities["quiz-typing"])}
+                    onClick={() => {
+                      navigateToActivity(activities["quiz-typing"]);
+                    }}
                   />
                 </div>
               </section>
@@ -267,13 +291,11 @@ export default function ActivityMapLayout() {
             </FloatingHeader>
           )}
         </AnimatePresence>
+
         <div className="relative m-2 flex-1 overflow-hidden rounded-lg shadow-inner">
-          <ActivityMap
-            activityMode={activity?.activity}
-            onFinishActivity={() => setActivity(undefined)}
-            setError={setError}
-          />
+          <ActivityMap onFinishActivity={() => navigateToActivity(null)} setError={setError} />
         </div>
+
         {activity?.activity && (
           <motion.div className="flex h-1/5 w-max flex-col gap-6 overflow-y-auto sm:h-auto sm:w-[30ch]">
             <CountriesListPanel isAbridged={activity.activity === "quiz"} />

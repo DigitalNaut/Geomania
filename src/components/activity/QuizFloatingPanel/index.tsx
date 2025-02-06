@@ -78,6 +78,7 @@ export default function QuizFloatingPanel({
   submitAnswer,
   skipCountry,
   giveHint,
+  onReset,
 }: {
   mode?: QuizKind;
   userGuessTally: number;
@@ -85,6 +86,7 @@ export default function QuizFloatingPanel({
   skipCountry: () => void;
   submitAnswer?: (text: string) => CountryData | null;
   giveHint: () => void;
+  onReset: () => void;
 }) {
   const { quiz } = useAppSelector((state) => state.countryStore);
   const currentCountry = useMemo(() => (quiz.currentCountry ? quiz.currentCountry : null), [quiz.currentCountry]);
@@ -173,6 +175,10 @@ export default function QuizFloatingPanel({
               <span>Hint!</span>
             </button>
           )}
+
+          <InlineButton title="Reset activity" onClick={onReset}>
+            Reset
+          </InlineButton>
 
           {mode === "pointing" && (
             <InlineButton title="Skip country" onClick={skipCountry}>
