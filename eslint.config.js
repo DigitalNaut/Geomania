@@ -3,12 +3,15 @@ import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tsEslint from "typescript-eslint";
-import tailwind from "eslint-plugin-tailwindcss";
+// TODO: Reimplement this when eslint-plugin-tailwindcss supports Tailwind 4
+// See: https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/325
+// import tailwind from "eslint-plugin-tailwindcss";
 import noRelativeImports from "eslint-plugin-no-relative-import-paths";
 import queryExhaustiveDeps from "@tanstack/eslint-plugin-query";
 
 export default tsEslint.config(
-  ...tailwind.configs["flat/recommended"],
+  // TODO: Reimplement this when eslint-plugin-tailwindcss supports Tailwind 4
+  // ...tailwind.configs["flat/recommended"],
   { ignores: ["node_modules", "build", "dist", "coverage", "tools"] },
   {
     extends: [js.configs.recommended, ...tsEslint.configs.recommended],
