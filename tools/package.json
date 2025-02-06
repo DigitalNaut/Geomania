@@ -25,8 +25,8 @@
   "license": "CC BY-NC-SA 4.0",
   "devDependencies": {
     "@eslint/js": "^9.19.0",
-    "@types/node": "^22.10.10",
-    "bun": "^1.2.0",
+    "@types/node": "^22.13.1",
+    "bun": "^1.2.2",
     "eslint": "^9.19.0",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
     "npm-run-all2": "^7.0.2",
@@ -37,6 +37,6 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "mapshaper": "^0.6.102",
-    "vitest": "^3.0.4"
+    "vitest": "^3.0.5"
   }
 }
