@@ -26,5 +26,5 @@ module.exports = {
       paytone: ["Paytone One", "sans-serif"],
     },
   },
-  plugins: [require("@tailwindcss/line-clamp"), require("@tailwindcss/typography"), require("tailwind-scrollbar")],
+  // plugins: [require("@tailwindcss/line-clamp"), require("@tailwindcss/typography"), require("tailwind-scrollbar")],
 };
