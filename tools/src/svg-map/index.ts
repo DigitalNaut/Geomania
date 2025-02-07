@@ -33,7 +33,7 @@ const countriesCmd = `mapshaper "${shapeFile}"
                       -sort 'GU_A3'
                       -dissolve GEOUNIT copy-fields=SOVEREIGNT,SOV_A3,ADM0_DIF,ADMIN,ADM0_A3,GEOU_DIF,GEOUNIT,GU_A3,MAPCOLOR7,CONTINENT,SUBREGION,MIN_ZOOM,MIN_LABEL,MAX_LABEL,scalerank,LABEL_X,LABEL_Y,WIKIDATAID,ISO_A2_EH
                       -proj EPSG:3857
-                      -o ${countryFeaturesJsonFilename} format=json
+                      -o ${countryFeaturesJsonFilename} format=json 
                       
                       -colorizer random name=calcFill colors="#1f77b4,#ff7f0e,#2ca02c,#d62728,#9467bd,#8c564b,#e377c2" categories=0,1,2,3,4,5,6
                       -style fill="calcFill(MAPCOLOR7)" stroke="white" opacity=0.25
@@ -64,6 +64,7 @@ const continentsCmd = `mapshaper "${shapeFile}"
                       -snap precision=0.01
                       -each "BBOX = this.bbox"
                       -o ${continentsBoundsGeojsonFilename} cut-table format=geojson
+                      
                       -proj EPSG:3857
                       -colorizer random name=calcFill colors="#1f77b4,#ff7f0e,#2ca02c,#d62728,#9467bd,#8c564b,#e377c2" categories=0,1,2,3,4,5,6
                       -style fill="calcFill(this.id)" stroke="white" opacity=0.25

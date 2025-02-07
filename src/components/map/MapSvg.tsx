@@ -65,14 +65,16 @@ export default function SvgMap({
   const { paths, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"]);
 
   const [bounds] = useState(() => {
-    const top = 85 + verticalAdjustment,
-      bottom = -85 + verticalAdjustment,
-      left = -180 + -horizontalAdjustment,
-      right = 180 + horizontalAdjustment;
+    const north = 85 + verticalAdjustment,
+      south = -85 + verticalAdjustment,
+      west = -180 + -horizontalAdjustment,
+      east = 180 + horizontalAdjustment;
+
+    // const [west, south, east, north] = [-20037508.342789244, -19971868.88040857, 20037508.342789244, 18394384.316255685];
 
     return latLngBounds([
-      [bottom, left],
-      [top, right],
+      [south, west],
+      [north, east],
     ]);
   });
 
@@ -230,7 +232,7 @@ export default function SvgMap({
                   d={d}
                   data-a3={id}
                   pointerEvents="none"
-                  className="animate-scrollDash fill-lime-500 [stroke-dasharray:32] [stroke-dashoffset:8] hover:fill-[url(#waves)] hover:stroke-white hover:[animation:none] hover:[stroke-dasharray:0]"
+                  className="animate-scrollDash fill-lime-500 [stroke-dasharray:32] [stroke-dashoffset:8] hover:[animation:none] hover:fill-[url(#waves)] hover:stroke-white hover:[stroke-dasharray:0]"
                   style={{
                     strokeWidth: adjustForZoom(4),
                   }}

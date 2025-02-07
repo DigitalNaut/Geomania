@@ -28,7 +28,7 @@ export function ActivityButton({
       role="button"
       className={cn(
         activityButtonStyles[type],
-        "group flex w-full min-w-max max-w-full items-center justify-center gap-6 bg-slate-900/50 p-10 outline outline-1 outline-slate-200/0 backdrop-blur-xs transition-all first:rounded-t-2xl last:rounded-b-2xl hover:outline-slate-200/15",
+        "group flex w-full max-w-full min-w-max cursor-pointer items-center justify-center gap-6 bg-slate-900/50 p-10 outline outline-slate-200/0 backdrop-blur-xs transition-all first:rounded-t-2xl last:rounded-b-2xl hover:outline-slate-200/15",
       )}
       onClick={onClick}
     >

@@ -101,6 +101,11 @@ function ActivityMap({
     resetViewport();
   }, [onFinishActivity, resetViewport]);
 
+  const resetActivity = useCallback(() => {
+    resetViewport();
+    reset();
+  }, [resetViewport, reset]);
+
   useHeaderController(finishActivity);
 
   const { activity } = useMapActivityContext();
@@ -139,6 +144,7 @@ function ActivityMap({
           <>
             <ZoomControl position="topright" />
             <BackControl position="topleft" label="Finish" onClick={finishActivity} />
+            <BackControl position="topleft" label="Reset" onClick={resetActivity} />
 
             {storedCountryCoordinates && (
               <>
