@@ -1,4 +1,4 @@
-import { faBookAtlas, faKeyboard, faMousePointer } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faBookAtlas, faKeyboard, faMousePointer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useMemo } from "react";
@@ -17,7 +17,7 @@ import ReviewFloatingPanel, {
 } from "src/components/activity/ReviewFloatingPanel";
 import ErrorBanner from "src/components/common/ErrorBanner";
 import MainView from "src/components/layout/MainView";
-import { BackControl } from "src/components/map/BackControl";
+import { MapControl } from "src/components/map/BackControl";
 import { LeafletMapFrame } from "src/components/map/LeafletMapFrame";
 import type { SvgMapColorTheme } from "src/components/map/MapSvg";
 import SvgMap from "src/components/map/MapSvg";
@@ -32,9 +32,10 @@ import { countriesByContinent, newQueue } from "src/store/CountryStore/slice";
 import type { ActivityMode, ActivityType } from "src/types/map-activity";
 import { getLabelCoordinates } from "src/utils/features";
 import { cn, tw } from "src/utils/styles";
+import Button from "src/components/common/Button";
+import { useAppDispatch } from "src/store/hooks";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
-import { useAppDispatch } from "src/store/hooks";
 
 const mapGradientStyle = {
   noActivity: tw`from-sky-700 to-sky-800 blur-xs`,
@@ -143,8 +144,13 @@ function ActivityMap({
         {activity && (
           <>
             <ZoomControl position="topright" />
-            <BackControl position="topleft" label="Finish" onClick={finishActivity} />
-            <BackControl position="topleft" label="Reset" onClick={resetActivity} />
+            <MapControl className="flex gap-2 text-base" position="topleft">
+              <Button onClick={finishActivity} variant="secondary">
+                <Button.Icon icon={faAngleLeft} />
+                Finish
+              </Button>
+              <Button onClick={resetActivity} variant="secondary">Reset</Button>
+            </MapControl>
 
             {storedCountryCoordinates && (
               <>
@@ -251,7 +257,7 @@ export default function ActivityMapLayout() {
         <AnimatePresence>
           {!isActivitySelected && (
             <InstructionOverlay key="instruction-overlay">
-              <section className="flex w-full min-w-max max-w-(--breakpoint-sm) flex-col items-center gap-8 p-6">
+              <section className="flex w-full max-w-(--breakpoint-sm) min-w-max flex-col items-center gap-8 p-6">
                 <h1 className="text-2xl">Learn Geography</h1>
                 <div className="flex flex-col shadow-lg">
                   <ActivityButton
