@@ -94,10 +94,10 @@ function ClearProgressDialog({
       <h2 className="pb-2 text-xl font-bold">All progress will be lost</h2>
       <p className="text-sm">Your user guess history and country stats will be deleted.</p>
       <form className="flex justify-end gap-2 pt-4" method="dialog">
-        <Button styles="danger" onClick={onClick}>
+        <Button variant="danger" onClick={onClick}>
           Clear progress
         </Button>
-        <Button styles="secondary">Cancel</Button>
+        <Button variant="secondary">Cancel</Button>
       </form>
     </motion.dialog>
   );

@@ -52,7 +52,7 @@ export default function Settings() {
           </SettingsSection>
 
           <div className="mt-4 flex w-full justify-end">
-            <Button onClick={resetSettings} styles="secondary">
+            <Button onClick={resetSettings} variant="secondary">
               Restore defaults
             </Button>
           </div>

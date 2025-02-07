@@ -1,6 +1,6 @@
-import { faCaretLeft } from "@fortawesome/free-solid-svg-icons";
+import type { PropsWithChildren } from "react";
 
-import Button from "src/components/common/Button";
+import { cn } from "src/utils/styles";
 
 const POSITION_CLASSES = {
   bottomleft: "leaflet-bottom leaflet-left",
@@ -9,27 +9,18 @@ const POSITION_CLASSES = {
   topright: "leaflet-top leaflet-right",
 };
 
-export function BackControl({
+export function MapControl({
   position,
-  onClick,
-  label = "Back",
-}: {
-  position?: keyof typeof POSITION_CLASSES;
-  onClick: () => void;
-  label?: string;
-}) {
-  const positionClass = (position && POSITION_CLASSES[position]) ?? POSITION_CLASSES.topright;
+  children,
+  className,
+}: PropsWithChildren<{
+  position: keyof typeof POSITION_CLASSES;
+  className?: string;
+}>) {
   return (
-    <div className={positionClass}>
+    <div className={cn({ [POSITION_CLASSES[position]]: !!position })}>
       <div className="leaflet-control leaflet-bar rounded-full">
-        <Button
-          className="w-fit bg-white text-base text-slate-950 hover:bg-red-600 hover:text-white"
-          title="End the activity"
-          onClick={onClick}
-        >
-          <Button.Icon icon={faCaretLeft} />
-          <span>{label}</span>
-        </Button>
+        <div className={className}>{children}</div>
       </div>
     </div>
   );
