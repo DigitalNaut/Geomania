@@ -9,7 +9,6 @@ import { CountryWikiInfo } from "src/components/info/CountryWikiInfo";
 import SourceLogo from "src/components/info/SourceLogo";
 import { UnsplashImages } from "src/components/info/UnsplashImages";
 import { useMapActivityContext } from "src/context/MapActivity/hook";
-import { InlineButton } from "./InlineButton";
 
 const AnimationVariants: Variants = {
   hidden: (custom: number = 0) => ({ opacity: 0, translateY: custom, transition: { duration: 0.1 } }),
@@ -80,11 +79,9 @@ export function UnsplashImagesFloatingPanel({ onError }: { onError: (error: Erro
 export default function ReviewFloatingPanel({
   showNextCountry,
   disabled,
-  onReset,
 }: {
   showNextCountry: () => void;
   disabled: boolean;
-  onReset: () => void;
 }) {
   const { isRandomReviewMode, setRandomReviewMode } = useMapActivityContext();
 
@@ -110,9 +107,6 @@ export default function ReviewFloatingPanel({
               <input id="randomMode" type="checkbox" checked={isRandomReviewMode} onChange={onChange} />
               Random mode
             </label>
-            <InlineButton title="Reset activity" onClick={onReset}>
-              Reset
-            </InlineButton>
           </div>
         </motion.div>
       </div>

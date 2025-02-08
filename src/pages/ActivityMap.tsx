@@ -1,4 +1,4 @@
-import { faAngleLeft, faBookAtlas, faKeyboard, faMousePointer } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faBookAtlas, faGlobe, faKeyboard, faMousePointer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useMemo } from "react";
@@ -15,10 +15,11 @@ import ReviewFloatingPanel, {
   UnsplashImagesFloatingPanel,
   WikipediaFloatingPanel,
 } from "src/components/activity/ReviewFloatingPanel";
+import Button from "src/components/common/Button";
 import ErrorBanner from "src/components/common/ErrorBanner";
 import MainView from "src/components/layout/MainView";
-import { MapControl } from "src/components/map/BackControl";
 import { LeafletMapFrame } from "src/components/map/LeafletMapFrame";
+import { MapControl } from "src/components/map/MapControl";
 import type { SvgMapColorTheme } from "src/components/map/MapSvg";
 import SvgMap from "src/components/map/MapSvg";
 import { markerIcon } from "src/components/map/MarkerIcon";
@@ -29,11 +30,10 @@ import { useError } from "src/hooks/common/useError";
 import { useGuessRecord } from "src/hooks/useGuessRecord";
 import { useMapViewport } from "src/hooks/useMapViewport";
 import { countriesByContinent, newQueue } from "src/store/CountryStore/slice";
+import { useAppDispatch } from "src/store/hooks";
 import type { ActivityMode, ActivityType } from "src/types/map-activity";
 import { getLabelCoordinates } from "src/utils/features";
 import { cn, tw } from "src/utils/styles";
-import Button from "src/components/common/Button";
-import { useAppDispatch } from "src/store/hooks";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
 
@@ -145,11 +145,14 @@ function ActivityMap({
           <>
             <ZoomControl position="topright" />
             <MapControl className="flex gap-2 text-base" position="topleft">
-              <Button onClick={finishActivity} variant="secondary">
+              <Button onClick={finishActivity} title="Finish activity">
                 <Button.Icon icon={faAngleLeft} />
-                Finish
+                Menu
               </Button>
-              <Button onClick={resetActivity} variant="secondary">Reset</Button>
+              <Button title="Reset activity" onClick={resetActivity}>
+                <Button.Icon icon={faGlobe} />
+                Change continent
+              </Button>
             </MapControl>
 
             {storedCountryCoordinates && (
@@ -210,7 +213,6 @@ function ActivityMap({
               skipCountry={nextCountry}
               submitAnswer={submitAnswer}
               userGuessTally={guessTally}
-              onReset={reset}
             />
           )}
 
@@ -220,7 +222,6 @@ function ActivityMap({
                 key="review-floating-panel"
                 showNextCountry={nextCountry}
                 disabled={!currentCountry}
-                onReset={reset}
               />
               <WikipediaFloatingPanel key="wikipedia-floating-panel" onError={setError} />
               <UnsplashImagesFloatingPanel key="unsplash-floating-panel" onError={setError} />
