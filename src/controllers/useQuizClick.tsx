@@ -9,7 +9,7 @@ import type { CountryData } from "src/store/CountryStore/types";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import type { IActivity } from "./types";
 
-import allFeaturesData from "src/assets/data/features/countries.json";
+import allFeaturesData from "src/assets/data/features/country-features.json";
 
 const activityType = "quiz";
 

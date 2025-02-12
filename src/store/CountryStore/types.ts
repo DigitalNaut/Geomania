@@ -1,5 +1,5 @@
-import type countryData from "src/assets/data/features/countries.json";
-import type continentData from "src/assets/data/features/continents.json";
+import type countryData from "src/assets/data/features/country-features.json";
+import type continentData from "src/assets/data/features/continent-features.json";
 
 type ContinentFeatures = typeof continentData;
 export type ContinentData = ContinentFeatures[number];
