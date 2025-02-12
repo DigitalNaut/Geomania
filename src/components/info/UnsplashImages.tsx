@@ -65,7 +65,7 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
 
   return (
     <section className="pt-2">
-      <div className="flex max-h-[60vh] min-w-[20vw] overflow-y-auto scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700">
+      <div className="scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700 flex max-h-[60vh] min-w-[20vw] overflow-y-auto">
         {data?.results.length && (
           <Masonry columnsCount={2}>
             {data.results.map((image) => (
@@ -123,7 +123,7 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
         )}
       </div>
 
-      <span className="flex justify-end border-t-2 border-sky-800 pt-2 text-blue-300">
+      <span className="flex items-baseline justify-end border-t-2 border-sky-800 p-2 pt-2 text-blue-300">
         Courtesy of&nbsp;
         <a
           className="mr-2 flex items-center justify-end gap-1 hover:underline"
@@ -133,6 +133,7 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
         >
           Unsplash
         </a>
+        <FontAwesomeIcon icon={faExternalLink} />
       </span>
     </section>
   );

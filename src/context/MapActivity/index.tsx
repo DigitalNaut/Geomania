@@ -8,6 +8,7 @@ import { MapActivityContext } from "./hook";
 
 /**
  * Sets or removes search params with the given items.
+ *
  * Setting a value of undefined removes the param.
  * @param searchParams
  * @param items

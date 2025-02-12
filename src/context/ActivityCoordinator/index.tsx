@@ -72,20 +72,19 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
       countries: () => 0,
     };
 
-    return strategies[activity.kind]();
+    return strategies[activity.kind]?.();
   }, [activity, clickQuiz, inputQuiz]);
 
   /**
    * Focuses the UI on the next country by panning the map to the country coordinates
    */
   const focusViewportCountry = useCallback(
-    (country: CountryData | null, delay = 0, shouldFly = true) => {
+    (country: CountryData | null, delayMs = 0, shouldFly = true) => {
       if (!country) return;
 
       const destination = getLabelCoordinates(country);
-      const zoom = Math.max((country.MIN_LABEL + country.MAX_LABEL) / 2 - 2, mapDefaults.minZoom);
 
-      if (shouldFly) flyTo(destination, { zoom }, delay);
+      if (shouldFly) flyTo(destination, { delayMs });
     },
     [flyTo],
   );
@@ -116,7 +115,7 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
       pointing: () => focusViewportContinent(clickQuiz.submitClick(a3)?.CONTINENT),
     };
 
-    strategies[activity.kind]();
+    strategies[activity.kind]?.();
   };
 
   const giveHint = () => {
@@ -157,8 +156,7 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
       pointing: () => null,
     };
 
-    const country = strategies[activity.kind]();
-    focusViewportCountry(country);
+    strategies[activity.kind]?.();
   };
 
   const submitAnswer = () => {
@@ -170,7 +168,7 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
       pointing: () => null,
     };
 
-    const nextCountry = strategies[activity.kind]();
+    const nextCountry = strategies[activity.kind]?.();
     focusViewportContinent(nextCountry?.CONTINENT);
 
     return nextCountry;
@@ -185,7 +183,7 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
       pointing: () => clickQuiz.start(),
     };
 
-    const nextCountry = strategies[activity.kind]();
+    const nextCountry = strategies[activity.kind]?.();
     focusViewportCountry(nextCountry, 100);
   }, [activity, clickQuiz, focusViewportCountry, inputQuiz, review]);
 
@@ -198,7 +196,7 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
       pointing: () => clickQuiz.finish(),
     };
 
-    strategies[activity.kind]();
+    strategies[activity.kind]?.();
   }, [activity, clickQuiz, inputQuiz, review]);
 
   const reset = useCallback(() => {
@@ -210,7 +208,7 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
       pointing: () => clickQuiz.reset(),
     };
 
-    strategies[activity.kind]();
+    strategies[activity.kind]?.();
   }, [activity, clickQuiz, inputQuiz, review]);
 
   useActivityTracker(() => {

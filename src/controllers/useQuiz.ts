@@ -18,26 +18,25 @@ function playAudio(audio: HTMLAudioElement) {
 }
 
 export function useQuiz() {
-  const { quiz } = useAppSelector((state) => state.countryStore);
+  const answerCountry = useAppSelector((state) => state.countryStore);
 
   const { createRecord } = useGuessRecord();
   const { tally, upTally, resetTally } = useTally();
-  const correctAnswer = quiz.currentCountry;
 
   const checkAnswer = useCallback(
     (guess: string) => {
-      if (!correctAnswer) return false;
+      if (!answerCountry) return false;
 
-      const answer = correctAnswer.GEOUNIT;
+      const answer = answerCountry.GEOUNIT;
       const inputMatchesAnswer = normalizeName(guess) === normalizeName(answer);
 
       return inputMatchesAnswer;
     },
-    [correctAnswer],
+    [answerCountry],
   );
 
   const submitAnswer = (userGuess: string) => {
-    if (!userGuess || userGuess.length === 0 || !correctAnswer) return false;
+    if (!userGuess || userGuess.length === 0 || !answerCountry) return false;
 
     const isCorrect = checkAnswer(userGuess);
 
@@ -49,7 +48,7 @@ export function useQuiz() {
 
     playAudio(isCorrect ? correctAnswerTrack : incorrectAnswerTrack);
 
-    const { ISO_A2_EH, GU_A3, GEOUNIT } = correctAnswer;
+    const { ISO_A2_EH, GU_A3, GEOUNIT } = answerCountry;
 
     createRecord({
       text: userGuess,

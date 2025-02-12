@@ -8,7 +8,7 @@ import useScrollTo from "src/hooks/common/useScrollTo";
 import type { GuessHistory } from "src/store/UserGuessHistory/types";
 
 export default function GuessHistoryPanel({ guessHistory }: { guessHistory: GuessHistory }) {
-  const { isScrolledToPosition, scrollToPosition, scrollRef } = useScrollTo("bottom");
+  const { isScrolledToPosition, scrollToPosition, scrollRef } = useScrollTo("top");
 
   const [guessList, latestGuess] = useMemo(() => {
     if (guessHistory.length === 0) return [];
@@ -59,7 +59,7 @@ export default function GuessHistoryPanel({ guessHistory }: { guessHistory: Gues
             </motion.div>
           )}
           {guessHistory.length === 0 && (
-            <div className="pt-2 text-center text-sm italic">None guesses yet! {guessHistory.length}</div>
+            <div className="pt-2 text-center text-sm italic">No guesses yet!</div>
           )}
         </div>
         {!isScrolledToPosition && (

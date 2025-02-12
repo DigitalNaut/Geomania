@@ -32,8 +32,7 @@ export function useMapViewport({ options }: { options?: Options } = {}) {
 
   async function flyTo(
     destination: LatLngExpression | null,
-    { zoom = 4, animate = true, duration = useReducedMotion ? 0.05 : 0.25 } = {},
-    delayMs = 0,
+    { animate = true, duration = useReducedMotion ? 0.05 : 0.25, delayMs = 0 } = {},
   ) {
     if (!map || !destination) return;
 
@@ -41,7 +40,7 @@ export function useMapViewport({ options }: { options?: Options } = {}) {
       await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
 
-    map.flyTo(destination, zoom, {
+    map.panTo(destination, {
       animate,
       duration,
     });
@@ -50,7 +49,7 @@ export function useMapViewport({ options }: { options?: Options } = {}) {
   function fitTo(bounds: LatLngBoundsExpression, { animate = true, duration = useReducedMotion ? 0.05 : 0.25 } = {}) {
     if (!map) return;
 
-    map.fitBounds(bounds, { animate, duration });
+    map.panInsideBounds(bounds, { animate, duration });
   }
 
   function resetViewport() {

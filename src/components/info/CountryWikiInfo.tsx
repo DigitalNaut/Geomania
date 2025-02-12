@@ -10,6 +10,9 @@ import { type WikidataSummaryResponse } from "src/types/wikipedia";
 
 const wikiApiURL = "https://en.wikipedia.org/w/api.php";
 
+/**
+ * Axios request config that includes the Wikipedia user agent in the headers
+ */
 const config: AxiosRequestConfig = {
   headers: {
     "Api-User-Agent": import.meta.env.VITE_WIKIPEDIA_API_USER_AGENT,
@@ -55,7 +58,7 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
 
   if (summaryError)
     return (
-      <span className="pointer-events-auto max-h-[300px] max-w-xl overflow-y-auto break-all rounded-md bg-sky-900/60 p-3 scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700 hover:bg-sky-900">
+      <span className="scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700 pointer-events-auto max-h-[300px] max-w-xl overflow-y-auto rounded-md bg-sky-900/60 p-3 break-all hover:bg-sky-900">
         Data unavailable at the moment. An error has occurred.
       </span>
     );
@@ -73,9 +76,9 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
     );
 
   return (
-    <section className="flex max-h-[60vh] max-w-md flex-col pb-6">
-      <div className="visible relative scroll-p-8 overflow-y-auto break-words px-4 pb-4 text-justify indent-4 text-white scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700">
-        <h1 className="mb-6 mt-4 flex justify-between gap-2 text-left text-3xl font-bold text-white">
+    <section className="flex max-h-[60vh] max-w-md flex-col">
+      <div className="scrollbar-thin scrollbar-track-sky-900 scrollbar-thumb-sky-700 visible relative scroll-p-8 overflow-y-auto px-4 pb-4 text-justify indent-4 break-words text-white">
+        <h1 className="mt-4 mb-6 flex justify-between gap-2 text-left text-3xl font-bold text-white">
           <span className="indent-0">{page.title}</span>
           <div>
             {page.thumbnail && (
@@ -103,9 +106,9 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
 
         <RenderDOM className="prose" input={page.extract} />
       </div>
-      <span className="flex justify-end border-t-2 border-sky-800 pb-4 pt-2 text-blue-300">
+      <span className="flex justify-end border-t-2 border-sky-800 pt-2 text-blue-300">
         <a
-          className="mr-2 flex items-center justify-end gap-1 hover:underline"
+          className="flex items-baseline justify-end gap-1 p-2 hover:underline"
           href={`https://en.wikipedia.org/wiki/${storedCountry?.GEOUNIT}`}
           target="_blank"
           rel="noreferrer"

@@ -54,7 +54,7 @@ function CountryFlag({ a2 }: { a2?: string }) {
 
   return (
     <img
-      className="h-[2.4rem] w-16 p-1 shadow-md before:block before:h-[2.4rem] before:w-16 before:bg-custom-unknown-flag"
+      className="before:bg-custom-unknown-flag h-[2.4rem] w-16 p-1 shadow-md before:block before:h-[2.4rem] before:w-16"
       src={src}
       loading="lazy"
       width={64}
@@ -161,7 +161,7 @@ export default function QuizFloatingPanel({
         )}
 
         <div className="flex w-full items-center justify-between gap-4 rounded-md px-1 drop-shadow-sm">
-          <span className="whitespace-nowrap px-6 py-4">Guesses: {userGuessTally}</span>
+          <span className="px-6 py-4 whitespace-nowrap">Guesses: {userGuessTally}</span>
 
           {mode === "typing" && (
             <button
