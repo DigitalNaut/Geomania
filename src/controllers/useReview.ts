@@ -35,9 +35,7 @@ export function useReview(): IActivity & {
   );
 
   const isCountryInFilters = useCallback(
-    (targetA3: string) => {
-      return currentActivity.visitedCountries.includes(targetA3);
-    },
+    (targetA3: string) => currentActivity.visitedCountries.includes(targetA3),
     [currentActivity.visitedCountries],
   );
 

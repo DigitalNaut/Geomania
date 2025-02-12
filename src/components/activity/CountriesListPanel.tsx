@@ -31,12 +31,13 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
     setCurrentCountry(countryA3);
   };
 
-  const { visited, unvisited } = useMemo(() => {
-    return {
+  const { visited, unvisited } = useMemo(
+    () => ({
       visited: visitedCountries.map((countryA3) => countryCatalog[countryA3]),
       unvisited: unvisitedCountries.map((countryA3) => countryCatalog[countryA3]),
-    };
-  }, [visitedCountries, unvisitedCountries]);
+    }),
+    [visitedCountries, unvisitedCountries],
+  );
 
   return (
     <div className={cn("flex flex-col gap-2 overflow-y-auto", { hidden: isAbridged })}>
@@ -49,7 +50,7 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
           {visited.map(({ GEOUNIT, GU_A3 }) => (
             <button
               key={GU_A3}
-              className="rounded-md bg-lime-700 px-2 py-1 text-white cursor-pointer"
+              className="cursor-pointer rounded-md bg-lime-700 px-2 py-1 text-white"
               onClick={() => handleCountryClick(GU_A3)}
             >
               {GEOUNIT}
@@ -59,7 +60,7 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
           {unvisited.map(({ GEOUNIT, GU_A3 }) => (
             <button
               key={GU_A3}
-              className="rounded-md bg-gray-600 px-2 py-1 text-white cursor-pointer"
+              className="cursor-pointer rounded-md bg-gray-600 px-2 py-1 text-white"
               onClick={() => handleCountryClick(GU_A3)}
             >
               {GEOUNIT}

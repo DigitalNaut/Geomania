@@ -128,41 +128,35 @@ export default function SvgMap({
       className={twMerge("transition-colors duration-500 ease-in-out", className)}
       eventHandlers={{ click }}
     >
-      {paths.map((path, index) => {
-        return (
-          <path
-            key={index}
-            data-a3={path.id}
-            d={path.getAttribute("d") ?? ""}
-            className={colorTheme.country.inactiveStyle}
-            style={{ strokeWidth }}
-          />
-        );
-      })}
+      {paths.map((path, index) => (
+        <path
+          key={index}
+          data-a3={path.id}
+          d={path.getAttribute("d") ?? ""}
+          className={colorTheme.country.inactiveStyle}
+          style={{ strokeWidth }}
+        />
+      ))}
 
-      {activePaths.map((path, index) => {
-        return (
-          <path
-            key={index}
-            data-a3={path.id}
-            d={path.getAttribute("d") ?? ""}
-            className={colorTheme.country.activeStyle}
-            style={{ strokeWidth }}
-          />
-        );
-      })}
+      {activePaths.map((path, index) => (
+        <path
+          key={index}
+          data-a3={path.id}
+          d={path.getAttribute("d") ?? ""}
+          className={colorTheme.country.activeStyle}
+          style={{ strokeWidth }}
+        />
+      ))}
 
-      {visitedPaths.map((path, index) => {
-        return (
-          <path
-            key={index}
-            data-a3={path.id}
-            d={path.getAttribute("d") ?? ""}
-            className={colorTheme.country.visitedStyle}
-            style={{ strokeWidth }}
-          />
-        );
-      })}
+      {visitedPaths.map((path, index) => (
+        <path
+          key={index}
+          data-a3={path.id}
+          d={path.getAttribute("d") ?? ""}
+          className={colorTheme.country.visitedStyle}
+          style={{ strokeWidth }}
+        />
+      ))}
 
       {highlightPaths?.length > 0 && (
         <>
