@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 
 import { useSvgAttributes } from "src/hooks/common/useSVGAttributes";
 
-import continentsSvg from "src/assets/images/generated/world-map-continents.svg?raw";
+import continentsSvg from "src/assets/images/generated/continents-world-map.svg?raw";
 
 const overlayVariants: Variants = {
   hidden: { opacity: 0 },
