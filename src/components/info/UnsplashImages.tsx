@@ -1,4 +1,4 @@
-import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
+import { faExternalLink, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import axios, { type AxiosRequestConfig } from "axios";
@@ -14,6 +14,17 @@ import type { UnsplashSearchResponse } from "src/types/unsplash";
 const unsplashApiURL = "https://api.unsplash.com";
 const unsplashSearch = `${unsplashApiURL}/search/photos?query=`;
 
+const newRequestConfig = (accessKey = "") => ({
+  headers: {
+    Authorization: `Client-ID ${accessKey}`,
+  },
+});
+
+const newImageSearchParams = (query = "") =>
+  new URLSearchParams({
+    query,
+  });
+
 const overlayVariants: Variants = {
   initial: {
     opacity: 0,
@@ -24,25 +35,16 @@ const overlayVariants: Variants = {
     display: "flex",
   },
 };
+
 export function UnsplashImages({ onError }: { onError: (error: Error) => void }) {
   const { data: keys } = useEdgeKeys();
   const currentCountry = useAppSelector(selectCurrentCountryData("review"));
 
   const currentCountryData = useMemo(() => (currentCountry ? currentCountry : null), [currentCountry]);
-  const query = useMemo(
-    () =>
-      new URLSearchParams({
-        query: currentCountryData?.GEOUNIT ?? "",
-      }),
-    [currentCountryData],
-  );
+  const query = useMemo(() => newImageSearchParams(currentCountryData?.GEOUNIT), [currentCountryData?.GEOUNIT]);
 
   const config: AxiosRequestConfig = useMemo(
-    () => ({
-      headers: {
-        Authorization: `Client-ID ${keys?.unsplash.accessKey}`,
-      },
-    }),
+    () => newRequestConfig(keys?.unsplash.accessKey),
     [keys?.unsplash.accessKey],
   );
 

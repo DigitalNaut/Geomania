@@ -72,6 +72,20 @@ const panelVariants: Variants = {
   visible: { translateY: 0, opacity: 1, transition: { duration: 0.2 } },
 };
 
+function AnimatedPanel({ children }: PropsWithChildren) {
+  return (
+    <motion.div
+      className="absolute inset-x-0 bottom-8 z-1000 mx-auto flex size-fit flex-col items-center gap-2 text-center"
+      variants={panelVariants}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export default function QuizFloatingPanel({
   mode,
   userGuessTally,
@@ -125,13 +139,7 @@ export default function QuizFloatingPanel({
   const { GEOUNIT, ISO_A2_EH } = currentCountry;
 
   return (
-    <motion.div
-      className="absolute inset-x-0 bottom-8 z-1000 mx-auto flex size-fit flex-col items-center gap-2 text-center"
-      variants={panelVariants}
-      initial="hidden"
-      animate="visible"
-      exit="hidden"
-    >
+    <AnimatedPanel>
       <motion.div>
         {mode === "typing" && (
           <QuizHeaderSection skipCountryHandler={skipCountry}>Which country is this?</QuizHeaderSection>
@@ -184,6 +192,6 @@ export default function QuizFloatingPanel({
           )}
         </div>
       </div>
-    </motion.div>
+    </AnimatedPanel>
   );
 }
