@@ -119,6 +119,14 @@ function ActivityMap({
     return countriesByContinent[currentContinent].slice();
   }, [currentContinent]);
 
+  const highlightList = useMemo(() => {
+    if (activity?.kind === "pointing") return [];
+
+    if (!currentCountry) return [];
+
+    return [currentCountry.GU_A3];
+  }, [activity?.kind, currentCountry]);
+
   const dispatch = useAppDispatch();
 
   const handleSelectRegion = (id: string) => {
@@ -192,7 +200,7 @@ function ActivityMap({
           lists={{
             activeList,
             visitedList,
-            highlightList: [],
+            highlightList,
             inactiveList: [],
           }}
           onClick={handleMapClick}

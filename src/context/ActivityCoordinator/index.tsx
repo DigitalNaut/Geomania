@@ -1,7 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { useCallback, useEffect, useMemo } from "react";
 
-import { mapDefaults } from "src/components/map/LeafletMapFrame/defaults";
 import { useActivityTracker, useMapActivityContext } from "src/context/MapActivity/hook";
 import { useQuizClick } from "src/controllers/useQuizClick";
 import { useQuizInput } from "src/controllers/useQuizInput";
@@ -136,22 +135,35 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
     if (!activity) return null;
 
     const strategies: ActivityKindStrategy<CountryData | null> = {
-      countries: () => review.nextCountry(),
-      typing: () => inputQuiz.nextCountry(),
-      pointing: () => clickQuiz.nextCountry(),
+      countries: () => {
+        const nextCountry = review.nextCountry();
+        focusViewportCountry(nextCountry, 100);
+        return nextCountry;
+      },
+      typing: () => {
+        const nextCountry = inputQuiz.nextCountry();
+        focusViewportContinent(nextCountry?.CONTINENT);
+        return nextCountry;
+      },
+      pointing: () => {
+        const nextCountry = clickQuiz.nextCountry();
+        focusViewportContinent(nextCountry?.CONTINENT);
+        return nextCountry;
+      },
     };
 
-    const nextCountry = strategies[activity.kind]();
-    focusViewportContinent(nextCountry?.CONTINENT);
-
-    return nextCountry;
+    return strategies[activity.kind]?.();
   };
 
   const setCurrentCountry = (countryA3: string) => {
     if (!activity) return;
 
     const strategies: ActivityKindStrategy<CountryData | null> = {
-      countries: () => review.setCurrentCountry(countryA3),
+      countries: () => {
+        const countryData = review.setCurrentCountry(countryA3);
+        focusViewportCountry(countryData);
+        return countryData;
+      },
       typing: () => null,
       pointing: () => null,
     };
@@ -212,7 +224,15 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
   }, [activity, clickQuiz, inputQuiz, review]);
 
   useActivityTracker(() => {
-    focusViewportContinent(currentContinent);
+    if (!activity) return;
+
+    const strategies: ActivityKindStrategy = {
+      countries: () => focusViewportCountry(currentCountryData),
+      typing: () => focusViewportContinent(currentContinent),
+      pointing: () => focusViewportContinent(currentContinent),
+    };
+
+    strategies[activity.kind]?.();
   });
 
   useEffect(
