@@ -4,26 +4,24 @@ import fs from "fs";
 
 import { inquirer, timeStamp } from "./utils.js";
 
-export function getFileSizeKb(filePath: string) {
-  const stat = fs.statSync(filePath, { throwIfNoEntry: false });
-  return (stat?.size ?? 0) / 1024;
+export function bytesToKb(bytes: number | undefined) {
+  return (bytes ?? 0) / 1024;
 }
 
-function measureFileSize(path: string) {
+export function getFileSizeKb(filePath: string) {
+  const stat = fs.statSync(filePath, { throwIfNoEntry: false });
+  return bytesToKb(stat?.size);
+}
+
+export function measureFileSize(path: string) {
   const fileName = path.split("/").pop();
   const size = getFileSizeKb(path);
 
   return {
     fileName,
-    size: `${size.toFixed(2)} KB`,
+    size,
     time: timeStamp(),
   };
-}
-
-export function reportFileSize(filePath: string) {
-  const fileSize = measureFileSize(filePath);
-
-  console.table(fileSize);
 }
 
 function getFileList(dir: string) {

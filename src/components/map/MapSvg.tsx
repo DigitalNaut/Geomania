@@ -9,10 +9,12 @@ import mapSvg from "src/assets/images/generated/world-map-countries.svg?raw";
 import { useSvgAttributes } from "src/hooks/common/useSVGAttributes";
 import { useMapContext } from "src/context/Map/hook";
 
-// TODO: Find a solution for automatically adjusting the SVG after generating
-// Moves the SVG map down to match OpenStreetMap
-const verticalAdjustment = -1.35; // Slides vertically
-const horizontalAdjustment = 0.45; // Scales whole map
+const mapBoundsAdjustment = {
+  top: -1.35,
+  left: 1.3,
+  right: 53,
+  bottom: 1,
+};
 
 // Geounit presets
 const svgAttributes: SVGOverlayProps["attributes"] = {
@@ -65,10 +67,10 @@ export default function SvgMap({
   const { paths, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"]);
 
   const [bounds] = useState(() => {
-    const north = 85 + verticalAdjustment,
-      south = -85 + verticalAdjustment,
-      west = -180 + -horizontalAdjustment,
-      east = 180 + horizontalAdjustment;
+    const north = 85 + mapBoundsAdjustment.top,
+      south = -85 - mapBoundsAdjustment.bottom,
+      west = -180 - mapBoundsAdjustment.left,
+      east = 180 + mapBoundsAdjustment.right;
 
     // const [west, south, east, north] = [-20037508.342789244, -19971868.88040857, 20037508.342789244, 18394384.316255685];
 
