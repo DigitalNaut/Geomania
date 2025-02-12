@@ -6,6 +6,7 @@ import { useCallback } from "react";
 import CorrectSound from "src/assets/sounds/correct.mp3?url";
 import IncorrectSound from "src/assets/sounds/incorrect.mp3?url";
 import { useAppSelector } from "src/store/hooks";
+import { selectCurrentCountryData } from "src/store/CountryStore/slice";
 
 const incorrectAnswerAudioSrc = new URL(IncorrectSound, import.meta.url);
 const correctAnswerAudioSrc = new URL(CorrectSound, import.meta.url);
@@ -18,7 +19,7 @@ function playAudio(audio: HTMLAudioElement) {
 }
 
 export function useQuiz() {
-  const answerCountry = useAppSelector((state) => state.countryStore);
+  const answerCountry = useAppSelector(selectCurrentCountryData("quiz"));
 
   const { createRecord } = useGuessRecord();
   const { tally, upTally, resetTally } = useTally();

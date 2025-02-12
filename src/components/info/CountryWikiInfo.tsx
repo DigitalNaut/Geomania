@@ -5,6 +5,7 @@ import axios, { type AxiosRequestConfig } from "axios";
 import { useEffect, useMemo } from "react";
 
 import { RenderDOM } from "src/components/common/RenderDOM";
+import { selectCurrentCountryData } from "src/store/CountryStore/slice";
 import { useAppSelector } from "src/store/hooks";
 import { type WikidataSummaryResponse } from "src/types/wikipedia";
 
@@ -19,37 +20,35 @@ const config: AxiosRequestConfig = {
   },
 };
 
-export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }) {
-  const {
-    review: { currentCountry },
-  } = useAppSelector((state) => state.countryStore);
-  const storedCountry = currentCountry ? currentCountry : null;
+const createWikipediaRequestParams = (titles = "") =>
+  new URLSearchParams({
+    format: "json",
+    action: "query",
+    prop: "info|pageimages|extracts",
+    exintro: "",
+    inprop: "url|thumbnail|original",
+    piprop: "thumbnail|original",
+    redirects: "1",
+    origin: "*",
+    titles,
+  });
 
-  const query = useMemo(
-    () =>
-      new URLSearchParams({
-        format: "json",
-        action: "query",
-        prop: "info|pageimages|extracts",
-        exintro: "",
-        inprop: "url|thumbnail|original",
-        piprop: "thumbnail|original",
-        redirects: "1",
-        origin: "*",
-        titles: storedCountry?.GEOUNIT ?? "",
-      }),
-    [storedCountry?.GEOUNIT],
-  );
+const queryWikipedia = (query: URLSearchParams) =>
+  axios.get<WikidataSummaryResponse>(`${wikiApiURL}?${query}`, config).then(({ data }) => data);
+
+export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }) {
+  const currentCountry = useAppSelector(selectCurrentCountryData("review"));
+  const query = useMemo(() => createWikipediaRequestParams(currentCountry?.GEOUNIT), [currentCountry?.GEOUNIT]);
 
   const {
     isLoading: isSummaryLoading,
     error: summaryError,
     data: summaryData,
   } = useQuery({
-    queryKey: ["country-info", storedCountry, storedCountry?.WIKIDATAID, storedCountry?.GEOUNIT, query],
-    queryFn: () => axios.get<WikidataSummaryResponse>(`${wikiApiURL}?${query}`, config).then(({ data }) => data),
+    queryKey: ["country-info", currentCountry, currentCountry?.WIKIDATAID, currentCountry?.GEOUNIT, query],
+    queryFn: () => queryWikipedia(query),
     refetchOnWindowFocus: false,
-    enabled: !!storedCountry?.WIKIDATAID,
+    enabled: !!currentCountry?.WIKIDATAID,
   });
 
   useEffect(() => {
@@ -71,7 +70,7 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
   if ("missing" in page)
     return (
       <p className="m-2 rounded-xs border border-slate-400/40 px-4 py-2 italic">
-        Page unavailable for {JSON.stringify(storedCountry?.GEOUNIT, null, 2)}.
+        Page unavailable for {JSON.stringify(currentCountry?.GEOUNIT, null, 2)}.
       </p>
     );
 
@@ -84,7 +83,7 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
             {page.thumbnail && (
               <img
                 className="peer m-2"
-                alt={storedCountry?.GEOUNIT}
+                alt={currentCountry?.GEOUNIT}
                 src={page.thumbnail.source}
                 width={page.thumbnail.width}
               />
@@ -109,7 +108,7 @@ export function CountryWikiInfo({ onError }: { onError: (error: Error) => void }
       <span className="flex justify-end border-t-2 border-sky-800 pt-2 text-blue-300">
         <a
           className="flex items-baseline justify-end gap-1 p-2 hover:underline"
-          href={`https://en.wikipedia.org/wiki/${storedCountry?.GEOUNIT}`}
+          href={`https://en.wikipedia.org/wiki/${currentCountry?.GEOUNIT}`}
           target="_blank"
           rel="noreferrer"
         >

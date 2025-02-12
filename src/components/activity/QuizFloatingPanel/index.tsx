@@ -12,6 +12,7 @@ import type { QuizKind } from "src/types/map-activity";
 import { useShakeAnimation } from "./hooks";
 
 import unknownFlag from "src/assets/images/unknown-flag.min.svg?url";
+import { selectCurrentCountryData } from "src/store/CountryStore/slice";
 
 function QuizHeaderSection({
   children,
@@ -86,8 +87,7 @@ export default function QuizFloatingPanel({
   submitAnswer?: (text: string) => CountryData | null;
   giveHint: () => void;
 }) {
-  const { quiz } = useAppSelector((state) => state.countryStore);
-  const currentCountry = useMemo(() => (quiz.currentCountry ? quiz.currentCountry : null), [quiz.currentCountry]);
+  const currentCountry = useAppSelector(selectCurrentCountryData("quiz"));
 
   const onShakeStart = useCallback(() => {
     if (!inputRef.current) return;
@@ -120,7 +120,9 @@ export default function QuizFloatingPanel({
     }
   };
 
-  const a2 = useMemo(() => currentCountry?.ISO_A2_EH, [currentCountry?.ISO_A2_EH]);
+  if (!currentCountry) return <AnimatedPanel>No country selected.</AnimatedPanel>;
+
+  const { GEOUNIT, ISO_A2_EH } = currentCountry;
 
   return (
     <motion.div
@@ -137,9 +139,9 @@ export default function QuizFloatingPanel({
         {mode === "pointing" && (
           <QuizPointerSection>
             <span>
-              Where is <strong>{currentCountry?.GEOUNIT}</strong>?
+              Where is <strong>{GEOUNIT}</strong>?
             </span>
-            <CountryFlag a2={a2} />
+            <CountryFlag a2={ISO_A2_EH} />
           </QuizPointerSection>
         )}
       </motion.div>

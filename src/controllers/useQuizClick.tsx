@@ -1,9 +1,15 @@
-import allFeaturesData from "src/assets/data/features/countries.json";
 import { useQuiz } from "src/controllers/useQuiz";
-import { addVisitedCountry, getNextCountry, resetActivity } from "src/store/CountryStore/slice";
+import {
+  addVisitedCountry,
+  getNextCountry,
+  resetActivity,
+  selectCurrentCountryData,
+} from "src/store/CountryStore/slice";
 import type { CountryData } from "src/store/CountryStore/types";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import type { IActivity } from "./types";
+
+import allFeaturesData from "src/assets/data/features/countries.json";
 
 const activityType = "quiz";
 
@@ -13,9 +19,8 @@ export function useQuizClick(): IActivity & {
   userGuessTally: number;
 } {
   const { submitAnswer, userGuessTally, resetTally } = useQuiz();
-  const {
-    quiz: { currentCountry },
-  } = useAppSelector((state) => state.countryStore);
+  const currentCountry = useAppSelector(selectCurrentCountryData("quiz"));
+
   const dispatch = useAppDispatch();
 
   const giveHint = () => {

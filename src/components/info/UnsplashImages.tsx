@@ -7,6 +7,7 @@ import { useEffect, useMemo } from "react";
 import Masonry from "react-responsive-masonry";
 
 import useEdgeKeys from "src/hooks/useEdgeKeys";
+import { selectCurrentCountryData } from "src/store/CountryStore/slice";
 import { useAppSelector } from "src/store/hooks";
 import type { UnsplashSearchResponse } from "src/types/unsplash";
 
@@ -25,9 +26,7 @@ const overlayVariants: Variants = {
 };
 export function UnsplashImages({ onError }: { onError: (error: Error) => void }) {
   const { data: keys } = useEdgeKeys();
-  const {
-    review: { currentCountry },
-  } = useAppSelector((state) => state.countryStore);
+  const currentCountry = useAppSelector(selectCurrentCountryData("review"));
 
   const currentCountryData = useMemo(() => (currentCountry ? currentCountry : null), [currentCountry]);
   const query = useMemo(

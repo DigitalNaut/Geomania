@@ -272,7 +272,7 @@ export function resetActivity(activityType: ActivityType): AppThunk {
   };
 }
 
-export const selectCurrentCountryA3 = (activity?: ActivityType | null) => {
+export function selectCurrentCountryA3(activity?: ActivityType | null) {
   return createSelector(
     (state: RootState) => {
       if (!activity) return null;
@@ -280,9 +280,9 @@ export const selectCurrentCountryA3 = (activity?: ActivityType | null) => {
     },
     (country) => country?.GU_A3 || null,
   );
-};
+}
 
-export const selectPreviousCountryA3 = (activityType?: ActivityType | null) => {
+export function selectPreviousCountryA3(activityType?: ActivityType | null) {
   return createSelector(
     (state: RootState) => {
       if (!activityType) return null;
@@ -290,9 +290,9 @@ export const selectPreviousCountryA3 = (activityType?: ActivityType | null) => {
     },
     (country) => country?.GU_A3 || null,
   );
-};
+}
 
-export const selectCurrentCountryData = (activityType?: ActivityType | null) => {
+export function selectCurrentCountryData(activityType?: ActivityType | null) {
   return createSelector(
     (state: RootState) => {
       if (!activityType) return null;
@@ -300,9 +300,9 @@ export const selectCurrentCountryData = (activityType?: ActivityType | null) => 
     },
     (activityState) => activityState?.currentCountry || null,
   );
-};
+}
 
-export const selectCurrentContinent = (activityType?: ActivityType | null) => {
+export function selectCurrentContinent(activityType?: ActivityType | null) {
   return createSelector(
     (state: RootState) => {
       if (!activityType) return null;
@@ -310,4 +310,11 @@ export const selectCurrentContinent = (activityType?: ActivityType | null) => {
     },
     (activityState) => activityState?.currentContinent || null,
   );
-};
+}
+
+export function selectActivityState(activityType: ActivityType) {
+  return createSelector(
+    (state: RootState) => state.countryStore[activityType],
+    (activityState) => ({ ...activityState }),
+  );
+}
