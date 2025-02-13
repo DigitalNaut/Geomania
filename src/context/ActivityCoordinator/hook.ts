@@ -8,6 +8,7 @@ type ActivityCoordinatorContextType = {
   inputRef: RefObject<HTMLInputElement | null>;
   giveHint: () => void;
   handleMapClick: (a3?: string) => void;
+  setContinent: (region: string) => void;
   visitedCountries: string[];
   unvisitedCountries: string[];
   currentActivityState: ActivityState | null;
@@ -15,8 +16,6 @@ type ActivityCoordinatorContextType = {
   guessTally: number;
   nextCountry: () => CountryData | null;
   submitAnswer: () => CountryData | null;
-  start: () => void;
-  finish: () => void;
   reset: () => void;
 };
 

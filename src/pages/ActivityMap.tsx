@@ -29,8 +29,7 @@ import { useHeaderController } from "src/context/useHeaderController";
 import { useError } from "src/hooks/common/useError";
 import { useGuessRecord } from "src/hooks/useGuessRecord";
 import { useMapViewport } from "src/hooks/useMapViewport";
-import { countriesByContinent, newQueue } from "src/store/CountryStore/slice";
-import { useAppDispatch } from "src/store/hooks";
+import { countriesByContinent } from "src/store/CountryStore/slice";
 import type { ActivityMode, ActivityType } from "src/types/map-activity";
 import { getLabelCoordinates } from "src/utils/features";
 import { cn, tw } from "src/utils/styles";
@@ -86,7 +85,7 @@ function ActivityMap({
     inputRef,
     nextCountry,
     submitAnswer,
-    start,
+    setContinent,
     reset,
   } = useActivityCoordinatorContext();
 
@@ -126,23 +125,6 @@ function ActivityMap({
 
     return [currentCountry.GU_A3];
   }, [activity?.kind, currentCountry]);
-
-  const dispatch = useAppDispatch();
-
-  const handleSelectRegion = (id: string) => {
-    if (!activity) return;
-
-    dispatch(
-      newQueue({
-        activityType: activity.activity,
-        continent: id,
-        shuffle: false,
-        blacklistedCountries: [],
-      }),
-    );
-
-    start();
-  };
 
   return (
     <div
@@ -210,7 +192,7 @@ function ActivityMap({
 
       {activity && (
         <AnimatePresence>
-          {!currentCountry && <ContinentSelectionOverlay key="regions-toggle-overlay" onClick={handleSelectRegion} />}
+          {!currentCountry && <ContinentSelectionOverlay key="regions-toggle-overlay" onClick={setContinent} />}
 
           {currentCountry && activity.activity === "quiz" && (
             <QuizFloatingPanel
