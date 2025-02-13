@@ -120,6 +120,7 @@ export default function QuizFloatingPanel({
   const { startShake, scope } = useShakeAnimation({
     onShakeStart,
     onShakeEnd,
+    shakeAmount: 12,
   });
 
   const handleSubmit = () => {
@@ -159,7 +160,7 @@ export default function QuizFloatingPanel({
           <div className="rounded-md bg-red-500">
             <motion.div className="flex w-full justify-center overflow-hidden rounded-md" ref={scope}>
               <input
-                className="p-1 pl-4 text-xl text-black focus:ring-3 focus:ring-inset"
+                className="bg-white p-1 pl-4 text-xl text-black focus:ring-3 focus:ring-inset"
                 ref={inputRef}
                 onKeyDown={handleKeyDown}
                 placeholder="Enter country name"

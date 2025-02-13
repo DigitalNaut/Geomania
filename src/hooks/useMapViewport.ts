@@ -11,11 +11,10 @@ type Options = {
 /**
  * Manages the map viewport.
  *
- * Provides a function to fly to a new location on the map.
+ * Provides methods to move the map to a location using behavior from `Leaflet`.
  *
  * @param Object Same options as `useMapViewport`
  * @param number The amount of padding to add to the adjusted bounds.
- * @returns An object with a single key, `flyTo`, which is a function.
  */
 export function useMapViewport({ options }: { options?: Options } = {}) {
   const { useReducedMotion } = useSettings();
