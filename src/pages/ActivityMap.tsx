@@ -5,12 +5,12 @@ import { useCallback, useMemo } from "react";
 import { Marker, Popup, ZoomControl } from "react-leaflet";
 
 import { ActivityButton } from "src/components/activity/ActivityButton";
+import ContinentSelectionOverlay from "src/components/activity/ContinentSelectionOverlay";
 import CountriesListPanel from "src/components/activity/CountriesListPanel";
 import FloatingHeader from "src/components/activity/FloatingHeader";
 import GuessHistoryPanel from "src/components/activity/GuessHistoryPanel";
 import InstructionOverlay from "src/components/activity/InstructionOverlay";
 import QuizFloatingPanel from "src/components/activity/QuizFloatingPanel";
-import RegionsToggleOverlay from "src/components/activity/RegionsToggle";
 import ReviewFloatingPanel, {
   UnsplashImagesFloatingPanel,
   WikipediaFloatingPanel,
@@ -210,7 +210,7 @@ function ActivityMap({
 
       {activity && (
         <AnimatePresence>
-          {!currentCountry && <RegionsToggleOverlay key="regions-toggle-overlay" onClick={handleSelectRegion} />}
+          {!currentCountry && <ContinentSelectionOverlay key="regions-toggle-overlay" onClick={handleSelectRegion} />}
 
           {currentCountry && activity.activity === "quiz" && (
             <QuizFloatingPanel

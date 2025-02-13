@@ -10,8 +10,7 @@ const overlayVariants: Variants = {
   shown: { opacity: 1 },
 };
 
-// TODO: Rename to "ContinentSelectionOverlay"
-export default function RegionsToggleOverlay({ onClick }: { onClick: (id: string) => void }) {
+export default function ContinentSelectionOverlay({ onClick }: { onClick: (id: string) => void }) {
   const { paths, viewBox } = useSvgAttributes(continentsSvg, ["width", "height", "viewBox"]);
 
   return (
