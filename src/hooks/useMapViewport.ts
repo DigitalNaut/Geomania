@@ -24,12 +24,12 @@ export function useMapViewport({ options }: { options?: Options } = {}) {
   useEffect(() => {
     if (!map || !padding) return;
 
-    const paddedBounds = map?.getBounds().pad(padding);
+    const paddedBounds = map.getBounds().pad(padding);
 
     map.setMaxBounds(paddedBounds);
   }, [map, padding]);
 
-  async function flyTo(
+  async function panTo(
     destination: LatLngExpression | null,
     { animate = true, duration = useReducedMotion ? 0.05 : 0.25, delayMs = 0 } = {},
   ) {
@@ -48,6 +48,15 @@ export function useMapViewport({ options }: { options?: Options } = {}) {
   function fitTo(bounds: LatLngBoundsExpression, { animate = true, duration = useReducedMotion ? 0.05 : 0.25 } = {}) {
     if (!map) return;
 
+    map.fitBounds(bounds, { animate, duration });
+  }
+
+  function panInside(
+    bounds: LatLngBoundsExpression,
+    { animate = true, duration = useReducedMotion ? 0.05 : 0.25 } = {},
+  ) {
+    if (!map) return;
+
     map.panInsideBounds(bounds, { animate, duration });
   }
 
@@ -56,5 +65,5 @@ export function useMapViewport({ options }: { options?: Options } = {}) {
     map.fitWorld();
   }
 
-  return { flyTo, fitTo, resetViewport };
+  return { panTo, panInside, fitTo, resetViewport };
 }

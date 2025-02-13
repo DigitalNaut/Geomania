@@ -26,7 +26,7 @@ type ActivityKindStrategy<R = void> = StrategyFactory<ActivityType, "kind", () =
  * Manages the activity flow between reviews and quizzes.
  */
 export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
-  const { flyTo, fitTo, resetViewport } = useMapViewport();
+  const { panTo, panInside, fitTo, resetViewport } = useMapViewport();
   const { activity } = useMapActivityContext();
   const countryStore = useAppSelector((state) => state.countryStore);
 
@@ -75,33 +75,37 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
   }, [activity, clickQuiz, inputQuiz]);
 
   /**
-   * Focuses the UI on the next country by panning the map to the country coordinates
+   * Focuses the Leaflet map viewport on the given country.
    */
   const focusViewportCountry = useCallback(
-    (country: CountryData | null, delayMs = 0, shouldFly = true) => {
+    (country: CountryData | null, delayMs = 0, animate = true) => {
       if (!country) return;
 
       const destination = getLabelCoordinates(country);
 
-      if (shouldFly) flyTo(destination, { delayMs });
+      panTo(destination, { delayMs, animate });
     },
-    [flyTo],
+    [panTo],
   );
 
   /**
-   *
+   * Focuses the Leaflet map viewport on the given continent.
    * @param a3
    * @returns
    */
   const focusViewportContinent = useCallback(
-    (continent?: string | null) => {
+    (continent?: string | null, fitToView = true) => {
       if (!continent || continent.length === 0) return;
 
       const bounds = continentBoundsCatalog[continent];
 
-      fitTo(bounds);
+      if (fitToView) {
+        fitTo(bounds);
+      } else {
+        panInside(bounds);
+      }
     },
-    [fitTo],
+    [fitTo, panInside],
   );
 
   const handleMapClick = (a3?: string) => {
@@ -181,7 +185,7 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
     };
 
     const nextCountry = strategies[activity.kind]?.();
-    focusViewportContinent(nextCountry?.CONTINENT);
+    focusViewportCountry(nextCountry);
 
     return nextCountry;
   };
@@ -226,13 +230,7 @@ export function ActivityCoordinatorProvider({ children }: PropsWithChildren) {
   useActivityTracker(() => {
     if (!activity) return;
 
-    const strategies: ActivityKindStrategy = {
-      countries: () => focusViewportCountry(currentCountryData),
-      typing: () => focusViewportContinent(currentContinent),
-      pointing: () => focusViewportContinent(currentContinent),
-    };
-
-    strategies[activity.kind]?.();
+    focusViewportContinent(currentContinent);
   });
 
   useEffect(
