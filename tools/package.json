@@ -31,6 +31,7 @@
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
     "npm-run-all2": "^7.0.2",
     "prettier": "^3.4.2",
+    "proj4": "^2.15.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },

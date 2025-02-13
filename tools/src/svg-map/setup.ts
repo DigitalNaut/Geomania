@@ -1,18 +1,18 @@
 import fs from "fs";
+import path from "path";
 
 import { findShapeFile } from "./fileUtils.js";
 
-const dir = "src/svg-map";
-const inDir = `${dir}/${process.env.IN_DIR}`;
-const outDir = `${dir}/${process.env.OUT_DIR}`;
+const inDir = path.join(__dirname, process.env.IN_DIR ?? "");
+const outDir = path.join(__dirname, process.env.OUT_DIR ?? "");
 
 if (!fs.existsSync(inDir)) fs.mkdirSync(inDir);
 if (fs.existsSync(outDir)) fs.rmSync(outDir, { recursive: true, force: true });
 fs.mkdirSync(outDir);
 
 function getFilePath(filename: string | undefined) {
-  if (!filename) throw new Error("Missing filename", );
-  return `${outDir}/${filename}`;
+  if (!filename) throw new Error("Missing filename");
+  return path.join(outDir, filename);
 }
 
 // JSON (GeoJSON) filenames

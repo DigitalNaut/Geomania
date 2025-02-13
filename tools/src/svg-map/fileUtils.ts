@@ -1,21 +1,22 @@
 import chalk from "chalk";
 import { execSync } from "child_process";
 import fs from "fs";
+import path from "path";
 
 import { inquirer, timeStamp } from "./utils.js";
 
-export function bytesToKb(bytes: number | undefined) {
+function bytesToKb(bytes: number | undefined) {
   return (bytes ?? 0) / 1024;
 }
 
-export function getFileSizeKb(filePath: string) {
+function getFileSize(filePath: string) {
   const stat = fs.statSync(filePath, { throwIfNoEntry: false });
   return bytesToKb(stat?.size);
 }
 
-export function measureFileSize(path: string) {
-  const fileName = path.split("/").pop();
-  const size = getFileSizeKb(path);
+export function measureFileSize(filePath: string) {
+  const fileName = path.basename(filePath);
+  const size = getFileSize(filePath);
 
   return {
     fileName,
