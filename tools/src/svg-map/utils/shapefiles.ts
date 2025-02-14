@@ -1,33 +1,8 @@
 import chalk from "chalk";
 import { execSync } from "child_process";
-import fs from "fs";
-import path from "path";
 
-import { inquirer, timeStamp } from "./utils.js";
-
-function bytesToKb(bytes: number | undefined) {
-  return (bytes ?? 0) / 1024;
-}
-
-function getFileSize(filePath: string) {
-  const stat = fs.statSync(filePath, { throwIfNoEntry: false });
-  return bytesToKb(stat?.size);
-}
-
-export function measureFileSize(filePath: string) {
-  const fileName = path.basename(filePath);
-  const size = getFileSize(filePath);
-
-  return {
-    fileName,
-    size,
-    time: timeStamp(),
-  };
-}
-
-function getFileList(dir: string) {
-  return execSync(`dir /b/o/s "${dir}/"`).toString(`utf-8`).split(/\r?\n/);
-}
+import { inquire } from "./commands.js";
+import { getFileList } from "./files.js";
 
 function getLocalShapeFile(dir: string) {
   try {
@@ -59,7 +34,7 @@ async function getRemoteShapeFile(dir: string) {
 }
 
 async function promptDownloadShapeFile() {
-  const response = await inquirer("\nShape file not found. Do you want to download it? (y/yes) ");
+  const response = await inquire("\nShape file not found. Do you want to download it? (y/yes) ");
   const shouldDownloadFile = ["y", "yes"].includes(response);
 
   return shouldDownloadFile;

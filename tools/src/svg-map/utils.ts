@@ -1,6 +1,3 @@
-import chalk from "chalk";
-import readlinePromise from "node:readline/promises";
-
 export function handleError(error: unknown, context: string) {
   console.error(`Error in ${context}:`, error);
   process.exit(1);
@@ -11,28 +8,23 @@ function formatTime(time: number, divisor: number = 1000, unit = "s", precision 
   return `${timeInSeconds.toFixed(precision)} ${unit}`;
 }
 
+/**
+ * Timestamp factory. It records the current time and returns a function that measures the time difference.
+ *
+ * @returns A function that returns the time difference in seconds
+ * @example
+ * ```ts
+ * const stamp = timeStamp();
+ * setTimeout(() => console.log(stamp()), 1000);
+ * ```
+ */
 function createTimeStamp() {
   const startTime = performance.now();
   return () => formatTime(performance.now() - startTime);
 }
 
+/**
+ * Function to measure the time since its creation.
+ * @returns The time difference in seconds
+ */
 export const timeStamp = createTimeStamp();
-
-export const inquirer = async function inquiring(question: string) {
-  const lineReader = readlinePromise.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  return new Promise<string>(async (resolve, reject) => {
-    try {
-      const response = await lineReader.question(chalk.yellow(question));
-      resolve(response);
-    } catch (error) {
-      console.error(error);
-      reject(error);
-    } finally {
-      lineReader.close();
-    }
-  });
-};

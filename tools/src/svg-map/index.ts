@@ -2,20 +2,22 @@ import chalk from "chalk";
 import fs from "fs";
 import path from "path";
 
-import { runCommand } from "./commandUtils.js";
-import { measureFileSize } from "./fileUtils.js";
 import {
-  shapeFile,
-  continentsMapFilename,
-  subregionsMapFilename,
-  countriesMapFilename,
   continentBoundsFilename,
-  subregionBoundsFilename,
   continentFeaturesFilename,
-  subregionFeaturesFilename,
+  continentsMapFilename,
+  countriesMapFilename,
   countryFeaturesFilename,
+  shapeFile,
+  subregionBoundsFilename,
+  subregionFeaturesFilename,
+  subregionsMapFilename,
 } from "./setup.js";
 import { handleError, timeStamp } from "./utils.js";
+import { runCommand } from "./utils/commands.js";
+import { measureFileSize } from "./utils/files.js";
+
+const UTILS_PATH = `${__dirname}/scripts/utils.mjs`;
 
 if (!shapeFile) {
   console.error("A shape file is required.");
@@ -67,8 +69,8 @@ const subregionsCmd = `\
     -dissolve SUBREGION target="filtered_countries" calc="LABEL_X = round(average(LABEL_X), 2), LABEL_Y = round(average(LABEL_Y), 2)" + name="subregions"
     -rectangles target="subregions" + name="subregion_bounds"
     -target "subregion_bounds"
-    -require "../../../../../../tools/src/svg-map/scripts/utils.mjs" alias="utils"
-    -each "BBOX = utils.projectBBox('EPSG:3857', 'WGS84', this.bbox, round).map(round)"
+    -require "${UTILS_PATH}" alias="utils"
+    -each "BBOX = utils.projectBBox({ bbox:this.bbox, from:'EPSG:3857' }).map(round)"
     -snap precision=0.01
     -o ${subregionFeaturesFilename} format=json precision=0.01
 
@@ -101,8 +103,8 @@ const continentsCmd = `\
     -dissolve CONTINENT target="filtered_countries" calc="LABEL_X = round(average(LABEL_X), 2), LABEL_Y = round(average(LABEL_Y), 2)" + name="pruned_continents"
     -rectangles target="pruned_continents" + name="continent_bounds"
     -target "continent_bounds"
-    -require "../../../../../../tools/src/svg-map/scripts/utils.mjs" alias="utils"
-    -each "BBOX = utils.projectBBox('EPSG:3857', 'WGS84', this.bbox, round).map(round)"
+    -require "${UTILS_PATH}" alias="utils"
+    -each "BBOX = utils.projectBBox({ bbox:this.bbox, from:'EPSG:3857' }).map(round)"
     -snap precision=0.01
     -o ${continentFeaturesFilename} format=json
 

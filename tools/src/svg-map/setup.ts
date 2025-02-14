@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import { findShapeFile } from "./fileUtils.js";
+import { findShapeFile } from "./utils/shapefiles.js";
 
 const inDir = path.join(__dirname, process.env.IN_DIR ?? "");
 const outDir = path.join(__dirname, process.env.OUT_DIR ?? "");
