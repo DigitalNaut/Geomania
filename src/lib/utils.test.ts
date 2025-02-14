@@ -1,4 +1,5 @@
 import { suite, it, expect } from "vitest";
+
 import { pivotMap, pivotTable, selectRandom, shuffleArray } from "./utils";
 
 suite("Utilities", () => {
