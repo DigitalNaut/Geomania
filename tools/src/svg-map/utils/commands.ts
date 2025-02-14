@@ -5,8 +5,7 @@ import { promisify } from "util";
 
 const execPromise = promisify(exec);
 
-export async function runCommand(command: string, description: string) {
-  console.log(`\n${chalk.yellow(description)}...`);
+export async function runCommand(command: string) {
   return execPromise(command, { cwd: __dirname });
 }
 

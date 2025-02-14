@@ -124,52 +124,51 @@ const continentsCmd = `\
     -o ${continentsMapFilename} id-field=CONTINENT format=svg
   `.replace(/\s{2,}/g, " ");
 
+async function generateMap({ command, type }: { command: string; type: "continents" | "subregions" | "countries" }) {
+  const map = await runCommand(command);
+
+  const formattedType = type[0].toLocaleUpperCase() + type.slice(1);
+  console.log(formattedType, "map file log:");
+  console.log(chalk.blue(map?.stdout || map?.stderr || "No map generated."));
+}
+
+function recordFileSizes(list: ReturnType<typeof measureFileSize>[], files: string[]) {
+  files.forEach((file) => list.push(measureFileSize(file)));
+  return list.reduce((acc, file) => acc + file.size, 0);
+}
+
 async function processMaps() {
-  let outputFiles: ReturnType<typeof measureFileSize>[] = [];
+  const promises = (
+    [
+      { command: countriesCmd, type: "countries" },
+      { command: subregionsCmd, type: "subregions" },
+      { command: continentsCmd, type: "continents" },
+    ] as const
+  ).map(generateMap);
 
-  const continentsMap = runCommand(continentsCmd, "Generating continent map")
-    .then((result) => {
-      console.log("\nContinent map files:");
-      console.log(chalk.blueBright(result?.stdout || result?.stderr || "No map generated."));
-    })
-    .then(() => {
-      outputFiles.push(measureFileSize(continentsMapFilename));
-      outputFiles.push(measureFileSize(continentFeaturesFilename));
-    })
-    .catch((error) => handleError(error, "map generation"));
+  try {
+    await Promise.allSettled(promises);
 
-  const subregionsMap = runCommand(subregionsCmd, "Generating subregion map")
-    .then((result) => {
-      console.log("Subregion map files:");
-      console.log(chalk.blueBright(result?.stdout || result?.stderr || "No map generated."));
-    })
-    .then(() => {
-      outputFiles.push(measureFileSize(subregionsMapFilename));
-      outputFiles.push(measureFileSize(subregionFeaturesFilename));
-    })
-    .catch((error) => handleError(error, "map generation"));
+    console.log(chalk.green(`\nDone in ${timeStamp()}`));
 
-  const countriesMap = runCommand(countriesCmd, "Generating country map")
-    .then((result) => {
-      console.log("Country map files:");
-      console.log(chalk.blueBright(result?.stdout || result?.stderr || "No map generated."));
-    })
-    .then(() => {
-      outputFiles.push(measureFileSize(countriesMapFilename));
-      outputFiles.push(measureFileSize(countryFeaturesFilename));
-    })
-    .catch((error) => handleError(error, "map generation"));
+    let outputFiles: ReturnType<typeof measureFileSize>[] = [];
+    const totalSize = recordFileSizes(outputFiles, [
+      // Country files
+      countryFeaturesFilename,
+      countriesMapFilename,
+      // Subregion files
+      subregionFeaturesFilename,
+      subregionBoundsFilename,
+      subregionsMapFilename,
+      // Continent files
+      continentFeaturesFilename,
+      continentBoundsFilename,
+      continentsMapFilename,
+    ]);
 
-  Promise.allSettled([continentsMap, subregionsMap, countriesMap]).then(() => {
-    const totalSize = outputFiles.reduce((acc, file) => acc + file.size, 0);
     console.log("\nFiles generated:");
     console.table(outputFiles.map((file) => ({ ...file, size: `${file.size.toFixed(2)} KB` })));
     console.log(`Total size: ${totalSize.toFixed(2)} KB`);
-  });
-
-  try {
-    await Promise.all([countriesMap, subregionsMap, continentsMap]);
-    console.log(chalk.green(`\nDone in ${timeStamp()}`));
   } catch (error) {
     handleError(error, "map generation");
   }
