@@ -1,8 +1,9 @@
 import { faAngleLeft, faBookAtlas, faGlobe, faKeyboard, faMousePointer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { Map } from "leaflet";
 import { AnimatePresence, motion } from "motion/react";
-import { useCallback, useMemo } from "react";
-import { Circle, Marker, Popup, Tooltip, ZoomControl } from "react-leaflet";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Marker, ZoomControl } from "react-leaflet";
 
 import { ActivityButton } from "src/components/activity/ActivityButton";
 import ContinentSelectionOverlay from "src/components/activity/ContinentSelectionOverlay";
@@ -24,6 +25,7 @@ import { LeafletMapFrame } from "src/components/map/LeafletMapFrame";
 import { MapControl } from "src/components/map/MapControl";
 import { markerIcon } from "src/components/map/MarkerIcon";
 import { useActivityCoordinatorContext } from "src/context/ActivityCoordinator/hook";
+import { useMapContext } from "src/context/Map/hook";
 import { useMapActivityContext } from "src/context/MapActivity/hook";
 import { useHeaderController } from "src/context/useHeaderController";
 import { useError } from "src/hooks/common/useError";
@@ -68,6 +70,47 @@ const mapActivityTheme: Record<ActivityMode | "default", SvgMapColorTheme> = {
   },
 } as const;
 
+function MapLabel({
+  country,
+  isCurrentCountry,
+  mapPixelPosition: { top, left },
+  onClick,
+  projectFn,
+}: {
+  country: string;
+  isCurrentCountry: boolean;
+  onClick: () => void;
+  mapPixelPosition: {
+    top: number;
+    left: number;
+  };
+  projectFn: Map["project"];
+}) {
+  const countryData = useMemo(() => countryCatalog[country], [country]);
+  const position = useMemo(() => projectFn?.(getLabelCoordinates(countryData)), [countryData, projectFn]);
+
+  if (!position) return null;
+
+  return (
+    <div
+      className={cn(
+        "absolute z-1000 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-sm px-1 text-xs text-white/30 hover:z-1500 hover:bg-white/60 hover:text-base hover:text-lime-700 hover:opacity-100",
+        {
+          "z-1100 bg-white text-base text-lime-700 hover:opacity-25": isCurrentCountry,
+        },
+      )}
+      key={country}
+      style={{
+        transform: `translate(${position.x - left}px, ${position.y - top}px)`,
+        transition: "opacity 0.1s ease-in-out, color 0.1s ease-in-out, background-color 0.1s ease-in-out",
+      }}
+      onClick={onClick}
+    >
+      {countryData.GEOUNIT}
+    </div>
+  );
+}
+
 function ActivityMap({
   setError,
   onFinishActivity,
@@ -75,6 +118,7 @@ function ActivityMap({
   setError: (error: Error) => void;
   onFinishActivity: () => void;
 }) {
+  const { map } = useMapContext();
   const { resetViewport } = useMapViewport();
   const {
     currentActivityState,
@@ -125,6 +169,29 @@ function ActivityMap({
     };
   }, [activity?.kind, currentContinent, currentCountry, visitedList]);
 
+  const [mapPixelPosition, setMapPixelPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+
+  const updateSvgLabelPositions = useCallback(() => {
+    setMapPixelPosition({
+      top: map?.getPixelBounds().min?.y ?? 0,
+      left: map?.getPixelBounds().min?.x ?? 0,
+    });
+  }, [map]);
+
+  useEffect(() => {
+    if (map) {
+      map.addEventListener("move", updateSvgLabelPositions);
+      map.addEventListener("zoomanim", updateSvgLabelPositions);
+    }
+
+    return () => {
+      if (map) {
+        map.removeEventListener("move", updateSvgLabelPositions);
+        map.removeEventListener("zoomanim", updateSvgLabelPositions);
+      }
+    };
+  }, [map, updateSvgLabelPositions]);
+
   return (
     <div
       className={cn("size-full bg-linear-to-br", activity ? mapGradientTheme.activity : mapGradientTheme.noActivity)}
@@ -144,58 +211,27 @@ function ActivityMap({
               </Button>
             </MapControl>
 
-            {storedCountryCoordinates && (
-              <>
-                {activity.activity !== "quiz" || activity.kind === "typing" ? (
-                  <Marker position={storedCountryCoordinates} icon={markerIcon} />
-                ) : null}
-
-                {activity.activity === "review" && currentCountry && (
-                  <Popup
-                    position={storedCountryCoordinates}
-                    keepInView
-                    closeButton
-                    autoClose={false}
-                    closeOnClick={false}
-                    closeOnEscapeKey={false}
-                    autoPan={false}
-                  >
-                    <div className="flex flex-col justify-center gap-1 text-center">
-                      <h2 className="text-xl">{currentCountry.GEOUNIT}</h2>
-                      {currentCountry.ADM0_DIF || currentCountry.GEOU_DIF ? (
-                        <h3 className="text-sm">({currentCountry.SOVEREIGNT})</h3>
-                      ) : null}
-                    </div>
-                  </Popup>
-                )}
-              </>
-            )}
+            {storedCountryCoordinates &&
+              (activity.activity !== "quiz" || activity.kind === "typing" ? (
+                <Marker position={storedCountryCoordinates} icon={markerIcon} />
+              ) : null)}
           </>
         )}
 
         <CountrySvgMap lists={mapLists} onClick={handleMapClick} colorTheme={colorTheme} />
 
         {activity?.activity === "review" &&
-          visitedList.slice(-5).map((country) => {
-            const countryData = countryCatalog[country];
-            const labelPosition = getLabelCoordinates(countryData);
-
-            if (country === currentCountry?.GU_A3) return null;
-
-            return (
-              <Circle className="fill-none stroke-none" key={country} center={labelPosition} radius={0}>
-                <Tooltip
-                  className="!border-none !bg-white/80 !text-lime-900 hover:!z-1000 hover:!bg-white hover:!shadow-md"
-                  interactive
-                  permanent
-                  position={labelPosition}
-                  direction="center"
-                >
-                  {countryData.GEOUNIT}
-                </Tooltip>
-              </Circle>
-            );
-          })}
+          map &&
+          visitedList.map((country) => (
+            <MapLabel
+              key={country}
+              mapPixelPosition={mapPixelPosition}
+              onClick={() => handleMapClick(country)}
+              country={country}
+              isCurrentCountry={country === currentCountry?.GU_A3}
+              projectFn={(...rest) => map.project(...rest)}
+            />
+          ))}
       </LeafletMapFrame>
 
       {activity && (
