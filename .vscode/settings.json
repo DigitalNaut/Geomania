@@ -60,6 +60,7 @@
     }
   },
   "tailwindCSS.classAttributes": [
+    "className",
     ".+(?:Theme|Style)s?.*",
   ],
   "tailwindCSS.experimental.classRegex": [
