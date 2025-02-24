@@ -18,7 +18,7 @@ import ReviewFloatingPanel, {
 import Button from "src/components/common/Button";
 import ErrorBanner from "src/components/common/ErrorBanner";
 import MainView from "src/components/layout/MainView";
-import type { SvgMapColorTheme } from "src/components/map/CountrySvgMap";
+import type { ActiveSvgMapLists, SvgMapColorTheme } from "src/components/map/CountrySvgMap";
 import { CountrySvgMap } from "src/components/map/CountrySvgMap";
 import { LeafletMapFrame } from "src/components/map/LeafletMapFrame";
 import { MapControl } from "src/components/map/MapControl";
@@ -112,7 +112,7 @@ function ActivityMap({
 
   const colorTheme = useMemo(() => mapActivityTheme[activity?.activity || "default"], [activity]);
 
-  const mapLists = useMemo(() => {
+  const mapLists = useMemo<ActiveSvgMapLists>(() => {
     // Active list is all countries in the current continent
     const activeList = !currentContinent ? [] : countriesByContinent[currentContinent].slice();
     // Highlight list is the current country unless Pointing

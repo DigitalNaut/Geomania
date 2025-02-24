@@ -34,6 +34,8 @@ type SvgMapLists = {
   [K in keyof SvgMapColorTheme["country"] as K extends `${infer Prefix}Style` ? `${Prefix}List` : never]: string[];
 };
 
+export type ActiveSvgMapLists = Omit<SvgMapLists, "inactiveList">;
+
 /**
  * Paths extracted from the SVG
  */
@@ -110,7 +112,7 @@ export function CountrySvgMap({
   colorTheme: SvgMapColorTheme;
   onClick?: (a3: string) => void;
   className?: string;
-  lists: Omit<SvgMapLists, "inactiveList">;
+  lists: ActiveSvgMapLists;
 }) {
   const { zoom } = useMapContext();
   const { paths, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"]);
@@ -119,17 +121,20 @@ export function CountrySvgMap({
     () =>
       paths.reduce<SvgMapPaths>(
         (acc, path) => {
-          if (highlightList.includes(path.id)) {
-            acc.highlightPaths.push(path);
-            return acc;
-          }
-
-          if (visitedList.includes(path.id)) {
-            acc.visitedPaths.push(path);
-            return acc;
-          }
-
+          // Check if the country is active
           if (activeList.includes(path.id)) {
+            // Check if the country is highlighted
+            if (highlightList.includes(path.id)) {
+              acc.highlightPaths.push(path);
+              return acc;
+            }
+
+            // Check if the country was visited
+            if (visitedList.includes(path.id)) {
+              acc.visitedPaths.push(path);
+              return acc;
+            }
+
             acc.activePaths.push(path);
             return acc;
           }
