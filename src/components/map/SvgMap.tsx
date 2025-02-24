@@ -1,4 +1,4 @@
-import type { LeafletMouseEventHandlerFn } from "leaflet";
+import type { LeafletEventHandlerFnMap, LeafletMouseEventHandlerFn } from "leaflet";
 import { latLngBounds } from "leaflet";
 import type { PropsWithChildren } from "react";
 import { Fragment, useCallback, useMemo, useState } from "react";
@@ -9,26 +9,28 @@ import { twMerge } from "tailwind-merge";
 import { useMapContext } from "src/context/Map/hook";
 import { useSvgAttributes } from "src/hooks/common/useSVGAttributes";
 
+import mapSvg from "src/assets/images/generated/countries-world-map.svg?raw";
+
 /**
  * Manual adjustments to the bounds of the map
  */
-const mapBoundsAdjustment = {
+const manualBoundsAdjustment = {
   top: -1.35,
   left: 1.3,
   right: 53,
   bottom: 1,
-};
+} as const;
 
 /**
  * Preset SVG attributes for the map
  */
-const svgAttributes: SVGOverlayProps["attributes"] = {
+const defaultSvgAttributes: SVGOverlayProps["attributes"] = {
   fill: "white",
   stroke: "white",
   strokeLinecap: "round",
   strokeLinejoin: "round",
   strokeWidth: "0.01",
-};
+} as const;
 
 export type SvgMapColorTheme = {
   country: {
@@ -109,31 +111,29 @@ function WithAnimationDefs({ children }: PropsWithChildren) {
 /**
  * Leaflet component to render an SVG map
  */
-export default function SvgMap({
-  svg,
-  hidden,
-  colorTheme,
-  onClick,
+function SvgMap({
   className,
-  lists: { activeList, highlightList, visitedList },
   children,
+  eventHandlers,
+  attributes,
+  boundsAdjustment = { top: 0, bottom: 0, left: 0, right: 0 },
 }: PropsWithChildren<{
   svg: string;
-  hidden?: boolean;
-  colorTheme: SvgMapColorTheme;
-  onClick?: (a3: string) => void;
   className?: string;
-  lists: Omit<SvgMapLists, "inactiveList">;
+  eventHandlers?: LeafletEventHandlerFnMap;
+  attributes?: Record<string, string>;
+  boundsAdjustment?: {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  };
 }>) {
-  const { zoom } = useMapContext();
-
-  const { paths, width, height, viewBox } = useSvgAttributes(svg, ["width", "height", "viewBox"]);
-
   const [bounds] = useState(() => {
-    const north = 85 + mapBoundsAdjustment.top,
-      south = -85 - mapBoundsAdjustment.bottom,
-      west = -180 - mapBoundsAdjustment.left,
-      east = 180 + mapBoundsAdjustment.right;
+    const north = 85 + boundsAdjustment.top,
+      south = -85 - boundsAdjustment.bottom,
+      west = -180 - boundsAdjustment.left,
+      east = 180 + boundsAdjustment.right;
 
     return latLngBounds([
       [south, west],
@@ -141,14 +141,43 @@ export default function SvgMap({
     ]);
   });
 
-  const click: LeafletMouseEventHandlerFn = ({ originalEvent }) => {
-    const target = originalEvent.target as HTMLElement | null;
-    const a3 = target?.getAttribute("data-a3"); // Set in the path elements below
+  return (
+    <SVGOverlay
+      interactive
+      bounds={bounds}
+      attributes={{
+        ...defaultSvgAttributes,
+        ...attributes,
+      }}
+      zIndex={1000}
+      className={twMerge("transition-colors duration-500 ease-in-out", className)}
+      eventHandlers={eventHandlers}
+    >
+      {children}
+    </SVGOverlay>
+  );
+}
 
-    if (a3) onClick?.(a3);
-  };
-
-  const adjustForZoom = useCallback((value: number) => value / zoom ** 2, [zoom]);
+/**
+ * SVG map implementation for countries
+ * @param param0
+ * @returns
+ */
+export function CountrySvgMap({
+  hidden,
+  colorTheme,
+  onClick,
+  className,
+  lists: { activeList, highlightList, visitedList },
+}: {
+  hidden?: boolean;
+  colorTheme: SvgMapColorTheme;
+  onClick?: (a3: string) => void;
+  className?: string;
+  lists: Omit<SvgMapLists, "inactiveList">;
+}) {
+  const { zoom } = useMapContext();
+  const { paths, width, height, viewBox } = useSvgAttributes(mapSvg, ["width", "height", "viewBox"]);
 
   const { visitedPaths, activePaths, highlightPaths, inactivePaths } = useMemo(
     () =>
@@ -173,32 +202,36 @@ export default function SvgMap({
           return acc;
         },
         {
+          highlightPaths: [],
           visitedPaths: [],
           activePaths: [],
           inactivePaths: [],
-          highlightPaths: [],
         },
       ),
     [activeList, highlightList, visitedList, paths],
   );
 
-  if (hidden) return null;
-
+  const adjustForZoom = useCallback((value: number) => value / zoom ** 2, [zoom]);
   const strokeWidth = adjustForZoom(3);
 
+  const click: LeafletMouseEventHandlerFn = ({ originalEvent }) => {
+    const { target } = originalEvent;
+    if (!(target instanceof Element)) return;
+
+    const a3 = target.getAttribute("data-a3");
+
+    if (a3) onClick?.(a3);
+  };
+
+  if (hidden) return null;
+
   return (
-    <SVGOverlay
-      interactive
-      bounds={bounds}
-      attributes={{
-        ...svgAttributes,
-        width,
-        height,
-        viewBox,
-      }}
-      zIndex={1000}
-      className={twMerge("transition-colors duration-500 ease-in-out", className)}
+    <SvgMap
+      className={className}
+      svg={mapSvg}
       eventHandlers={{ click }}
+      attributes={{ width, height, viewBox }}
+      boundsAdjustment={manualBoundsAdjustment}
     >
       {inactivePaths.map((path, index) => (
         <path
@@ -266,8 +299,6 @@ export default function SvgMap({
           })}
         </WithAnimationDefs>
       )}
-
-      {children}
-    </SVGOverlay>
+    </SvgMap>
   );
 }
