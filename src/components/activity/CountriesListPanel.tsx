@@ -41,8 +41,9 @@ export default function CountriesListPanel({ isAbridged = false }: { isAbridged?
 
   return (
     <div className={cn("flex flex-col gap-2 overflow-y-auto", { hidden: isAbridged })}>
-      <h3 className="mb-2 text-center md:text-xl">
-        Reviewing {visited.length + unvisited.length} countries in <span className="font-bold">{currentContinent}</span>
+      <h3 className="mb-2 text-center md:text-lg">
+        <div>Reviewing {visited.length + unvisited.length} countries in</div>
+        <div className="font-bold text-lg md:text-xl">{currentContinent}</div>
       </h3>
 
       <div className="flex h-max flex-col gap-2 overflow-y-auto pl-2">
