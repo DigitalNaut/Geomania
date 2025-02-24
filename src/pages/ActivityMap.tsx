@@ -2,7 +2,7 @@ import { faAngleLeft, faBookAtlas, faGlobe, faKeyboard, faMousePointer } from "@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useMemo } from "react";
-import { Marker, Popup, ZoomControl } from "react-leaflet";
+import {  Marker, Popup, ZoomControl } from "react-leaflet";
 
 import { ActivityButton } from "src/components/activity/ActivityButton";
 import ContinentSelectionOverlay from "src/components/activity/ContinentSelectionOverlay";
@@ -35,6 +35,7 @@ import { getLabelCoordinates } from "src/utils/features";
 import { cn, tw } from "src/utils/styles";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
+import mapSvg from "src/assets/images/generated/countries-world-map.svg?raw";
 
 const mapGradientStyle = {
   noActivity: tw`from-sky-700 to-sky-800 blur-xs`,
@@ -126,6 +127,15 @@ function ActivityMap({
     return [currentCountry.GU_A3];
   }, [activity?.kind, currentCountry]);
 
+  const mapLists = useMemo(
+    () => ({
+      activeList,
+      highlightList,
+      visitedList,
+    }),
+    [activeList, visitedList, highlightList],
+  );
+
   return (
     <div
       className={cn("size-full bg-linear-to-br", activity ? mapGradientStyle.activity : mapGradientStyle.noActivity)}
@@ -178,16 +188,7 @@ function ActivityMap({
           </>
         )}
 
-        <SvgMap
-          lists={{
-            activeList,
-            visitedList,
-            highlightList,
-            inactiveList: [],
-          }}
-          onClick={handleMapClick}
-          colorTheme={colorTheme}
-        />
+        <SvgMap svg={mapSvg} lists={mapLists} onClick={handleMapClick} colorTheme={colorTheme} />
       </LeafletMapFrame>
 
       {activity && (
