@@ -150,7 +150,7 @@ function ActivityMap({
                   <Marker position={storedCountryCoordinates} icon={markerIcon} />
                 ) : null}
 
-                {activity.activity === "review" && (
+                {activity.activity === "review" && currentCountry && (
                   <Popup
                     position={storedCountryCoordinates}
                     keepInView
@@ -160,16 +160,12 @@ function ActivityMap({
                     closeOnEscapeKey={false}
                     autoPan={false}
                   >
-                    {currentCountry ? (
-                      <div className="flex flex-col justify-center gap-1 text-center">
-                        <h2 className="text-xl">{currentCountry.GEOUNIT}</h2>
-                        {currentCountry.ADM0_DIF || currentCountry.GEOU_DIF ? (
-                          <h3 className="text-sm">({currentCountry.SOVEREIGNT})</h3>
-                        ) : null}
-                      </div>
-                    ) : (
-                      <div className="text-xl italic">Unknown</div>
-                    )}
+                    <div className="flex flex-col justify-center gap-1 text-center">
+                      <h2 className="text-xl">{currentCountry.GEOUNIT}</h2>
+                      {currentCountry.ADM0_DIF || currentCountry.GEOU_DIF ? (
+                        <h3 className="text-sm">({currentCountry.SOVEREIGNT})</h3>
+                      ) : null}
+                    </div>
                   </Popup>
                 )}
               </>
