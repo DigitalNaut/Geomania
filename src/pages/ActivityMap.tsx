@@ -2,7 +2,7 @@ import { faAngleLeft, faBookAtlas, faGlobe, faKeyboard, faMousePointer } from "@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useMemo } from "react";
-import {  Marker, Popup, ZoomControl } from "react-leaflet";
+import { Circle, Marker, Popup, Tooltip, ZoomControl } from "react-leaflet";
 
 import { ActivityButton } from "src/components/activity/ActivityButton";
 import ContinentSelectionOverlay from "src/components/activity/ContinentSelectionOverlay";
@@ -29,7 +29,7 @@ import { useHeaderController } from "src/context/useHeaderController";
 import { useError } from "src/hooks/common/useError";
 import { useGuessRecord } from "src/hooks/useGuessRecord";
 import { useMapViewport } from "src/hooks/useMapViewport";
-import { countriesByContinent } from "src/store/CountryStore/slice";
+import { countriesByContinent, countryCatalog } from "src/store/CountryStore/slice";
 import type { ActivityMode, ActivityType } from "src/types/map-activity";
 import { getLabelCoordinates } from "src/utils/features";
 import { cn, tw } from "src/utils/styles";
@@ -189,6 +189,28 @@ function ActivityMap({
         )}
 
         <SvgMap svg={mapSvg} lists={mapLists} onClick={handleMapClick} colorTheme={colorTheme} />
+
+        {activity?.activity === "review" &&
+          visitedList.slice(-5).map((country) => {
+            const countryData = countryCatalog[country];
+            const labelPosition = getLabelCoordinates(countryData);
+
+            if (country === currentCountry?.GU_A3) return null;
+
+            return (
+              <Circle className="fill-none stroke-none" key={country} center={labelPosition} radius={0}>
+                <Tooltip
+                  className="!border-none !bg-transparent !text-white"
+                  permanent
+                  position={labelPosition}
+                  opacity={0.8}
+                  direction="center"
+                >
+                  {countryData.GEOUNIT}
+                </Tooltip>
+              </Circle>
+            );
+          })}
       </LeafletMapFrame>
 
       {activity && (
