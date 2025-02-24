@@ -20,9 +20,9 @@ import ErrorBanner from "src/components/common/ErrorBanner";
 import MainView from "src/components/layout/MainView";
 import { LeafletMapFrame } from "src/components/map/LeafletMapFrame";
 import { MapControl } from "src/components/map/MapControl";
-import type { SvgMapColorTheme } from "src/components/map/SvgMap";
-import SvgMap from "src/components/map/SvgMap";
 import { markerIcon } from "src/components/map/MarkerIcon";
+import type { SvgMapColorTheme } from "src/components/map/SvgMap";
+import { CountrySvgMap } from "src/components/map/SvgMap";
 import { useActivityCoordinatorContext } from "src/context/ActivityCoordinator/hook";
 import { useMapActivityContext } from "src/context/MapActivity/hook";
 import { useHeaderController } from "src/context/useHeaderController";
@@ -32,42 +32,41 @@ import { useMapViewport } from "src/hooks/useMapViewport";
 import { countriesByContinent, countryCatalog } from "src/store/CountryStore/slice";
 import type { ActivityMode, ActivityType } from "src/types/map-activity";
 import { getLabelCoordinates } from "src/utils/features";
-import { cn, tw } from "src/utils/styles";
+import { cn } from "src/utils/styles";
 
 import NerdMascot from "src/assets/images/mascot-nerd.min.svg";
-import mapSvg from "src/assets/images/generated/countries-world-map.svg?raw";
 
-const mapGradientStyle = {
-  noActivity: tw`from-sky-700 to-sky-800 blur-xs`,
-  activity: tw`from-slate-900 to-slate-900 blur-none`,
-};
-
-const reviewCountryStyle: SvgMapColorTheme["country"] = {
-  activeStyle: tw`fill-slate-500/95 stroke-slate-400 hover:fill-slate-500 hover:stroke-slate-300`,
-  highlightStyle: tw`fill-lime-500 stroke-lime-200`,
-  visitedStyle: tw`fill-lime-700 stroke-lime-200`,
-  inactiveStyle: tw`fill-slate-800 stroke-none`,
-};
-
-const quizCountryStyle: SvgMapColorTheme["country"] = {
-  activeStyle: tw`fill-slate-500/95 stroke-slate-400`,
-  highlightStyle: tw`fill-lime-500 stroke-lime-200`,
-  visitedStyle: tw`fill-lime-700 stroke-lime-200`,
-  inactiveStyle: tw`fill-slate-800 stroke-none`,
-};
-
-const defaultCountryStyle: SvgMapColorTheme["country"] = {
-  activeStyle: tw`fill-sky-700 stroke-none`,
-  highlightStyle: "",
-  visitedStyle: "",
-  inactiveStyle: tw`fill-sky-700 stroke-none`,
-};
+const mapGradientTheme = {
+  noActivity: "from-sky-700 to-sky-800 blur-xs",
+  activity: "from-slate-900 to-slate-900 blur-none",
+} as const;
 
 const mapActivityTheme: Record<ActivityMode | "default", SvgMapColorTheme> = {
-  review: { country: reviewCountryStyle },
-  quiz: { country: quizCountryStyle },
-  default: { country: defaultCountryStyle },
-};
+  review: {
+    country: {
+      activeStyle: "fill-slate-500/95 stroke-slate-400 hover:fill-slate-500 hover:stroke-slate-300",
+      highlightStyle: "fill-lime-500 stroke-lime-200",
+      visitedStyle: "fill-lime-700 stroke-lime-200",
+      inactiveStyle: "fill-slate-800 stroke-none",
+    },
+  },
+  quiz: {
+    country: {
+      activeStyle: "fill-slate-500/95 stroke-slate-400",
+      highlightStyle: "fill-lime-500 stroke-lime-200",
+      visitedStyle: "fill-lime-700 stroke-lime-200",
+      inactiveStyle: "fill-slate-800 stroke-none",
+    },
+  },
+  default: {
+    country: {
+      activeStyle: "fill-sky-700 stroke-none",
+      highlightStyle: "",
+      visitedStyle: "",
+      inactiveStyle: "fill-sky-700 stroke-none",
+    },
+  },
+} as const;
 
 function ActivityMap({
   setError,
@@ -113,32 +112,22 @@ function ActivityMap({
 
   const colorTheme = useMemo(() => mapActivityTheme[activity?.activity || "default"], [activity]);
 
-  const activeList = useMemo(() => {
-    if (!currentContinent) return [];
+  const mapLists = useMemo(() => {
+    // Active list is all countries in the current continent
+    const activeList = !currentContinent ? [] : countriesByContinent[currentContinent].slice();
+    // Highlight list is the current country unless Pointing
+    const highlightList = activity?.kind === "pointing" ? [] : !currentCountry ? [] : [currentCountry.GU_A3];
 
-    return countriesByContinent[currentContinent].slice();
-  }, [currentContinent]);
-
-  const highlightList = useMemo(() => {
-    if (activity?.kind === "pointing") return [];
-
-    if (!currentCountry) return [];
-
-    return [currentCountry.GU_A3];
-  }, [activity?.kind, currentCountry]);
-
-  const mapLists = useMemo(
-    () => ({
+    return {
       activeList,
       highlightList,
       visitedList,
-    }),
-    [activeList, visitedList, highlightList],
-  );
+    };
+  }, [activity?.kind, currentContinent, currentCountry, visitedList]);
 
   return (
     <div
-      className={cn("size-full bg-linear-to-br", activity ? mapGradientStyle.activity : mapGradientStyle.noActivity)}
+      className={cn("size-full bg-linear-to-br", activity ? mapGradientTheme.activity : mapGradientTheme.noActivity)}
     >
       <LeafletMapFrame showControls={activity?.activity === "review"}>
         {activity && (
@@ -188,7 +177,7 @@ function ActivityMap({
           </>
         )}
 
-        <SvgMap svg={mapSvg} lists={mapLists} onClick={handleMapClick} colorTheme={colorTheme} />
+        <CountrySvgMap lists={mapLists} onClick={handleMapClick} colorTheme={colorTheme} />
 
         {activity?.activity === "review" &&
           visitedList.slice(-5).map((country) => {
