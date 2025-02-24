@@ -2,12 +2,20 @@ import type { LeafletMouseEventHandlerFn } from "leaflet";
 import type { PropsWithChildren } from "react";
 import { Fragment, useCallback, useMemo } from "react";
 
-import type { SvgMapColorTheme } from "src/components/common/SvgMap";
 import SvgMap from "src/components/common/SvgMap";
 import { useMapContext } from "src/context/Map/hook";
 import { useSvgAttributes } from "src/hooks/common/useSVGAttributes";
 
 import mapSvg from "src/assets/images/generated/countries-world-map.svg?raw";
+
+export type SvgMapColorTheme = {
+  country: {
+    activeStyle: string;
+    inactiveStyle: string;
+    highlightStyle: string;
+    visitedStyle: string;
+  };
+};
 
 /**
  * Manual adjustments to the bounds of the map

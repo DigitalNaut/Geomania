@@ -17,8 +17,8 @@ import ReviewFloatingPanel, {
 } from "src/components/activity/ReviewFloatingPanel";
 import Button from "src/components/common/Button";
 import ErrorBanner from "src/components/common/ErrorBanner";
-import type { SvgMapColorTheme } from "src/components/common/SvgMap";
 import MainView from "src/components/layout/MainView";
+import type { SvgMapColorTheme } from "src/components/map/CountrySvgMap";
 import { CountrySvgMap } from "src/components/map/CountrySvgMap";
 import { LeafletMapFrame } from "src/components/map/LeafletMapFrame";
 import { MapControl } from "src/components/map/MapControl";

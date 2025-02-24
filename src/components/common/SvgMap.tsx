@@ -1,7 +1,7 @@
 import type { LeafletEventHandlerFnMap } from "leaflet";
 import { latLngBounds } from "leaflet";
-import type { PropsWithChildren } from "react";
-import { useState } from "react";
+import type { ComponentProps, PropsWithChildren } from "react";
+import { useMemo } from "react";
 import type { SVGOverlayProps } from "react-leaflet";
 import { SVGOverlay } from "react-leaflet";
 import { twMerge } from "tailwind-merge";
@@ -17,14 +17,12 @@ const defaultSvgAttributes: SVGOverlayProps["attributes"] = {
   strokeWidth: "0.01",
 } as const;
 
-export type SvgMapColorTheme = {
-  country: {
-    activeStyle: string;
-    inactiveStyle: string;
-    highlightStyle: string;
-    visitedStyle: string;
-  };
-};
+const defaultBounds = {
+  north: 85,
+  south: -85,
+  west: -180,
+  east: 180,
+} as const;
 
 /**
  * Leaflet component to render an SVG map
@@ -35,29 +33,32 @@ export default function SvgMap({
   eventHandlers,
   attributes,
   boundsAdjustment = { top: 0, bottom: 0, left: 0, right: 0 },
-}: PropsWithChildren<{
-  svg: string;
-  className?: string;
-  eventHandlers?: LeafletEventHandlerFnMap;
-  attributes?: Record<string, string>;
-  boundsAdjustment?: {
-    top: number;
-    bottom: number;
-    left: number;
-    right: number;
-  };
-}>) {
-  const [bounds] = useState(() => {
-    const north = 85 + boundsAdjustment.top,
-      south = -85 - boundsAdjustment.bottom,
-      west = -180 - boundsAdjustment.left,
-      east = 180 + boundsAdjustment.right;
+  ...rest
+}: PropsWithChildren<
+  {
+    svg: string;
+    className?: string;
+    eventHandlers?: LeafletEventHandlerFnMap;
+    attributes?: Record<string, string>;
+    boundsAdjustment?: {
+      top: number;
+      bottom: number;
+      left: number;
+      right: number;
+    };
+  } & Omit<ComponentProps<typeof SVGOverlay>, "bounds">
+>) {
+  const bounds = useMemo(() => {
+    const north = defaultBounds.north + boundsAdjustment.top,
+      south = defaultBounds.south - boundsAdjustment.bottom,
+      west = defaultBounds.west - boundsAdjustment.left,
+      east = defaultBounds.east + boundsAdjustment.right;
 
     return latLngBounds([
       [south, west],
       [north, east],
     ]);
-  });
+  }, [boundsAdjustment]);
 
   return (
     <SVGOverlay
@@ -70,6 +71,7 @@ export default function SvgMap({
       zIndex={1000}
       className={twMerge("transition-colors duration-500 ease-in-out", className)}
       eventHandlers={eventHandlers}
+      {...rest}
     >
       {children}
     </SVGOverlay>
