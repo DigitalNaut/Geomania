@@ -189,10 +189,10 @@ function ActivityMap({
             return (
               <Circle className="fill-none stroke-none" key={country} center={labelPosition} radius={0}>
                 <Tooltip
-                  className="!border-none !bg-transparent !text-white"
+                  className="!border-none !bg-white/80 !text-lime-900 hover:!z-1000 hover:!bg-white hover:!shadow-md"
+                  interactive
                   permanent
                   position={labelPosition}
-                  opacity={0.8}
                   direction="center"
                 >
                   {countryData.GEOUNIT}
