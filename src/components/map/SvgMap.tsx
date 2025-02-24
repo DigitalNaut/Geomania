@@ -1,5 +1,3 @@
-// TODO: Rename file to match function export
-
 import type { LeafletMouseEventHandlerFn } from "leaflet";
 import { latLngBounds } from "leaflet";
 import type { PropsWithChildren } from "react";
