@@ -60,26 +60,10 @@
     }
   },
   "tailwindCSS.classAttributes": [
-    "class",
-    "className",
-    "ngClass",
-    "class:list",
-    ".+Styles?"
+    ".+(?:Theme|Style)s?.*",
   ],
   "tailwindCSS.experimental.classRegex": [
-    ".*Styles?",
-    [
-      "Classes \\=([^;]*);",
-      "'([^']*)'"
-    ],
-    [
-      "Classes \\=([^;]*);",
-      "\"([^\"]*)\""
-    ],
-    [
-      "Classes \\=([^;]*);",
-      "\\`([^\\`]*)\\`"
-    ]
+    "tw\\`([^`]*)\\`",
   ],
   "commandOnAllFiles.commands": {
     "Organize All Imports": {
