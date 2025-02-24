@@ -1,3 +1,5 @@
+// TODO: Rename file to match function export
+
 import type { LeafletMouseEventHandlerFn } from "leaflet";
 import { latLngBounds } from "leaflet";
 import { Fragment, useCallback, useMemo, useState } from "react";
@@ -9,6 +11,9 @@ import mapSvg from "src/assets/images/generated/countries-world-map.svg?raw";
 import { useSvgAttributes } from "src/hooks/common/useSVGAttributes";
 import { useMapContext } from "src/context/Map/hook";
 
+/**
+ * Manual adjustments to the bounds of the map
+ */
 const mapBoundsAdjustment = {
   top: -1.35,
   left: 1.3,
@@ -16,7 +21,9 @@ const mapBoundsAdjustment = {
   bottom: 1,
 };
 
-// Geounit presets
+/**
+ * Preset SVG attributes for the map
+ */
 const svgAttributes: SVGOverlayProps["attributes"] = {
   fill: "white",
   stroke: "white",
@@ -34,10 +41,16 @@ export type SvgMapColorTheme = {
   };
 };
 
+/**
+ * Lists of country categories for rendering
+ */
 type SvgMapLists = {
   [K in keyof SvgMapColorTheme["country"] as K extends `${infer Prefix}Style` ? `${Prefix}List` : never]: string[];
 };
 
+/**
+ * Paths extracted from the SVG
+ */
 type SvgMapPaths = {
   [K in keyof SvgMapColorTheme["country"] as K extends `${infer Prefix}Style`
     ? `${Prefix}Paths`
@@ -45,9 +58,7 @@ type SvgMapPaths = {
 };
 
 /**
- * Renders the map SVG as an overlay on the map.
- * @param props
- * @returns
+ * Leaflet component to render an SVG map
  */
 export default function SvgMap({
   hidden,
