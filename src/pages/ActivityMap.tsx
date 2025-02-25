@@ -48,13 +48,13 @@ const mapActivityTheme: Record<ActivityMode | "default", SvgMapColorTheme> = {
     country: {
       activeStyle: "fill-slate-500/95 stroke-slate-400 hover:fill-slate-500 hover:stroke-slate-300",
       highlightStyle: "fill-lime-500 stroke-lime-200",
-      visitedStyle: "fill-lime-700 stroke-lime-200",
+      visitedStyle: "fill-lime-700 stroke-lime-200 hover:fill-lime-600 hover:stroke-lime-500",
       inactiveStyle: "fill-slate-800 stroke-none",
     },
   },
   quiz: {
     country: {
-      activeStyle: "fill-slate-500/95 stroke-slate-400",
+      activeStyle: "fill-slate-500/95 stroke-slate-400 hover:fill-slate-500 hover:stroke-slate-300",
       highlightStyle: "fill-lime-500 stroke-lime-200",
       visitedStyle: "fill-lime-700 stroke-lime-200",
       inactiveStyle: "fill-slate-800 stroke-none",
@@ -94,9 +94,10 @@ function MapLabel({
   return (
     <div
       className={cn(
-        "absolute z-1000 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-sm px-1 text-xs text-white/30 hover:z-1500 hover:bg-white/60 hover:text-base hover:text-lime-700 hover:opacity-100",
+        "absolute z-1000 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-sm px-1 text-xs text-white/30 hover:z-1500 hover:bg-lime-200/80 hover:text-base hover:text-lime-700 hover:opacity-100",
         {
-          "z-1100 bg-white text-base text-lime-700 hover:opacity-25": isCurrentCountry,
+          "z-1100 bg-white/90 text-base text-lime-900 drop-shadow-md hover:opacity-25":
+            isCurrentCountry,
         },
       )}
       key={country}
