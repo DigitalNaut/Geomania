@@ -1,6 +1,7 @@
 import { faAngleLeft, faBookAtlas, faGlobe, faKeyboard, faMousePointer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Map } from "leaflet";
+import type { Variants } from "motion/react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Marker, ZoomControl } from "react-leaflet";
@@ -70,6 +71,22 @@ const mapActivityTheme: Record<ActivityMode | "default", SvgMapColorTheme> = {
   },
 } as const;
 
+const labelVariants: Variants = {
+  initial: {
+    height: 0,
+    opacity: 0,
+  },
+  animate: {
+    height: "auto",
+    opacity: 1,
+  },
+  exit: {
+    height: 0,
+    opacity: 0,
+    onAnimationEnd: () => ({ display: "none" }),
+  },
+};
+
 function MapLabel({
   country,
   isCurrentCountry,
@@ -88,26 +105,60 @@ function MapLabel({
 }) {
   const countryData = useMemo(() => countryCatalog[country], [country]);
   const position = useMemo(() => projectFn?.(getLabelCoordinates(countryData)), [countryData, projectFn]);
+  const sovereignt = useMemo(
+    () => (countryData.GEOUNIT !== countryData.SOVEREIGNT ? countryData.SOVEREIGNT : null),
+    [countryData],
+  );
 
   if (!position) return null;
 
   return (
     <div
       className={cn(
-        "absolute z-1000 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-sm px-1 text-xs text-white/30 hover:z-1500 hover:bg-lime-200/80 hover:text-base hover:text-lime-700 hover:opacity-100",
+        "absolute z-1000 -translate-x-1/2 -translate-y-1/2 cursor-pointer overflow-hidden rounded-lg text-center text-xs text-white/30 [transition:opacity_0.25s_ease-in-out,_color_0.25s_ease-in-out,_background-color_0.25s_ease-out,_translate_0.25s_ease-in-out] hover:z-1500 hover:bg-slate-200/80 hover:text-base hover:text-slate-700 hover:opacity-100",
         {
-          "z-1100 bg-white/90 text-base text-lime-900 drop-shadow-md hover:opacity-25":
+          "z-1100 translate-y-[-64px] bg-white p-0 text-base text-slate-900 drop-shadow-md hover:bg-white/30 hover:opacity-25":
             isCurrentCountry,
         },
       )}
       key={country}
       style={{
         transform: `translate(${position.x - left}px, ${position.y - top}px)`,
-        transition: "opacity 0.1s ease-in-out, color 0.1s ease-in-out, background-color 0.1s ease-in-out",
       }}
       onClick={onClick}
     >
-      {countryData.GEOUNIT}
+      <AnimatePresence>
+        {isCurrentCountry && (
+          <>
+            <motion.div
+              className="bg-slate-700 px-1 text-xs text-white"
+              key="country-name"
+              variants={labelVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.25 }}
+            >
+              {countryData.SUBREGION}
+            </motion.div>
+            {sovereignt && (
+              <motion.div
+                className="bg-slate-500 px-1 text-xs text-white"
+                key="sovereignt-name"
+                variants={labelVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.25 }}
+              >
+                {sovereignt}
+              </motion.div>
+            )}
+          </>
+        )}
+      </AnimatePresence>
+
+      <div className={cn("p-0", { "px-1.5": isCurrentCountry })}>{countryData.GEOUNIT}</div>
     </div>
   );
 }
