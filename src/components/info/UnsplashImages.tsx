@@ -70,7 +70,13 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
         {data?.results.length && (
           <Masonry columnsCount={2}>
             {data.results.map((image) => (
-              <motion.div key={image.id} initial="initial" whileHover="hover" transition={{ duration: 0.05 }}>
+              <motion.div
+                key={image.id}
+                initial="initial"
+                whileHover="hover"
+                transition={{ duration: 0.05 }}
+                variants={overlayVariants}
+              >
                 <div className="peer/image group/label relative h-auto w-full" key={image.id}>
                   <img src={image.urls.thumb} alt={image.alt_description} loading="lazy" />
 

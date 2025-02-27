@@ -24,10 +24,10 @@ export function useReview(): IActivity & {
   const activityState = useAppSelector((state) => state.countryStore);
   const currentActivity = activityState[activityType];
 
-  const liftCountryToParams = useCallback(
-    (a3: string) => {
+  const liftToSearchParams = useCallback(
+    (key: string, value: string) => {
       setURLSearchParams((prev) => {
-        prev.set("country", a3);
+        prev.set(key, value);
         return prev;
       });
     },
@@ -43,20 +43,20 @@ export function useReview(): IActivity & {
     const countryData = dispatch(getNextCountry(activityType));
 
     if (countryData) {
-      liftCountryToParams(countryData.GU_A3);
+      liftToSearchParams("country", countryData.GU_A3);
       dispatch(addVisitedCountry({ countryA3: countryData.GU_A3, activityType }));
     }
 
     return countryData;
-  }, [dispatch, liftCountryToParams]);
+  }, [dispatch, liftToSearchParams]);
 
   const setCurrentCountry = useCallback(
     (countryA3: string) => {
       dispatch(changeCurrentCountry({ countryA3, activityType }));
-      liftCountryToParams(countryA3);
+      liftToSearchParams("country", countryA3);
       return countryCatalog[countryA3];
     },
-    [dispatch, liftCountryToParams],
+    [dispatch, liftToSearchParams],
   );
 
   const visitedCountries = useMemo(() => {
@@ -67,19 +67,22 @@ export function useReview(): IActivity & {
     return [...filteredVisitedCountries, currentActivity.currentCountry.GU_A3];
   }, [currentActivity.currentCountry, currentActivity.visitedCountries, isCountryInFilters]);
 
-  const clearCountryFromParams = useCallback(() => {
-    setURLSearchParams((prev) => {
-      prev.delete("country");
-      return prev;
-    });
-  }, [setURLSearchParams]);
+  const deleteFromSearchParams = useCallback(
+    (param: string) => {
+      setURLSearchParams((prev) => {
+        prev.delete(param);
+        return prev;
+      });
+    },
+    [setURLSearchParams],
+  );
 
   const getCountryFromParams = useCallback(() => searchParams.get("country"), [searchParams]);
 
   const reset = useCallback(() => {
     dispatch(resetActivityAction(activityType));
-    clearCountryFromParams();
-  }, [clearCountryFromParams, dispatch]);
+    deleteFromSearchParams("country");
+  }, [deleteFromSearchParams, dispatch]);
 
   const start = useCallback(() => {
     if (currentActivity.currentCountry) {
@@ -91,7 +94,7 @@ export function useReview(): IActivity & {
       return nextCountry();
     }
     if (a3.length === 0) {
-      clearCountryFromParams();
+      deleteFromSearchParams("country");
       return nextCountry();
     }
 
@@ -107,12 +110,12 @@ export function useReview(): IActivity & {
     setCurrentCountry,
     activityState,
     nextCountry,
-    clearCountryFromParams,
+    deleteFromSearchParams,
   ]);
 
   const finish = useCallback(() => {
-    clearCountryFromParams();
-  }, [clearCountryFromParams]);
+    deleteFromSearchParams("country");
+  }, [deleteFromSearchParams]);
 
   return {
     nextCountry,
