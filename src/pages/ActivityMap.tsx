@@ -158,7 +158,7 @@ function MapLabel({
         )}
       </AnimatePresence>
 
-      <div className={cn("p-0", { "px-1.5": isCurrentCountry })}>{countryData.GEOUNIT}</div>
+      <div className={cn("px-1", { "px-1.5": isCurrentCountry })}>{countryData.GEOUNIT}</div>
     </div>
   );
 }
