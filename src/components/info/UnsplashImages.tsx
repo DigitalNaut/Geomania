@@ -72,7 +72,6 @@ export function UnsplashImages({ onError }: { onError: (error: Error) => void })
             {data.results.map((image) => (
               <motion.div
                 key={image.id}
-                initial="initial"
                 whileHover="hover"
                 transition={{ duration: 0.05 }}
                 variants={overlayVariants}
